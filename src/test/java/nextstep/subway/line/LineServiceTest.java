@@ -40,10 +40,26 @@ public class LineServiceTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = new Station("강남역");
-        광교역 = new Station("광교역");
+        강남역 = new Station(1L, "강남역");
+        광교역 = new Station(2L, "광교역");
         신분당선 = Line.of("신분당선", "bg-red-300", 강남역, 광교역, Distance.from(10));
         노선_목록 = Arrays.asList(신분당선);
+    }
+
+    @Test
+    void saveLine() {
+        when(stationService.findById(강남역.getId())).thenReturn(강남역);
+        when(stationService.findById(광교역.getId())).thenReturn(광교역);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 광교역.getId(), 10);
+
+        LineResponse response = lineService.saveLine(lineRequest);
+
+        assertAll(
+                () -> assertThat(response.getName()).isEqualTo("신분당선"),
+                () -> assertThat(response.getColor()).isEqualTo("bg-red-300"),
+                () -> assertThat(response.getStations().get(0).getName()).isEqualTo(강남역.getName()),
+                () -> assertThat(response.getStations().get(1).getName()).isEqualTo(광교역.getName())
+        );
     }
 
     @Test
