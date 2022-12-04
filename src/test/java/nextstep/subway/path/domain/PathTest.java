@@ -41,10 +41,10 @@ public class PathTest {
         Path path = 경로_생성(stations, 20, 1000);
 
         // when
-        int fare = path.calculateFare(0);
+        path.calculateFare(0);
 
         // then
-        assertThat(fare).isEqualTo(1_450 + 1000);
+        assertThat(path.getFare()).isEqualTo(1_450 + 1000);
     }
 
     @Test
@@ -54,10 +54,10 @@ public class PathTest {
         Path path = 경로_생성(stations, 5, 100);
 
         // when
-        int fare = path.calculateFare(14);
+        path.calculateFare(14);
 
         // then
-        assertThat(fare).isEqualTo(1150);
+        assertThat(path.getFare()).isEqualTo(1150);
     }
 
     private Station 지하철역_생성(String name) {

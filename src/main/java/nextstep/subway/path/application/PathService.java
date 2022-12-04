@@ -33,7 +33,9 @@ public class PathService {
 
         PathFinder pathFinder = DijkstraShortestPathFinder.from(lines);
         Path path = pathFinder.findPath(sourceStation, targetStation);
-        return PathResponse.of(path.getStations(), path.getDistance(), path.calculateFare(Optional.ofNullable(age).orElse(0)));
+        path.calculateFare(Optional.ofNullable(age).orElse(0));
+
+        return PathResponse.from(path);
     }
 
     private Station findStationById(Long id) {

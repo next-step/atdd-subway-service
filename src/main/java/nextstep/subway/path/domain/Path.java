@@ -8,11 +8,16 @@ public class Path {
     private List<Station> stations;
     private int distance;
     private int extraFare;
+    private int fare;
 
     private Path(List<Station> stations, int distance, int extraFare) {
         this.stations = stations;
         this.distance = distance;
         this.extraFare = extraFare;
+    }
+
+    public void calculateFare(int age) {
+        this.fare = FareCalculator.calculate(distance, age, extraFare);
     }
 
     public List<Station> getStations() {
@@ -23,8 +28,12 @@ public class Path {
         return distance;
     }
 
-    public int calculateFare(int age) {
-        return FareCalculator.calculate(distance, age, extraFare);
+    public int getExtraFare() {
+        return extraFare;
+    }
+
+    public int getFare() {
+        return fare;
     }
 
     public static class Builder {

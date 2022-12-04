@@ -26,7 +26,7 @@ public class PathResponseTest {
     @DisplayName("지하철역 목록, 거리, 요금을 받아 생성")
     void fromPath() {
         // when
-        PathResponse pathResponse = PathResponse.of(path.getStations(), path.getDistance(), 1250);
+        PathResponse pathResponse = PathResponse.from(path);
 
         // then
         assertThat(pathResponse).isNotNull();
