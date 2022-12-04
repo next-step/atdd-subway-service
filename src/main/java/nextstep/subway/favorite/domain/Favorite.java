@@ -49,4 +49,10 @@ public class Favorite {
     public Station getTargetStation() {
         return targetStation;
     }
+
+    public void isOwner(Member member) {
+        if (member != this.member) {
+            throw new IllegalArgumentException("본인의 즐겨찾기만 삭제할 수 있습니다.");
+        }
+    }
 }
