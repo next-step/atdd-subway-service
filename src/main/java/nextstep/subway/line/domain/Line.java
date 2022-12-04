@@ -20,7 +20,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
+    @Embedded
+    private LineFare fare;
     @Embedded
     private Sections sections;
 
@@ -30,6 +31,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.fare = LineFare.zero();
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -37,6 +39,7 @@ public class Line extends BaseEntity {
         this.color = color;
         Section section = new Section(upStation, downStation, distance);
         section.addLine(this);
+        this.fare = LineFare.zero();
         this.sections = new Sections(Collections.singletonList(section));
     }
 
