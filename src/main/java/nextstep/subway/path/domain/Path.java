@@ -14,6 +14,8 @@ public class Path {
 
     private final int distance;
 
+    private static final int LINE_FARE_FREE = 0;
+
 
     public Path(List<Station> stations, List<SectionEdge> sectionEdges, int distance) {
         this.stations = stations;
@@ -40,7 +42,7 @@ public class Path {
         return sectionEdges.stream()
                 .mapToInt(SectionEdge::getLineExtraFare)
                 .max()
-                .orElse(0);
+                .orElse(LINE_FARE_FREE);
     }
 
 }
