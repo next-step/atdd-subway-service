@@ -1,6 +1,7 @@
 package nextstep.subway.auth.domain;
 
 public class LoginMember {
+    public static final LoginMember GUEST = new LoginMember(20);
     private Long id;
     private String email;
     private Integer age;
@@ -16,10 +17,6 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
-    }
-
-    public static LoginMember getGuest() {
-        return new LoginMember(20);
     }
 
     public Long getId() {

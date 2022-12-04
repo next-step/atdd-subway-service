@@ -31,7 +31,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         AuthenticationPrincipal parameterAnnotation = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
         boolean credentialRequired = parameterAnnotation.required();
         if(!credentialRequired && credentials == null) {
-            return LoginMember.getGuest();
+            return LoginMember.GUEST;
         }
 
         return authService.findMemberByToken(credentials);
