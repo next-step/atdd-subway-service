@@ -1,10 +1,63 @@
 package nextstep.subway.member;
 
+import static nextstep.subway.auth.acceptance.AuthFixture.로그인_요청_후_토큰_가져오기;
+import static nextstep.subway.member.MemberFixture.AGE;
+import static nextstep.subway.member.MemberFixture.EMAIL;
+import static nextstep.subway.member.MemberFixture.NEW_AGE;
+import static nextstep.subway.member.MemberFixture.NEW_EMAIL;
+import static nextstep.subway.member.MemberFixture.NEW_PASSWORD;
+import static nextstep.subway.member.MemberFixture.PASSWORD;
+import static nextstep.subway.member.MemberFixture.회원_생성을_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.member.dto.MemberRequest;
+import nextstep.subway.member.dto.MemberResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 public class MyInfoAcceptanceTest extends AcceptanceTest {
+
+    public static ExtractableResponse<Response> 내_정보_조회(final String token) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내정보_수정(final String token, final String newEmail,
+        final String newPassword, final int newAge) {
+        MemberRequest memberRequest = new MemberRequest(newEmail, newPassword, newAge);
+
+        return RestAssured
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .auth().oauth2(token)
+            .body(memberRequest)
+            .when().put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내정보_삭제(final String token) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(token)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().delete("/members/me")
+            .then().log().all()
+            .extract();
+    }
 
     /*
     Feature: 내 정보 관리 기능
@@ -16,6 +69,7 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
             THEN: 내 정보가 조회됨
             WHEN: 내 정보 수정
             THEN: 내 정보 정보가 수정됨
+            AND: 새로운 정보로 재 로그인
             WHEN: 내 정보를 삭제함
             THEN: 내 정보가 삭제됨
             WHEN: 내 정보를 조회
@@ -24,9 +78,9 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
     @DisplayName("내 정보 관리 기능")
     @Test
     void myInfoScenarioTest() {
-/*        //given
-        회원_생성을_요청("test@test.com", "1234", 10);
-        String token = 로그인_요청_후_토큰_가져오기("test@test.com", "1234");
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        String token = 로그인_요청_후_토큰_가져오기(EMAIL, PASSWORD);
 
         //when
         MemberResponse getMemberResponse = 내_정보_조회(token).as(MemberResponse.class);
@@ -34,7 +88,9 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
         내_정보가_조회됨(getMemberResponse);
 
         //when
-        MemberResponse putMemberResponse = 내정보_수정(token).as(MemberResponse.class);
+        내정보_수정(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        token = 로그인_요청_후_토큰_가져오기(NEW_EMAIL, NEW_PASSWORD);
+        MemberResponse putMemberResponse = 내_정보_조회(token).as(MemberResponse.class);
         //then
         내_정보가_수정됨(putMemberResponse);
 
@@ -46,8 +102,24 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
         //when
         ExtractableResponse<Response> getResponse = 내_정보_조회(token);
         //then
-        내_정보_조회되지_않음(getResponse);*/
+        내_정보_조회되지_않음(getResponse);
     }
 
+    private void 내_정보가_조회됨(final MemberResponse memberResponse) {
+        assertThat(memberResponse.getEmail()).isEqualTo(EMAIL);
+        assertThat(memberResponse.getAge()).isEqualTo(AGE);
+    }
 
+    private void 내_정보가_수정됨(final MemberResponse memberResponse) {
+        assertThat(memberResponse.getEmail()).isEqualTo(NEW_EMAIL);
+        assertThat(memberResponse.getAge()).isEqualTo(NEW_AGE);
+    }
+
+    private void 내정보_삭제됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 내_정보_조회되지_않음(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
 }
