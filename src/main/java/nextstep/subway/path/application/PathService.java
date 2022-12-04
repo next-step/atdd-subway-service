@@ -22,11 +22,11 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, int age) {
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
         PathFinder pathFinder = PathFinder.from(lineRepository.findAll());
-        Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
+        Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation, age);
         return PathResponse.from(shortestPath);
     }
 

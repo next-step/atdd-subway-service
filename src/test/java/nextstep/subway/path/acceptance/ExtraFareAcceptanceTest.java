@@ -32,13 +32,9 @@ public class ExtraFareAcceptanceTest extends AcceptanceTest {
     private int 오호선_추가요금;
 
     /**
-     * 2호선 추가요금 0원
-     * 5호선 추가요금 900원
-     *
-     * *2호선* 강남역 --- 영등포구청역 --- 신당 
-     *                       |
-     *                       |
-     * *5호선* 마곡역 --- 영등포구청역 --- 종로3가역
+     * 2호선 추가요금 0원 5호선 추가요금 900원
+     * <p>
+     * *2호선* 강남역 --- 영등포구청역 --- 신당 | | *5호선* 마곡역 --- 영등포구청역 --- 종로3가역
      */
     @BeforeEach
     public void setUp() {
@@ -53,9 +49,13 @@ public class ExtraFareAcceptanceTest extends AcceptanceTest {
         마곡역 = 지하철역_등록되어_있음("마곡역").as(StationResponse.class);
         종로3가역 = 지하철역_등록되어_있음("종로3가역").as(StationResponse.class);
 
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 강남역.getId(), 영등포구청역.getId(), 8, 이호선_추가요금)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(
+            new LineRequest("이호선", "bg-red-600", 강남역.getId(), 영등포구청역.getId(), 8, 이호선_추가요금)).as(
+            LineResponse.class);
         지하철_노선에_지하철역_등록_요청(이호선, 영등포구청역, 신당역, 49);
-        오호선 = 지하철_노선_등록되어_있음(new LineRequest("오호선", "bg-red-600", 마곡역.getId(), 영등포구청역.getId(), 9, 오호선_추가요금)).as(LineResponse.class);
+        오호선 = 지하철_노선_등록되어_있음(
+            new LineRequest("오호선", "bg-red-600", 마곡역.getId(), 영등포구청역.getId(), 9, 오호선_추가요금)).as(
+            LineResponse.class);
         지하철_노선에_지하철역_등록_요청(오호선, 영등포구청역, 종로3가역, 70);
     }
 
@@ -66,6 +66,15 @@ public class ExtraFareAcceptanceTest extends AcceptanceTest {
 
         지하철_최단경로_조회_요청_응답됨(response);
         지하철_최단경로_요금_확인됨(response, 이호선_추가요금 + ExtraFare.BASIC);
+    }
+
+    @DisplayName("노선의 추가요금을 더한 값을 계산한다.")
+    @Test
+    void SurchargeAddBasicExtraFare() {
+        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(마곡역, 영등포구청역);
+
+        지하철_최단경로_조회_요청_응답됨(response);
+        지하철_최단경로_요금_확인됨(response, 오호선_추가요금 + ExtraFare.BASIC);
     }
 
     @DisplayName("거리가 11KM ~ 50KM 사이인 경우 5KM당 100원의 추가 요금이 발생한다.")
@@ -89,13 +98,5 @@ public class ExtraFareAcceptanceTest extends AcceptanceTest {
         지하철_최단경로_조회_요청_응답됨(response);
         지하철_최단경로_요금_확인됨(response, 오호선_추가요금 + ExtraFare.BASIC + 추가요금);
     }
-
-    @DisplayName("노선의 추가요금을 더한 값을 계산한다.")
-    @Test
-    void SurchargeAddBasicExtraFare() {
-        ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(마곡역, 영등포구청역);
-
-        지하철_최단경로_조회_요청_응답됨(response);
-        지하철_최단경로_요금_확인됨(response, 오호선_추가요금 + ExtraFare.BASIC);
-    }
 }
+

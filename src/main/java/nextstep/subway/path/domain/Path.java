@@ -14,18 +14,19 @@ public class Path {
 
     private final ExtraFare extraFare;
 
-    private Path(List<Station> stations, int distance, int extraFare) {
+    private Path(List<Station> stations, int distance, int extraFare, int age) {
         this.stations = stations;
         this.distance = Distance.from(distance);
-        this.extraFare = calculateExtraFare(extraFare, distance);
+        this.extraFare = calculateExtraFare(extraFare, distance, age);
     }
 
-    public static Path of(List<Station> stations, int distance, int extraFare) {
-        return new Path(stations, distance, extraFare);
+    public static Path of(List<Station> stations, int distance, int extraFare, int age) {
+        return new Path(stations, distance, extraFare, age);
     }
 
-    private ExtraFare calculateExtraFare(int extraFare, int distance) {
-        return ExtraFare.from(extraFare).add(DistanceDiscount.calculate(distance));
+    private ExtraFare calculateExtraFare(int extraFare, int distance, int age) {
+        ExtraFare discountExtraFare = ExtraFare.from(extraFare).add(DistanceDiscount.calculate(distance));
+        return ExtraFare.from(discountExtraFare.subtract(AgeDiscount.calculate(age, discountExtraFare.value())).value());
     }
 
     public List<Station> getStations() {

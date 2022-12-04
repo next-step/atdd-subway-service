@@ -40,7 +40,7 @@ public class PathFinder {
         return new PathFinder(lines);
     }
 
-    public Path findShortestPath(Station sourceStation, Station targetStation) {
+    public Path findShortestPath(Station sourceStation, Station targetStation, int age) {
         validateSameStation(sourceStation, targetStation);
         validateNotExistStation(sourceStation, targetStation);
         DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
@@ -48,7 +48,7 @@ public class PathFinder {
         validateNotConnect(shortestPath);
         List<Station> shortestPathVertexes = shortestPath.getVertexList();
         double shortestPathWeight = shortestPath.getWeight();
-        return Path.of(shortestPathVertexes, (int) shortestPathWeight, getLineExtraFare(shortestPath));
+        return Path.of(shortestPathVertexes, (int) shortestPathWeight, getLineExtraFare(shortestPath), age);
     }
 
     private void validateSameStation(Station sourceStation, Station targetStation) {
