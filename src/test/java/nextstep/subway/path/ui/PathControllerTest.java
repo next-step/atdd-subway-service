@@ -30,7 +30,7 @@ public class PathControllerTest {
     void findShortestPath() {
         Station 강남역 = createStation("강남역", 1L);
         Station 종각역 = createStation("종각역", 2L);
-        createLine("1호선", "blue", 강남역, 종각역, 5);
+        createLine("1호선", "blue", 강남역, 종각역, 5, 100);
 
         ResponseEntity<PathResponse> responseEntity = pathController.findShortestPath(강남역.getId(), 종각역.getId());
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);

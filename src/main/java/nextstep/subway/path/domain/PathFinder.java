@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.ui.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -8,12 +9,12 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PathFinder {
     private final SubwayGraph graph;
+    private final List<Section> sections;
     public static final int BASIC_FARE = 1250;
     public static final int ADDITIONAL_FARE_DISTANCE_LEVEL1 = 10;
     public static final int ADDITIONAL_FARE_DISTANCE_LEVEL2 = 50;
@@ -21,6 +22,9 @@ public class PathFinder {
     public static final int DISTANCE_UNIT_LEVEL2 = 8;
 
     private PathFinder(List<Line> lines) {
+        this.sections = lines.stream()
+                .flatMap(line -> line.getSections().stream())
+                .collect(Collectors.toList());
         this.graph = new SubwayGraph(DefaultWeightedEdge.class, lines);
     }
 
@@ -37,11 +41,24 @@ public class PathFinder {
                 .stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        int additionalFare = calculateAdditionalFare(shortestPath.getWeight());
+
+
+        List<Station> stations = shortestPath.getVertexList();
+
+        int additionalFareOfLine = checkIsAdditionalFareOfLine(stations);
+        int additionalFare = additionalFareOfLine + calculateAdditionalFareOfDistance(shortestPath.getWeight());
         return new PathResponse(responses, (int) shortestPath.getWeight(), additionalFare);
     }
 
-    private int calculateAdditionalFare(final double weight) {
+    private int checkIsAdditionalFareOfLine(final List<Station> stations) {
+        return sections.stream()
+                .filter(section -> stations.containsAll(section.stations()))
+                .map(section -> section.getLine().getAdditionalFare())
+                .max(Integer::compareTo)
+                .orElse(0);
+    }
+
+    private int calculateAdditionalFareOfDistance(final double weight) {
         if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL2) {
             return BASIC_FARE + calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL2, DISTANCE_UNIT_LEVEL2);
         }

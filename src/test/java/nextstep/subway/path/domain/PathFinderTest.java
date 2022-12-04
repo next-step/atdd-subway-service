@@ -21,12 +21,15 @@ class PathFinderTest {
     private Line 이호선;
     private Line 삼호선;
     private Line 사호선;
+    private Line 오호선;
     private Station 명동역;
     private Station 사당역;
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
+    private Station 동대문역사공원역;
+    private Station 광화문역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -44,10 +47,13 @@ class PathFinderTest {
         남부터미널역 = createStation("남부터미널역", 4L);
         명동역 = createStation("명동역", 5L);
         사당역 = createStation("사당역", 6L);
-        신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = createLine("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = createLine("삼호선", "bg-red-600", 교대역, 양재역, 10);
-        사호선 = createLine("사호선", "bg-red-600", 명동역, 사당역, 30);
+        동대문역사공원역 = createStation("동대문역사공원역", 7L);
+        광화문역 = createStation("광화문역", 8L);
+        신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
+        이호선 = createLine("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
+        삼호선 = createLine("삼호선", "bg-red-600", 교대역, 양재역, 10, 0);
+        사호선 = createLine("사호선", "bg-red-600", 명동역, 사당역, 30, 0);
+        오호선 = createLine("오호선", "bg-red-600", 동대문역사공원역, 광화문역, 10, 1000);
         삼호선.addSection(createSection(교대역, 남부터미널역, 8));
     }
 
@@ -76,7 +82,7 @@ class PathFinderTest {
 
     @DisplayName("10km 초과 ∼ 50km 이내 경로 조회 시 5km마다 100원 추가된 요금 정보가 포함된다")
     @Test
-    void getShortestPath_additionalFare_level1() {
+    void getShortestPath_additionalFare_distance_level1() {
         PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
 
         PathResponse shortestPath = pathFinder.getShortestPath(강남역, 남부터미널역);
@@ -87,13 +93,24 @@ class PathFinderTest {
 
     @DisplayName("50km 초과 경로 조회 시 8km마다 100원 추가된 요금 정보가 포함된다")
     @Test
-    void getShortestPath_additionalFare_level2() {
+    void getShortestPath_additionalFare_distance_level2() {
         PathFinder pathFinder = PathFinder.from(Collections.singletonList(사호선));
 
         PathResponse shortestPath = pathFinder.getShortestPath(명동역, 사당역);
 
         assertThat(shortestPath.getDistance()).isEqualTo(30);
         assertThat(shortestPath.getAdditionalFare()).isEqualTo(1650);
+    }
+
+    @DisplayName("경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금이 적용된다")
+    @Test
+    void getShortestPath_additionalFare_line() {
+        PathFinder pathFinder = PathFinder.from(Collections.singletonList(오호선));
+
+        PathResponse shortestPath = pathFinder.getShortestPath(동대문역사공원역, 광화문역);
+
+        assertThat(shortestPath.getDistance()).isEqualTo(10);
+        assertThat(shortestPath.getAdditionalFare()).isEqualTo(2250);
     }
 
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같으면 예외를 반환한다.")
