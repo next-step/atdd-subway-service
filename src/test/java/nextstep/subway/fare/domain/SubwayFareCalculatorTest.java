@@ -3,7 +3,6 @@ package nextstep.subway.fare.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import nextstep.subway.auth.fare.domain.SubwayFareCalculator;
 import nextstep.subway.common.exception.ErrorEnum;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -47,6 +46,15 @@ public class SubwayFareCalculatorTest {
         int fare = SubwayFareCalculator.calculate(distance);
 
         assertThat(fare).isEqualTo(expected);
+    }
+
+    @ParameterizedTest
+    @CsvSource(value = {"6:500", "13:800", "19:1350"}, delimiter = ':')
+    void 연령별_요금정책을_적용해서_운임요금_부과(int age, int expectedFare) {
+        SubwayFareCalculator subwayFareCalculator = SubwayFareCalculator.of(0, age);
+        int fare = subwayFareCalculator.calculate(15);
+
+        assertThat(fare).isEqualTo(expectedFare);
     }
 
 }
