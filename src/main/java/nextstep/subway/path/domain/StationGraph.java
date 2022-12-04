@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.PathCannotFindException;
+import nextstep.subway.exception.StationNotIncludedException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -53,6 +54,12 @@ public class StationGraph {
     }
 
     public Path findShortestPath(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new PathCannotFindException();
+        }
+        if (notContainsStation(source) || notContainsStation(target)) {
+            throw new StationNotIncludedException();
+        }
         DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstra = new DijkstraShortestPath<>(stationGraph);
         return convertToPath(dijkstra.getPath(source, target));
     }

@@ -58,12 +58,12 @@ public class Section {
 
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance = Distance.subtract(this.distance, newDistance);
+        this.distance = this.distance.subtract(newDistance);
     }
 
     public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance = Distance.subtract(this.distance, newDistance);
+        this.distance = this.distance.subtract(newDistance);
     }
 
     public boolean equalsUpStation(Station station) {

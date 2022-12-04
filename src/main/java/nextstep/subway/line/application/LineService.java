@@ -9,7 +9,6 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,8 +27,8 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.stationById(request.getUpStationId());
+        Station downStation = stationService.stationById(request.getDownStationId());
         Distance distance = new Distance(request.getDistance());
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, distance));
         return LineResponse.of(persistLine);
@@ -63,8 +62,8 @@ public class LineService {
 
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
-        Station upStation = stationService.findStationById(request.getUpStationId());
-        Station downStation = stationService.findStationById(request.getDownStationId());
+        Station upStation = stationService.stationById(request.getUpStationId());
+        Station downStation = stationService.stationById(request.getDownStationId());
         Distance distance = new Distance(request.getDistance());
 
         line.addSection(upStation, downStation, distance);
@@ -72,7 +71,7 @@ public class LineService {
 
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
-        Station station = stationService.findStationById(stationId);
+        Station station = stationService.stationById(stationId);
         line.removeLineStation(station);
     }
 }

@@ -16,7 +16,7 @@ public class Distance {
     }
 
     public Distance(int value) {
-        if (isValidate(value)) {
+        if (isValid(value)) {
             throw new InvalidDistanceException("거리는 0보다 작을 수 없습니다.");
         }
         this.value = value;
@@ -26,18 +26,18 @@ public class Distance {
         return new Distance(distance1.value + distance2.value);
     }
 
-    public static Distance subtract(Distance distance1, Distance distance2) {
-        if (isValidate(distance1.value - distance2.value)) {
+    public Distance subtract(Distance other) {
+        if (isValid(this.value - other.value)) {
             throw new InvalidDistanceException("거리의 차이는 0보다 작을 수 없습니다.");
         }
-        return new Distance(distance1.value - distance2.value);
+        return new Distance(this.value - other.value);
     }
 
     public int getDistance() {
         return value;
     }
 
-    private static boolean isValidate(int value) {
+    private static boolean isValid(int value) {
         return value < 0;
     }
 
