@@ -28,7 +28,7 @@ public class LineService {
     }
 
     @Transactional(isolation = READ_COMMITTED)
-    public LineResponse saveLineV2(LineRequest request) {
+    public LineResponse saveLine(LineRequest request) {
         final Station upStation = stationService.findById(request.getUpStationId());
         final Station downStation = stationService.findById(request.getDownStationId());
         final Line persistLine = lineRepository.save(
@@ -38,7 +38,7 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findLinesV2() {
+    public List<LineResponse> findLines() {
         final List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
                 .map(LineResponse::of)
@@ -46,13 +46,13 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public LineResponse findLineResponseByIdV2(Long id) {
+    public LineResponse findLineResponseById(Long id) {
         final Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
     }
 
     @Transactional(isolation = READ_COMMITTED)
-    public void updateLineV2(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(Long id, LineRequest lineUpdateRequest) {
         final Line persistLine = lineRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("등록되지 않은 노선입니다. 요청id:" + id));
         persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
@@ -64,7 +64,7 @@ public class LineService {
     }
 
     @Transactional(isolation = READ_COMMITTED)
-    public void addLineStationV2(Long lineId, SectionRequest request) {
+    public void addLineStation(Long lineId, SectionRequest request) {
         final Line line = findLineById(lineId);
         final Station upStation = stationService.findStationById(request.getUpStationId());
         final Station downStation = stationService.findStationById(request.getDownStationId());
@@ -72,7 +72,7 @@ public class LineService {
     }
 
     @Transactional(isolation = READ_COMMITTED)
-    public void removeLineStationV2(Long lineId, Long stationId) {
+    public void removeLineStation(Long lineId, Long stationId) {
         final Line line = findLineById(lineId);
         final Station station = stationService.findStationById(stationId);
         line.removeStation(station);
