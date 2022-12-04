@@ -1,12 +1,12 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthTestFixture.로그인을_요청;
-import static nextstep.subway.favorite.FavoriteTestFixture.즐겨찾기_목록_조회_요청;
-import static nextstep.subway.favorite.FavoriteTestFixture.즐겨찾기_목록_조회됨;
-import static nextstep.subway.favorite.FavoriteTestFixture.즐겨찾기_삭제_요청;
-import static nextstep.subway.favorite.FavoriteTestFixture.즐겨찾기_삭제됨;
-import static nextstep.subway.favorite.FavoriteTestFixture.즐겨찾기_생성됨;
-import static nextstep.subway.favorite.FavoriteTestFixture.즐겨찾기_생성을_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteTestFixture.즐겨찾기_목록_조회_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteTestFixture.즐겨찾기_목록_조회됨;
+import static nextstep.subway.favorite.acceptance.FavoriteTestFixture.즐겨찾기_삭제_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteTestFixture.즐겨찾기_삭제됨;
+import static nextstep.subway.favorite.acceptance.FavoriteTestFixture.즐겨찾기_생성됨;
+import static nextstep.subway.favorite.acceptance.FavoriteTestFixture.즐겨찾기_생성을_요청;
 import static nextstep.subway.line.acceptance.LineSectionTestFixture.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineTestFixture.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberTestFixture.회원_생성을_요청;
