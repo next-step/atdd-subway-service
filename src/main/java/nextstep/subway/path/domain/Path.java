@@ -8,6 +8,7 @@ import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.fare.policy.BasicFare;
 import nextstep.subway.fare.policy.DistanceSurchargePolicy;
 import nextstep.subway.fare.policy.LineSurchargePolicy;
+import nextstep.subway.fare.policy.FarePolicy;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
@@ -55,10 +56,10 @@ public class Path {
     }
 
     public Fare calculateFare(LoginMember loginMember) {
-        SurchargePolicy surchargePolicy = new BasicFare();
-        surchargePolicy = DistanceSurchargePolicy.of(surchargePolicy, distance);
-        surchargePolicy = LineSurchargePolicy.of(surchargePolicy, this);
-        return surchargePolicy.calculateFare();
+        FarePolicy farePolicy = new BasicFare();
+        farePolicy = DistanceSurchargePolicy.of(farePolicy, distance);
+        farePolicy = LineSurchargePolicy.of(farePolicy, this);
+        return farePolicy.calculateFare();
     }
 
     public List<Station> stations() {
