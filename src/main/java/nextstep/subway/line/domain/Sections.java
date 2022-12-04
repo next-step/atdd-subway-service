@@ -27,7 +27,7 @@ public class Sections {
         List<Station> stations = getStations();
         Station newSectionUpStation = section.getUpStation();
         Station newSectionDownStation = section.getDownStation();
-        int newSectionDistance = section.getDistance();
+        Distance newSectionDistance = section.getDistance();
         boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(newSectionUpStation));
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it.equals(newSectionDownStation));
 
@@ -111,7 +111,9 @@ public class Sections {
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
             Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            Distance upLineDistance = upLineStation.get().getDistance();
+            Distance downLineDistance = downLineStation.get().getDistance();
+            Distance newDistance = upLineDistance.plus(downLineDistance);
             this.sectionItems.add(new Section(line, newUpStation, newDownStation, newDistance));
         }
 

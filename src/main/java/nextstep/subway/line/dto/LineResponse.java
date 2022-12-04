@@ -35,12 +35,6 @@ public class LineResponse {
         );
     }
 
-    public static List<LineResponse> of(List<Line> lines) {
-        return lines.stream()
-                .map(LineResponse::of)
-                .collect(Collectors.toList());
-    }
-
     private static List<StationResponse> mapToStationResponse(Line line) {
         return line.getStations().stream()
                 .map(StationResponse::of)

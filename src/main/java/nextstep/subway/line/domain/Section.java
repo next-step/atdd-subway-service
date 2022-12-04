@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.message.SectionMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -24,13 +23,14 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     protected Section() {
 
     }
 
-    public Section(Line line, Station upStation, Station downStation, int distance) {
+    public Section(Line line, Station upStation, Station downStation, Distance distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
@@ -53,24 +53,18 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException(SectionMessage.UPDATE_ERROR_MUST_BE_SHORTER_THAN_CURRENT_DISTANCE.message());
-        }
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = distance.minus(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException(SectionMessage.UPDATE_ERROR_MUST_BE_SHORTER_THAN_CURRENT_DISTANCE.message());
-        }
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = distance.minus(newDistance);
     }
 
     public boolean isSameUpStation(Station station) {
