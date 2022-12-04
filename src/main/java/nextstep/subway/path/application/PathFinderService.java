@@ -2,11 +2,10 @@ package nextstep.subway.path.application;
 
 
 import nextstep.subway.line.domain.SectionRepository;
-import nextstep.subway.path.domain.DijkstraShortestPathStrategy;
-import nextstep.subway.path.domain.PathStrategy;
+import nextstep.subway.path.domain.DijkstraShortestPathFinder;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.StationGraph;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -26,10 +25,9 @@ public class PathFinderService {
     public PathResponse getShortestPath(Long sourceId, Long targetId) {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
-        PathStrategy pathStrategy = new DijkstraShortestPathStrategy();
-        StationGraph stationGraph = new StationGraph(pathStrategy, sectionRepository.findAll());
-        PathFinder pathFinder = PathFinder.of(stationGraph);
-        Path path = pathFinder.findPathFromGraph(source, target);
+        StationGraph stationGraph = new StationGraph(sectionRepository.findAll());
+        PathFinder pathFinder = new DijkstraShortestPathFinder(stationGraph);
+        Path path = pathFinder.findPath(source, target);
         return PathResponse.from(path);
     }
 }

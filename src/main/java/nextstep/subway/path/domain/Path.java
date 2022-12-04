@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 
 public class Path {
 
@@ -15,9 +16,12 @@ public class Path {
         this.distance = Distance.from(distance);
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+    public static Path of(GraphPath graphPath) {
+        Double totalDistance = graphPath.getWeight();
+        return new Path(graphPath.getVertexList(), totalDistance.intValue());
     }
+
+
 
     public List<Station> getStations() {
         return stations;

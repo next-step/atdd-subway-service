@@ -1,16 +1,11 @@
 package nextstep.subway.path.unit;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
-import nextstep.subway.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.DijkstraShortestPathStrategy;
-import nextstep.subway.path.domain.KShortestPathStrategy;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.StationGraph;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +31,7 @@ public class StationGraphTest {
     @Test
     void createStationGraph() {
         // when
-        StationGraph stationGraph = new StationGraph(new DijkstraShortestPathStrategy(), Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
+        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
     
         // then
 
@@ -52,7 +47,7 @@ public class StationGraphTest {
     @Test
     void addEdgeToTheGraph() {
         // given
-        StationGraph stationGraph = new StationGraph(new DijkstraShortestPathStrategy(), Arrays.asList(강남역_양재역, 교대역_강남역));
+        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역));
 
         // when
 
@@ -62,55 +57,8 @@ public class StationGraphTest {
         assertThat(stationGraph.containsStation(남부터미널역));
     }
 
-    @DisplayName("경로그래프에서 최단경로를 조회할 수 있다.")
-    @Test
-    void findPath() {
-        // given
-        StationGraph stationGraph = new StationGraph(new DijkstraShortestPathStrategy(), Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
-        // when
-        Path path = stationGraph.findPath(강남역, 남부터미널역);
-        // then
-        assertAll(
-                ()->assertThat(path.getStations()).containsExactly(강남역, 양재역, 남부터미널역),
-                ()->assertThat(path.getDistance().value()).isEqualTo(15)
-        );
-    }
-
-    @DisplayName("경로전략을 바꿔서도 정상동작한다.")
-    @Test
-    void findPath_newStrategy() {
-        // given
-        StationGraph stationGraph = new StationGraph(new KShortestPathStrategy(), Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
-        // when
-        Path path = stationGraph.findPath(강남역, 남부터미널역);
-        // then
-        assertAll(
-                ()->assertThat(path.getStations()).containsExactly(강남역, 양재역, 남부터미널역),
-                ()->assertThat(path.getDistance().value()).isEqualTo(15)
-        );
-    }
 
 
-    @DisplayName("최단 경로를 구할때 두개 역중 하나라도 경로에 없으면 IllegalStateException 발생한다.")
-    @Test
-    void findShortestPath_exception_station_not_on_graph() {
-        // given
-        StationGraph stationGraph = new StationGraph(new DijkstraShortestPathStrategy(), Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
 
-        // then
-        assertThatThrownBy(() -> stationGraph.findPath(강남역, 수원역)).isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorMessage.FIND_PATH_OF_STATION_NOT_ON_GRAPH);
-    }
-
-    @DisplayName("최단 경로를 구할때 두개 역이 연결되어 있지 않으면 IllegalStateException 발생한다.")
-    @Test
-    void findShortestPath_exception_not_connected() {
-        // given
-        StationGraph stationGraph = new StationGraph(new DijkstraShortestPathStrategy(), Arrays.asList(강남역_양재역, 교대역_남부터미널역));
-
-        // then
-        assertThatThrownBy(() -> stationGraph.findPath(강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class)
-                .hasMessage(ErrorMessage.FIND_PATH_NOT_CONNECTED);
-    }
 
 }

@@ -165,23 +165,6 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
     }
 
-    @DisplayName("지하철 노선에 등록되지 않은 역을 제외하고자 하면 400 BAD_REQUEST를 응답한다.")
-    @Test
-    void removeLineSection_exception() {
-        // given
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-
-        // when
-        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 정자역);
-
-        // then
-        assertAll(
-                ()->assertThat(removeResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                ()->assertThat(removeResponse.as(ErrorResponse.class).getMessage())
-                        .isEqualTo(ErrorMessage.CANNOT_FIND_STATIONS_IN_LINE)
-        );
-    }
-
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
     @Test
     void removeLineSection2() {
