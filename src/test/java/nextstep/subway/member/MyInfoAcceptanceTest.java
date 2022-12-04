@@ -10,54 +10,16 @@ import static nextstep.subway.member.MemberFixture.PASSWORD;
 import static nextstep.subway.member.MemberFixture.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 public class MyInfoAcceptanceTest extends AcceptanceTest {
-
-    public static ExtractableResponse<Response> 내_정보_조회(final String token) {
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(token)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().get("/members/me")
-            .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 내정보_수정(final String token, final String newEmail,
-        final String newPassword, final int newAge) {
-        MemberRequest memberRequest = new MemberRequest(newEmail, newPassword, newAge);
-
-        return RestAssured
-            .given().log().all()
-            .contentType(MediaType.APPLICATION_JSON_VALUE)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .auth().oauth2(token)
-            .body(memberRequest)
-            .when().put("/members/me")
-            .then().log().all()
-            .extract();
-    }
-
-    public static ExtractableResponse<Response> 내정보_삭제(final String token) {
-        return RestAssured
-            .given().log().all()
-            .auth().oauth2(token)
-            .accept(MediaType.APPLICATION_JSON_VALUE)
-            .when().delete("/members/me")
-            .then().log().all()
-            .extract();
-    }
 
     /*
     Feature: 내 정보 관리 기능
@@ -83,24 +45,24 @@ public class MyInfoAcceptanceTest extends AcceptanceTest {
         String token = 로그인_요청_후_토큰_가져오기(EMAIL, PASSWORD);
 
         //when
-        MemberResponse getMemberResponse = 내_정보_조회(token).as(MemberResponse.class);
+        MemberResponse getMemberResponse = MyInfoFixture.내_정보_조회(token).as(MemberResponse.class);
         //then
         내_정보가_조회됨(getMemberResponse);
 
         //when
-        내정보_수정(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        MyInfoFixture.내정보_수정(token, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         token = 로그인_요청_후_토큰_가져오기(NEW_EMAIL, NEW_PASSWORD);
-        MemberResponse putMemberResponse = 내_정보_조회(token).as(MemberResponse.class);
+        MemberResponse putMemberResponse = MyInfoFixture.내_정보_조회(token).as(MemberResponse.class);
         //then
         내_정보가_수정됨(putMemberResponse);
 
         //when
-        ExtractableResponse<Response> deleteResponse = 내정보_삭제(token);
+        ExtractableResponse<Response> deleteResponse = MyInfoFixture.내정보_삭제(token);
         //then
         내정보_삭제됨(deleteResponse);
 
         //when
-        ExtractableResponse<Response> getResponse = 내_정보_조회(token);
+        ExtractableResponse<Response> getResponse = MyInfoFixture.내_정보_조회(token);
         //then
         내_정보_조회되지_않음(getResponse);
     }
