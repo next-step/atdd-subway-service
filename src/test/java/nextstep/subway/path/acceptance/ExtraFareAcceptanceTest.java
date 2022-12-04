@@ -1,8 +1,11 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTestFixture.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestFixture.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTestFixture.회원_생성을_요청;
 import static nextstep.subway.path.acceptance.ExtraFareAcceptanceTestFixture.지하철_최단경로_요금_확인됨;
+import static nextstep.subway.path.acceptance.PathAcceptanceTestFixture.로그인_사용자_지하철_최단경로_조회_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestFixture.지하철_최단경로_조회_요청;
 import static nextstep.subway.path.acceptance.PathAcceptanceTestFixture.지하철_최단경로_조회_요청_응답됨;
 import static nextstep.subway.station.acceptance.StationAcceptanceTest.지하철역_등록되어_있음;
@@ -10,6 +13,7 @@ import static nextstep.subway.station.acceptance.StationAcceptanceTest.지하철
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -65,7 +69,7 @@ public class ExtraFareAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철_최단경로_조회_요청(강남역, 영등포구청역);
 
         지하철_최단경로_조회_요청_응답됨(response);
-        지하철_최단경로_요금_확인됨(response, 이호선_추가요금 + ExtraFare.BASIC);
+        지하철_최단경로_요금_확인됨(response, ExtraFare.BASIC);
     }
 
     @DisplayName("노선의 추가요금을 더한 값을 계산한다.")
@@ -97,6 +101,42 @@ public class ExtraFareAcceptanceTest extends AcceptanceTest {
 
         지하철_최단경로_조회_요청_응답됨(response);
         지하철_최단경로_요금_확인됨(response, 오호선_추가요금 + ExtraFare.BASIC + 추가요금);
+    }
+
+    @DisplayName("어린이 회원은 50% 할인된 요금이 발생한다.")
+    @Test
+    void childExtraFare() {
+        회원_생성을_요청("email@email.com", "password", 6);
+
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_최단경로_조회_요청(
+            로그인_요청("email@email.com", "password").as(TokenResponse.class).getAccessToken(), 강남역, 영등포구청역);
+
+        지하철_최단경로_조회_요청_응답됨(response);
+        지하철_최단경로_요금_확인됨(response, ExtraFare.BASIC - 450);
+    }
+
+    @DisplayName("청소년 회원은 20% 할인된 요금이 발생한다.")
+    @Test
+    void teenagerExtraFare() {
+        회원_생성을_요청("email@email.com", "password", 15);
+
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_최단경로_조회_요청(
+            로그인_요청("email@email.com", "password").as(TokenResponse.class).getAccessToken(), 강남역, 영등포구청역);
+
+        지하철_최단경로_조회_요청_응답됨(response);
+        지하철_최단경로_요금_확인됨(response, ExtraFare.BASIC - 180);
+    }
+
+    @DisplayName("성인 회원은 요금 할인 발생하지 않는다.")
+    @Test
+    void adultExtraFare() {
+        회원_생성을_요청("email@email.com", "password", 20);
+
+        ExtractableResponse<Response> response = 로그인_사용자_지하철_최단경로_조회_요청(
+            로그인_요청("email@email.com", "password").as(TokenResponse.class).getAccessToken(), 강남역, 영등포구청역);
+
+        지하철_최단경로_조회_요청_응답됨(response);
+        지하철_최단경로_요금_확인됨(response, ExtraFare.BASIC);
     }
 }
 

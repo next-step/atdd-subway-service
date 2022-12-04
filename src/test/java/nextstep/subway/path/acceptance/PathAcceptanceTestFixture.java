@@ -24,6 +24,15 @@ public class PathAcceptanceTestFixture {
             .extract();
     }
 
+    public static ExtractableResponse<Response> 로그인_사용자_지하철_최단경로_조회_요청(String accessToken, StationResponse upStation, StationResponse downStation) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/paths?source={upStationId}&target={downStationId}", upStation.getId(), downStation.getId())
+            .then().log().all()
+            .extract();
+    }
+
     public static void 지하철_최단경로_조회_요청_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
