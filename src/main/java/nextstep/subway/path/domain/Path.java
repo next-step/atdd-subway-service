@@ -1,8 +1,11 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -12,11 +15,21 @@ public class Path {
 
     private final Stations stations;
     private final Distance distance;
+    private final Lines lines;
 
-    private Path(Stations stations, Distance distance) {
+    private Path(Stations stations, Distance distance, Lines lines) {
         validSize(stations);
         this.stations = stations;
         this.distance = distance;
+        this.lines = lines;
+    }
+
+    public static Path of(Stations stations, Distance distance) {
+        return new Path(stations, distance, Lines.EMPTY_LIST);
+    }
+
+    public static Path of(Stations stations, Distance distance, List<SectionEdge> edges) {
+        return new Path(stations, distance, toLines(edges));
     }
 
     private static void validSize(Stations stations) {
@@ -25,8 +38,11 @@ public class Path {
         }
     }
 
-    public static Path of(Stations stations, Distance distance) {
-        return new Path(stations, distance);
+    private static Lines toLines(List<SectionEdge> edges) {
+        return Lines.from(edges.stream()
+                .map(SectionEdge::getLine)
+                .distinct()
+                .collect(Collectors.toList()));
     }
 
     public List<Station> stations() {
@@ -39,5 +55,9 @@ public class Path {
 
     public Distance distance() {
         return distance;
+    }
+
+    public List<Line> lines() {
+        return lines.list();
     }
 }
