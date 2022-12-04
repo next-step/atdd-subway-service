@@ -19,7 +19,7 @@ public class Sections {
     private static final String CAN_NOT_DELETE_LAST_SECTION_IN_LINE = "노선에 구간이 하나 뿐인 경우에는 삭제할 수 없습니다.";
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    List<Section> sections = new ArrayList<>();
+    private List<Section> sections = new ArrayList<>();
 
     public void add(Section section) {
         List<Station> stations = getStations();
