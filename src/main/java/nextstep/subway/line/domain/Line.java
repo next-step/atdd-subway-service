@@ -20,6 +20,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    private int additionalFare;
     @Embedded
     private final Sections sections = new Sections();
 
@@ -75,5 +76,13 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public int getAdditionalFare() {
+        return additionalFare;
+    }
+
+    public void setAdditionalFare(int additionalFare) {
+        this.additionalFare = additionalFare;
     }
 }

@@ -1,7 +1,6 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -37,7 +36,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(source, target);
-        Fare fare = new Fare(path.getDistance());
+        Fare fare = new Fare(path.getDistance(), path.getAdditionalFareByLine());
         List<StationResponse> stations = stationService.findAllByIdIsIn(path.getStationIds());
         return PathResponse.from(stations, path.getDistance(), fare.getFare());
     }

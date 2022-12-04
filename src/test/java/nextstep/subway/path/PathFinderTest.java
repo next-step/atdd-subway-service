@@ -4,7 +4,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
-import java.util.List;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -25,6 +24,7 @@ public class PathFinderTest {
     StationRepository stationRepository;
     private final Line 신분당선 = Line.of("신분당선", "red");
     private final Line 수인분당선 = Line.of("수인분당선", "yellow");
+    private final Line 이호선 = Line.of("이호선", "green");
     private final Station 강남역 = new Station("강남역");
     private final Station 판교역 = new Station("판교역");
     private final Station 광교역 = new Station("광교역");
@@ -43,13 +43,28 @@ public class PathFinderTest {
         stationRepository.save(수원역);
         신분당선.addSection(강남역, 광교역, FIVE);
         수인분당선.addSection(선릉역, 수원역, TEN);
-        pathFinder = new PathFinder(Arrays.asList(신분당선, 수인분당선));
+        이호선.addSection(강남역, 선릉역, FIVE);
+        신분당선.setAdditionalFare(500);
+        수인분당선.setAdditionalFare(800);
+        pathFinder = new PathFinder(Arrays.asList(신분당선, 수인분당선, 이호선));
     }
 
     @Test
     void 최단_경로_조회() {
         Path path = pathFinder.findPath(강남역.getId(), 광교역.getId());
         assertThat(path.getDistance()).isEqualTo(5);
+    }
+
+    @Test
+    void 추가_요금_조회() {
+        Path path = pathFinder.findPath(강남역.getId(), 광교역.getId());
+        assertThat(path.getAdditionalFareByLine()).isEqualTo(500);
+    }
+
+    @Test
+    void 추가_요금_조회_2() {
+        Path path = pathFinder.findPath(광교역.getId(), 수원역.getId());
+        assertThat(path.getAdditionalFareByLine()).isEqualTo(800);
     }
 
     @Test
