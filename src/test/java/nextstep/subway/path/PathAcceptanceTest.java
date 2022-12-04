@@ -84,7 +84,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
             () -> assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("강남역", "교대역", "남부터미널역")),
             () -> assertThat(pathResponse.getDistance()).isEqualTo(20),
-            () -> assertThat(pathResponse.getFare()).isEqualTo(1450)
+            () -> assertThat(pathResponse.getFare()).isEqualTo(1650)
         );
     }
 
