@@ -11,9 +11,9 @@ import org.junit.jupiter.params.provider.ValueSource;
 
 /**
  * 기본운임(10㎞ 이내) : 기본운임 1,250원
- * 이용 거리초과 시 추가운임 부과
+ * 이용 거리 초과시 추가운임 부과
  *   10km초과 ∼ 50km까지(5km마다 100원)
- *   50km초과 시 (8km마다 100원)
+ *   50km초과 (8km마다 100원)
  */
 public class SubwayFareCalculatorTest {
 
