@@ -40,8 +40,7 @@
 
 ### STEP3
 
-- [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
-    - [ ] AuthAcceptanceTest 요구사항 만족
+- [x] 토큰 발급 기능 (로그인) 인수 테스트 만들기
     - [x] Bearer Auth
     - [x] Bearer Auth 로그인 실패
     - [x] Bearer Auth 유효하지 않은 토큰
