@@ -44,6 +44,10 @@ public class Line extends BaseEntity {
         this(name, color, upStation, downStation, distance, ExtraFare.ZERO);
     }
 
+    public Line(Builder builder) {
+        this(builder.name, builder.color, builder.upStation, builder.downStation, builder.distance, builder.extraFare);
+    }
+
     public void update(String name, String color) {
         this.name = Name.from(name);
         this.color = Color.from(color);
@@ -80,5 +84,48 @@ public class Line extends BaseEntity {
 
     public ExtraFare getExtraFare() {
         return extraFare;
+    }
+
+    public static class Builder {
+        private String name;
+        private String color;
+        private Station upStation;
+        private Station downStation;
+        private int distance;
+        private int extraFare;
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder upStation(Station upStation) {
+            this.upStation = upStation;
+            return this;
+        }
+
+        public Builder downStation(Station downStation) {
+            this.downStation = downStation;
+            return this;
+        }
+
+        public Builder distance(int distance) {
+            this.distance = distance;
+            return this;
+        }
+
+        public Builder extraFare(int extraFare) {
+            this.extraFare = extraFare;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
     }
 }
