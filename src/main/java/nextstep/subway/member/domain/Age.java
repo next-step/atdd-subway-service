@@ -33,6 +33,10 @@ public class Age {
         }
     }
 
+    public boolean between(int start, int end) {
+        return start <= age && age <= end;
+    }
+
     public Integer value() {
         return age;
     }

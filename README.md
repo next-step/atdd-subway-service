@@ -147,8 +147,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 
 - [x] 경로 인수 테스트 요금 정책 추가
-- [ ] 경로 조회시 기준 요금 정보 포함하기
+- [x] 경로 조회시 기준 요금 정보 포함하기
   - [x] 기본 운임 구현
   - [x] 거리별 운임 구현
   - [x] 노선별 추가 운임 구현
-  - [ ] 로그인 사용자의 경우 연령별 운임 할인 구현
+  - [x] 로그인 사용자의 경우 연령별 운임 할인 구현
