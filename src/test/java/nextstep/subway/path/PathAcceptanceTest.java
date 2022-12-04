@@ -1,12 +1,13 @@
 package nextstep.subway.path;
 
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceSupport.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.path.PathAcceptanceSupport.조회_실패됨;
 import static nextstep.subway.path.PathAcceptanceSupport.지하철_노선_등록되어_있음;
+import static nextstep.subway.path.PathAcceptanceSupport.최단_경로를_조회한다;
 import static nextstep.subway.station.StationAcceptanceSupport.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
@@ -19,8 +20,6 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 
 @DisplayName("지하철 경로 조회")
@@ -66,16 +65,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단경로를 조회한다")
     @Test
     void 최단경로를_조회한다() {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .param("source", 강남역.getId())
-                .param("target", 남부터미널역.getId())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
+        PathResponse pathResponse = 최단_경로를_조회한다(강남역.getId(), 남부터미널역.getId()).as(PathResponse.class);
 
-        PathResponse pathResponse = response.as(PathResponse.class);
         List<String> stationNames = pathResponse.getStations()
                 .stream()
                 .map(StationResponse::getName)
@@ -91,60 +82,28 @@ class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 같은 경우")
     @Test
     void 출발역과_도착역이_같은_경우() {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .param("source", 강남역.getId())
-                .param("target", 강남역.getId())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 강남역.getId());
+        조회_실패됨(response);
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
     @Test
     void 출발역과_도착역이_연결이_되어_있지_않은_경우() {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .param("source", 강남역.getId())
-                .param("target", 길음역.getId())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 길음역.getId());
+        조회_실패됨(response);
     }
 
     @DisplayName("존재하지 않은 출발역을 조회 할 경우")
     @Test
     void 존재하지_않은_출발역을_조회_할_경우() {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .param("source", 존재하지_않는_역_ID)
-                .param("target", 강남역.getId())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        ExtractableResponse<Response> response = 최단_경로를_조회한다(존재하지_않는_역_ID, 강남역.getId());
+        조회_실패됨(response);
     }
 
     @DisplayName("존재하지 않은 도착역을 조회 할 경우")
     @Test
     void 존재하지_않은_도착역을_조회_할_경우() {
-        ExtractableResponse<Response> response = RestAssured
-                .given().log().all()
-                .param("source", 강남역.getId())
-                .param("target", 존재하지_않는_역_ID)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
-
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        ExtractableResponse<Response> response = 최단_경로를_조회한다(강남역.getId(), 존재하지_않는_역_ID);
+        조회_실패됨(response);
     }
 }

@@ -25,11 +25,14 @@ public class PathFinderTest {
     private final Line 신분당선 = Line.of("신분당선", "red");
     private final Line 수인분당선 = Line.of("수인분당선", "yellow");
     private final Line 이호선 = Line.of("이호선", "green");
+    private final Line 일호선 = Line.of("일호선", "blue");
     private final Station 강남역 = new Station("강남역");
     private final Station 판교역 = new Station("판교역");
     private final Station 광교역 = new Station("광교역");
     private final Station 선릉역 = new Station("선릉역");
     private final Station 수원역 = new Station("수원역");
+    private final Station 소요산역 = new Station("소요산역");
+    private final Station 인천역 = new Station("인천역");
     private final Distance TEN = Distance.from(10);
     private final Distance FIVE = Distance.from(5);
     private PathFinder pathFinder;
@@ -41,12 +44,15 @@ public class PathFinderTest {
         stationRepository.save(광교역);
         stationRepository.save(선릉역);
         stationRepository.save(수원역);
+        stationRepository.save(소요산역);
+        stationRepository.save(인천역);
         신분당선.addSection(강남역, 광교역, FIVE);
         수인분당선.addSection(선릉역, 수원역, TEN);
         이호선.addSection(강남역, 선릉역, FIVE);
+        일호선.addSection(소요산역, 인천역, TEN);
         신분당선.setAdditionalFare(500);
         수인분당선.setAdditionalFare(800);
-        pathFinder = new PathFinder(Arrays.asList(신분당선, 수인분당선, 이호선));
+        pathFinder = new PathFinder(Arrays.asList(신분당선, 수인분당선, 이호선, 일호선));
     }
 
     @Test
@@ -79,6 +85,6 @@ public class PathFinderTest {
 
     @Test
     void 출발역과_도착역이_연결되어_있지_않은_경우() {
-        assertThatThrownBy(() -> pathFinder.findPath(강남역.getId(), 수원역.getId())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(() -> pathFinder.findPath(강남역.getId(), 인천역.getId())).isInstanceOf(IllegalArgumentException.class);
     }
 }
