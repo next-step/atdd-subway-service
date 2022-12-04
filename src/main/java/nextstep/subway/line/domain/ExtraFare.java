@@ -14,7 +14,7 @@ public class ExtraFare {
 
     private static final String EXTRA_FARE_THAN_ZERO = "추가요금은 0보다 작을 수 없습니다.";
 
-    @Column(name = "extra_fare", nullable = false)
+    @Column(nullable = false)
     private int extraFare;
 
     protected ExtraFare() {}
