@@ -70,4 +70,23 @@ public class Section {
     public List<Station> getStations() {
         return Arrays.asList(upStation, downStation);
     }
+
+    public void rebase(Section section) {
+        rebaseIfUpStationEquals(section);
+        rebaseIfDownStationEquals(section);
+    }
+
+    private void rebaseIfUpStationEquals(Section section) {
+        if(this.upStation.equals(section.upStation)) {
+            distance = distance.subtract(section.distance);
+            upStation = section.downStation;
+        }
+    }
+
+    private void rebaseIfDownStationEquals(Section section) {
+        if(this.downStation.equals(section.downStation)) {
+            distance = distance.subtract(section.distance);
+            downStation = section.upStation;
+        }
+    }
 }

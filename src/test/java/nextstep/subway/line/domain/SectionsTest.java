@@ -25,6 +25,20 @@ class SectionsTest {
         assertThat(sections.getStations()).containsExactlyElementsOf(createStations("1번역", "3번역", "5번역", "8번역"));
     }
 
+    @Test
+    @DisplayName("기존 구간의 하행역을 포함하여 새로운 구간이 들어오게 되면, 기존 구간의 상행역과 하행역이 변경되어야 한다")
+    void should_rebase_section_added_with_downStation() {
+        Sections sections = new Sections();
+        sections.addSection(createSection("1번역", "3번역", 100));
+        sections.addSection(createSection("3번역", "5번역", 50));
+
+        // when
+        sections.addSection(createSection("4번역", "5번역", 30));
+
+        // then
+        assertThat(sections.getStations()).containsExactlyElementsOf(createStations("1번역", "3번역", "4번역", "5번역"));
+    }
+
     private Section createSection(String upStationName, String downStationName, int distance) {
         return new Section(new Line(), new Station(upStationName), new Station(downStationName), distance);
     }
