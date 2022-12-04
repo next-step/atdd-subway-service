@@ -1,4 +1,4 @@
-package nextstep.subway.path.enums;
+package nextstep.subway.path.domain;
 
 public enum DistanceFare {
 

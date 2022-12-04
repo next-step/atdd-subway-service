@@ -1,8 +1,9 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.enums.DistanceFare;
+import nextstep.subway.path.policy.AgeDiscountPolicy;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -40,14 +41,17 @@ public class PathFinder {
         }
     }
 
-    public Path getShortestPath(Station sourceStation, Station targetStation) {
+    public Path getShortestPath(AuthMember authMember, Station sourceStation, Station targetStation) {
         validCheck(sourceStation, targetStation);
         GraphPath<Station, SectionEdge> graphPath = dijkstraShortestPath.getPath(sourceStation, targetStation);
 
+        // TODO: 요금 계산을 모두 해서 보내는게 맞는지 고민 필요
         int distance = (int) graphPath.getWeight();
         int extraFare = maxedLineExtraFare(graphPath.getEdgeList()) + DistanceFare.calculateDistanceFare(distance);
+        AgeDiscountPolicy discountPolicy = AgeFare.getDiscountPolicy(authMember);
+        int ageDiscountFare = discountPolicy.discount(extraFare);
 
-        return new Path(graphPath.getVertexList(), distance, extraFare);
+        return new Path(graphPath.getVertexList(), distance, ageDiscountFare);
     }
 
     private void validCheck(Station sourceStation, Station targetStation) {

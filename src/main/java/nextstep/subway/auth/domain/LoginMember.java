@@ -1,9 +1,12 @@
 package nextstep.subway.auth.domain;
 
-public class LoginMember {
+public class LoginMember implements AuthMember {
     private Long id;
+
     private String email;
+
     private Integer age;
+
 
     public LoginMember() {
     }
@@ -22,6 +25,7 @@ public class LoginMember {
         return email;
     }
 
+    @Override
     public Integer getAge() {
         return age;
     }
