@@ -3,10 +3,12 @@ package nextstep.subway.member.domain;
 import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.OneToMany;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.Entity;
@@ -22,9 +24,8 @@ public class Member extends BaseEntity {
     private String email;
     private String password;
     private Integer age;
-
-    @OneToMany(mappedBy = "sourceStation", cascade = CascadeType.PERSIST, orphanRemoval = true)
-    private List<Favorite> favorites = new ArrayList<>();
+    @Embedded
+    Favorites favorites;
 
     public Member() {
     }
@@ -33,6 +34,7 @@ public class Member extends BaseEntity {
         this.email = email;
         this.password = password;
         this.age = age;
+        favorites = new Favorites();
     }
 
     public Long getId() {
@@ -52,7 +54,7 @@ public class Member extends BaseEntity {
     }
 
     public List<Favorite> getFavorites() {
-        return favorites;
+        return favorites.getFavorites();
     }
 
     public void update(Member member) {
@@ -68,24 +70,11 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-        checkRedundantFavorite(favorite);
-        favorites.add(favorite);
+        favorites.addFavorite(favorite);
     }
 
     public void deleteFavorite(Favorite favorite) {
-        checkOwner(favorite);
-        favorites.remove(favorite);
+        favorites.deleteFavorite(favorite, this);
     }
 
-    private void checkOwner(Favorite favorite) {
-        if (favorite.isSameOwner(this)) {
-                throw new IllegalArgumentException("본인의 즐겨찾기만 삭제할 수 있습니다.");
-        }
-    }
-
-    private void checkRedundantFavorite(Favorite favorite) {
-        if (favorites.contains(favorite)) {
-            throw new IllegalArgumentException("이미 등록된 즐겨찾기 입니다.");
-        }
-    }
 }
