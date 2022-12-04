@@ -14,7 +14,7 @@ public class Distance {
 
     public Distance(int distance) {
         if(distance <= LOWER_LIMIT) {
-            throw new RuntimeException(
+            throw new IllegalArgumentException(
                     ErrorMessage.INVALID_DISTANCE_VALUE.setLimitValueAndGetMessage(String.valueOf(LOWER_LIMIT)));
         }
         this.distance = distance;
@@ -44,7 +44,7 @@ public class Distance {
     public Distance subtract(Distance distance) {
         int newDistance = this.distance - distance.getDistance();
         if (newDistance <= LOWER_LIMIT) {
-            throw new RuntimeException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
         }
         this.distance = newDistance;
         return this;

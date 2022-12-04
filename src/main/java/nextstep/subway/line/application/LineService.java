@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -27,8 +28,8 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(),
-                stationService.findById(request.getUpStationId()),
-                stationService.findById(request.getDownStationId()),
+                stationService.findStationById(request.getUpStationId()),
+                stationService.findStationById(request.getDownStationId()),
                 new Distance(request.getDistance())));
         return LineResponse.of(persistLine);
     }
@@ -40,7 +41,8 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() ->
+                new IllegalArgumentException(ErrorMessage.DO_NOT_EXIST_STATION_IN_LINE.getMessage()));
     }
 
 
@@ -50,9 +52,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new)
-                .update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        findLineById(id).update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
@@ -68,8 +68,7 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        line.removeStation(stationService.findStationById(stationId));
+        findLineById(lineId).removeStation(stationService.findStationById(stationId));
     }
 
 }

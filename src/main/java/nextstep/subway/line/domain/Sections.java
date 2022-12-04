@@ -64,11 +64,11 @@ public class Sections {
         boolean isDownStationExisted = isStationExisted(requestDownStation);
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException(ErrorMessage.ALREADY_EXIST_SECTION.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.ALREADY_EXIST_SECTION.getMessage());
         }
 
         if (!getStations().isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new RuntimeException(ErrorMessage.NO_EXIST_STATIONS_TO_REGISTER.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.NO_EXIST_STATIONS_TO_REGISTER.getMessage());
         }
     }
 
@@ -111,11 +111,11 @@ public class Sections {
 
     public void removeSectionByStation(Station station) {
         if(!isStationExisted(station)) {
-            throw new RuntimeException(ErrorMessage.NO_EXIST_STATIONS_TO_DELETE.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.NO_EXIST_STATIONS_TO_DELETE.getMessage());
         }
 
         if (sections.size() <= 1) {
-            throw new RuntimeException(ErrorMessage.DO_NOT_DELETE_UNIQUE_SECTION.getMessage());
+            throw new IllegalArgumentException(ErrorMessage.DO_NOT_DELETE_UNIQUE_SECTION.getMessage());
         }
 
         Optional<Section> upLineStation = sections.stream()
