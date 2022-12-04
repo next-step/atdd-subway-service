@@ -124,7 +124,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_AccessToken_으로_실패됨(response);
     }
 
-    private static ExtractableResponse<Response> 로그인_토큰_생성_요청(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 로그인_토큰_생성_요청(TokenRequest tokenRequest) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(tokenRequest)
@@ -133,15 +133,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static void 로그인_토큰_생성_성공함(ExtractableResponse<Response> response) {
+    public static void 로그인_토큰_생성_성공함(ExtractableResponse<Response> response) {
         TokenResponse token = response.as(TokenResponse.class);
         assertThat(token).isNotNull();
     }
 
-    private static void 로그인_토큰_생성_실패됨(ExtractableResponse<Response> response) {
+    public static void 로그인_토큰_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
-    private static ExtractableResponse<Response> 로그인_AccessToken_으로_요청(String accessToken) {
+    public static ExtractableResponse<Response> 로그인_AccessToken_으로_요청(String accessToken) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .when().get("/members/me")
@@ -149,13 +149,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 로그인_AccessToken_으로_성공함(ExtractableResponse<Response> response, String email) {
+    public void 로그인_AccessToken_으로_성공함(ExtractableResponse<Response> response, String email) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         MemberResponse member = response.as(MemberResponse.class);
         assertThat(member.getEmail()).isEqualTo(email);
     }
 
-    private void 로그인_AccessToken_으로_실패됨(ExtractableResponse<Response> response) {
+    public void 로그인_AccessToken_으로_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

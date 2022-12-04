@@ -265,7 +265,7 @@ Connection: keep-alive
 }
 ```
 
-- [ ] 내 정보 조회 기능
+- [x] 내 정보 조회 기능
   - `MemberAcceptanceTest` 클래스의 `manageMyInfo`메서드에 인수 테스트를 추가하기
   - 내 정보 조회, 수정, 삭제 기능을 `/members/me` 라는 URI 요청으로 동작하도록 검증
   - 로그인 후 발급받은 토큰을 포함해서 요청하기

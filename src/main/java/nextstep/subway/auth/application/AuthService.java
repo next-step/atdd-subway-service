@@ -8,6 +8,8 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.NoResultException;
+
 import static nextstep.subway.common.domain.BizExceptionMessages.AUTHORIZATION_WRONG_ACCESS_TOKEN;
 
 @Service
@@ -34,7 +36,7 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(NoResultException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
