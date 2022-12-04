@@ -1,15 +1,20 @@
 package nextstep.subway.path.fare.policy;
 
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
-import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
 @Component
-public class LineFarePolicy {
+public class LineFarePolicy implements FarePolicy {
 
-    public Fare calculate(List<Station> stations) {
-        return Fare.ZERO;
+    @Override
+    public Fare calculate(Path path) {
+        Sections sections = path.getSections();
+
+        return sections.getAllLineFare()
+                .stream()
+                .max(Fare::compare)
+                .orElseThrow(RuntimeException::new);
     }
 }
