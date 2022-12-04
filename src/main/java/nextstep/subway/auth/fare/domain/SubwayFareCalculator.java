@@ -5,9 +5,9 @@ import nextstep.subway.common.exception.ErrorEnum;
 public class SubwayFareCalculator {
     public static final int ZERO_DISTANCE = 0;
     public static final int BASIC_FARE = 1_250;
+    public static final int SURCHARGE_FARE = 100;
     public static final int UNIT_5_KM = 5;
     public static final int UNIT_8_KM = 8;
-    public static final int SURCHARGE_FARE = 100;
     public static final int MAX_DISTANCE_OF_BASIC_FARE = 10;
     public static final int FIRST_SECTION_DISTANCE = 10;
     public static final int SECOND_SECTION_DISTANCE = 50;
@@ -20,12 +20,10 @@ public class SubwayFareCalculator {
             return BASIC_FARE;
         }
 
-        if (distance >= FIRST_SECTION_DISTANCE && distance <= SECOND_SECTION_DISTANCE) {
-            fare += calculateOverFare(distance, FIRST_SECTION_DISTANCE, UNIT_5_KM);
-        }
+        fare += calculateOverFare(distance, FIRST_SECTION_DISTANCE, UNIT_5_KM);
 
-        if (distance > SECOND_SECTION_DISTANCE) {
-             fare += calculateOverFare(distance, SECOND_SECTION_DISTANCE, UNIT_8_KM);
+        if (isOverFirstSection(distance)) {
+            fare += calculateOverFare(distance, SECOND_SECTION_DISTANCE + MAX_DISTANCE_OF_BASIC_FARE, UNIT_8_KM);
         }
 
         return fare;
@@ -37,8 +35,12 @@ public class SubwayFareCalculator {
         }
     }
 
+    private static boolean isOverFirstSection(int distance) {
+        return distance > SECOND_SECTION_DISTANCE + MAX_DISTANCE_OF_BASIC_FARE;
+    }
+
     private static int calculateOverFare(int distance, int minDistance, int unitKm) {
-        int overDistance = distance - minDistance;
+        int overDistance = (distance - minDistance >= 50) ? 50 : distance - minDistance;
         return (int) ((Math.ceil((overDistance - 1) / unitKm) + 1) * SURCHARGE_FARE);
     }
 }

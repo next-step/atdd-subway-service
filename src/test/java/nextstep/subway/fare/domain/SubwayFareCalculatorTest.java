@@ -34,7 +34,7 @@ public class SubwayFareCalculatorTest {
     }
 
     @ParameterizedTest()
-    @CsvSource(value = {"11:1350", "50:2050"}, delimiter = ':')
+    @CsvSource(value = {"11:1350", "15:1350","16:1450","20:1450","60:2250"}, delimiter = ':')
     void 거리_10km_이상부터_50km이하_입력시_추가_운임요금_부과(int distance, int expected) {
         int fare = SubwayFareCalculator.calculate(distance);
 
@@ -42,11 +42,10 @@ public class SubwayFareCalculatorTest {
     }
 
     @ParameterizedTest()
-    @CsvSource(value = {"51:2150", "90:2450"}, delimiter = ':')
+    @CsvSource(value = {"61:2350", "68:2350", "69:2450"}, delimiter = ':')
     void 거리_50km_초과_입력시_추가_운임요금_부과(int distance, int expected) {
         int fare = SubwayFareCalculator.calculate(distance);
 
-        System.out.println(fare);
         assertThat(fare).isEqualTo(expected);
     }
 
