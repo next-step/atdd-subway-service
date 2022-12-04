@@ -17,6 +17,7 @@ import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토�
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("회원 정보 관리 관련 기능")
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";

@@ -12,6 +12,7 @@ import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+@DisplayName("LineResponse 테스트")
 public class LineResponseTest {
 
     @DisplayName("LineResponse 생성 테스트")

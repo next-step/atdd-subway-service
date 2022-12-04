@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
@@ -53,5 +54,18 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Member)) return false;
+        Member member = (Member) o;
+        return Objects.equals(getEmail(), member.getEmail());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getEmail());
     }
 }

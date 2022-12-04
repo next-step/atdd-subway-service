@@ -36,5 +36,6 @@ public class DataLoaderConfig implements CommandLineRunner {
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         memberRepository.save(new Member("probitanima11@gmail.com", "11", 10));
+        memberRepository.save(new Member("1@1", "1234", 999));
     }
 }
