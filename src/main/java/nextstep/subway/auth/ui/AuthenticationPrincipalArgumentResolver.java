@@ -29,13 +29,13 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest,
             WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        if (Objects.isNull(credentials) || !isRequired(parameter)) {
+        if (Objects.isNull(credentials) || isAnonymous(parameter)) {
             return new LoginMember();
         }
         return authService.findMemberByToken(credentials);
     }
 
-    private boolean isRequired(MethodParameter parameter) {
-        return parameter.getParameterAnnotation(AuthenticationPrincipal.class).required();
+    private boolean isAnonymous(MethodParameter parameter) {
+        return parameter.getParameterAnnotation(AuthenticationPrincipal.class).anonymous();
     }
 }

@@ -21,7 +21,7 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal(required = false) LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
+    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal(anonymous = true) LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
         return ResponseEntity.ok(pathService.findPath(loginMember.getAge(), source, target));
     }
 
