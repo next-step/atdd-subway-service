@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.ui.PathResponse;
@@ -42,12 +43,11 @@ public class PathFinder {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-
         List<Station> stations = shortestPath.getVertexList();
 
         int additionalFareOfLine = checkIsAdditionalFareOfLine(stations);
-        int additionalFare = additionalFareOfLine + calculateAdditionalFareOfDistance(shortestPath.getWeight());
-        return new PathResponse(responses, (int) shortestPath.getWeight(), additionalFare);
+        int fare = BASIC_FARE + additionalFareOfLine + calculateAdditionalFareOfDistance(shortestPath.getWeight());
+        return new PathResponse(responses, (int) shortestPath.getWeight(), fare);
     }
 
     private int checkIsAdditionalFareOfLine(final List<Station> stations) {
@@ -60,14 +60,14 @@ public class PathFinder {
 
     private int calculateAdditionalFareOfDistance(final double weight) {
         if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL2) {
-            return BASIC_FARE + calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL2, DISTANCE_UNIT_LEVEL2);
+            return calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL2, DISTANCE_UNIT_LEVEL2);
         }
 
         if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL1) {
-            return BASIC_FARE + calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL1, DISTANCE_UNIT_LEVEL1);
+            return calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL1, DISTANCE_UNIT_LEVEL1);
         }
 
-        return BASIC_FARE;
+        return 0;
     }
 
     private int calculateOverFare(double distance, int distanceUnit) {

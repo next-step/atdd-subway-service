@@ -77,7 +77,7 @@ public class PathServiceTest {
         when(stationRepository.findById(남부터미널역.getId())).thenReturn(Optional.of(남부터미널역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        PathResponse shortestPath = pathService.findShortestPath(강남역.getId(), 남부터미널역.getId());
+        PathResponse shortestPath = pathService.findShortestPath(강남역.getId(), 남부터미널역.getId(), 30);
 
         assertThat(shortestPath.getStations().stream().map(StationResponse::getId))
                 .containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
@@ -90,7 +90,7 @@ public class PathServiceTest {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId(), 30))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 " + 강남역.getName() + "으로 동일합니다.");
     }
@@ -102,7 +102,7 @@ public class PathServiceTest {
         when(stationRepository.findById(사당역.getId())).thenReturn(Optional.of(사당역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선, 사호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 사당역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 사당역.getId(), 30))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
@@ -114,7 +114,7 @@ public class PathServiceTest {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
         when(stationRepository.findById(없는역_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 없는역_ID))
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 없는역_ID, 30))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("%d", 없는역_ID)
                 .hasMessageContaining("에 해당하는 Station을 찾을 수 없습니다.");
