@@ -11,13 +11,13 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class FarePolicyTest {
+class DistanceFarePoliciesTest {
 
-    FarePolicies farePolicies;
+    DistanceFarePolicies farePolicies;
 
     @BeforeEach
     void setup() {
-        farePolicies = new FarePolicies(
+        farePolicies = new DistanceFarePolicies(
                 Lists.newArrayList(
                         new BasicFarePolicy(),
                         new UntilFiftyKiloExtraFarePolicy(),
