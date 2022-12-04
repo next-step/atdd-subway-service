@@ -18,11 +18,19 @@ public class Path {
         this.fare = pathFare.getFare(this.distance);
     }
 
+    public void calculateFare(int age, int lineFare) {
+        fare = FareCalculator.calculate(age, fare, lineFare);
+    }
+
     public List<Station> getStations() {
         return Collections.unmodifiableList(stations);
     }
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
