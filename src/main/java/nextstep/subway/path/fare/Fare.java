@@ -1,5 +1,6 @@
 package nextstep.subway.path.fare;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
@@ -11,6 +12,7 @@ public class Fare {
     public static final int SCALE = 0;
     public static final Fare ZERO = Fare.valueOf(0);
 
+    @Column(nullable = false)
     private BigDecimal value;
 
     protected Fare() {
@@ -34,6 +36,10 @@ public class Fare {
 
     public boolean isGreaterThan(Fare other) {
         return this.value.compareTo(other.value) > 0;
+    }
+
+    public int compare(Fare other) {
+        return value.compareTo(other.value);
     }
 
     @Override
