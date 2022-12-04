@@ -1,5 +1,7 @@
 package nextstep.subway.path.acceptance;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -8,7 +10,6 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceIntegrationTest.지하철역_등록되어_있음;
@@ -30,6 +31,11 @@ class PathAcceptanceTest extends AcceptanceTest {
      * *3호선* (5m)                    *신분당선* (1m)
      * |                                 |
      * 남부터미널역   --- *3호선*(5m) ---   <양재역>
+     *
+     * 요금
+     * - 2호선: 200원
+     * - 3호선: 300원
+     * - 신분당선: 500원
      */
     @BeforeEach
     void setup() {
@@ -57,6 +63,8 @@ class PathAcceptanceTest extends AcceptanceTest {
         PathResponse 경로_응답 = 지하철의_최단_경로_조회(교대역, 양재역);
         역_목록_조회됨(경로_응답);
         총_이동거리_조회됨(경로_응답);
+
+        이용_요금_조회됨(경로_응답);
     }
 
     @Test
@@ -91,9 +99,15 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철의_최단경로_조회할_수_없음(교대역, 광화문역);
     }
 
+    private void 이용_요금_조회됨(PathResponse response) {
+        int 노선_요금 = 500;
+        int 이동_거리_요금 = 1_250;
+        PathAcceptanceStep.이용_요금_조회됨(response, 노선_요금 + 이동_거리_요금);
+    }
+
     private void 지하철의_최단경로_조회할_수_없음(StationResponse source, StationResponse target) {
-        assertThat(PathAcceptanceStep.get(source, target).statusCode())
-                .isEqualTo(HttpStatus.BAD_REQUEST.value());
+        ExtractableResponse<Response> response = PathAcceptanceStep.get(source, target);
+        PathAcceptanceStep.expectBadRequest(response);
     }
 
     private void 총_이동거리_조회됨(PathResponse response) {
@@ -117,13 +131,13 @@ class PathAcceptanceTest extends AcceptanceTest {
 
     private void 지하철_노선_등록() {
         지하철_노선_등록되어_있음(
-                new LineRequest("이호선", "blue", 교대역.getId(), 강남역.getId(),5))
+                new LineRequest("이호선", "blue", 교대역.getId(), 강남역.getId(),5, 200))
                 .body().as(LineResponse.class);
         지하철_노선_등록되어_있음(
-                new LineRequest("신분당선", "blue", 강남역.getId(), 양재역.getId(), 1))
+                new LineRequest("신분당선", "blue", 강남역.getId(), 양재역.getId(), 1, 500))
                 .body().as(LineResponse.class);
         삼호선 = 지하철_노선_등록되어_있음(
-                new LineRequest("삼호선", "blue", 교대역.getId(), 남부터미널역.getId(), 10))
+                new LineRequest("삼호선", "blue", 교대역.getId(), 남부터미널역.getId(), 10, 300))
                 .body().as(LineResponse.class);
     }
 
