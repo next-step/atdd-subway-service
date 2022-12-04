@@ -52,6 +52,10 @@ public class Sections {
         downLineStation.ifPresent(it -> this.sections.remove(it));
     }
 
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
+
     private void addWhenMiddleStationRemove(Section upLineStation, Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
