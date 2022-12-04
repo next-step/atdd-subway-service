@@ -4,6 +4,7 @@ import static nextstep.subway.line.acceptance.LineSectionAcceptanceSupport.지�
 import static nextstep.subway.path.PathAcceptanceSupport.지하철_노선_등록되어_있음;
 import static nextstep.subway.station.StationAcceptanceSupport.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -54,12 +55,12 @@ class PathAcceptanceTest extends AcceptanceTest {
         사당역 = 지하철역_등록되어_있음("사당역").as(StationResponse.class);
         길음역 = 지하철역_등록되어_있음("길음역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 15);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 5);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 20);
         사호선 = 지하철_노선_등록되어_있음("사호선", "bg-red-600", 길음역, 사당역, 10);
 
-        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 10);
     }
 
     @DisplayName("최단경로를 조회한다")
@@ -80,8 +81,11 @@ class PathAcceptanceTest extends AcceptanceTest {
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
 
-        assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("강남역", "양재역", "남부터미널역"));
-        assertThat(pathResponse.getDistance()).isEqualTo(12);
+        assertAll(
+            () -> assertThat(stationNames).containsExactlyElementsOf(Arrays.asList("강남역", "교대역", "남부터미널역")),
+            () -> assertThat(pathResponse.getDistance()).isEqualTo(20),
+            () -> assertThat(pathResponse.getFare()).isEqualTo(1450)
+        );
     }
 
     @DisplayName("출발역과 도착역이 같은 경우")
