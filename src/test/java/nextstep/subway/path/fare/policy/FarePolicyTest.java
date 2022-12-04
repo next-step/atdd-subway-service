@@ -1,6 +1,6 @@
 package nextstep.subway.path.fare.policy;
 
-import nextstep.subway.path.domain.exception.InvalidFarePolicyException;
+import nextstep.subway.line.exception.InvalidDistanceException;
 import nextstep.subway.path.fare.Fare;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -50,11 +50,11 @@ class FarePolicyTest {
     }
 
     @ParameterizedTest
-    @ValueSource(ints = {-1, 0})
+    @ValueSource(ints = {-1})
     void testInvalidFarePolicy(int distance) {
         assertThatThrownBy(() -> farePolicies.calculate(distance))
-                .isInstanceOf(InvalidFarePolicyException.class)
-                .hasMessage(InvalidFarePolicyException.MESSAGE);
+                .isInstanceOf(InvalidDistanceException.class)
+                .hasMessage(InvalidDistanceException.LESS_THAN_ZERO);
     }
 
 }

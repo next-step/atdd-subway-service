@@ -1,11 +1,14 @@
 package nextstep.subway.path.fare.policy;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.path.domain.exception.InvalidFarePolicyException;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
+import nextstep.subway.station.domain.Station;
+import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+@Component
 public class FarePolicies {
 
     private final List<FarePolicy> farePolicyList;
@@ -14,16 +17,30 @@ public class FarePolicies {
         this.farePolicyList = farePolicyList;
     }
 
-    public Fare calculate(int distance) {
-        verifyValidDistance(distance);
+    public Fare calculate(Distance distance) {
         return farePolicyList.stream()
-                .map(farePolicy -> farePolicy.calculateFare(Distance.valueOf(distance)))
+                .map(farePolicy -> farePolicy.calculateFare(distance))
                 .reduce(Fare.ZERO, Fare::add);
     }
 
-    private void verifyValidDistance(int distance) {
-        if (distance < 1) {
-            throw new InvalidFarePolicyException();
-        }
+    public Fare calculate(int distance) {
+        return calculate(Distance.valueOf(distance));
+    }
+
+    public Fare calculate(Path path) {
+        Fare distanceFare = getDistanceFare(path);
+        Fare lineFare = getLineFare(path);
+
+        return distanceFare.add(lineFare);
+    }
+
+    private Fare getLineFare(Path path) {
+        List<Station> stations = path.getStations();
+        return Fare.ZERO;
+    }
+
+    private Fare getDistanceFare(Path path) {
+        Distance distance = path.getDistance();
+        return calculate(distance);
     }
 }

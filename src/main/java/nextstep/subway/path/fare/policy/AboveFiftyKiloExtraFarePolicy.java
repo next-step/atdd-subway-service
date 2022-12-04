@@ -2,7 +2,9 @@ package nextstep.subway.path.fare.policy;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.fare.Fare;
+import org.springframework.stereotype.Component;
 
+@Component
 public class AboveFiftyKiloExtraFarePolicy implements FarePolicy {
 
     private static final Distance MIN_DISTANCE = Distance.valueOf(50);

@@ -42,6 +42,10 @@ public class Fare {
         return value.compareTo(other.value);
     }
 
+    public int toInt() {
+        return value.intValue();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
