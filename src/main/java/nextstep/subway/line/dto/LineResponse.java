@@ -8,15 +8,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class LineResponse {
-    private Long id;
-    private String name;
-    private String color;
-    private List<StationResponse> stations;
-    private LocalDateTime createdDate;
-    private LocalDateTime modifiedDate;
-
-    public LineResponse() {
-    }
+    private final Long id;
+    private final String name;
+    private final String color;
+    private final List<StationResponse> stations;
+    private final LocalDateTime createdDate;
+    private final LocalDateTime modifiedDate;
 
     public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
@@ -28,10 +25,32 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        List<StationResponse> stations = line.getStations().stream()
+        return new LineResponse(
+                line.getId(),
+                line.getName(),
+                line.getColor(),
+                mapToStationResponse(line),
+                line.getCreatedDate(),
+                line.getModifiedDate()
+        );
+    }
+
+    public static List<LineResponse> of(List<Line> lines) {
+        return lines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
+    }
+
+    private static List<StationResponse> mapToStationResponse(Line line) {
+        return line.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+    }
+
+    public static List<LineResponse> list(List<Line> lines) {
+        return lines.stream()
+                .map(LineResponse::of)
+                .collect(Collectors.toList());
     }
 
     public Long getId() {
