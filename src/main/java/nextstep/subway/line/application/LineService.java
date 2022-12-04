@@ -41,15 +41,13 @@ public class LineService {
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> {
-                    return LineResponse.of(line);
-                })
+                .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new NoSuchDataException());
+        return lineRepository.findById(id).orElseThrow(NoSuchDataException::new);
     }
 
     @Transactional(readOnly = true)
@@ -59,7 +57,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(() -> new NoSuchDataException());
+        Line persistLine = lineRepository.findById(id).orElseThrow(NoSuchDataException::new);
         persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
