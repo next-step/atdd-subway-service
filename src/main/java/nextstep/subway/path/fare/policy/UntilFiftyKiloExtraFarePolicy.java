@@ -1,6 +1,7 @@
 package nextstep.subway.path.fare.policy;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
 import org.springframework.stereotype.Component;
 
@@ -13,7 +14,8 @@ public class UntilFiftyKiloExtraFarePolicy implements FarePolicy {
     private static final Fare MAX_EXTRA_FARE = Fare.valueOf(800);
 
     @Override
-    public Fare calculateFare(Distance distance) {
+    public Fare calculate(Path path) {
+        Distance distance = path.getDistance();
         if (distance.isLessThan(MIN_DISTANCE)) {
             return Fare.ZERO;
         }

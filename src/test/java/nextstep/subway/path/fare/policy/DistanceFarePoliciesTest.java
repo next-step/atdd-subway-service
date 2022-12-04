@@ -1,6 +1,7 @@
 package nextstep.subway.path.fare.policy;
 
-import nextstep.subway.line.exception.InvalidDistanceException;
+import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -8,16 +9,17 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import java.util.Collections;
+
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class DistanceFarePoliciesTest {
 
-    DistanceFarePolicies farePolicies;
+    FarePolicies farePolicies;
 
     @BeforeEach
     void setup() {
-        farePolicies = new DistanceFarePolicies(
+        farePolicies = new FarePolicies(
                 Lists.newArrayList(
                         new BasicFarePolicy(),
                         new UntilFiftyKiloExtraFarePolicy(),
@@ -28,7 +30,9 @@ class DistanceFarePoliciesTest {
     @ParameterizedTest
     @ValueSource(ints = {1,2,9,10})
     void testCalculateBasicFare(int distance) {
-        Fare fare = farePolicies.calculate(distance);
+        Path path = new Path(Lists.emptyList(), Collections.emptyList(), Distance.valueOf(distance));
+
+        Fare fare = farePolicies.calculate(path);
 
         assertThat(fare).isEqualTo(BasicFarePolicy.BASIC_FARE);
     }
@@ -36,7 +40,9 @@ class DistanceFarePoliciesTest {
     @ParameterizedTest
     @CsvSource({"10,1250","14,1250","15,1350","49,1950","50,2050"})
     void testUntilFiftyKiloFarePolicy(int distance, int fareAmount) {
-        Fare fare = farePolicies.calculate(distance);
+        Path path = new Path(Lists.emptyList(), Collections.emptyList(), Distance.valueOf(distance));
+
+        Fare fare = farePolicies.calculate(path);
 
         assertThat(fare).isEqualTo(Fare.valueOf(fareAmount));
     }
@@ -44,17 +50,10 @@ class DistanceFarePoliciesTest {
     @ParameterizedTest
     @CsvSource({"57,2050", "58,2150", "66,2250", "106,2750"})
     void testAboveFiftyKiloFarePolicy(int distance, int fareAmount) {
-        Fare fare = farePolicies.calculate(distance);
+        Path path = new Path(Lists.emptyList(), Collections.emptyList(), Distance.valueOf(distance));
+
+        Fare fare = farePolicies.calculate(path);
 
         assertThat(fare).isEqualTo(Fare.valueOf(fareAmount));
     }
-
-    @ParameterizedTest
-    @ValueSource(ints = {-1})
-    void testInvalidFarePolicy(int distance) {
-        assertThatThrownBy(() -> farePolicies.calculate(distance))
-                .isInstanceOf(InvalidDistanceException.class)
-                .hasMessage(InvalidDistanceException.LESS_THAN_ZERO);
-    }
-
 }

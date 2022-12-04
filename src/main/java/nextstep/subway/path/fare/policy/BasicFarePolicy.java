@@ -1,6 +1,7 @@
 package nextstep.subway.path.fare.policy;
 
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +12,7 @@ public class BasicFarePolicy implements FarePolicy {
     public static final Fare BASIC_FARE = Fare.valueOf(1_250);
 
     @Override
-    public Fare calculateFare(Distance distance) {
+    public Fare calculate(Path path) {
         return BASIC_FARE;
     }
 }
