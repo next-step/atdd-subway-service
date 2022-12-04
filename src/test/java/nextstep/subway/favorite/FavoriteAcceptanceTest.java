@@ -15,6 +15,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -40,6 +41,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private int AGE = 20;
     private int NEW_AGE = 21;
     private TokenResponse token;
+    private FavoriteRequest favoriteRequest;
 
     @BeforeEach
     public void setUp() {
@@ -59,13 +61,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         //And 로그인 되어있음
         token = 로그인을_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+        favoriteRequest = new FavoriteRequest(강남역.getId(), 양재역.getId());
     }
 
 
     @DisplayName("즐겨찾기를 관리")
     @Test
     void favorite_scenario() {
-        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(token);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(token, favoriteRequest);
         즐겨찾기_생성됨(createResponse);
 
         ExtractableResponse<Response> searchResponse = 즐겨찾기_목록_조회_요청(token);

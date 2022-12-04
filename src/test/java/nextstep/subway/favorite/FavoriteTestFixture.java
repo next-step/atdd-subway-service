@@ -6,15 +6,17 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 public class FavoriteTestFixture {
-    public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse token) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(TokenResponse token, FavoriteRequest favoriteRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(token)
+                .body(favoriteRequest)
                 .auth().oauth2(token.getAccessToken())
                 .when().post("/favorites")
                 .then().log().all()
