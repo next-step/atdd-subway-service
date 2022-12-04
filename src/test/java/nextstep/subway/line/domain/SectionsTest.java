@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import java.util.Arrays;
 import java.util.List;
@@ -37,6 +38,67 @@ class SectionsTest {
 
         // then
         assertThat(sections.getStations()).containsExactlyElementsOf(createStations("1번역", "3번역", "4번역", "5번역"));
+    }
+
+    @Test
+    @DisplayName("기존 구간에서 특정 구간을 지우게 되면, 특정 구간을 제외한 역들이 정상적으로 연결되어야 한다")
+    void should_replace_with_other_section_when_remove_section() {
+        // given
+        Sections sections = new Sections();
+        sections.addSection(createSection("1번역", "3번역", 100));
+        sections.addSection(createSection("3번역", "5번역", 50));
+        sections.addSection(createSection("5번역", "10번역", 100));
+
+        // when
+        sections.removeStation(createStation("3번역"));
+
+        // then
+
+        assertThat(sections.getStations()).containsExactlyElementsOf(createStations("1번역", "5번역", "10번역"));
+    }
+
+    @Test
+    @DisplayName("기존 구간에서 상행 종점 구간을 지우게 되면, 종점 구간을 제외한 역들이 정상적으로 연결되어야 한다")
+    void should_replace_with_other_section_when_remove_last_up_section() {
+        // given
+        Sections sections = new Sections();
+        sections.addSection(createSection("1번역", "3번역", 100));
+        sections.addSection(createSection("3번역", "5번역", 50));
+
+        // when
+        sections.removeStation(createStation("1번역"));
+
+        // then
+
+        assertThat(sections.getStations()).containsExactlyElementsOf(createStations("3번역", "5번역"));
+    }
+
+    @Test
+    @DisplayName("기존 구간에서 하행 종점 구간을 지우게 되면, 종점 구간을 제외한 역들이 정상적으로 연결되어야 한다")
+    void should_replace_with_other_section_when_remove_last_down_section() {
+        // given
+        Sections sections = new Sections();
+        sections.addSection(createSection("1번역", "3번역", 100));
+        sections.addSection(createSection("3번역", "5번역", 50));
+
+        // when
+        sections.removeStation(createStation("5번역"));
+
+        // then
+
+        assertThat(sections.getStations()).containsExactlyElementsOf(createStations("1번역", "3번역"));
+    }
+
+    @Test
+    @DisplayName("구간이 하나일 경우, 종점역을 지우게 되면, 에러가 발생해야 한다")
+    void throws_exception_when_remove_last_station_of_last_section() {
+        // given
+        Sections sections = new Sections();
+        sections.addSection(createSection("1번역", "3번역", 100));
+
+        // when && then
+        assertThatThrownBy(() -> sections.removeStation(createStation("1번역")))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     private Section createSection(String upStationName, String downStationName, int distance) {
