@@ -1,6 +1,9 @@
 package nextstep.subway.line.dto;
 
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.stream.Collectors;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Color;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Name;
@@ -14,22 +17,24 @@ public class LineResponse {
     private String name;
     private String color;
     private List<StationResponse> stations;
+    private BigDecimal lineFare;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
     private LineResponse() {}
 
-    private LineResponse(Long id, Name name, Color color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    private LineResponse(Long id, Name name, Color color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate, Fare lineFare) {
         this.id = id;
         this.name = name.value();
         this.color = color.value();
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
+        this.lineFare = lineFare.value();
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate(), line.getLineFare());
     }
 
     public static LineResponse from(Line line) {
@@ -41,7 +46,8 @@ public class LineResponse {
                         .map(StationResponse::from)
                         .collect(Collectors.toList()),
                 line.getCreatedDate(),
-                line.getModifiedDate());
+                line.getModifiedDate(),
+                line.getLineFare());
     }
 
     public Long getId() {
@@ -66,5 +72,9 @@ public class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    public BigDecimal getLineFare() {
+        return lineFare.setScale(0, RoundingMode.CEILING);
     }
 }

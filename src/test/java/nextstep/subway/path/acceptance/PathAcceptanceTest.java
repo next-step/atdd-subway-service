@@ -9,6 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -74,7 +75,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이호선 = 지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
         LineRequest 구호선_요청 = new LineRequest("구호선", "bg-gold-600", 신논현역.getId(), 선정릉역.getId(), 12);
         구호선 = 지하철_노선_등록되어_있음(구호선_요청).as(LineResponse.class);
-        LineRequest 칠호선_요청 = new LineRequest("칠호선", "bg-khaki-600", 이수역.getId(), 반포역.getId(), 20);
+        LineRequest 칠호선_요청 = new LineRequest("칠호선", "bg-khaki-600", 이수역.getId(), 반포역.getId(), 20, 1000);
         칠호선 = 지하철_노선_등록되어_있음(칠호선_요청).as(LineResponse.class);
         LineRequest 분당선_요청 = new LineRequest("분당선", "bg-yellow-600", 선정릉역.getId(), 선릉역.getId(), 5);
         분당선 = 지하철_노선_등록되어_있음(분당선_요청).as(LineResponse.class);
@@ -114,7 +115,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
                     // then
                     지하철_경로_조회됨(response);
-                    지하철_최단_경로_조회됨(response, Arrays.asList(신논현역, 강남역, 선릉역, 한티역), 21);
+                    지하철_최단_경로_조회됨(response, Arrays.asList(신논현역, 강남역, 선릉역, 한티역), 21, BigDecimal.valueOf(1550));
                 }),
                 DynamicTest.dynamicTest("연결되지 않은 출발역과 도착역 사이의 경로를 조회할 수 없다.", () -> {
                     // when
@@ -140,6 +141,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("최단 경로에 속한 노선에 추가 요금이 존재하면, 해당 요금이 포함된 최단 경로를 반환한다.")
+    @Test
+    void findShortestPathWithLineFare() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(이수역.getId(), 반포역.getId());
+        BigDecimal fare = BigDecimal.valueOf(1450);
+
+        // then
+        지하철_경로_조회됨(response);
+        지하철_최단_경로_조회됨(response, Arrays.asList(이수역, 반포역), 20, fare.add(칠호선.getLineFare()));
+    }
+
     private static void 지하철_경로_조회_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -148,16 +161,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    private static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectDistance) {
+    private static void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, List<StationResponse> expectStations, int expectDistance, BigDecimal expectFare) {
         List<Long> actualStationIds = response.jsonPath().getList("stations.id", Long.class);
         List<Long> expectStationIds = expectStations.stream().map(StationResponse::getId).collect(Collectors.toList());
         List<String> actualStationNames = response.jsonPath().getList("stations.name", String.class);
         List<String> expectStationNames = expectStations.stream().map(StationResponse::getName).collect(Collectors.toList());
         int actualDistance = response.jsonPath().getInt("distance");
+        int actualFare = response.jsonPath().getInt("fare");
+
         assertAll(
                 () -> assertThat(actualStationIds).containsExactlyElementsOf(expectStationIds),
                 () -> assertThat(actualStationNames).containsExactlyElementsOf(expectStationNames),
-                () -> assertThat(actualDistance).isEqualTo(expectDistance)
+                () -> assertThat(actualDistance).isEqualTo(expectDistance),
+                () -> assertThat(BigDecimal.valueOf(actualFare)).isEqualTo(expectFare)
         );
     }
 }

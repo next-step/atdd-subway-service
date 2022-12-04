@@ -157,4 +157,15 @@ public class LineTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.노선에_속한_구간이_하나이면_제거_불가.getErrorMessage());
     }
+
+    @DisplayName("노선에 추가 요금을 등록할 수 있다.")
+    @Test
+    void createLineWithLineFare() {
+        // given
+        int lineFare = 900;
+        Line line = createLine("신분당선", "bg-red", 강남역, 양재역, 10, lineFare);
+
+        // when & then
+        assertThat(line.getLineFare()).isEqualTo(Fare.from(lineFare));
+    }
 }

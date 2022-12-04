@@ -234,10 +234,10 @@ public class LineServiceTest {
         assertThat(이호선.findInOrderStations()).containsExactly(강남역, 삼성역, 종합운동장역);
     }
 
-    @DisplayName("기존 역 사이 거리보다 크거나 같은 거리의 역을 노선에 등록한다.")
-    @ParameterizedTest(name = "기존 역 사이 거리(10)보다 {0}은 크거나 같으므로 구간이 생성되지 않는다.")
-    @ValueSource(ints = {10, 12, 25})
-    void addSectionWhichHasEqualOrLongerDistance(int currentDistance) {
+    @DisplayName("기존 역 사이 거리보다 큰 거리의 역을 노선에 등록한다.")
+    @ParameterizedTest(name = "기존 역 사이 거리(10)보다 {0}은 크므로 구간이 생성되지 않는다.")
+    @ValueSource(ints = {15, 12, 25})
+    void addSectionWhichHasLongerDistance(int currentDistance) {
         // given
         when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
         when(stationRepository.findById(2L)).thenReturn(Optional.of(역삼역));
@@ -245,6 +245,20 @@ public class LineServiceTest {
 
         // when & then
         assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(2L, 3L, currentDistance)))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.거리는_0보다_작을_수_없음.getErrorMessage());
+    }
+
+    @DisplayName("기존 역 사이 거리와 동일한 거리의 역을 노선에 등록하면, 새로운 구간이 생성되지 않는다.")
+    @Test
+    void addSectionWhichHasEqualDistance() {
+        // given
+        when(lineRepository.findById(1L)).thenReturn(Optional.of(이호선));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(역삼역));
+        when(stationRepository.findById(3L)).thenReturn(Optional.of(삼성역));
+
+        // when & then
+        assertThatThrownBy(() -> lineService.addLineStation(1L, new SectionRequest(2L, 3L, 10)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(ErrorCode.노선거리는_0보다_작거나_같을_수_없음.getErrorMessage());
     }

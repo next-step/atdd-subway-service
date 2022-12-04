@@ -21,8 +21,7 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(Email.from(request.getEmail()))
-                .orElseThrow(() -> new AuthorizationException(ErrorCode.해당_이메일을_가진_회원_없음.getErrorMessage()));
+        Member member = findMemberByEmail(request.getEmail());
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
@@ -31,12 +30,16 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException(ErrorCode.유효하지_않은_토큰.getErrorMessage());
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(Email.from(email))
-                .orElseThrow(() -> new AuthorizationException(ErrorCode.해당_이메일을_가진_회원_없음.getErrorMessage()));
+        Member member = findMemberByEmail(email);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private Member findMemberByEmail(String email) {
+        return memberRepository.findByEmail(Email.from(email))
+                .orElseThrow(() -> new AuthorizationException(ErrorCode.해당_이메일을_가진_회원_없음.getErrorMessage()));
     }
 }

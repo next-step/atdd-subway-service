@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import java.util.List;
 import nextstep.subway.common.constant.ErrorCode;
+import nextstep.subway.line.domain.AgeFarePolicy;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.DijkstraPathFinder;
@@ -25,13 +26,18 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(AgeFarePolicy ageFarePolicy, Long source, Long target) {
+        Path shortestPath = findShortestPathInGraph(source, target);
+        shortestPath.convertFareByAgeFarePolicy(ageFarePolicy);
+        return PathResponse.from(shortestPath);
+    }
+
+    private Path findShortestPathInGraph(Long source, Long target) {
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = DijkstraPathFinder.createGraph(lines);
-        Path shortestPath = pathFinder.findShortestPath(sourceStation, targetStation);
-        return PathResponse.from(shortestPath);
+        return pathFinder.findShortestPath(sourceStation, targetStation);
     }
 
     private Station findStationById(Long id) {

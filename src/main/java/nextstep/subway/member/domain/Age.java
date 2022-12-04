@@ -29,6 +29,10 @@ public class Age {
         }
     }
 
+    public boolean isEqualOrOlderThan(Age age) {
+        return this.age >= age.age;
+    }
+
     public int value() {
         return age;
     }

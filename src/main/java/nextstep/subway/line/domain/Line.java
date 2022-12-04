@@ -16,6 +16,9 @@ import nextstep.subway.utils.StringUtils;
 
 @Entity
 public class Line extends BaseEntity {
+
+    private static final int ZERO = 0;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -25,15 +28,12 @@ public class Line extends BaseEntity {
     private Color color;
     @Embedded
     private Sections sections;
+    @Embedded
+    private Fare lineFare;
 
     protected Line() {}
 
-    public Line(String name, String color) {
-        this.name = Name.from(name);
-        this.color = Color.from(color);
-    }
-
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int lineFare) {
         validateUpStation(upStation);
         validateDownStation(downStation);
 
@@ -41,6 +41,11 @@ public class Line extends BaseEntity {
         this.name = Name.from(name);
         this.color = Color.from(color);
         this.sections = Sections.from(singletonList(section));
+        this.lineFare = Fare.from(lineFare);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, distance, ZERO);
     }
 
     private void validateUpStation(Station upStation) {
@@ -102,6 +107,10 @@ public class Line extends BaseEntity {
 
     public Sections getSections() {
         return sections;
+    }
+
+    public Fare getLineFare() {
+        return lineFare;
     }
 
     @Override
