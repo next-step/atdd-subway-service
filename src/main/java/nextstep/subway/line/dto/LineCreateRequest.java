@@ -11,7 +11,7 @@ public class LineCreateRequest {
     private Long downStationId;
     private int distance;
 
-    public LineCreateRequest() {
+    private LineCreateRequest() {
     }
 
     public LineCreateRequest(String name, String color, Long upStationId, Long downStationId, int distance) {

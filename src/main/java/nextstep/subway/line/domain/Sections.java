@@ -12,6 +12,8 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.Assert;
 
+import nextstep.subway.common.exception.DuplicateDataException;
+import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
 
@@ -19,6 +21,9 @@ import nextstep.subway.station.domain.Station;
 public class Sections {
 
 	private static final String INVALID_SECTION_ERROR_MESSAGE = "지하철 구간은 반드시 존재해야 합니다.";
+	private static final String NOT_INCLUDE_UP_DOWN_STATION_ERROR_MESSAGE = "등록할 수 없는 구간입니다.";
+	private static final String SAME_UP_DOWN_STATION_ERROR_MESSAGE = "이미 등록된 구간입니다.";
+
 	@OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
 
@@ -87,5 +92,58 @@ public class Sections {
 			.filter(section -> section.getUpStation().getName().equals(station.getName()))
 			.findFirst()
 			.orElseThrow(() -> new NotFoundException("Section not exist"));
+	}
+
+	public void connect(Section section, List<Section> sectionsToRearrange) {
+		validateAddSection(section);
+		SectionConnector connector = SectionConnector.of(section, sectionsToRearrange);
+		connector.connect(this);
+	}
+
+	private void validateAddSection(Section section) {
+		validateSameUpDownStation(section);
+		validateNotIncludeUpDownStation(section);
+	}
+
+	private void validateNotIncludeUpDownStation(Section section) {
+		if (notIncludeUpDownStation(section)) {
+			throw new InvalidDataException(NOT_INCLUDE_UP_DOWN_STATION_ERROR_MESSAGE);
+		}
+	}
+
+	private void validateSameUpDownStation(Section section) {
+		if (isSameUpDownStation(section)) {
+			throw new DuplicateDataException(SAME_UP_DOWN_STATION_ERROR_MESSAGE);
+		}
+	}
+
+	private boolean isSameUpDownStation(Section newSection) {
+		return sections.stream()
+			.filter(section -> section.isSameUpStation(newSection))
+			.anyMatch(section -> section.isSameDownStation(newSection));
+	}
+
+	private boolean notIncludeUpDownStation(Section section) {
+		return notIncludeDownStation(section) && notIncludeUpStation(section);
+	}
+
+	private boolean notIncludeDownStation(Section section) {
+		return !sortedStations().contains(section.getUpStation());
+	}
+
+	private boolean notIncludeUpStation(Section section) {
+		return !sortedStations().contains(section.getDownStation());
+	}
+
+	public void add(Section newSection) {
+		sections.add(newSection);
+	}
+
+	public void removeSection(Section section) {
+		sections.remove(section);
+	}
+
+	public List<Section> getSections() {
+		return this.sections;
 	}
 }

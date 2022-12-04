@@ -85,4 +85,8 @@ public class Line extends BaseEntity {
 	public List<Station> allStations() {
         return sections.sortedStations();
 	}
+
+    public void connectSection(Section section, List<Section> sectionsToUpdate) {
+        sections.connect(section, sectionsToUpdate);
+    }
 }

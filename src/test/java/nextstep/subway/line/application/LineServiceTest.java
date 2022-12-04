@@ -211,6 +211,6 @@ class LineServiceTest {
 	}
 
 	private void 이미_존재하는_노선_이름(String name) {
-		when(lineRepository.existsByName(name)).thenReturn(true);
+		when(lineRepository.existsByName(Name.from(name))).thenReturn(true);
 	}
 }

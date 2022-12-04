@@ -1,7 +1,5 @@
 package nextstep.subway.line.application;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -9,6 +7,7 @@ import java.util.stream.Collectors;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
@@ -29,23 +28,23 @@ import nextstep.subway.station.domain.Station;
 public class LineService {
 	private final LineRepository lineRepository;
 	private final StationService stationService;
+	private final SectionService sectionService;
 
-	public LineService(LineRepository lineRepository, StationService stationService) {
+	public LineService(
+		LineRepository lineRepository,
+		StationService stationService,
+		SectionService sectionService
+	) {
 		this.lineRepository = lineRepository;
 		this.stationService = stationService;
+		this.sectionService = sectionService;
 	}
 
 	@Transactional
 	public LineResponse saveLine(LineCreateRequest request) {
-		validateDuplicateName(request.getName());
+		validateDuplicateName(request.name());
 		Line line = lineRepository.save(savedLine(request));
 		return lineResponse(line);
-	}
-
-	private void validateDuplicateName(String name) {
-		if (lineRepository.existsByName(name)) {
-			throw new DuplicateDataException(String.format("%s는 이미 존재하는 노선 이름입니다.", name));
-		}
 	}
 
 	@Transactional(readOnly = true)
@@ -62,7 +61,7 @@ public class LineService {
 
 	@Transactional
 	public void updateLine(Long id, LineUpdateRequest request) {
-		validateDuplicateName(request.getName());
+		validateDuplicateName(request.name());
 		Line line = findById(id);
 		line.update(request.name(), request.color());
 	}
@@ -72,49 +71,26 @@ public class LineService {
 		lineRepository.deleteById(id);
 	}
 
+	@Transactional
+	public void addLineStation(Long lineId, SectionRequest request) {
+		Line line = findById(lineId);
+
+		Station upStation = station(request.getUpStationId());
+		Station downStation = station(request.getDownStationId());
+		List<Section> sectionsToUpdate = sectionService.findSectionsToUpdate(upStation, downStation);
+
+		Section section = Section.of(line, upStation, downStation, Distance.from(request.getDistance()));
+		line.connectSection(section, sectionsToUpdate);
+	}
+
 	private Line findById(Long id) {
 		return lineRepository.findById(id)
 			.orElseThrow(() -> new NotFoundException(String.format("ID(%d) 에 해당하는 노선을 찾을 수 없습니다.", id)));
 	}
 
-	public void addLineStation(Long lineId, SectionRequest request) {
-		Line line = findById(lineId);
-		Station upStation = stationService.findById(request.getUpStationId());
-		Station downStation = stationService.findById(request.getDownStationId());
-		List<Station> stations = getStations(line);
-		boolean isUpStationExisted = stations.stream().anyMatch(it -> it == upStation);
-		boolean isDownStationExisted = stations.stream().anyMatch(it -> it == downStation);
-
-		if (isUpStationExisted && isDownStationExisted) {
-			throw new DuplicateDataException("이미 등록된 구간 입니다.");
-		}
-
-		if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-			stations.stream().noneMatch(it -> it == downStation)) {
-			throw new InvalidDataException("등록할 수 없는 구간 입니다.");
-		}
-
-		if (stations.isEmpty()) {
-			line.getSections().add(Section.of(line, upStation, downStation, request.distance()));
-			return;
-		}
-
-		if (isUpStationExisted) {
-			line.getSections().stream()
-				.filter(it -> it.getUpStation() == upStation)
-				.findFirst()
-				.ifPresent(it -> it.updateUpStation(downStation, request.distance()));
-
-			line.getSections().add(Section.of(line, upStation, downStation, request.distance()));
-		} else if (isDownStationExisted) {
-			line.getSections().stream()
-				.filter(it -> it.getDownStation() == downStation)
-				.findFirst()
-				.ifPresent(it -> it.updateDownStation(upStation, request.distance()));
-
-			line.getSections().add(Section.of(line, upStation, downStation, request.distance()));
-		} else {
-			throw new InvalidDataException("등록할 수 없는 구간 입니다.");
+	private void validateDuplicateName(Name name) {
+		if (lineRepository.existsByName(name)) {
+			throw new DuplicateDataException(String.format("%s는 이미 존재하는 노선 이름입니다.", name));
 		}
 	}
 
@@ -143,30 +119,6 @@ public class LineService {
 		downLineStation.ifPresent(it -> line.getSections().remove(it));
 	}
 
-	public List<Station> getStations(Line line) {
-		if (line.getSections().isEmpty()) {
-			return Arrays.asList();
-		}
-
-		List<Station> stations = new ArrayList<>();
-		Station downStation = findUpStation(line);
-		stations.add(downStation);
-
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = line.getSections().stream()
-				.filter(it -> it.getUpStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getDownStation();
-			stations.add(downStation);
-		}
-
-		return stations;
-	}
-
 	private Line savedLine(LineCreateRequest request) {
 		return Line.of(request.name(), request.color(),
 			Sections.from(section(request.getUpStationId(), request.getDownStationId(), request.getDistance())));
@@ -182,21 +134,5 @@ public class LineService {
 
 	private Station station(Long id) {
 		return stationService.findById(id);
-	}
-
-	private Station findUpStation(Line line) {
-		Station downStation = line.getSections().get(0).getUpStation();
-		while (downStation != null) {
-			Station finalDownStation = downStation;
-			Optional<Section> nextLineStation = line.getSections().stream()
-				.filter(it -> it.getDownStation() == finalDownStation)
-				.findFirst();
-			if (!nextLineStation.isPresent()) {
-				break;
-			}
-			downStation = nextLineStation.get().getUpStation();
-		}
-
-		return downStation;
 	}
 }

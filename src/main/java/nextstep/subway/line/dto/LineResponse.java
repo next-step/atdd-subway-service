@@ -33,8 +33,8 @@ public class LineResponse {
 	public static LineResponse from(Line line) {
 		return new LineResponse(
             line.getId(),
-			line.getName(),
-			line.getColor(),
+			line.getName().toString(),
+			line.getColor().toString(),
 			StationResponse.listOf(line.allStations()),
 			line.getCreatedDate(),
 			line.getModifiedDate());
