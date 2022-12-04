@@ -18,9 +18,9 @@ public class DistanceTest {
         assertThatNoException().isThrownBy(() -> new Distance(distance));
     }
 
-    @DisplayName("거리는 0보다 커야한다.")
+    @DisplayName("거리는 0보다 작을 수 없다.")
     @ParameterizedTest
-    @ValueSource(ints = {-1, 0})
+    @ValueSource(ints = {-1})
     void negative(int distance) {
         assertThatThrownBy(() -> new Distance(distance))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -51,7 +51,7 @@ public class DistanceTest {
     @ParameterizedTest
     @CsvSource({"1, 1, 2"})
     void sum(int target, int source, int result) {
-        assertThat(new Distance(target).sum(new Distance(source))).isEqualTo(result);
+        assertThat(new Distance(target).sum(new Distance(source))).isEqualTo(new Distance(result));
     }
 
     @DisplayName("차를 구한다.")

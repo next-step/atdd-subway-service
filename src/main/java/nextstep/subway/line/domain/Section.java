@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 public class Section {
+
     public static final String SECTION_DISTANCE_EXCEPTION_MESSAGE = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     public static final int MINIMUM_DISTANCE = 0;
     @Id
@@ -73,6 +74,6 @@ public class Section {
     }
 
     public Distance sumDistance(Section section) {
-        return new Distance(this.distance.sum(section.getDistance()));
+        return this.distance.sum(section.getDistance());
     }
 }
