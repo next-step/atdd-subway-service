@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
@@ -58,7 +59,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Feature: 즐겨찾기를 관리한다.
+     * Feature: 즐겨찾기를 생성한다.
      *  Background
      *      given: 지하철역 등록되어 있음
      *      And: 지하철 노선 등록되어 있음
@@ -83,7 +84,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     /**
-     * Feature: 즐겨찾기를 관리한다.
+     * Feature: 즐겨찾기 목록을 조회한다.
      *  Background
      *      given: 지하철역 등록되어 있음
      *      And: 지하철 노선 등록되어 있음
@@ -97,7 +98,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *      then: 즐겨찾기 목록이 조회됨
      */
     @Test
-    @DisplayName("즐겨찾기 생성 테스트")
+    @DisplayName("즐겨찾기 목록 조회 테스트")
     void listFavorite(){
         // given
         즐겨찾기_생성_요청(강남역.getId(), 잠실역.getId());
@@ -108,6 +109,34 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청_결과);
+    }
+
+    /**
+     * Feature: 즐겨찾기를 삭제한다.
+     *  Background
+     *      given: 지하철역 등록되어 있음
+     *      And: 지하철 노선 등록되어 있음
+     *      And: 지하철 노선에 지하철역 등록되어 있음
+     *      And: 회원 등록 되어있음
+     *      And: 로그인 되어있음
+     *
+     *  Scenario: 즐겨찾기 삭제
+     *      given: 즐겨찾기 추가
+     *      when: 즐겨찾기 삭제를 요청
+     *      then: 즐겨찾기가 삭제됨
+     */
+    @Test
+    @DisplayName("즐겨찾기 삭제 테스트")
+    void deleteFavorite(){
+        // given
+        즐겨찾기_생성_요청(강남역.getId(), 잠실역.getId());
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(역삼역.getId(), 잠실역.getId());
+
+        // when: 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(즐겨찾기_생성_요청_결과);
+
+        // then: 즐겨찾기가 삭제됨
+        즐겨찾기_삭제됨(즐겨찾기_삭제_요청_결과);
     }
 
     /**
@@ -182,10 +211,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> response) {
+        FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, BEARER_TYPE + " "+ token)
-                .when().delete("/favorites/{id}", response.as(Long.class))
+                .when().delete("/favorites/{id}", favoriteResponse.getId())
                 .then().log().all()
                 .extract();
     }

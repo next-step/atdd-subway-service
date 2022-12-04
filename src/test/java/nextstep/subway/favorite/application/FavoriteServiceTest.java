@@ -77,4 +77,18 @@ class FavoriteServiceTest {
         assertThat(favorites).hasSize(3);
     }
 
+    @Test
+    @DisplayName("즐겨찾기 삭제 테스트")
+    void deleteTest(){
+        // 사용자정보를 통해 해당 사용자의 즐겨찾기 목록을 조회한다.
+        // given
+        FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationRepository, memberRepository);
+
+        // when
+        when(favoriteRepository.findById(any())).thenReturn(Optional.of(new Favorite(new Station("강남역"), new Station("잠실역"), new Member("test@test.com", "password", 10))));
+        favoriteService.deleteFavorite(1L);
+
+        // then
+        // 여기는 어떻게 검증해보는게 좋을까요...?ㅠ 생각이 잘 안나서요...ㅠㅠ
+    }
 }
