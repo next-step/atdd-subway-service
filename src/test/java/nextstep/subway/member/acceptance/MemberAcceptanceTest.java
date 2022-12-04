@@ -86,27 +86,28 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("토큰으로 나의 회원정보를 조회할 수 있다.", () -> 나의_정보를_조회한다(토큰)),
                 dynamicTest("토큰으로 나의 회원정보를 수정할 수 있다.", () -> 나의_정보를_수정한다(토큰, 수정_회원_정보)),
-                dynamicTest("토큰으로 나의 회원정보를 삭제할 수 있다..", () -> 나의_정보를_삭제한다(토큰))
+                dynamicTest("토큰으로 나의 회원정보를 삭제할 수 있다..", () -> 나의_정보를_삭제한다())
         );}
 
 
 
-    public void 나의_정보를_조회한다(String 토큰) {
+    void 나의_정보를_조회한다(String 토큰) {
         // when
         ExtractableResponse<Response> 조회_결과 = 나의_회원_정보_조회_요청(토큰);
         // then
         회원_정보_조회됨(조회_결과, EMAIL, AGE);
     }
-
-    public void 나의_정보를_수정한다(String 토큰, MemberRequest 수정_정보) {
+    void 나의_정보를_수정한다(String 토큰, MemberRequest 수정_정보) {
         // when
         ExtractableResponse<Response> 수정_결과 = 나의_회원_정보_수정_요청(토큰, 수정_정보);
         // then
         회원_정보_수정됨(수정_결과);
-        회원_정보_조회됨(수정_결과,NEW_EMAIL, NEW_AGE );
+        assertThat(정상_로그인_토큰_반환(NEW_EMAIL, NEW_PASSWORD)).isNotNull();
     }
 
-    void 나의_정보를_삭제한다(String 토큰) {
+    void 나의_정보를_삭제한다() {
+        // given
+        String 토큰 = 정상_로그인_토큰_반환(NEW_EMAIL, NEW_PASSWORD);
         // when
         ExtractableResponse<Response> 삭제_결과 = 나의_회원_정보_삭제_요청(토큰);
         // then

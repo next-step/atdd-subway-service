@@ -23,8 +23,6 @@ import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -97,36 +95,30 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         Long 남부터미널역_ID = 남부터미널역.getId();
         FavoriteRequest 즐겨찾기_요청 = FavoriteRequest.of(강남역_ID, 남부터미널역_ID);
         return Stream.of(
-                dynamicTest("나의 즐겨찾기를 생성 할 수 있다.", () -> 나의_즐겨찾기를_추가하고_검증한다(토큰,즐겨찾기_요청)),
-                dynamicTest("나의 즐겨찾기를 조회 할 수 있다.", () -> 나의_즐겨찾기를_조회하고_검증한다(토큰, 강남역_ID, 남부터미널역_ID)),
-                dynamicTest("나의 즐겨찾기를 삭제 할 수 있다.", () -> 나의_즐겨찾기를_삭제하고_검증한다(토큰))
+                dynamicTest("나의 즐겨찾기를 생성 할 수 있다.", () -> {
+                    // when
+                    ExtractableResponse<Response> 생성_결과 = 나의_즐겨찾기_추가_요청(토큰, 즐겨찾기_요청);
+                    // then
+                    즐겨찾기_생성됨(생성_결과);
+                }),
+                dynamicTest("나의 즐겨찾기를 조회 할 수 있다.", () -> {
+                    // when
+                    ExtractableResponse<Response> 조회_결과 = 나의_즐겨찾기_전체_조회_요청(토큰);
+                    // then
+                    즐겨찾기_조회됨(조회_결과, 즐겨찾기_요청.getSource().longValue(), 즐겨찾기_요청.getTarget().longValue());
+                }),
+                dynamicTest("나의 즐겨찾기를 삭제 할 수 있다.", () -> {
+                    // given
+                    Long id = 첫번째_즐겨찾기_아이디_찾기(토큰);
+                    // when
+                    ExtractableResponse<Response> 삭제_결과 = 나의_즐겨찾기_삭제_요청(토큰, id);
+                    // then
+                    즐겨찾기_삭제됨(삭제_결과, id);
+                })
         );}
 
-    void 나의_즐겨찾기를_추가하고_검증한다(String 토큰, FavoriteRequest 즐겨찾기_요청) {
-        // when
-        ExtractableResponse<Response> 생성_결과 = 나의_즐겨찾기_추가_요청(토큰, 즐겨찾기_요청);
-        // then
-        즐겨찾기_생성됨(생성_결과);
-    }
-
-    void 나의_즐겨찾기를_조회하고_검증한다(String 토큰, Long source, Long target) {
-        // when
-        ExtractableResponse<Response> 조회_결과 = 나의_즐겨찾기_전체_조회_요청(토큰);
-        // then
-        즐겨찾기_조회됨(조회_결과, source, target);
-    }
-
-    void 나의_즐겨찾기를_삭제하고_검증한다(String 토큰) {
-        Long id = 첫번째_즐겨찾기_아이디_찾기();
-        // when
-        ExtractableResponse<Response> 삭제_결과 = 나의_즐겨찾기_삭제_요청(토큰, id);
-        // then
-        즐겨찾기_삭제됨(삭제_결과, id);
-    }
-
-    private Long 첫번째_즐겨찾기_아이디_찾기(){
-        ExtractableResponse<Response> 조회_결과 = 나의_즐겨찾기_전체_조회_요청(토큰);
-        return 조회_결과.jsonPath().getList("id", Long.class).get(0);
+    private Long 첫번째_즐겨찾기_아이디_찾기(String 토큰){
+        return 나의_즐겨찾기_전체_조회_요청(토큰).jsonPath().getList(".", FavoriteResponse.class).get(0).getId();
     }
 
     public static ExtractableResponse<Response> 나의_즐겨찾기_추가_요청(String token, FavoriteRequest request) {
@@ -136,7 +128,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(request)
-                .when().get("/favorites")
+                .when().post("/favorites")
                 .then().log().all()
                 .extract();
     }
@@ -176,10 +168,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
     public void 즐겨찾기_삭제됨(ExtractableResponse<Response> response, Long id) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
-        assertFalse(아이디가_즐겨찾기에_존재함(response, id));
-    }
-    private boolean 아이디가_즐겨찾기에_존재함(ExtractableResponse<Response> response, Long id){
-        return response.jsonPath().getList("id", Long.class).contains(id);
     }
     private boolean 즐겨찾기_일치(FavoriteResponse favoriteResponse, Long source, Long target){
         return favoriteResponse.getSource().getId().equals(source)
