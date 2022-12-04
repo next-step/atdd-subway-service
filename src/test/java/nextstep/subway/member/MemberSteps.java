@@ -8,9 +8,34 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberSteps {
+
+    public static String 로그인_되어_있음(String email, String password) {
+        return 로그인_요청(email, password).jsonPath().getString("accessToken");
+    }
+
+    public static void 회원_생성_되어_있음(String email, String password, int age) {
+        ExtractableResponse<Response> response = 회원_생성을_요청(email, password, age);
+        회원_생성됨(response);
+    }
+
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+        Map<String, String> params = new HashMap<>();
+        params.put("email", email);
+        params.put("password", password);
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/login/token")
+                .then().log().all()
+                .statusCode(HttpStatus.OK.value()).extract();
+    }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
