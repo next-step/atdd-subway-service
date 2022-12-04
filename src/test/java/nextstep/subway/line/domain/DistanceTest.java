@@ -17,7 +17,7 @@ public class DistanceTest {
 
         assertAll(
                 () -> assertThat(distance).isNotNull(),
-                () -> assertThat(distance.getDistance()).isEqualTo(10)
+                () -> assertThat(distance.value()).isEqualTo(10)
         );
     }
 
@@ -36,9 +36,9 @@ public class DistanceTest {
         Distance previousDistance = new Distance(20);
         Distance newDistance = new Distance(5);
 
-        previousDistance.addDistance(newDistance);
+        previousDistance.add(newDistance);
 
-        assertThat(previousDistance.getDistance()).isEqualTo(25);
+        assertThat(previousDistance.value()).isEqualTo(25);
     }
 
     @DisplayName("두 거리값의 차를 계산하여 값을 치환한다.")
@@ -47,9 +47,9 @@ public class DistanceTest {
         Distance previousDistance = new Distance(10);
         Distance newDistance = new Distance(4);
 
-        previousDistance.minusDistance(newDistance);
+        previousDistance.subtract(newDistance);
 
-        assertThat(previousDistance.getDistance()).isEqualTo(6);
+        assertThat(previousDistance.value()).isEqualTo(6);
 
     }
 

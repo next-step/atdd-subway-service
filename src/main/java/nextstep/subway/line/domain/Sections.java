@@ -95,7 +95,7 @@ public class Sections {
             Station newUpStation = newUpSection.getUpStation();
             Station newDownStation = newDownSection.getDownStation();
             sections.add(new Section(line, newUpStation, newDownStation,
-                    newUpSection.getDistance().addDistance(newDownSection.getDistance())));
+                    newUpSection.getDistance().add(newDownSection.getDistance())));
         }
 
         upLineStation.ifPresent(it -> sections.remove(it));

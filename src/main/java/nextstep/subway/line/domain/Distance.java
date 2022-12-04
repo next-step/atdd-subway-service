@@ -28,12 +28,12 @@ public class Distance {
         }
     }
 
-    public Distance addDistance(Distance addDistance) {
-        this.distance += addDistance.getDistance();
+    public Distance add(Distance addDistance) {
+        this.distance += addDistance.value();
         return this;
     }
 
-    public void minusDistance(Distance minusDistance) {
+    public void subtract(Distance minusDistance) {
         distance -= minusDistance.distance;
     }
 
@@ -43,7 +43,7 @@ public class Distance {
         }
     }
 
-    public int getDistance() {
+    public int value() {
         return this.distance;
     }
 
