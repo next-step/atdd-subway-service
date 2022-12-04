@@ -28,8 +28,10 @@ class SectionsTest {
         this.역삼역 = StationFixture.역삼역;
         this.삼성역 = StationFixture.삼성역;
 
+        // [교대약 4 강남역] - [강남역 5 선릉역] - [선릉역 5 역삼역]
         이호선.addSection(교대역, 강남역, 4);
         이호선.addSection(강남역, 선릉역, 5);
+        이호선.addSection(선릉역, 역삼역, 5);
     }
 
     /**
@@ -40,11 +42,15 @@ class SectionsTest {
     @DisplayName("지하철 구간 목록 추가 - 하행역이 동일한 구간이 주어진 경우")
     @Test
     void add_section_with_same_up_station_test() {
+        // given
+        // [교대약 4 강남역] - [강남역 5 선릉역] - [선릉역 5 역삼역]
+
         // when
-        이호선.addSection(강남역, 역삼역, 3);
+        // [교대약 4 강남역] - [강남역 5 선릉역] - [선릉역 3 삼성역] - [삼성역 2 역삼역]
+        이호선.addSection(선릉역, 삼성역, 3);
 
         // then
-        assertThat(이호선.getStations()).contains(교대역, 강남역, 선릉역, 역삼역);
+        assertThat(이호선.getStations()).containsExactly(교대역, 강남역, 선릉역, 삼성역, 역삼역);
     }
 
     /**
@@ -55,11 +61,15 @@ class SectionsTest {
     @DisplayName("지하철 구간 목록 추가 - 상행역이 동일한 구간이 주어진 경우")
     @Test
     void add_section_with_same_down_station_test() {
+        // given
+        // [교대약 4 강남역] - [강남역 5 선릉역] - [선릉역 5 역삼역]
+
         // when
-        이호선.addSection(강남역, 역삼역, 3);
+        // [교대약 4 강남역] - [강남역 2 삼성역] - [삼성역 3 선릉역] -[선릉역 5 역삼역]
+        이호선.addSection(삼성역, 선릉역, 3);
 
         // then
-        assertThat(이호선.getStations()).contains(교대역, 강남역, 역삼역, 선릉역);
+        assertThat(이호선.getStations()).containsExactly(교대역, 강남역, 삼성역, 선릉역, 역삼역);
     }
 
     /**

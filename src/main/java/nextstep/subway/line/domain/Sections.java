@@ -25,35 +25,42 @@ public class Sections {
             return;
         }
         List<Station> stations = getStations();
-        Station newSectionUpStation = section.getUpStation();
-        Station newSectionDownStation = section.getDownStation();
-        Distance newSectionDistance = section.getDistance();
-        boolean isUpStationExisted = stations.stream().anyMatch(it -> it.equals(newSectionUpStation));
-        boolean isDownStationExisted = stations.stream().anyMatch(it -> it.equals(newSectionDownStation));
+        validateNewSection(stations, section);
+        updateSameUpStationSection(section);
+        updateSameDownStationSection(section);
+        this.sectionItems.add(section);
+    }
 
-        if(isUpStationExisted && isDownStationExisted) {
+    private void updateSameDownStationSection(Section section) {
+        this.sectionItems.stream()
+                .filter(sectionItem -> sectionItem.isSameDownStation(section.getDownStation()))
+                .findFirst()
+                .ifPresent(sectionItem -> sectionItem.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
+
+    private void updateSameUpStationSection(Section section) {
+        this.sectionItems.stream()
+                .filter(sectionItem -> sectionItem.isSameUpStation(section.getUpStation()))
+                .findFirst()
+                .ifPresent(sectionItem -> sectionItem.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private void validateNewSection(List<Station> stations, Section section) {
+        if(isAlreadyEnrolledStations(stations, section)) {
             throw new IllegalArgumentException(SectionMessage.ADD_ERROR_ALREADY_ENROLLED_STATIONS.message());
         }
 
-        if(!isUpStationExisted && !isDownStationExisted) {
+        if(isNotFoundStations(stations, section)) {
             throw new IllegalArgumentException(SectionMessage.ADD_ERROR_NONE_MATCH_SECTION_STATIONS.message());
         }
+    }
 
-        if(isUpStationExisted) {
-            this.sectionItems.stream()
-                    .filter(sectionItem -> sectionItem.isSameUpStation(newSectionUpStation))
-                    .findFirst()
-                    .ifPresent(sectionItem -> sectionItem.updateUpStation(newSectionDownStation, newSectionDistance));
-            this.sectionItems.add(section);
-        }
+    private boolean isAlreadyEnrolledStations(List<Station> stations, Section section) {
+        return stations.contains(section.getUpStation()) && stations.contains(section.getDownStation());
+    }
 
-        if(isDownStationExisted) {
-            this.sectionItems.stream()
-                    .filter(sectionItem -> sectionItem.isSameDownStation(newSectionDownStation))
-                    .findFirst()
-                    .ifPresent(sectionItem -> sectionItem.updateDownStation(newSectionUpStation, newSectionDistance));
-            this.sectionItems.add(section);
-        }
+    private boolean isNotFoundStations(List<Station> stations, Section section) {
+        return !stations.contains(section.getUpStation()) && !stations.contains(section.getDownStation());
     }
 
     public List<Station> getStations() {
