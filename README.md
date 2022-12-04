@@ -76,5 +76,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [X] 로그인 성공 - 잘못된 토큰, 내 정보 조회 실패
 - [X] 내 정보 관리 인수 테스트 만들기
 - [X] 인증 - 내 정보 조회 기능 완성하기
-- [ ] 즐겨찾기 관리 인수 테스트 만들기
+- [X] 즐겨찾기 관리 인수 테스트 만들기
 - [ ] 인증 - 즐겨 찾기 기능 완성하기
