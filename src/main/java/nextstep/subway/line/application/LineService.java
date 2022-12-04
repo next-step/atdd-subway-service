@@ -83,6 +83,15 @@ public class LineService {
 		line.connectSection(section, sectionsToUpdate);
 	}
 
+	public void new_removeLineStation(Long lineId, Long stationId) {
+		Section sectionByUpStation = sectionService.findSectionByUpStation(stationId);
+		Section sectionByDownStation = sectionService.findSectionByDownStation(stationId);
+		Line line = findById(lineId);
+
+		line.removeSection(sectionByUpStation, sectionByDownStation);
+
+	}
+
 	private Line findById(Long id) {
 		return lineRepository.findById(id)
 			.orElseThrow(() -> new NotFoundException(String.format("ID(%d) 에 해당하는 노선을 찾을 수 없습니다.", id)));

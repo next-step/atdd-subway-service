@@ -216,4 +216,86 @@ class SectionsTest {
 		);
 	}
 
+	@DisplayName("구간 삭제 - 상행 종점 삭제")
+	@Test
+	void removeFirstUpStationTest() {
+		// given
+		Section 새로운_구간 = Section.of(이호선, 역삼역, 선릉역, Distance.from(5));
+
+		Sections sections = Sections.from(구간);
+		sections.connect(새로운_구간, Collections.singletonList(구간));
+
+		// when
+		sections.remove(구간, null);
+
+		// then
+		assertAll(
+			() -> assertThat(sections.getSections()).hasSize(1),
+			() -> assertThat(sections.sortedStations()).containsExactly(역삼역, 선릉역),
+			() -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(5),
+			() -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(역삼역),
+			() -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(선릉역),
+			() -> assertThat(sections.firstUpStation()).isEqualTo(역삼역)
+		);
+	}
+
+	@DisplayName("구간 삭제 - 하행 종점 삭제")
+	@Test
+	void removeLastDownStationTest() {
+		// given
+		Section 새로운_구간 = Section.of(이호선, 역삼역, 선릉역, Distance.from(5));
+
+		Sections sections = Sections.from(구간);
+		sections.connect(새로운_구간, Collections.singletonList(구간));
+
+		// when
+		sections.remove(null, 새로운_구간);
+
+		// then
+		assertAll(
+			() -> assertThat(sections.getSections()).hasSize(1),
+			() -> assertThat(sections.sortedStations()).containsExactly(강남역, 역삼역),
+			() -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(10),
+			() -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(강남역),
+			() -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(역삼역),
+			() -> assertThat(sections.lastDownStation()).isEqualTo(역삼역)
+		);
+	}
+
+	@DisplayName("구간 삭제 - 중간 역 삭제")
+	@Test
+	void removeMiddleStationTest() {
+		// given
+		Section 새로운_구간 = Section.of(이호선, 역삼역, 선릉역, Distance.from(5));
+
+		Sections sections = Sections.from(구간);
+		sections.connect(새로운_구간, Collections.singletonList(구간));
+
+		// when
+		sections.remove(새로운_구간, 구간);
+
+		// then
+		assertAll(
+			() -> assertThat(sections.getSections()).hasSize(1),
+			() -> assertThat(sections.sortedStations()).containsExactly(강남역, 선릉역),
+			() -> assertThat(sections.getSections().get(0).getDistance()).isEqualTo(15),
+			() -> assertThat(sections.getSections().get(0).getUpStation()).isEqualTo(강남역),
+			() -> assertThat(sections.getSections().get(0).getDownStation()).isEqualTo(선릉역),
+			() -> assertThat(sections.firstUpStation()).isEqualTo(강남역),
+			() -> assertThat(sections.lastDownStation()).isEqualTo(선릉역)
+		);
+	}
+
+	@DisplayName("구간 삭제 시, 구간이 하나인 경우 예외 발생")
+	@Test
+	void removeFromOnlyOneSectionTest() {
+		// given
+		Section 새로운_구간 = Section.of(이호선, 역삼역, 선릉역, Distance.from(5));
+		Sections sections = Sections.from(구간);
+
+		// when & then
+		assertThatThrownBy(() -> sections.remove(구간, 구간))
+			.isInstanceOf(InvalidDataException.class)
+			.hasMessage("구간이 하나인 노선에서는 제거할 수 없습니다.");
+	}
 }

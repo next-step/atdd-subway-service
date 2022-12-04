@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -14,4 +15,8 @@ public interface SectionRepository extends JpaRepository<Section, Long> {
 		+ "WHERE (s.upStation = :upStation OR s.downStation = :downStation) "
 		+ "OR (s.upStation = :downStation OR s.downStation = :upStation)")
 	List<Section> findAllByStations(@Param("upStation") Station upStation, @Param("downStation") Station downStation);
+
+	Optional<Section> findByUpStationId(Long stationId);
+
+	Optional<Section> findByDownStationId(Long stationId);
 }

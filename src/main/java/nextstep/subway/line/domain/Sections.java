@@ -23,6 +23,9 @@ public class Sections {
 	private static final String INVALID_SECTION_ERROR_MESSAGE = "지하철 구간은 반드시 존재해야 합니다.";
 	private static final String NOT_INCLUDE_UP_DOWN_STATION_ERROR_MESSAGE = "등록할 수 없는 구간입니다.";
 	private static final String SAME_UP_DOWN_STATION_ERROR_MESSAGE = "이미 등록된 구간입니다.";
+	private static final String INVALID_MINIMUM_SECTION_COUNT_MESSAGE = "구간이 하나인 노선에서는 제거할 수 없습니다.";
+	private static final int MINIMUM_SECTION_COUNT = 1;
+
 
 	@OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
@@ -137,6 +140,26 @@ public class Sections {
 
 	public void add(Section newSection) {
 		sections.add(newSection);
+	}
+
+	public void remove(Section sectionByUpStation, Section sectionByDownStation) {
+		validateRemoveSection();
+		removeSection(sectionByUpStation, sectionByDownStation);
+	}
+
+	private void validateRemoveSection() {
+		if (invalidSectionMinimumSize()) {
+			throw new InvalidDataException(INVALID_MINIMUM_SECTION_COUNT_MESSAGE);
+		}
+	}
+
+	private boolean invalidSectionMinimumSize() {
+		return sections.size() <= MINIMUM_SECTION_COUNT;
+	}
+
+	private void removeSection(Section sectionByUpStation, Section sectionByDownStation) {
+		SectionRemover.of(sectionByUpStation, sectionByDownStation)
+			.remove(this, sectionByUpStation, sectionByDownStation);
 	}
 
 	public void removeSection(Section section) {
