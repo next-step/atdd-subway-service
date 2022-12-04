@@ -11,6 +11,7 @@ public class Fare {
 
     public static final int SCALE = 0;
     public static final Fare ZERO = Fare.valueOf(0);
+    public static final int MULTIPLY_SCALE = 2;
 
     @Column(nullable = false)
     private BigDecimal value;
@@ -44,6 +45,18 @@ public class Fare {
 
     public int toInt() {
         return value.intValue();
+    }
+
+    public Fare minus(Fare subtract) {
+        return new Fare(value.subtract(subtract.value));
+    }
+
+    private Fare multiply(BigDecimal multiplicand) {
+        return new Fare(value.multiply(multiplicand.setScale(MULTIPLY_SCALE, RoundingMode.FLOOR)));
+    }
+
+    public Fare multiply(double multiplicand) {
+        return multiply(BigDecimal.valueOf(multiplicand));
     }
 
     @Override

@@ -24,7 +24,9 @@ class DistanceFarePoliciesTest {
                         new BasicFarePolicy(),
                         new UntilFiftyKiloExtraFarePolicy(),
                         new AboveFiftyKiloExtraFarePolicy()
-                        ));
+                        ),
+                Collections.emptyList()
+                );
     }
 
     @ParameterizedTest

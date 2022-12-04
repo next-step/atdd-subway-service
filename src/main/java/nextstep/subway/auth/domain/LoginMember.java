@@ -1,6 +1,7 @@
 package nextstep.subway.auth.domain;
 
 public class LoginMember {
+    public static final LoginMember ANONYMOUS = new LoginMember(0L, "", 0);
     private Long id;
     private String email;
     private Integer age;
