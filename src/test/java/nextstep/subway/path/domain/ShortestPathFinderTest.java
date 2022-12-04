@@ -13,7 +13,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-class PathFinderTest {
+class ShortestPathFinderTest {
 
     Station 교대역;
     Station 강남역;
@@ -47,9 +47,9 @@ class PathFinderTest {
     @DisplayName("모든 노선의 구간을 등록한 뒤 최단 경로를 구한다")
     @Test
     void findShortestPath() {
-        PathFinder pathFinder = new PathFinder();
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
 
-        Path shortestPath = pathFinder.findShortestPath(lines, 남부터미널역, 강남역);
+        Path shortestPath = shortestPathFinder.findShortestPath(lines, 남부터미널역, 강남역);
 
         assertAll(
                 () -> assertThat(shortestPath.getStations()).containsExactly(남부터미널역, 양재역, 강남역),
@@ -60,9 +60,9 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 같으면 EX 발생")
     @Test
     void sameSourceAndTarget() {
-        PathFinder pathFinder = new PathFinder();
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
 
-        ThrowingCallable 출발역과_도착역이_같다 = () -> pathFinder.findShortestPath(lines, 남부터미널역, 남부터미널역);
+        ThrowingCallable 출발역과_도착역이_같다 = () -> shortestPathFinder.findShortestPath(lines, 남부터미널역, 남부터미널역);
 
         assertThatIllegalArgumentException().isThrownBy(출발역과_도착역이_같다)
                 .withMessageContaining("출발역과 도착역이 같을 수 없습니다.");
@@ -71,11 +71,11 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않으면 EX 발생")
     @Test
     void notAddedEdge() {
-        PathFinder pathFinder = new PathFinder();
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
 
-        ThrowingCallable 출발역과_도착역이_같다 = () -> pathFinder.findShortestPath(lines, 공사중인역, 남부터미널역);
+        ThrowingCallable 출발역과_도착역이_연결되어_있지_않다 = () -> shortestPathFinder.findShortestPath(lines, 공사중인역, 남부터미널역);
 
-        assertThatIllegalArgumentException().isThrownBy(출발역과_도착역이_같다)
+        assertThatIllegalArgumentException().isThrownBy(출발역과_도착역이_연결되어_있지_않다)
                 .withMessageContaining("출발역과 도착역의 연결정보가 없습니다.");
     }
 }

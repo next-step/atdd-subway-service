@@ -13,12 +13,16 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
+    private int extraCost;
 
     @Embedded
     private Sections sections = new Sections();
@@ -35,6 +39,13 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(this, upStation, downStation, distance);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int extraCost) {
+        this.name = name;
+        this.color = color;
+        sections.add(this, upStation, downStation, distance);
+        this.extraCost = extraCost;
     }
 
     public void update(Line line) {
@@ -72,6 +83,10 @@ public class Line extends BaseEntity {
 
     public List<Station> getStations() {
         return sections.getStations();
+    }
+
+    public int getExtraCost() {
+        return extraCost;
     }
 
     @Override

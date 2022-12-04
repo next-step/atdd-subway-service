@@ -1,10 +1,11 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.discount.DiscountPolicy;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortestPathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -24,13 +25,16 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(PathRequest request) {
+    public PathResponse findShortestPath(PathRequest request,
+                                         DiscountPolicy discountPolicy) {
         List<Line> lines = lineService.findAll();
         Station source = stationService.findStationById(request.getSource());
         Station target = stationService.findStationById(request.getTarget());
 
-        PathFinder pathFinder = new PathFinder();
-        Path shortestPath = pathFinder.findShortestPath(lines, source, target);
+        ShortestPathFinder shortestPathFinder = new ShortestPathFinder();
+        Path shortestPath = shortestPathFinder.findShortestPath(lines, source, target);
+        shortestPath.addMaxExtraCostInLines();
+        shortestPath.applyDiscountPolicy(discountPolicy);
 
         return new PathResponse(shortestPath);
     }

@@ -2,7 +2,6 @@ package nextstep.subway.favorite.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import javax.persistence.EntityNotFoundException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -51,8 +50,6 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long id) {
-        favoriteRepository.findById(id)
-                .orElseThrow(EntityNotFoundException::new);
         favoriteRepository.deleteById(id);
     }
 }

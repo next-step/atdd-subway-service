@@ -27,7 +27,6 @@ public class Favorite {
     @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
     private Station target;
 
-
     protected Favorite() {
     }
 

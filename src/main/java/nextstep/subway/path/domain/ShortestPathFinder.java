@@ -6,12 +6,12 @@ import java.util.Set;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
-public class PathFinder {
+public class ShortestPathFinder {
 
-    private Find find;
+    private Finder finder;
 
-    public PathFinder() {
-        this.find = new JgraphtFind();
+    public ShortestPathFinder() {
+        this.finder = new JgraphtFinder();
     }
 
     public Path findShortestPath(List<Line> lines, Station source, Station target) {
@@ -30,7 +30,7 @@ public class PathFinder {
 
     private void ifNotExistEdgeThenThrow(Station source, Station target) {
         try {
-            find.isExistPath(source, target);
+            finder.isExistPath(source, target);
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("출발역과 도착역의 연결정보가 없습니다.");
         }
@@ -43,19 +43,19 @@ public class PathFinder {
     }
 
     private Path createPath(Station source, Station target) {
-        List<Station> stations = find.getVertexList(source, target);
-        int weight = find.getWeight(source, target);
+        List<Station> stations = finder.getVertexList(source, target);
+        int weight = finder.getWeight(source, target);
         return new Path(stations, weight);
     }
 
     private void addSectionsInGraph(List<Line> lines) {
         lines.forEach(line -> line.getSections()
-                .forEach(section -> find.setEdgeWeight(section, section.getDistance())));
+                .forEach(section -> finder.setEdgeWeight(section, section.getDistance())));
     }
 
     private void addStationsInGraph(List<Line> lines) {
         Set<Station> stations = new HashSet<>();
         lines.forEach(line -> stations.addAll(line.getStations()));
-        stations.forEach(station -> find.addVertex(station));
+        stations.forEach(station -> finder.addVertex(station));
     }
 }

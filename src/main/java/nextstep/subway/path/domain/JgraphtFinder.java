@@ -7,12 +7,12 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
-public class JgraphtFind implements Find {
+public class JgraphtFinder implements Finder {
 
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
     private DijkstraShortestPath dijkstraShortestPath;
 
-    public JgraphtFind() {
+    public JgraphtFinder() {
         this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
         this.dijkstraShortestPath = new DijkstraShortestPath(graph);
     }

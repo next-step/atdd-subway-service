@@ -11,7 +11,6 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -84,8 +83,6 @@ class FavoriteServiceTest {
     @DisplayName("사용자가 등록했던 즐겨찾기를 삭제한다")
     @Test
     void deleteFavorite() {
-        Favorite favorite = new Favorite(사용자, 강남역, 광교역);
-        given(favoriteRepository.findById(any())).willReturn(Optional.of(favorite));
         FavoriteService favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
 
         ThrowingCallable 즐겨찾기_삭제 = () -> favoriteService.deleteFavorite(1L);

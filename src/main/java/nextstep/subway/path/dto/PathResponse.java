@@ -9,10 +9,12 @@ public class PathResponse {
 
     private List<StationResponse> stations;
     private int distance;
+    private int cost;
 
     public PathResponse(Path shortestPath) {
         this.stations = createStationResponses(shortestPath);
         this.distance = shortestPath.getDistance();
+        this.cost = shortestPath.getCost();
     }
 
     private List<StationResponse> createStationResponses(Path shortestPath) {
@@ -27,5 +29,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getCost() {
+        return cost;
     }
 }
