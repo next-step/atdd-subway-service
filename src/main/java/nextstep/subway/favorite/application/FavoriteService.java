@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -62,7 +62,7 @@ public class FavoriteService {
     }
 
     @Transactional
-    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+    public void deleteFavorite(AuthMember loginMember, Long favoriteId) {
         Favorite favorite = findById(favoriteId);
         favorite.checkLoginMember(loginMember.getId());
         favoriteRepository.delete(favorite);
