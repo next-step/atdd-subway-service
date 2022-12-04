@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -11,6 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -45,10 +48,87 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     * Feature: 내 정보 관리 기능
+     *  Scenario: 내 정보를 관리한다.
+     *      given: 회원가입을 하고 로그인을 한다.
+     *      when: 내 정보 조회를 시도하면
+     *      then: 내 정보가 조회되고,
+     *      when: 내 정보를 수정하면
+     *      then: 내 정보 조회 시, 수정된 정보가 조회되고,
+     *      when: 회원 정보를 삭제하면
+     *      then: 로그인 요청 시, 로그인에 실패한다.
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // given
+        회원_생성을_요청("byunsw4@naver.com", "password123!", 30);
+        ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청("byunsw4@naver.com", "password123!");
 
+        // when: 내 정보 조회를 시도하면
+        ExtractableResponse<Response> 내_정보_조회_결과 = 내_정보_조회_요청(로그인_요청_결과);
+
+        // then: 내 정보가 조회되고,
+        내_정보_조회_결과(내_정보_조회_결과, "byunsw4@naver.com", 30);
+
+        // when: 내 정보를 수정하면
+        ExtractableResponse<Response> 내_정보_수정_요청_결과 = 내_정보_수정_요청(로그인_요청_결과, "byunsw4@gmail.com", "password123@", 33);
+        회원_정보_수정됨(내_정보_수정_요청_결과);
+
+        // then: 내 정보 조회 시, 수정된 정보가 조회되고,
+//        ExtractableResponse<Response> 내_정보_수정_조회_결과 = 내_정보_조회_요청(로그인_요청_결과);
+//        내_정보_조회_결과(내_정보_수정_조회_결과, "byunsw4@gmail.com", 33);
+
+        // when: 회원 정보를 삭제하면
+        ExtractableResponse<Response> 내_정보_삭제_요청_결과 = 내_정보_삭제_요청(로그인_요청_결과);
+        회원_삭제됨(내_정보_삭제_요청_결과);
+
+        // then: 로그인 요청 시, 로그인에 실패한다.
+        ExtractableResponse<Response> 삭제_후_로그인_요청_결과 = 로그인_요청("byunsw4@gmail.com", "password123@");
+        로그인_실패됨(삭제_후_로그인_요청_결과);
+    }
+
+    private ExtractableResponse<Response> 내_정보_삭제_요청(ExtractableResponse<Response> response) {
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " + tokenResponse.getAccessToken())
+                .when().delete("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 내_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, int age) {
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer "+tokenResponse.getAccessToken())
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 내_정보_조회_결과(ExtractableResponse<Response> response, String email, int age) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+        assertThat(memberResponse.getId()).isNotNull();
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
+        assertThat(memberResponse.getAge()).isEqualTo(age);
+    }
+
+    private ExtractableResponse<Response> 내_정보_조회_요청(ExtractableResponse<Response> response) {
+        TokenResponse token = response.as(TokenResponse.class);
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .header("Authorization", "Bearer " +  token.getAccessToken())
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {

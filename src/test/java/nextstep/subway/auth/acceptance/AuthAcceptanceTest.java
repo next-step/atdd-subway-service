@@ -56,7 +56,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> loginResponse = 로그인_요청("byunsw4@naver2.com", "password123!");
 
         // then
-        assertThat(loginResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_실패됨(loginResponse);
     }
 
 
@@ -80,7 +80,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private ExtractableResponse<Response> 내_정보_조회(String token) {
+    public static ExtractableResponse<Response> 내_정보_조회(String token) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header("Authorization", "Bearer "+ token)
@@ -90,7 +90,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
         params.put("password", password);
@@ -100,5 +100,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .when().post("/login/token")
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 로그인_실패됨(ExtractableResponse<Response> loginResponse) {
+        assertThat(loginResponse.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
