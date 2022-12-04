@@ -36,4 +36,8 @@ public class Path {
     public int distanceValue() {
         return distance.value();
     }
+
+    public Distance distance() {
+        return distance;
+    }
 }
