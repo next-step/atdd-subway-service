@@ -49,7 +49,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_출발역_도착역_같음() {
         // given
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10));
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 0));
 
         // when
         ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 교대역.getId());
@@ -67,8 +67,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_출발역_도착역_연결안됨() {
         // given
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10));
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("삼호선", "orange", 남부터미널역.getId(), 양재역.getId(), 5));
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 0));
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("삼호선", "orange", 남부터미널역.getId(), 양재역.getId(), 5, 0));
 
         // when
         ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 양재역.getId());
@@ -86,7 +86,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_출발역_도착역_구간_미포함() {
         // given
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10));
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 0));
 
         // when
         ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 양재역.getId());
@@ -104,7 +104,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_출발역_도착역_존재하지않음() {
         // given
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10));
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 0));
 
         // when
         ExtractableResponse<Response> response = 최단_경로_조회(-1L, 교대역.getId());
@@ -122,9 +122,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_정상() {
         // given
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 10));
-        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10));
-        LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 10, 0));
+        LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 0));
+        LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 5, 0)).as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
 
         // when

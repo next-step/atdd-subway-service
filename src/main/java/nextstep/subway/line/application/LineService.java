@@ -30,7 +30,7 @@ public class LineService {
         Station upStation = stationService.stationById(request.getUpStationId());
         Station downStation = stationService.stationById(request.getDownStationId());
         Distance distance = new Distance(request.getDistance());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, distance));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, distance, request.getSurcharge()));
         return LineResponse.of(persistLine);
     }
 
