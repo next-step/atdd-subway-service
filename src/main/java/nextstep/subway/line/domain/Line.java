@@ -2,6 +2,7 @@ package nextstep.subway.line.domain;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -32,6 +33,12 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         this.fare = LineFare.zero();
+    }
+
+    public Line(String name, String color, int fare) {
+        this.name = name;
+        this.color = color;
+        this.fare = LineFare.from(fare);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -79,5 +86,26 @@ public class Line extends BaseEntity {
 
     public String getName() {
         return name;
+    }
+
+    public LineFare getFare() {
+        return fare;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+        Line line = (Line) o;
+        return id.equals(line.id) && name.equals(line.name) && color.equals(line.color) && fare.equals(line.fare);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, name, color, fare);
     }
 }
