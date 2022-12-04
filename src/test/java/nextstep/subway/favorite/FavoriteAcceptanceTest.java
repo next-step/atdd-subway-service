@@ -71,15 +71,43 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *      then: 즐겨찾기가 생성됨
      */
     @Test
-    @DisplayName("즐겨찾기 추가 테스트")
+    @DisplayName("즐겨찾기 생성 테스트")
     void addFavorite(){
         // given
 
-        // when: 즐겨찾기 생성을 요청
+        // when
         ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(강남역.getId(), 잠실역.getId());
 
-        // then: 즐겨찾기가 생성됨
+        // then
         즐겨찾기_생성됨(즐겨찾기_생성_요청_결과);
+    }
+
+    /**
+     * Feature: 즐겨찾기를 관리한다.
+     *  Background
+     *      given: 지하철역 등록되어 있음
+     *      And: 지하철 노선 등록되어 있음
+     *      And: 지하철 노선에 지하철역 등록되어 있음
+     *      And: 회원 등록 되어있음
+     *      And: 로그인 되어있음
+     *
+     *  Scenario: 즐겨찾기 목록 조회
+     *      given: 즐겨찾기 추가
+     *      when: 즐겨찾기 목록 조회를 요청
+     *      then: 즐겨찾기 목록이 조회됨
+     */
+    @Test
+    @DisplayName("즐겨찾기 생성 테스트")
+    void listFavorite(){
+        // given
+        즐겨찾기_생성_요청(강남역.getId(), 잠실역.getId());
+        즐겨찾기_생성_요청(역삼역.getId(), 잠실역.getId());
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_결과 = 즐겨찾기_목록_조회_요청();
+
+        // then
+        즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청_결과);
     }
 
     /**
@@ -144,7 +172,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .header(AUTHORIZATION, BEARER_TYPE + " "+ token)
-                .when().get("/favorite")
+                .when().get("/favorites")
                 .then().log().all()
                 .extract();
     }

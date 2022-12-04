@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -52,6 +54,27 @@ class FavoriteServiceTest {
         assertThat(favoriteResponse.getId()).isNotNull();
         assertThat(favoriteResponse.getSource().getName()).isEqualTo("강남역");
         assertThat(favoriteResponse.getTarget().getName()).isEqualTo("잠실역");
+    }
+
+
+    @Test
+    @DisplayName("즐겨찾기 목록 테스트")
+    void listTest(){
+        // 사용자정보를 통해 해당 사용자의 즐겨찾기 목록을 조회한다.
+        // given
+        FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationRepository, memberRepository);
+
+        // when
+        when(favoriteRepository.findAllByMember(any())).thenReturn(Arrays.asList(
+                new Favorite(1L, new Station("강남역"), new Station("잠실역"), new Member("test@test.com", "password", 10)),
+                new Favorite(2L, new Station("영등포역"), new Station("수원역"), new Member("test@test.com", "password", 10)),
+                new Favorite(3L, new Station("시청역"), new Station("종로3가역"), new Member("test@test.com", "password", 10))
+        ));
+        when(memberRepository.findById(any())).thenReturn(Optional.of(new Member(1L, "test@test.com", "password", 10)));
+        List<FavoriteResponse> favorites = favoriteService.findFavoriteAll(1L);
+
+        // then
+        assertThat(favorites).hasSize(3);
     }
 
 }

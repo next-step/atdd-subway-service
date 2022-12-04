@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
+import java.util.stream.Collectors;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -41,5 +43,11 @@ public class FavoriteService {
                 .orElseThrow(
                         () -> new IllegalArgumentException("역 조회 실패")
                 );
+    }
+
+    public List<FavoriteResponse> findFavoriteAll(Long id) {
+        return favoriteRepository.findAllByMember(getMember(id)).stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }
