@@ -80,4 +80,9 @@ public class Section {
     public boolean isSameDownSection(Station station) {
         return this.downStation.equals(station);
     }
+
+    public static Section mergeSection(Section upSection, Section downSection) {
+        return new Section(upSection.line, upSection.getUpStation(), downSection.downStation,
+                upSection.distance.plus(downSection.distance));
+    }
 }
