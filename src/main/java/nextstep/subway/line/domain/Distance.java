@@ -5,6 +5,8 @@ import nextstep.subway.line.exception.InvalidDistanceException;
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
+import static nextstep.subway.line.exception.InvalidDistanceException.LESS_THAN_ZERO;
+
 @Embeddable
 public class Distance {
 
@@ -24,6 +26,9 @@ public class Distance {
     }
 
     public static Distance valueOf(int value) {
+        if (new Distance(value).isLessThan(ZERO)) {
+            throw new InvalidDistanceException(LESS_THAN_ZERO);
+        }
         return new Distance(value);
     }
 
