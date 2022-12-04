@@ -1,5 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.나의_회원_정보_조회_요청;
 import static nextstep.subway.member.acceptance.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -9,6 +10,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.acceptance.MemberAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -37,14 +39,15 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인이_정상처리됨(로그인_결과);
     }
 
-    @DisplayName("Bearer Auth 로그인 실패")
-    @Test
-    void myInfoWithBadBearerAuth() {
-    }
-
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // given
+        String token = 정상_로그인_토큰_반환(EMAIL,PASSWORD);
+        // when
+        String wrongToken = token + "wrong";
+        // then
+        assertThat(나의_회원_정보_조회_요청(wrongToken).statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private void 로그인이_정상처리됨(ExtractableResponse<Response> response){
