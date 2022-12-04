@@ -1,5 +1,6 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
@@ -32,7 +33,9 @@ public class PathControllerTest {
         Station 종각역 = createStation("종각역", 2L);
         createLine("1호선", "blue", 강남역, 종각역, 5, 100);
 
-        ResponseEntity<PathResponse> responseEntity = pathController.findShortestPath(강남역.getId(), 종각역.getId());
+        ResponseEntity<PathResponse> responseEntity = pathController.findShortestPath(
+                new LoginMember(1L, "koreatech93@naver.com", 30), 강남역.getId(), 종각역.getId()
+        );
         assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
     }
 }

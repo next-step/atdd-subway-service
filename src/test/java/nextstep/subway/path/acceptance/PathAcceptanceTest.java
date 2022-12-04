@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -11,8 +12,11 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStep.로그인된_회원;
 import static nextstep.subway.line.acceptance.LineAcceptanceStep.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceStep.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceStep.생성된_회원;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.path.acceptance.PathAcceptanceStep.*;
 
 @DisplayName("지하철 경로 조회")
@@ -27,7 +31,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-
+    private TokenResponse tokenResponse;
     /**
      * 교대역    --- *2호선* ---   강남역
      * |                        |
@@ -49,6 +53,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
         사호선 = 지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-red-600", 명동역.getId(), 사당역.getId(), 30)).as(LineResponse.class);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
+        생성된_회원(EMAIL, PASSWORD, AGE);
+        tokenResponse = 로그인된_회원(EMAIL, PASSWORD).as(TokenResponse.class);
     }
 
 
@@ -56,7 +62,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(tokenResponse, 강남역.getId(), 남부터미널역.getId());
 
         // then
         최단경로_목록_응답됨(response);
@@ -66,7 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getLinesWithException() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역.getId(), 강남역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(tokenResponse, 강남역.getId(), 강남역.getId());
 
         // then
         최단경로_목록_조회_실패(response);
@@ -76,7 +82,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getLinesWithException2() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역.getId(), 사당역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(tokenResponse, 강남역.getId(), 사당역.getId());
 
         // then
         최단경로_목록_조회_실패(response);
@@ -89,7 +95,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long 없는역_ID = 100L;
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역.getId(), 없는역_ID);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(tokenResponse, 강남역.getId(), 없는역_ID);
 
         // then
         최단경로_목록_조회_실패(response);

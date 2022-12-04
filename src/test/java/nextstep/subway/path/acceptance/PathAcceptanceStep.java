@@ -3,6 +3,7 @@ package nextstep.subway.path.acceptance;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -10,9 +11,10 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 public class PathAcceptanceStep {
 
-    public static ExtractableResponse<Response> 최단_경로_조회_요청(long sourceId, long targetId) {
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(TokenResponse tokenResponse, long sourceId, long targetId) {
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .param("sourceId", sourceId)
                 .param("targetId", targetId)
