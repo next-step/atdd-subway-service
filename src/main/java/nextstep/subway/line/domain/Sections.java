@@ -8,6 +8,9 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import static nextstep.subway.utils.Message.DUPLICATED_SECTION;
+import static nextstep.subway.utils.Message.INVALID_SECTION;
+
 @Embeddable
 public class Sections {
 
@@ -25,6 +28,8 @@ public class Sections {
         return new Sections(new ArrayList<>());
     }
 
+    public List<Section> getSections() { return Collections.unmodifiableList(sections); }
+
     public void add(Section section) {
         checkUniqueSection(section);
         checkValidSection(section);
@@ -35,7 +40,7 @@ public class Sections {
 
     private void checkUniqueSection(Section newSection) {
         if (this.sections.contains(newSection) || sections.stream().anyMatch(it -> newSection.isSameSection(it))) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new RuntimeException(DUPLICATED_SECTION);
         }
     }
 
@@ -44,7 +49,7 @@ public class Sections {
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> section.isUpStation(it)) &&
                 stations.stream().noneMatch(it -> section.isDownStation(it))) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new RuntimeException(INVALID_SECTION);
         }
     }
 
@@ -119,7 +124,7 @@ public class Sections {
                 .findFirst()
                 .map(Section::getDownStation);
     }
-    
+
 
     public void remove(Station station) {
         validSectionSize();
@@ -161,6 +166,7 @@ public class Sections {
     public int hashCode() {
         return Objects.hash(sections);
     }
+
 
 
 }

@@ -1,10 +1,13 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.SectionValidException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.Objects;
 import java.util.stream.Stream;
+
+import static nextstep.subway.utils.Message.INVALID_OVER_SECTION_DISTANCE;
 
 @Entity
 public class Section {
@@ -58,7 +61,7 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new SectionValidException(INVALID_OVER_SECTION_DISTANCE);
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -66,7 +69,7 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new SectionValidException(INVALID_OVER_SECTION_DISTANCE);
         }
         this.downStation = station;
         this.distance -= newDistance;

@@ -7,15 +7,19 @@ import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Stream;
 
 @Entity
 public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
-    private String name;
-    private String color;
+
+    @Embedded
+    private Name name;
+
+    @Embedded
+    private Color color;
 
     @Embedded
     private Sections sections = Sections.initSections();
@@ -24,19 +28,19 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+        this.name = Name.from(name);
+        this.color = Color.from(color);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this.name = Name.from(name);
+        this.color = Color.from(color);
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+        this.name =  Name.from(line.getName());
+        this.color = Color.from(line.getColor());
     }
 
     public Long getId() {
@@ -44,11 +48,11 @@ public class Line extends BaseEntity {
     }
 
     public String getName() {
-        return name;
+        return name.getName();
     }
 
     public String getColor() {
-        return color;
+        return color.getColor();
     }
 
     public List<Station> getStations() {
@@ -75,5 +79,9 @@ public class Line extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, name, color, sections);
+    }
+
+    public List<Section> getSections() {
+        return sections.getSections();
     }
 }

@@ -8,6 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
+import static nextstep.subway.utils.Message.INVALID_OVER_SECTION_DISTANCE;
+
 class SectionTest {
     private Line 신분당선;
     private Station 강남역;
@@ -29,7 +31,7 @@ class SectionTest {
         Station 역삼역 = new Station("역삼역");
         Assertions.assertThatThrownBy(() -> 강남역_정자역_구간.updateUpStation(역삼역, input))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+                .hasMessageStartingWith(INVALID_OVER_SECTION_DISTANCE);
     }
 
 
@@ -42,7 +44,7 @@ class SectionTest {
         Station 역삼역 = new Station("역삼역");
         Assertions.assertThatThrownBy(() -> 강남역_정자역_구간.updateDownStation(역삼역, input))
                 .isInstanceOf(RuntimeException.class)
-                .hasMessageStartingWith("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+                .hasMessageStartingWith(INVALID_OVER_SECTION_DISTANCE);
     }
 
     @DisplayName("지하철 노선, 상행역, 하행역이 같은 두 지하철 구간은 동등하다.")
