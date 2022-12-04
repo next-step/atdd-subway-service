@@ -10,6 +10,7 @@ public enum FareAge {
 
     ADULT(19, Integer.MAX_VALUE, 0);
 
+    private static final int DISCOUNT_FARE = 350;
     private int start;
     private int end;
     private double rate;
@@ -31,7 +32,7 @@ public enum FareAge {
         return start <= age && age < end;
     }
 
-    public double getRate() {
-        return rate;
+    public int calculateFare(int fare) {
+        return (int) ((fare - DISCOUNT_FARE) * rate);
     }
 }
