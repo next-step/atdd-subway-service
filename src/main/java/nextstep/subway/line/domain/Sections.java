@@ -50,7 +50,7 @@ public class Sections {
     private Station findUpStation() {
         List<Station> upStations = sections.stream().map(Section::getUpStation).collect(Collectors.toList());
         List<Station> downStations = sections.stream().map(Section::getDownStation).collect(Collectors.toList());
-        for(Station downStation : downStations) {
+        for (Station downStation : downStations) {
             upStations.remove(downStation);
         }
         return upStations.get(0);
@@ -77,7 +77,7 @@ public class Sections {
             return;
         }
 
-        throw new RuntimeException(ErrorMessage.UNKNOWN_ERROR.getMessage());
+        throw new IllegalArgumentException(ErrorMessage.INVALID_SECTION.getMessage());
     }
 
     private void checkValidSection(Station requestUpStation, Station requestDownStation) {
@@ -123,8 +123,8 @@ public class Sections {
     }
 
     private void checkRemovableStation(Station station) {
-        if(!isStationExisted(station)) {
-            throw new IllegalArgumentException(ErrorMessage.NO_EXIST_STATIONS_TO_DELETE.getMessage());
+        if (!isStationExisted(station)) {
+            throw new NoSuchElementException(ErrorMessage.NO_EXIST_STATIONS_TO_DELETE.getMessage());
         }
 
         if (sections.size() <= 1) {

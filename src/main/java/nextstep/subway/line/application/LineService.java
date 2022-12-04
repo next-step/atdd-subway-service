@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +43,7 @@ public class LineService {
 
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(() ->
-                new IllegalArgumentException(ErrorMessage.DO_NOT_EXIST_STATION_IN_LINE.getMessage()));
+                new NoSuchElementException(ErrorMessage.DO_NOT_EXIST_LINE_ID.getMessage()));
     }
 
 
