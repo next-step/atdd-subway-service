@@ -4,6 +4,8 @@ import java.util.Collections;
 import java.util.List;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.ExtraFare;
+import nextstep.subway.path.domain.age.AgeDiscount;
+import nextstep.subway.path.domain.distance.DistanceDiscount;
 import nextstep.subway.station.domain.Station;
 
 public class Path {
@@ -26,7 +28,8 @@ public class Path {
 
     private ExtraFare calculateExtraFare(int extraFare, int distance, int age) {
         ExtraFare discountExtraFare = ExtraFare.from(extraFare).add(DistanceDiscount.calculate(distance));
-        return ExtraFare.from(discountExtraFare.subtract(AgeDiscount.calculate(age, discountExtraFare.value())).value());
+        return ExtraFare.from(discountExtraFare.subtract(
+            AgeDiscount.calculate(age, discountExtraFare.value())).value());
     }
 
     public List<Station> getStations() {

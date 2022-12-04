@@ -1,9 +1,9 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.age;
 
 import java.util.Arrays;
 import nextstep.subway.line.domain.ExtraFare;
 
-public enum AgeDiscount {
+public enum AgeDiscount implements FareDeductible {
     CHILD(6, 13, 0.5),
     TEENAGER(13, 19, 0.2),
     ADULT(19, 100, 0);
@@ -22,7 +22,7 @@ public enum AgeDiscount {
 
     public static ExtraFare calculate(int age, int fare) {
         AgeDiscount ageDiscount = findDiscountByAge(age);
-        return ExtraFare.from((int) ((fare - DEFAULT_DISCOUNT_FARE) * ageDiscount.rate));
+        return ExtraFare.from(ageDiscount.calculateDeductedFare(fare));
     }
 
     private static AgeDiscount findDiscountByAge(int age) {
@@ -34,5 +34,10 @@ public enum AgeDiscount {
 
     private boolean isIncluded(int age) {
         return start <= age && age < end;
+    }
+
+    @Override
+    public int calculateDeductedFare(int originalFare) {
+        return (int) ((originalFare - DEFAULT_DISCOUNT_FARE) * this.rate);
     }
 }

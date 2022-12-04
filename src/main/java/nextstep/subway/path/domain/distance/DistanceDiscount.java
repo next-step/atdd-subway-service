@@ -1,12 +1,8 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.distance;
 
 import java.util.Arrays;
 import java.util.function.Function;
 import nextstep.subway.line.domain.ExtraFare;
-import nextstep.subway.path.domain.policy.BasicDistancePolicy;
-import nextstep.subway.path.domain.policy.DistancePolicy;
-import nextstep.subway.path.domain.policy.LongDistancePolicy;
-import nextstep.subway.path.domain.policy.MiddleDistancePolicy;
 
 public enum DistanceDiscount {
     BASIC(0, 10, distance -> new BasicDistancePolicy()),

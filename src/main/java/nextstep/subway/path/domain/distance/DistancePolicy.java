@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain.policy;
+package nextstep.subway.path.domain.distance;
 
 public interface DistancePolicy {
 

@@ -1,8 +1,8 @@
-package nextstep.subway.path.domain.policy;
+package nextstep.subway.path.domain.distance;
 
 import nextstep.subway.line.domain.ExtraFare;
 
-public class MiddleDistancePolicy extends DistanceDecorator {
+public class MiddleDistancePolicy extends DistanceCalculate {
     private static final int CONDITION = 5;
 
     private final int distance;
