@@ -5,15 +5,16 @@ import nextstep.subway.line.domain.Distance;
 public class SectionRequest {
     private Long upStationId;
     private Long downStationId;
-    private Distance distance;
+    private int distance;
 
     public SectionRequest() {
+    
     }
 
     public SectionRequest(Long upStationId, Long downStationId, int distance) {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
-        this.distance = new Distance(distance);
+        this.distance = distance;
     }
 
     public Long getUpStationId() {
@@ -24,7 +25,7 @@ public class SectionRequest {
         return downStationId;
     }
 
-    public Distance getDistance() {
+    public int getDistance() {
         return distance;
     }
 }
