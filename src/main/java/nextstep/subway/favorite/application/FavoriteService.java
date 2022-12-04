@@ -36,15 +36,16 @@ public class FavoriteService {
         Station source = findStation(favoriteRequest.getSource());
         Station target = findStation(favoriteRequest.getTarget());
 
-        Favorite save = favoriteRepository.save(new Favorite(member, source, target));
-        return FavoriteResponse.from(save);
+        Favorite favorite = Favorite.of(member, source, target);
+        member.addFavorite(favorite);
+        return FavoriteResponse.from(favorite);
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = findMember(loginMember);
-        List<Favorite> favorites = favoriteRepository.findFavoritesByMember(member);
-        return favorites.stream()
+        return member.getFavorites()
+                .stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
@@ -52,9 +53,7 @@ public class FavoriteService {
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = findMember(loginMember);
         Favorite favorite = findFavorite(id);
-        favorite.isOwner(member);
-
-        favoriteRepository.delete(favorite);
+        member.deleteFavorite(favorite);
     }
 
     private Favorite findFavorite(Long id) {
