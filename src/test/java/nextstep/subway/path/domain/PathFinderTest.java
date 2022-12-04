@@ -1,11 +1,10 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.exception.InvalidPathException;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.assertj.core.api.Assertions;
 import org.assertj.core.util.Lists;
 import org.junit.jupiter.api.BeforeEach;
@@ -54,11 +53,13 @@ class PathFinderTest {
         삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 5));
 
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(신분당선, 이호선, 삼호선));
-        PathResponse response = pathFinder.find(교대역, 양재역);
+        Path response = pathFinder.find(교대역, 양재역);
 
-        Assertions.assertThat(response.getDistance()).isEqualTo(10);
+        Assertions.assertThat(response.getDistance())
+                .extracting(Distance::toInt)
+                .isEqualTo(10);
         Assertions.assertThat(response.getStations())
-                .extracting(StationResponse::getName)
+                .extracting(Station::getName)
                 .containsExactly(
                         교대역.getName(),
                         남부터미널역.getName(),
@@ -80,11 +81,13 @@ class PathFinderTest {
         삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, 5));
 
         PathFinder pathFinder = new PathFinder(Lists.newArrayList(신분당선, 이호선, 삼호선));
-        PathResponse response = pathFinder.find(교대역, 양재역);
+        Path response = pathFinder.find(교대역, 양재역);
 
-        Assertions.assertThat(response.getDistance()).isEqualTo(6);
+        Assertions.assertThat(response.getDistance())
+                .extracting(Distance::toInt)
+                .isEqualTo(6);
         Assertions.assertThat(response.getStations())
-                .extracting(StationResponse::getName)
+                .extracting(Station::getName)
                 .containsExactly(
                         교대역.getName(),
                         강남역.getName(),

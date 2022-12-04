@@ -2,13 +2,13 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.exception.InvalidPathException;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
+import org.jgrapht.WeightedGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import org.jgrapht.graph.SimpleDirectedWeightedGraph;
 
 import java.util.List;
 import java.util.Objects;
@@ -18,54 +18,41 @@ import static nextstep.subway.line.exception.InvalidPathException.SOURCE_AND_TAR
 import static nextstep.subway.line.exception.InvalidPathException.STATION_NOT_EXISTS;
 
 public class PathFinder {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedGraph<Station, SectionEdgeWeight> graph;
 
     public PathFinder(List<Line> lines) {
-        graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+        graph = new SimpleDirectedWeightedGraph<>(SectionEdgeWeight.class);
         lines.forEach(line -> line.addPath(this));
     }
 
-    public Path find2(Station sourceStation, Station targetStation) {
+    public Path find(Station sourceStation, Station targetStation) {
         verifyPath(sourceStation, targetStation);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        DijkstraShortestPath<Station, SectionEdgeWeight> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
 
-        GraphPath<Station, DefaultWeightedEdge> shortestDistancePath = findPath(sourceStation, targetStation, dijkstraShortestPath);
+        GraphPath<Station, SectionEdgeWeight> shortestDistancePath = findPath(sourceStation, targetStation, dijkstraShortestPath);
 
+        List<SectionEdgeWeight> edges = shortestDistancePath.getEdgeList();
         List<Station> shortestPathStations = shortestDistancePath.getVertexList();
         Distance distance = new Distance(dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
 
-        return new Path(shortestPathStations, distance);
+        return new Path(edges, shortestPathStations, distance);
     }
 
-    public PathResponse find(Station sourceStation, Station targetStation) {
-        verifyPath(sourceStation, targetStation);
-
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-
-        GraphPath<Station, DefaultWeightedEdge> shortestDistancePath = findPath(sourceStation, targetStation, dijkstraShortestPath);
-
-        List<Station> shortestPathStations = shortestDistancePath.getVertexList();
-        Distance distance = new Distance(dijkstraShortestPath.getPathWeight(sourceStation, targetStation));
-
-        return new PathResponse(shortestPathStations, distance);
+    public void addPath(Section section) {
+        graph.addVertex(section.getUpStation());
+        graph.addVertex(section.getDownStation());
+        graph.addEdge(section.getUpStation(), section.getDownStation(), new SectionEdgeWeight(section));
     }
 
-    public void addPath(Station upStation, Station downStation, Distance distance) {
-        graph.addVertex(upStation);
-        graph.addVertex(downStation);
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.toDouble());
-    }
-
-    private GraphPath<Station, DefaultWeightedEdge> findPath(Station sourceStation, Station targetStation,
-                                                             DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath) {
-        GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
+    private GraphPath<Station, SectionEdgeWeight> findPath(Station sourceStation, Station targetStation,
+                                                             DijkstraShortestPath<Station, SectionEdgeWeight> dijkstraShortestPath) {
+        GraphPath<Station, SectionEdgeWeight> path = dijkstraShortestPath.getPath(sourceStation, targetStation);
         verifyPathExists(path);
         return path;
-
     }
 
-    private static void verifyPathExists(GraphPath<Station, DefaultWeightedEdge> path) {
+    private static void verifyPathExists(GraphPath<Station, SectionEdgeWeight> path) {
         if (Objects.isNull(path)) {
             throw new InvalidPathException(InvalidPathException.SOURCE_AND_TARGET_NOT_CONNECTED);
         }

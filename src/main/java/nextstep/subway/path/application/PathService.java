@@ -4,7 +4,6 @@ import nextstep.subway.line.application.LineQueryService;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.dto.PathResponse2;
 import nextstep.subway.path.fare.Fare;
 import nextstep.subway.path.fare.policy.FarePolicies;
 import nextstep.subway.station.application.StationService;
@@ -32,18 +31,10 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetStationId);
         PathFinder pathFinder = createPathFinder();
 
-        return pathFinder.find(sourceStation, targetStation);
-    }
-
-    public PathResponse2 findPath2(Long sourceStationId, Long targetStationId) {
-        Station sourceStation = stationService.findStationById(sourceStationId);
-        Station targetStation = stationService.findStationById(targetStationId);
-        PathFinder pathFinder = createPathFinder();
-
-        Path path = pathFinder.find2(sourceStation, targetStation);
+        Path path = pathFinder.find(sourceStation, targetStation);
         Fare fare = farePolicies.calculate(path);
 
-        return PathResponse2.of(path, fare);
+        return new PathResponse(path.getStations(), path.getDistance(), fare);
     }
 
     private PathFinder createPathFinder() {
