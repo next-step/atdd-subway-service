@@ -3,6 +3,11 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.policy.BasicFare;
+import nextstep.subway.fare.policy.DistanceSurchargePolicy;
+import nextstep.subway.fare.policy.LineSurchargePolicy;
+import nextstep.subway.fare.policy.SurchargePolicy;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
@@ -43,6 +48,17 @@ public class Path {
                 .map(SectionEdge::getLine)
                 .distinct()
                 .collect(Collectors.toList()));
+    }
+
+    public Fare maxLineSurcharge() {
+        return lines.maxLineSurcharge();
+    }
+
+    public Fare calculateFare() {
+        SurchargePolicy surchargePolicy = new BasicFare();
+        surchargePolicy = DistanceSurchargePolicy.of(surchargePolicy, distance);
+        surchargePolicy = LineSurchargePolicy.of(surchargePolicy, this);
+        return surchargePolicy.calculateFare();
     }
 
     public List<Station> stations() {

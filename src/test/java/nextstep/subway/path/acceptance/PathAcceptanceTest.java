@@ -147,6 +147,6 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_경로_조회됨(response);
         지하철_경로_목록_검증(response, Arrays.asList(신논현역, 강남역, 양재역, 매봉역));
         지하철_경로_거리_검증(response, 18);
-        지하철_경로_운임_검증(response, 2250);
+        지하철_경로_운임_검증(response, 2350);
     }
 }

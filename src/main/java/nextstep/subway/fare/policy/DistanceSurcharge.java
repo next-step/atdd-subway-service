@@ -1,7 +1,7 @@
 package nextstep.subway.fare.policy;
 
-import static nextstep.subway.fare.domain.Fare.BASIC_FARE;
 import static nextstep.subway.fare.domain.Fare.FIRST_SECTION_MAX_SURCHARGE;
+import static nextstep.subway.fare.domain.Fare.BASIC_SECTION_NO_SURCHARGE;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -9,11 +9,11 @@ import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 
-public enum DistanceFare {
-    BASIC_SECTION(0, 10, 0, distance -> BASIC_FARE),
-    FIRST_SECTION(10, 50, 5, distance -> BASIC_FARE + calculateSurchargeFirstSection(distance)),
+public enum DistanceSurcharge {
+    BASIC_SECTION(0, 10, 0, distance -> BASIC_SECTION_NO_SURCHARGE),
+    FIRST_SECTION(10, 50, 5, DistanceSurcharge::calculateSurchargeFirstSection),
     SECOND_SECTION(50, Integer.MAX_VALUE, 8,
-            distance -> BASIC_FARE + FIRST_SECTION_MAX_SURCHARGE + calculateSurchargeSecondSection(distance));
+            distance -> FIRST_SECTION_MAX_SURCHARGE + calculateSurchargeSecondSection(distance));
 
     public static final String ERROR_MESSAGE_INVALID_PATH_DISTANCE = "잘못된 경로입니다.";
     private final int start;
@@ -21,14 +21,14 @@ public enum DistanceFare {
     private final int interval;
     private final Function<Distance, Integer> calculation;
 
-    DistanceFare(int start, int end, int interval, Function<Distance, Integer> calculation) {
+    DistanceSurcharge(int start, int end, int interval, Function<Distance, Integer> calculation) {
         this.start = start;
         this.end = end;
         this.interval = interval;
         this.calculation = calculation;
     }
 
-    public static DistanceFare from(Distance distance) {
+    public static DistanceSurcharge from(Distance distance) {
         return Arrays.stream(values())
                 .filter(distanceFare -> distanceFare.between(distance.value()))
                 .findFirst()
@@ -48,7 +48,7 @@ public enum DistanceFare {
     }
 
     public static Fare calculate(Distance distance) {
-        DistanceFare distanceFare = DistanceFare.from(distance);
+        DistanceSurcharge distanceFare = DistanceSurcharge.from(distance);
         return Fare.from(distanceFare.calculation.apply(distance));
     }
 }

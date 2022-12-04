@@ -1,6 +1,5 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.fare.policy.DistanceFare;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.Path;
@@ -26,6 +25,6 @@ public class PathService {
         Station arrivalStation = stationService.findStationById(pathRequest.getArrivalId());
         PathFinder pathFinder = PathFinder.from(Lines.from(lineService.findAll()));
         Path shortestPath = pathFinder.findShortestPath(departureStation, arrivalStation);
-        return PathResponse.from(shortestPath, DistanceFare.calculate(shortestPath.distance()));
+        return PathResponse.from(shortestPath, shortestPath.calculateFare());
     }
 }
