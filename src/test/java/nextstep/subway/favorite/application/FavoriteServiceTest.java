@@ -5,11 +5,8 @@ import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
 import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.BDDMockito.then;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
@@ -56,7 +53,7 @@ class FavoriteServiceTest {
         member = new Member(EMAIL, PASSWORD, AGE);
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
-        favorite = new Favorite(member, 강남역, 양재역);
+        favorite = Favorite.of(member, 강남역, 양재역);
     }
 
     @DisplayName("즐겨찾기를 등록할 수 있다.")
@@ -67,23 +64,23 @@ class FavoriteServiceTest {
         given(stationRepository.findById(1L)).willReturn(Optional.of(강남역));
         given(stationRepository.findById(2L)).willReturn(Optional.of(양재역));
         given(memberRepository.findByEmail(EMAIL)).willReturn(Optional.of(member));
-        given(favoriteRepository.save(any())).willReturn(new Favorite(member, 강남역, 양재역));
 
         //when
-        favoriteService.saveFavorite(loginMember, favoriteRequest);
+        FavoriteResponse favoriteResponse = favoriteService.saveFavorite(loginMember, favoriteRequest);
 
         //then
-        then(favoriteRepository).should()
-                .save(any());
+        assertAll(
+                () -> assertThat(favoriteResponse.getSource().getName()).isEqualTo(강남역.getName()),
+                () -> assertThat(favoriteResponse.getTarget().getName()).isEqualTo(양재역.getName())
+        );
     }
 
     @DisplayName("즐겨찿기 목록을 조회할 수 있다.")
     @Test
     void find() {
         //given
+        member.addFavorite(favorite);
         given(memberRepository.findByEmail(EMAIL)).willReturn(Optional.of(member));
-        given(favoriteRepository.findFavoritesByMember(member)).willReturn(
-                Collections.singletonList(favorite));
 
         //when
         List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
@@ -99,6 +96,7 @@ class FavoriteServiceTest {
     @Test
     void delete() {
         //given
+        member.addFavorite(favorite);
         given(memberRepository.findByEmail(EMAIL)).willReturn(Optional.of(member));
         given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
 
@@ -106,8 +104,7 @@ class FavoriteServiceTest {
         favoriteService.deleteFavorite(loginMember, 1L);
 
         //then
-        then(favoriteRepository).should()
-                .delete(any());
+        assertThat(member.getFavorites()).isEmpty();
     }
 
     @DisplayName("본인의 즐겨찾기만 삭제할 수 있다.")
