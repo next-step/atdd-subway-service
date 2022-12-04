@@ -89,4 +89,9 @@ public class Section {
             downStation = section.upStation;
         }
     }
+
+    public void mergeUpStation(Section upSection) {
+        this.upStation = upSection.getUpStation();
+        this.distance = distance.add(upSection.distance);
+    }
 }
