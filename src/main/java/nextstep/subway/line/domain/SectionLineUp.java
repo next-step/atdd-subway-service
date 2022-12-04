@@ -8,8 +8,10 @@ import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 @Embeddable
 public class SectionLineUp {
@@ -73,11 +75,11 @@ public class SectionLineUp {
     }
 
     private boolean isEndUpSection(Section section) {
-        return section.isSameDownSection(findUpStation());
+        return section.isSameDownSection(findUpStation(sections.get(FIRST_INDEX).getUpStation()));
     }
 
     private boolean isEndDownSection(Section section) {
-        return section.isSameUpSection(findDownStation());
+        return section.isSameDownSection(findDownStation(sections.get(FIRST_INDEX).getDownStation()));
     }
 
     private void validAlreadyExistSection(StationLineUp stationLineUp, Section section) {
@@ -98,55 +100,34 @@ public class SectionLineUp {
         if (this.sections.isEmpty()) {
             return Collections.emptyList();
         }
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
+        final Set<Station> stations = new LinkedHashSet<>();
+        Station firstStation = findUpStation(sections.get(FIRST_INDEX).getUpStation());
+        addStations(stations, firstStation);
+        return new ArrayList<>(stations);
     }
 
-    private Station findUpStation() {
-        Station downStation = sections.get(FIRST_INDEX).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation().equals(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
+    private void addStations(Set<Station> stations, Station firstStation) {
+        sections.stream().filter(it -> it.isSameUpSection(firstStation))
+                .findFirst()
+                .ifPresent(it -> {
+                    stations.add(it.getUpStation());
+                    stations.add(it.getDownStation());
+                    addStations(stations, it.getDownStation());
+                });
     }
 
-    private Station findDownStation() {
-        Station upStation = sections.get(FIRST_INDEX).getDownStation();
-        while (upStation != null) {
-            Station finalUpStation = upStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation().equals(finalUpStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            upStation = nextLineStation.get().getDownStation();
-        }
+    private Station findUpStation(Station station) {
+        return sections.stream().filter(it -> it.isSameDownSection(station))
+                .findFirst()
+                .map(it -> findUpStation(it.getUpStation()))
+                .orElse(station);
+    }
 
-        return upStation;
+    private Station findDownStation(Station station) {
+        return sections.stream().filter(it -> it.isSameUpSection(station))
+                .findFirst()
+                .map(it -> findDownStation(it.getDownStation()))
+                .orElse(station);
     }
 
     public void remove(Station station) {
