@@ -21,7 +21,7 @@ public class FavoriteController {
     }
 
     @PostMapping("/favorites")
-    public ResponseEntity createFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+    public ResponseEntity saveFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.created(URI.create("/favorites/")).build();
     }
 
