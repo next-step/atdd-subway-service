@@ -37,18 +37,22 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> { return LineResponse.of(line);})
+                .map(line -> {
+                    return LineResponse.of(line);
+                })
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(() -> new NoSuchDataException());
     }
 
-
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
         return LineResponse.of(persistLine);
@@ -66,7 +70,7 @@ public class LineService {
     public void addLineStation(Long lineId, SectionRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = findStationById(lineId);
+        Line persistLine = findLineById(lineId);
         persistLine.addLineStation(new Section(persistLine, upStation, downStation, request.getDistance()));
     }
 
@@ -74,10 +78,6 @@ public class LineService {
         Station removeTarget = stationService.findById(stationId);
         Line persistLine = findLineById(lineId);
         persistLine.removeLineStation(removeTarget);
-    }
-
-    public Line findStationById(Long id) {
-        return lineRepository.findById(id).orElseThrow(() -> new NoSuchDataException());
     }
 
 }
