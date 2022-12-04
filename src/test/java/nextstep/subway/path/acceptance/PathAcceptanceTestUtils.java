@@ -18,12 +18,27 @@ public class PathAcceptanceTestUtils {
     private static final String DEPARTURE_ID = "departureId";
     private static final String ARRIVAL_ID = "arrivalId";
 
-    public static ExtractableResponse<Response> 지하철_경로_조회_요청(StationResponse departure, StationResponse arrival) {
+    public static ExtractableResponse<Response> 지하철_경로_조회_요청_비회원(StationResponse departure, StationResponse arrival) {
         Map<String, Long> params = new HashMap<>();
         params.put(DEPARTURE_ID, departure.getId());
         params.put(ARRIVAL_ID, arrival.getId());
 
         return given().log().all()
+                .params(params)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(PATH_BASE_PATH)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_경로_조회_요청_회원(String accessToken, StationResponse departure, StationResponse arrival) {
+        Map<String, Long> params = new HashMap<>();
+        params.put(DEPARTURE_ID, departure.getId());
+        params.put(ARRIVAL_ID, arrival.getId());
+
+        return given().log().all()
+                .auth().oauth2(accessToken)
                 .params(params)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
