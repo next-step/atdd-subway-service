@@ -57,14 +57,14 @@ public class Section {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance = distance.subtract(Distance.from(newDistance));
+        this.distance = distance.subtract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance = distance.subtract(Distance.from(newDistance));
+        this.distance = distance.subtract(newDistance);
     }
 
     public List<Station> getStations() {
