@@ -42,8 +42,13 @@ public class PathFinder {
 
     public Path findShortestPath(Station source, Station target) {
         validateSameStation(source, target);
-        GraphPath path = shortestPath.getPath(source, target);
-        return new Path(path.getVertexList(), (int) path.getWeight());
+        try {
+            GraphPath path = shortestPath.getPath(source, target);
+            return new Path(path.getVertexList(), (int) path.getWeight());
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+        }
+
     }
 
     private void validateSameStation(Station source, Station target) {
