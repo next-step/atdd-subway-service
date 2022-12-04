@@ -62,13 +62,8 @@ public class LineController {
         return ResponseEntity.ok().build();
     }
 
-    @ExceptionHandler({DataIntegrityViolationException.class})
-    public ResponseEntity handleDataIntegrityViolationException(DataIntegrityViolationException e) {
+    @ExceptionHandler({NoSuchDataException.class, InvalidDataException.class, DataIntegrityViolationException.class})
+    public ResponseEntity handleDataIntegrityViolationException(RuntimeException e) {
         return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler({NoSuchDataException.class, InvalidDataException.class})
-    public ResponseEntity handleInternalException(RuntimeException e) {
-        return ResponseEntity.internalServerError().build();
     }
 }
