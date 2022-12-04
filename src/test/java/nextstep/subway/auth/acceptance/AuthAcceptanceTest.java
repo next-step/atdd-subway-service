@@ -1,16 +1,26 @@
 package nextstep.subway.auth.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthFixture.로그인_요청;
+import static nextstep.subway.member.MemberFixture.AGE;
+import static nextstep.subway.member.MemberFixture.EMAIL;
+import static nextstep.subway.member.MemberFixture.PASSWORD;
 import static nextstep.subway.member.MemberFixture.회원_생성을_요청;
 
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+    }
 
     /*
     Feature: 로그인 기능
@@ -22,11 +32,8 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("로그인 기능")
     void scenario1() {
-        //given
-        회원_생성을_요청("test@email.com", "1234", 10);
-
         //when
-        TokenResponse tokenResponse = 로그인_요청("test@email.com", "1234")
+        TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD)
             .as(TokenResponse.class);
 
         //then
