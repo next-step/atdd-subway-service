@@ -32,10 +32,12 @@ public class Path {
     }
 
 
-    public int calculateExtraFare(AuthMember authMember) {
-        int calculateFare = DistanceFare.calculateDistanceFare(distance) + maxedLineExtraFare();
+    public Fare calculateExtraFare(AuthMember authMember) {
         AgeDiscountPolicy discountPolicy = AgeFare.getDiscountPolicy(authMember);
-        return discountPolicy.discount(calculateFare);
+        Fare calculateFare = DistanceFare.calculateDistanceFare(distance)
+                .plus(maxedLineExtraFare())
+                .ageDiscount(discountPolicy);
+        return calculateFare;
     }
 
     private int maxedLineExtraFare() {

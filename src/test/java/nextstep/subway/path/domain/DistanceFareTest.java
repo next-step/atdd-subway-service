@@ -13,7 +13,7 @@ class DistanceFareTest {
     @ParameterizedTest(name = "#{index} - {0}km 이동하면 요금은 {1}원 이다.")
     @CsvSource(value = {"10=1250", "15=1350", "50=2050", "66=2250"}, delimiter = '=')
     void distance_extra_fare(int distance, int fare) {
-        assertThat(DistanceFare.calculateDistanceFare(distance)).isEqualTo(fare);
+        assertThat(DistanceFare.calculateDistanceFare(distance).getFare()).isEqualTo(fare);
     }
 
 }

@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -28,7 +29,7 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder(lineService.findLineAll());
         Path path = pathFinder.getShortestPath(sourceStation, targetStation);
-        int extraFare = path.calculateExtraFare(authMember);
+        Fare extraFare = path.calculateExtraFare(authMember);
 
         return PathResponse.of(path, extraFare);
     }

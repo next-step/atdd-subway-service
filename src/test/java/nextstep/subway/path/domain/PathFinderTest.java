@@ -67,7 +67,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(25),
                 () -> assertThat(shortestPath.getStations().size()).isEqualTo(3),
-                () -> assertThat(shortestPath.calculateExtraFare(guestMember)).isEqualTo(1850)
+                () -> assertThat(shortestPath.calculateExtraFare(guestMember).getFare()).isEqualTo(1850)
         );
     }
 
@@ -99,7 +99,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(60),
                 () -> assertThat(shortestPath.getStations().size()).isEqualTo(3),
-                () -> assertThat(shortestPath.calculateExtraFare(guestMember)).isEqualTo(3250)
+                () -> assertThat(shortestPath.calculateExtraFare(guestMember).getFare()).isEqualTo(3250)
         );
 
     }
@@ -120,10 +120,10 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(8),
                 () -> assertThat(shortestPath.getStations().size()).isEqualTo(2),
-                () -> assertThat(shortestPath.calculateExtraFare(guestMember)).isEqualTo(2150),
+                () -> assertThat(shortestPath.calculateExtraFare(guestMember).getFare()).isEqualTo(2150),
                 () -> assertThat(shortestPath1.getDistance()).isEqualTo(12),
                 () -> assertThat(shortestPath1.getStations().size()).isEqualTo(2),
-                () -> assertThat(shortestPath1.calculateExtraFare(guestMember)).isEqualTo(2250)
+                () -> assertThat(shortestPath1.calculateExtraFare(guestMember).getFare()).isEqualTo(2250)
         );
 
     }
@@ -140,7 +140,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(25),
                 () -> assertThat(shortestPath.getStations().size()).isEqualTo(3),
-                () -> assertThat(shortestPath.calculateExtraFare(loginMember)).isEqualTo(fare)
+                () -> assertThat(shortestPath.calculateExtraFare(loginMember).getFare()).isEqualTo(fare)
         );
     }
 

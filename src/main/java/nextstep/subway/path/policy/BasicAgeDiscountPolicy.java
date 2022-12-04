@@ -1,10 +1,12 @@
 package nextstep.subway.path.policy;
 
+import static nextstep.subway.path.domain.Fare.BASIC_FARE;
+
 public class BasicAgeDiscountPolicy implements AgeDiscountPolicy {
-    private static final int BASIC_FARE = 1250;
 
     @Override
     public int discount(int fare) {
         return Math.max(fare, BASIC_FARE);
     }
+
 }
