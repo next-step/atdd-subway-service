@@ -21,11 +21,7 @@ public class PathService {
     public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
         Station source = stationService.findById(sourceStationId);
         Station target = stationService.findById(targetStationId);
-        PathFinder pathFinder = initPathFinder();
-        return PathResponse.from(pathFinder.findShortestPath(source, target));
-    }
-
-    private PathFinder initPathFinder() {
-        return new PathFinder(lineService.findAllLines());
+        PathFinder pathFinder = new PathFinder();
+        return PathResponse.from(pathFinder.findShortestPath(lineService.findAllLines(), source, target));
     }
 }

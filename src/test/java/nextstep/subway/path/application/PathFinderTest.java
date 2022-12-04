@@ -52,13 +52,13 @@ class PathFinderTest {
         팔호선 = new Line("팔호선", "bg-red-600", 신림역, 서울대역, 2);
         삼호선.addLineStation(new Section(삼호선, 교대역, 남부터미널역, 3));
 
-        pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
+        pathFinder = new PathFinder();
     }
 
     @DisplayName("최단 경로를 조회한다.")
     @Test
     void find_shortest_path() {
-        Path path = pathFinder.findShortestPath(교대역, 양재역);
+        Path path = pathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선, 팔호선), 교대역, 양재역);
 
         assertThat(path.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
         assertThat(path.getDistance()).isEqualTo(5);
@@ -68,7 +68,7 @@ class PathFinderTest {
     @Test
     void find_shortest_path_same_station() {
         assertThatThrownBy(() ->
-            pathFinder.findShortestPath(교대역, 교대역)
+            pathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선, 팔호선), 교대역, 교대역)
         ).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("출발지와 목적지가 같을 수 없습니다.");
     }
@@ -77,7 +77,7 @@ class PathFinderTest {
     @Test
     void find_shortest_path_no_connect_station() {
         assertThatThrownBy(() ->
-            pathFinder.findShortestPath(강남역, 부산역)
+            pathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선, 팔호선), 강남역, 부산역)
         ).isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
