@@ -21,4 +21,8 @@ public class FavoriteResponse {
         return new FavoriteResponse(save.getId(), StationResponse.of(save.getSourceStation()),
                 StationResponse.of(save.getTargetStation()));
     }
+
+    public Long getId() {
+        return id;
+    }
 }
