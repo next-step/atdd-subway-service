@@ -22,8 +22,8 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse getShortestPath(PathRequest pathRequest) {
-        Station source = stationService.findStationById(pathRequest.getSource());
-        Station target = stationService.findStationById(pathRequest.getTarget());
+        Station source = stationService.stationById(pathRequest.getSource());
+        Station target = stationService.stationById(pathRequest.getTarget());
 
         return PathResponse.of(new StationGraph(sectionRepository.findAll()).findShortestPath(source, target));
     }
