@@ -7,7 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.acceptance.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -113,7 +113,39 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    @DisplayName("지하철 구간을 관리한다")
+    @Test
+    void sectionScenario() {
+
+        //background:
+        final int 거리 = 10;
+        final int 내부거리 = 3;
+        LineResponse 경의중앙선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
+                new LineRequest("경의중앙선", "bg-red-600", 강남역.getId(), 광교역.getId(), 거리)).as(LineResponse.class);
+
+        //when: 지하철 구간 등록 요청
+        지하철_노선에_지하철역_등록_요청(경의중앙선, 강남역, 양재역, 내부거리);
+        지하철_노선에_지하철역_등록_요청(경의중앙선, 양재역, 정자역, 내부거리);
+
+        //then: 지하철 구간 등록됨
+        ExtractableResponse<Response> addSectionResponse = LineAcceptanceTest.지하철_노선_조회_요청(경의중앙선);
+        지하철_노선에_지하철역_등록됨(addSectionResponse);
+
+        //when: 지하철 구간 삭제 요청
+        ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(경의중앙선, 양재역);
+
+        //then: 지하철 구간 삭제됨
+        지하철_노선에_지하철역_제외됨(removeResponse);
+
+        //when: 지하철 노선에 등록 된 역 목록 조회 요청
+        ExtractableResponse<Response> afterRemoveResponse = LineAcceptanceTest.지하철_노선_조회_요청(경의중앙선);
+
+        //then: 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+        지하철_노선에_지하철역_순서_정렬됨(afterRemoveResponse, Arrays.asList(강남역, 정자역, 광교역));
+    }
+
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation,
+            StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
@@ -133,7 +165,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
+    public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response,
+            List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
                 .map(it -> it.getId())
