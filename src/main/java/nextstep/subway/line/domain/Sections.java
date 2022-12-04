@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import nextstep.subway.line.excpetion.LastSectionException;
 import nextstep.subway.station.domain.Station;
 
 @Embeddable
@@ -51,6 +52,10 @@ public class Sections {
         downLineStation.ifPresent(it -> this.sections.remove(it));
     }
 
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
+    }
+
     private void addWhenMiddleStationRemove(Section upLineStation, Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
@@ -60,7 +65,7 @@ public class Sections {
 
     private void validateLastSection() {
         if (this.sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new LastSectionException();
         }
     }
 
