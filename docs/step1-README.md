@@ -40,7 +40,12 @@
 - [x] `LineService` 기능 정리
 - [ ] 기능에 대한 유닛 테스트 작성
   - [ ] `Service` 테스트 작성
+    - [ ] `LineService` 테스트 작성
+    - [ ] `StationService` 테스트 작성
   - [ ] `Domain` 테스트 작성
+    - [ ] `Line` 테스트 작성
+    - [ ] `Station` 테스트 작성
+    - [ ] `Sections` 테스트 작성
 - [ ] 테스트를 기반으로 `Service layer` 에 있는 기능을 `Domain layer` 로 이동
   - [ ] 노선 관련 기능 리팩터링
   - [ ] 구간 관련 기능 리팩터링

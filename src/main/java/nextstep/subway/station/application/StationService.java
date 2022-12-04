@@ -36,7 +36,7 @@ public class StationService {
 		stationRepository.deleteById(id);
 	}
 
-	public Station findStationById(Long id) {
+	public Station findById(Long id) {
 		return stationRepository.findById(id)
 			.orElseThrow(() -> new NotFoundException(String.format("해당 ID(%d) 에 해당하는 역을 찾을 수 없습니다.", id)));
 	}

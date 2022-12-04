@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 
 import nextstep.subway.common.domain.BaseEntity;
 import nextstep.subway.common.domain.Name;
+import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Line extends BaseEntity {
@@ -80,4 +81,8 @@ public class Line extends BaseEntity {
     public List<Section> getSections() {
         return sections.getList();
     }
+
+	public List<Station> allStations() {
+        return sections.sortedStations();
+	}
 }

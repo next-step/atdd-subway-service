@@ -2,13 +2,18 @@ package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
 import org.springframework.util.Assert;
+
+import nextstep.subway.common.exception.NotFoundException;
+import nextstep.subway.station.domain.Station;
 
 @Embeddable
 public class Sections {
@@ -40,5 +45,47 @@ public class Sections {
 
 	public void setLine(Line line) {
 		this.sections.forEach(section -> section.updateLine(line));
+	}
+
+	public Station firstUpStation() {
+		List<Station> stations = allUpStations();
+		stations.removeIf(station -> allDownStations().contains(station));
+		return stations.get(0);
+	}
+
+	public Station lastDownStation() {
+		List<Station> stations = allDownStations();
+		stations.removeIf(station -> allUpStations().contains(station));
+		return stations.get(0);
+	}
+
+	private List<Station> allUpStations() {
+		return this.sections.stream()
+			.map(Section::getUpStation)
+			.collect(Collectors.toCollection(LinkedList::new));
+	}
+
+	private List<Station> allDownStations() {
+		return this.sections.stream()
+			.map(Section::getDownStation)
+			.collect(Collectors.toCollection(LinkedList::new));
+	}
+
+	public List<Station> sortedStations() {
+		List<Station> stations = new LinkedList<>();
+		stations.add(firstUpStation());
+
+		for (int i = 0; i < sections.size(); i++) {
+			Station nextStation = sectionByUpStation(stations.get(i)).getDownStation();
+			stations.add(nextStation);
+		}
+		return stations;
+	}
+
+	private Section sectionByUpStation(Station station) {
+		return this.sections.stream()
+			.filter(section -> section.getUpStation().getName().equals(station.getName()))
+			.findFirst()
+			.orElseThrow(() -> new NotFoundException("Section not exist"));
 	}
 }
