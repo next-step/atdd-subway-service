@@ -1,4 +1,4 @@
-package nextstep.subway.member;
+package nextstep.subway.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -11,6 +11,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.정상_로그인_토큰_반환;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -20,6 +22,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -45,10 +48,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     * Given 회원이 생성되어 있고, 로그인이 되어 있을때
+     * When 로그인하고 받은 토큰으로 나의 정보를 조회하면
+     * Then 나의 정보를 응답받을 수 있다.
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
-
+        // given
+        회원_생성됨(회원_생성을_요청(EMAIL, PASSWORD, AGE));
+        String 토큰 = 정상_로그인_토큰_반환(EMAIL, PASSWORD);
+        // when
+        ExtractableResponse<Response> 조회_결과 = 나의_회원_정보_조회_요청(토큰);
+        // then
+        회원_정보_조회됨(조회_결과, EMAIL, AGE);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -95,6 +109,20 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
+    public static ExtractableResponse<Response> 나의_회원_정보_조회_요청(String token) {
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+
+
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

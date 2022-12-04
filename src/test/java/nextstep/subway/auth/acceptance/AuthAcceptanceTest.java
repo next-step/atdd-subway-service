@@ -1,6 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -9,7 +9,6 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.MemberAcceptanceTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -51,6 +50,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private void 로그인이_정상처리됨(ExtractableResponse<Response> response){
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(TokenResponse.class).getAccessToken()).isNotNull();
+    }
+    public static String 정상_로그인_토큰_반환(String EMAIL, String PASSWORD){
+        return 로그인_요청(new TokenRequest(EMAIL, PASSWORD)).as(TokenResponse.class).getAccessToken();
     }
 
     public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
