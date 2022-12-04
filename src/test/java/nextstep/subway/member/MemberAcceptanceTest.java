@@ -46,27 +46,27 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     /**
      * Feature: 나의 정보 관리
-     *
+     * <p>
      * When: 회원 생성 요청
      * Then: 회원 생성됨
-     *
+     * <p>
      * When: 로그인 요청
      * Then: 로그인 성공(토큰 응답)
-     *
+     * <p>
      * Given: 로그인 성공 토큰 저장
      * When: 내 정보 조회(토큰)
      * Then: 내 정보 조회 응답
-     *
+     * <p>
      * When: 내 정보 수정(토큰, 수정 값)
      * Then: 내 정보 수정 응답
-     *
+     * <p>
      * Given: 변경된 이메일로 토큰 재요청
      * When: 내 정보 삭제(토큰)
      * Then: 내 정보 삭제 응답
      */
     @DisplayName("나의 정보를 관리한다.")
     @Test
-    void manageMyInfo() {
+    void manage_my_info() {
 
         // when
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);

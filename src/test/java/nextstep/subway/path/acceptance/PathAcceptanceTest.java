@@ -6,7 +6,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -34,11 +33,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 구로디지털단지역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역      --- *2호선(50)* ---   강남역
+     * |                              |
+     * *3호선(15)*                      *신분당선(50)*
+     * |                              |
+     * 남부터미널역  --- *3호선(10)*  ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -51,10 +50,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         구로디지털단지역 = 지하철역_등록되어_있음("구로디지털단지역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 10, 1000)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-yellow-420", 교대역.getId(), 강남역.getId(), 10, 200)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-green-500", 교대역.getId(), 양재역.getId(), 5, 300)).as(LineResponse.class);
-        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 50, 1000)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-yellow-420", 교대역.getId(), 강남역.getId(), 50, 200)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-green-500", 교대역.getId(), 양재역.getId(), 25, 300)).as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 15);
     }
 
     @DisplayName("최단 경로 조회한 경우")
@@ -66,8 +65,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(지하철_경로_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(지하철_경로_조회_응답.as(PathResponse.class).getDistance()).isEqualTo(5),
-                () -> assertThat(지하철_경로_조회_응답.as(PathResponse.class).getStations().size()).isEqualTo(3)
+                () -> assertThat(지하철_경로_조회_응답.as(PathResponse.class).getDistance()).isEqualTo(25),
+                () -> assertThat(지하철_경로_조회_응답.as(PathResponse.class).getStations().size()).isEqualTo(3),
+                () -> assertThat(지하철_경로_조회_응답.as(PathResponse.class).getFare()).isEqualTo(1850)
         );
     }
 
