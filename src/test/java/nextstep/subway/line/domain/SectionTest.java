@@ -21,7 +21,7 @@ class SectionTest {
 
     @BeforeEach
     void setUp() {
-        line = new Line("신분당선", "bg-red-600");
+        line = new Line("신분당선", "bg-red-600", 0);
         upStation = new Station("강남역");
         downStation = new Station("양재역");
     }

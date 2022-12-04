@@ -39,7 +39,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void updateMiddleSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 0, 교대역.getId(),
                 역삼역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -59,7 +59,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void updateFirstSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 강남역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 0, 강남역.getId(),
                 역삼역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -79,7 +79,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLastSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 0, 교대역.getId(),
                 강남역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -99,7 +99,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addUnorderedSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 역삼역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 0, 역삼역.getId(),
                 선릉역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -121,7 +121,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteMiddleSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 교대역.getId(),
                 강남역.getId(), 10).as(LineResponse.class);
         SectionAcceptance.update_section(이호선.getId(), 강남역.getId(), 역삼역.getId(), 10);
 
@@ -142,7 +142,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteFirstSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 교대역.getId(),
                 강남역.getId(), 10).as(LineResponse.class);
         SectionAcceptance.update_section(이호선.getId(), 강남역.getId(), 역삼역.getId(), 10);
 
@@ -163,7 +163,7 @@ class SectionAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLastSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 교대역.getId(),
                 강남역.getId(), 10).as(LineResponse.class);
         SectionAcceptance.update_section(이호선.getId(), 강남역.getId(), 역삼역.getId(), 10);
 

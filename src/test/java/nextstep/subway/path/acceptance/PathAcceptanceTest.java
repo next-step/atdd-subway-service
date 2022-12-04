@@ -47,7 +47,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPathWithSameSourceAndTarget() {
         // given
-        LineAcceptance.create_line("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
+        LineAcceptance.create_line("이호선", "bg-green-600", 0, 교대역.getId(), 강남역.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = PathAcceptance.shortest_path_found(교대역.getId(), 교대역.getId());
@@ -65,8 +65,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPathWithNotConnectedSourceAndTarget() {
         // given
-        LineAcceptance.create_line("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
-        LineAcceptance.create_line("삼호선", "bg-orange-600", 남부터미널역.getId(), 양재역.getId(), 5);
+        LineAcceptance.create_line("이호선", "bg-green-600", 0, 교대역.getId(), 강남역.getId(), 10);
+        LineAcceptance.create_line("삼호선", "bg-orange-600", 0, 남부터미널역.getId(), 양재역.getId(), 5);
 
         // when
         ExtractableResponse<Response> response = PathAcceptance.shortest_path_found(교대역.getId(), 양재역.getId());
@@ -84,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPathWithNoLinesContainingStation() {
         // given
-        LineAcceptance.create_line("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
+        LineAcceptance.create_line("이호선", "bg-green-600", 0, 교대역.getId(), 강남역.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = PathAcceptance.shortest_path_found(교대역.getId(), 양재역.getId());
@@ -102,7 +102,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPathWithNotExistStation() {
         // given
-        LineAcceptance.create_line("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
+        LineAcceptance.create_line("이호선", "bg-green-600", 0, 교대역.getId(), 강남역.getId(), 10);
 
         // when
         ExtractableResponse<Response> response = PathAcceptance.shortest_path_found(-1L, 교대역.getId());
@@ -120,9 +120,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath() {
         // given
-        LineAcceptance.create_line("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
-        LineAcceptance.create_line("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
-        삼호선 = LineAcceptance.create_line("삼호선", "bg-orange-600", 교대역.getId(),
+        LineAcceptance.create_line("신분당선", "bg-red-600", 0,  강남역.getId(), 양재역.getId(), 10);
+        LineAcceptance.create_line("이호선", "bg-green-600", 0, 교대역.getId(), 강남역.getId(), 10);
+        삼호선 = LineAcceptance.create_line("삼호선", "bg-orange-600", 0, 교대역.getId(),
                 양재역.getId(), 5).as(LineResponse.class);
         SectionAcceptance.update_section(삼호선.getId(), 교대역.getId(), 남부터미널역.getId(), 3);
 

@@ -38,7 +38,7 @@ class SectionRepositoryTest {
         교대역 = stationRepository.save(new Station("교대역"));
         강남역 = stationRepository.save(new Station("강남역"));
         역삼역 = stationRepository.save(new Station("역삼역"));
-        line = new Line("2호선", "bg-green-600");
+        line = new Line("2호선", "bg-green-600", 0);
     }
 
     @Test

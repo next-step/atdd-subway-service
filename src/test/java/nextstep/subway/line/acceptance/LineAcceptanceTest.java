@@ -40,7 +40,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void createLine() {
         // when
-        LineResponse 이호선 = LineAcceptance.create_line("신분당선", "bg-red-600", 강남역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("신분당선", "bg-red-600", 0, 강남역.getId(),
                 양재역.getId(), 10).as(LineResponse.class);
 
 
@@ -58,9 +58,9 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 강남역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("이호선", "bg-green-600", 0, 강남역.getId(),
                 역삼역.getId(), 10).as(LineResponse.class);
-        LineResponse 신분당선 = LineAcceptance.create_line("신분당선", "bg-red-600", 강남역.getId(),
+        LineResponse 신분당선 = LineAcceptance.create_line("신분당선", "bg-red-600", 0, 강남역.getId(),
                 양재역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -79,7 +79,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void getLine() {
         // given
-        LineResponse 신분당선 = LineAcceptance.create_line("신분당선", "bg-red-600", 강남역.getId(),
+        LineResponse 신분당선 = LineAcceptance.create_line("신분당선", "bg-red-600", 0, 강남역.getId(),
                 양재역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -98,11 +98,11 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void updateLine() {
         // given
-        LineResponse 신분당선 = LineAcceptance.create_line("신분당선", "bg-red-600", 강남역.getId(),
+        LineResponse 신분당선 = LineAcceptance.create_line("신분당선", "bg-red-600", 0, 강남역.getId(),
                 양재역.getId(), 10).as(LineResponse.class);
 
         // when
-        LineAcceptance.update_line(신분당선.getId(), "다른분당선", "bg-red-600");
+        LineAcceptance.update_line(신분당선.getId(), "다른분당선", "bg-red-600", 0);
 
         // then
         LineResponse lineResponse = LineAcceptance.line_was_queried(신분당선.getId());
@@ -118,7 +118,7 @@ class LineAcceptanceTest extends AcceptanceTest {
     @Test
     void deleteLine() {
         // given
-        LineResponse 신분당선 = LineAcceptance.create_line("신분당선", "bg-red-600", 강남역.getId(),
+        LineResponse 신분당선 = LineAcceptance.create_line("신분당선", "bg-red-600", 0, 강남역.getId(),
                 양재역.getId(), 10).as(LineResponse.class);
 
         // when

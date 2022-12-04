@@ -50,9 +50,9 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        이호선 = new Line("2호선", "bg-green-600");
-        신분당선 = new Line("신분당선", "bg-red-600");
-        삼호선 = new Line("3호선", "bg-orange-600");
+        이호선 = new Line("2호선", "bg-green-600", 0);
+        신분당선 = new Line("신분당선", "bg-red-600", 0);
+        삼호선 = new Line("3호선", "bg-orange-600", 0);
 
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");

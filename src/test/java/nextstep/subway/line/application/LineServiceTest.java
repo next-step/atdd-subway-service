@@ -55,7 +55,7 @@ class LineServiceTest {
 
     @BeforeEach
     void setUp() {
-        request = new LineRequest("2호선", "bg-green-600", UP_STATION_ID, DOWN_STATION_ID, 10);
+        request = new LineRequest("2호선", "bg-green-600", 0, UP_STATION_ID, DOWN_STATION_ID, 10);
         upStation = new Station("강남역");
         downStation = new Station("역삼역");
     }
@@ -79,7 +79,7 @@ class LineServiceTest {
     @Test
     void id로_지하철_노선_검색() {
         when(lineRepository.findById(LINE_ID))
-                .thenReturn(Optional.of(new Line("신분당선", "bg-red-600")));
+                .thenReturn(Optional.of(new Line("신분당선", "bg-red-600", 0)));
 
         Line line = lineService.findLineById(LINE_ID);
 
@@ -96,8 +96,8 @@ class LineServiceTest {
 
     @Test
     void 전쳬_지하철_노선_목록_검색() {
-        Line line = new Line("2호선", "bg-green-600");
-        Line line2 = new Line("신분당선", "bg-red-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
+        Line line2 = new Line("신분당선", "bg-red-600", 0);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(line, line2));
 
         List<LineResponse> responses = lineService.findAllLines();
@@ -111,8 +111,8 @@ class LineServiceTest {
 
     @Test
     void 지하철_노선_수정() {
-        Line line = new Line("2호선", "bg-green-600");
-        LineRequest request = new LineRequest("3호선", "bg-orange-600", null, null, 0);
+        Line line = new Line("2호선", "bg-green-600", 0);
+        LineRequest request = new LineRequest("3호선", "bg-orange-600", 0, null, null, 0);
 
         when(lineRepository.findById(LINE_ID)).thenReturn(Optional.of(line));
         lineService.updateLine(LINE_ID, request);
@@ -129,7 +129,7 @@ class LineServiceTest {
         Station 강남역 = new Station("강남역");
         Station 역삼역 = new Station("역삼역");
 
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
         Section section = new Section(line, 교대역, 강남역, 10);
         line.addSection(section);
         SectionRequest request = new SectionRequest(UP_STATION_ID, DOWN_STATION_ID, 10);
@@ -150,7 +150,7 @@ class LineServiceTest {
         Station 강남역 = new Station("강남역");
         Station 역삼역 = new Station("역삼역");
 
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
         Section upSection = new Section(line, 강남역, 역삼역, 10);
         Section downSection = new Section(line, 교대역, 강남역, 10);
         line.addSection(downSection);
