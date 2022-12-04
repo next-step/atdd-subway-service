@@ -27,9 +27,10 @@ public class PathService {
         Station targetStation = stationService.findStationById(targetId);
 
         PathFinder pathFinder = new PathFinder(lineService.findLineAll());
-        Path path = pathFinder.getShortestPath(authMember, sourceStation, targetStation);
+        Path path = pathFinder.getShortestPath(sourceStation, targetStation);
+        int extraFare = path.calculateExtraFare(authMember);
 
-        return PathResponse.of(path);
+        return PathResponse.of(path, extraFare);
     }
 
 }

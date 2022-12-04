@@ -24,11 +24,11 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse of(Path path) {
+    public static PathResponse of(Path path, int extraFare) {
         return new PathResponse(
                 toList(path.getStations()),
                 path.getDistance(),
-                path.getExtraFare()
+                extraFare
         );
     }
 

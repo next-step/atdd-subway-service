@@ -1,21 +1,24 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.AuthMember;
+import nextstep.subway.path.policy.AgeDiscountPolicy;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
 
 public class Path {
 
-    private List<Station> stations;
+    private final List<Station> stations;
 
-    private int distance;
+    private final List<SectionEdge> sectionEdges;
 
-    private int extraFare;
+    private final int distance;
 
-    public Path(List<Station> stations, int distance, int extraFare) {
+
+    public Path(List<Station> stations, List<SectionEdge> sectionEdges, int distance) {
         this.stations = stations;
+        this.sectionEdges = sectionEdges;
         this.distance = distance;
-        this.extraFare = extraFare;
     }
 
     public List<Station> getStations() {
@@ -26,7 +29,18 @@ public class Path {
         return distance;
     }
 
-    public int getExtraFare() {
-        return extraFare;
+
+    public int calculateExtraFare(AuthMember authMember) {
+        int calculateFare = DistanceFare.calculateDistanceFare(distance) + maxedLineExtraFare();
+        AgeDiscountPolicy discountPolicy = AgeFare.getDiscountPolicy(authMember);
+        return discountPolicy.discount(calculateFare);
     }
+
+    private int maxedLineExtraFare() {
+        return sectionEdges.stream()
+                .mapToInt(SectionEdge::getLineExtraFare)
+                .max()
+                .orElse(0);
+    }
+
 }

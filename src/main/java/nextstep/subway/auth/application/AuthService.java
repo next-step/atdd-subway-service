@@ -1,7 +1,6 @@
 package nextstep.subway.auth.application;
 
 import nextstep.subway.auth.domain.AuthMember;
-import nextstep.subway.auth.domain.GuestMember;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;

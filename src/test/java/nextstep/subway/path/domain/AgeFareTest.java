@@ -6,7 +6,6 @@ import nextstep.subway.path.policy.AgeDiscountPolicy;
 import nextstep.subway.path.policy.BasicAgeDiscountPolicy;
 import nextstep.subway.path.policy.KidsAgeDiscountPolicy;
 import nextstep.subway.path.policy.TeenagersAgeDiscountPolicy;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -15,9 +14,8 @@ import org.junit.jupiter.params.provider.MethodSource;
 import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
-@DisplayName("나이에 따른 할인 정책 테스")
+@DisplayName("나이에 따른 할인 정책 테스트")
 class AgeFareTest {
 
 
@@ -41,15 +39,15 @@ class AgeFareTest {
                         "어린이(6~13)",
                         "어린이 할인정책이 적용됩니다"
                 ),
-                Arguments.of(new LoginMember(1L, "teenager@kid.com", 15),
+                Arguments.of(new LoginMember(1L, "teenager@teenager.com", 15),
                         new TeenagersAgeDiscountPolicy(),
                         "청소년(13~19)",
                         "청소년 할인정책이 적용됩니다"
                 ),
-                Arguments.of(new LoginMember(1L, "normal@kid.com", 20),
+                Arguments.of(new LoginMember(1L, "basic@basic.com", 20),
                         new BasicAgeDiscountPolicy(),
                         "일반인(19~65)",
-                        "일반인은 할인정책 없습니다"
+                        "일반인은 할인정책이 없습니다"
                 )
         );
     }

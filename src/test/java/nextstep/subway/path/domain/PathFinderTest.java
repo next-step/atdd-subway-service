@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.Arrays;
@@ -24,9 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 class PathFinderTest {
 
-    private Line 신분당선;
-    private Line 이호선;
-    private Line 삼호선;
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
@@ -52,9 +48,9 @@ class PathFinderTest {
         남부터미널역 = new Station("남부터미널역");
         구로디지털단지역 = new Station("구로디지털단지역");
 
-        신분당선 = new Line("신분당선", "bg-red-300", 강남역, 양재역, 50, 1000);
-        이호선 = new Line("이호선", "bg-yellow-420", 교대역, 강남역, 50, 200);
-        삼호선 = new Line("삼호선", "bg-green-500", 교대역, 양재역, 25, 300);
+        Line 신분당선 = new Line("신분당선", "bg-red-300", 강남역, 양재역, 50, 1000);
+        Line 이호선 = new Line("이호선", "bg-yellow-420", 교대역, 강남역, 50, 200);
+        Line 삼호선 = new Line("삼호선", "bg-green-500", 교대역, 양재역, 25, 300);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 15));
 
         pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
@@ -65,13 +61,13 @@ class PathFinderTest {
     @Test
     void shortest_path() {
         // when
-        Path shortestPath = pathFinder.getShortestPath(guestMember, 교대역, 양재역);
+        Path shortestPath = pathFinder.getShortestPath(교대역, 양재역);
 
         // then
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(25),
                 () -> assertThat(shortestPath.getStations().size()).isEqualTo(3),
-                () -> assertThat(shortestPath.getExtraFare()).isEqualTo(1850)
+                () -> assertThat(shortestPath.calculateExtraFare(guestMember)).isEqualTo(1850)
         );
     }
 
@@ -79,7 +75,7 @@ class PathFinderTest {
     @Test
     void same_start_arrive_section() {
         // when && then
-        assertThatThrownBy(() -> pathFinder.getShortestPath(guestMember, 교대역, 교대역))
+        assertThatThrownBy(() -> pathFinder.getShortestPath(교대역, 교대역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NOT_SEARCH_SAME_START_ARRIVE_STATION.getMessage());
     }
@@ -88,7 +84,7 @@ class PathFinderTest {
     @Test
     void not_connected_station_line() {
         // when && then
-        assertThatThrownBy(() -> pathFinder.getShortestPath(guestMember, 강남역, 구로디지털단지역))
+        assertThatThrownBy(() -> pathFinder.getShortestPath(강남역, 구로디지털단지역))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(NOT_CONNECT_START_ARRIVE_STATION.getMessage());
     }
@@ -97,13 +93,13 @@ class PathFinderTest {
     @Test
     void line_fare_check() {
         // when
-        Path shortestPath = pathFinder.getShortestPath(guestMember, 강남역, 남부터미널역);
+        Path shortestPath = pathFinder.getShortestPath(강남역, 남부터미널역);
 
         // then
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(60),
                 () -> assertThat(shortestPath.getStations().size()).isEqualTo(3),
-                () -> assertThat(shortestPath.getExtraFare()).isEqualTo(3250)
+                () -> assertThat(shortestPath.calculateExtraFare(guestMember)).isEqualTo(3250)
         );
 
     }
@@ -117,17 +113,17 @@ class PathFinderTest {
 
         pathFinder = new PathFinder(Arrays.asList(테스트노선1, 테스트노선2));
         // when
-        Path shortestPath = pathFinder.getShortestPath(guestMember, 강남역, 양재역);
-        Path shortestPath1 = pathFinder.getShortestPath(guestMember, 강남역, 구로디지털단지역);
+        Path shortestPath = pathFinder.getShortestPath(강남역, 양재역);
+        Path shortestPath1 = pathFinder.getShortestPath(강남역, 구로디지털단지역);
 
         // then
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(8),
                 () -> assertThat(shortestPath.getStations().size()).isEqualTo(2),
-                () -> assertThat(shortestPath.getExtraFare()).isEqualTo(2150),
+                () -> assertThat(shortestPath.calculateExtraFare(guestMember)).isEqualTo(2150),
                 () -> assertThat(shortestPath1.getDistance()).isEqualTo(12),
                 () -> assertThat(shortestPath1.getStations().size()).isEqualTo(2),
-                () -> assertThat(shortestPath1.getExtraFare()).isEqualTo(2250)
+                () -> assertThat(shortestPath1.calculateExtraFare(guestMember)).isEqualTo(2250)
         );
 
     }
@@ -138,21 +134,21 @@ class PathFinderTest {
     void teenager_discount(String member, LoginMember loginMember, int fare) {
 
         // when
-        Path shortestPath = pathFinder.getShortestPath(loginMember, 교대역, 양재역);
+        Path shortestPath = pathFinder.getShortestPath(교대역, 양재역);
 
         // then
         assertAll(
                 () -> assertThat(shortestPath.getDistance()).isEqualTo(25),
                 () -> assertThat(shortestPath.getStations().size()).isEqualTo(3),
-                () -> assertThat(shortestPath.getExtraFare()).isEqualTo(fare)
+                () -> assertThat(shortestPath.calculateExtraFare(loginMember)).isEqualTo(fare)
         );
     }
 
     private static Stream<Arguments> age_login_members() {
         return Stream.of(
                 Arguments.of("어린이(6~13)", new LoginMember(1L, "kid@kid.com", 6), 750),
-                Arguments.of("청소년(13~19)", new LoginMember(1L, "teenager@kid.com", 15), 1200),
-                Arguments.of("일반인(19~65)", new LoginMember(1L, "normal@kid.com", 20), 1850)
+                Arguments.of("청소년(13~19)", new LoginMember(1L, "teenager@teenager.com", 15), 1200),
+                Arguments.of("일반인(19~65)", new LoginMember(1L, "basic@basic.com", 20), 1850)
         );
     }
 

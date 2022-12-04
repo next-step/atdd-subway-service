@@ -8,7 +8,7 @@ public class LoginMember implements AuthMember {
     private Integer age;
 
 
-    public LoginMember() {
+    private LoginMember() {
     }
 
     public LoginMember(Long id, String email, Integer age) {

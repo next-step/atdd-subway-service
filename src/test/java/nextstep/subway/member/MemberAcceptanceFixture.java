@@ -16,8 +16,7 @@ public class MemberAcceptanceFixture {
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
-        return RestAssured
-                .given().log().all()
+        return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().post("/members")
@@ -28,8 +27,7 @@ public class MemberAcceptanceFixture {
     public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
-        return RestAssured
-                .given().log().all()
+        return RestAssured.given().log().all()
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(uri)
                 .then().log().all()
@@ -41,8 +39,7 @@ public class MemberAcceptanceFixture {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
-        return RestAssured
-                .given().log().all()
+        return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .body(memberRequest)
                 .when().put(uri)
