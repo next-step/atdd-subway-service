@@ -21,6 +21,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -46,6 +47,7 @@ class FavoriteServiceTest {
     private Member member;
     private Station 강남역;
     private Station 양재역;
+    private Favorite favorite;
 
     @BeforeEach
     void setUp() {
@@ -54,6 +56,7 @@ class FavoriteServiceTest {
         member = new Member(EMAIL, PASSWORD, AGE);
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
+        favorite = new Favorite(member, 강남역, 양재역);
     }
 
     @DisplayName("즐겨찾기를 등록할 수 있다.")
@@ -65,8 +68,10 @@ class FavoriteServiceTest {
         given(stationRepository.findById(2L)).willReturn(Optional.of(양재역));
         given(memberRepository.findByEmail(EMAIL)).willReturn(Optional.of(member));
         given(favoriteRepository.save(any())).willReturn(new Favorite(member, 강남역, 양재역));
+
         //when
         favoriteService.saveFavorite(loginMember, favoriteRequest);
+
         //then
         then(favoriteRepository).should()
                 .save(any());
@@ -76,7 +81,6 @@ class FavoriteServiceTest {
     @Test
     void find() {
         //given
-        Favorite favorite = new Favorite(member, 강남역, 양재역);
         given(memberRepository.findByEmail(EMAIL)).willReturn(Optional.of(member));
         given(favoriteRepository.findFavoritesByMember(member)).willReturn(
                 Collections.singletonList(favorite));
@@ -90,27 +94,35 @@ class FavoriteServiceTest {
                 () -> assertThat(favorites.size()).isEqualTo(1)
         );
     }
-/*
+
     @DisplayName("즐겨찾기를 삭제할 수 있다.")
     @Test
     void delete() {
         //given
-        LoginMember loginMember = new LoginMember(1L, EMAIL, AGE);
-        Station 강남역 = new Station("강남역");
-        Station 양재역 = new Station("양재역");
-        Member member = new Member(EMAIL, PASSWORD, AGE);
-        Favorite favorite = new Favorite(member, 강남역, 양재역);
         given(memberRepository.findByEmail(EMAIL)).willReturn(Optional.of(member));
-        given(stationRepository.findById(1L)).willReturn(Optional.of(강남역));
-        given(stationRepository.findById(2L)).willReturn(Optional.of(양재역));
-        given(favoriteRepository.findFavoritesByMember(member)).willReturn(
-                Collections.singletonList(favorite));
+        given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
 
         //when
-        favoriteService.deleteFavorite(loginMember, id);
-        List<Favorite> favorites = favoriteService.findFavorites(loginMember);
+        favoriteService.deleteFavorite(loginMember, 1L);
 
         //then
-        assertThat(favorites).isEmpty();
-    }*/
+        then(favoriteRepository).should()
+                .delete(any());
+    }
+
+    @DisplayName("본인의 즐겨찾기만 삭제할 수 있다.")
+    @Test
+    void delete_exception() {
+        //given
+        int newAge = 20;
+        String newEmail = "NEW_EMAIL@EMAIL.COM";
+        LoginMember newLoginMember = new LoginMember(2L, newEmail, newAge);
+        Member newMember = new Member(newEmail, "newPassword", newAge);
+        given(memberRepository.findByEmail(newEmail)).willReturn(Optional.of(newMember));
+        given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
+
+        //when then
+        Assertions.assertThatThrownBy(() -> favoriteService.deleteFavorite(newLoginMember, 1L))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
 }
