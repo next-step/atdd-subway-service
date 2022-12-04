@@ -17,6 +17,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 
@@ -64,7 +65,7 @@ class PathAcceptanceTest extends AcceptanceTest {
         반포역 = 지하철역_등록되어_있음("반포역").as(StationResponse.class);
         건대입구역 = 지하철역_등록되어_있음("건대입구역").as(StationResponse.class);
 
-        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 신논현역.getId(), 양재역.getId(), 12);
+        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-600", 신논현역.getId(), 양재역.getId(), 12, 900);
         신분당선 = 지하철_노선_등록되어_있음(신분당선_요청).as(LineResponse.class);
         LineRequest 이호선_요청 = new LineRequest("이호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 5);
         이호선 = 지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
@@ -134,5 +135,18 @@ class PathAcceptanceTest extends AcceptanceTest {
                     지하철_경로_조회_실패됨(response);
                 })
         );
+    }
+
+    @Test
+    @DisplayName("지하철 경로 조회를 했을때 노선 추가 운임이 있으면, 해당 요금이 포함된 운임이 조회된다.")
+    void findShortestPathByAdditionalLineFare() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(신논현역, 매봉역);
+
+        // then
+        지하철_경로_조회됨(response);
+        지하철_경로_목록_검증(response, Arrays.asList(신논현역, 강남역, 양재역, 매봉역));
+        지하철_경로_거리_검증(response, 18);
+        지하철_경로_운임_검증(response, 2250);
     }
 }

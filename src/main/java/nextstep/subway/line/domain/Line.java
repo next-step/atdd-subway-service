@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import org.apache.commons.lang3.StringUtils;
 
@@ -16,6 +17,7 @@ import org.apache.commons.lang3.StringUtils;
 public class Line extends BaseEntity {
     private static final String ERROR_MESSAGE_IS_BLANK_NAME = "노선 이름은 필수입니다.";
     private static final String ERROR_MESSAGE_IS_BLANK_COLOR = "노선 색상은 필수입니다.";
+    public static final int DEFAULT_LINE_SURCHARGE = 0;
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,18 +25,19 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
+    private Fare surcharge;
     @Embedded
     private Sections sections = new Sections();
 
     protected Line() {
     }
 
-    private Line(String name, String color) {
+    private Line(String name, String color, int lineSurcharge) {
         validNameAndColor(name, color);
 
         this.name = name;
         this.color = color;
+        this.surcharge = Fare.from(lineSurcharge);
     }
 
     private void validNameAndColor(String name, String color) {
@@ -48,11 +51,21 @@ public class Line extends BaseEntity {
     }
 
     public static Line of(String name, String color) {
-        return new Line(name, color);
+        return new Line(name, color, DEFAULT_LINE_SURCHARGE);
+    }
+
+    public static Line of(String name, String color, int lineSurcharge) {
+        return new Line(name, color, lineSurcharge);
     }
 
     public static Line of(String name, String color, Section section) {
-        Line line = new Line(name, color);
+        Line line = Line.of(name, color);
+        line.addSection(section);
+        return line;
+    }
+
+    public static Line of(String name, String color, int lineSurcharge, Section section) {
+        Line line = Line.of(name, color, lineSurcharge);
         line.addSection(section);
         return line;
     }
@@ -87,11 +100,15 @@ public class Line extends BaseEntity {
         return id;
     }
 
-    public String getName() {
+    public String name() {
         return name;
     }
 
-    public String getColor() {
+    public String color() {
         return color;
+    }
+
+    public int lineSurcharge() {
+        return surcharge.value();
     }
 }

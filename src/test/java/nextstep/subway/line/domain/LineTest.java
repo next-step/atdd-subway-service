@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.List;
 import nextstep.subway.common.exception.InvalidParameterException;
@@ -19,8 +20,36 @@ class LineTest {
 
         // then
         assertAll(
-                () -> assertThat(actual.getName()).isEqualTo("신분당선"),
-                () -> assertThat(actual.getColor()).isEqualTo("bg-red-600")
+                () -> assertNotNull(actual),
+                () -> assertThat(actual).isInstanceOf(Line.class)
+        );
+    }
+
+    @Test
+    @DisplayName("Line 생성 기본 노선 추가 요금 0원")
+    void createLineByDefaultLineFare() {
+        // given & when
+        Line actual = Line.of("신분당선", "bg-red-600");
+
+        // then
+        assertAll(
+                () -> assertThat(actual.name()).isEqualTo("신분당선"),
+                () -> assertThat(actual.color()).isEqualTo("bg-red-600"),
+                () -> assertThat(actual.lineSurcharge()).isZero()
+        );
+    }
+
+    @Test
+    @DisplayName("Line 생성 기본 노선 추가 요금 설정")
+    void createLineByCustomLineFare() {
+        // given & when
+        Line actual = Line.of("신분당선", "bg-red-600", 900);
+
+        // then
+        assertAll(
+                () -> assertThat(actual.name()).isEqualTo("신분당선"),
+                () -> assertThat(actual.color()).isEqualTo("bg-red-600"),
+                () -> assertThat(actual.lineSurcharge()).isEqualTo(900)
         );
     }
 
