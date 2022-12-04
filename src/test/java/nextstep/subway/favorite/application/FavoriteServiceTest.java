@@ -3,15 +3,20 @@ package nextstep.subway.favorite.application;
 import static nextstep.subway.auth.application.AuthServiceTest.AGE;
 import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
 import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.BDDMockito.then;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -67,28 +72,25 @@ class FavoriteServiceTest {
                 .save(any());
     }
 
-    /*@DisplayName("즐겨찿기 목록을 조회할 수 있다.")
+    @DisplayName("즐겨찿기 목록을 조회할 수 있다.")
     @Test
     void find() {
         //given
-        LoginMember loginMember = new LoginMember(1L, EMAIL, AGE);
-        Station 강남역 = new Station("강남역");
-        Station 양재역 = new Station("양재역");
-        Member member = new Member(EMAIL, PASSWORD, AGE);
         Favorite favorite = new Favorite(member, 강남역, 양재역);
         given(memberRepository.findByEmail(EMAIL)).willReturn(Optional.of(member));
-        given(stationRepository.findById(1L)).willReturn(Optional.of(강남역));
-        given(stationRepository.findById(2L)).willReturn(Optional.of(양재역));
         given(favoriteRepository.findFavoritesByMember(member)).willReturn(
                 Collections.singletonList(favorite));
 
         //when
-        List<Favorite> favorites = favoriteService.findFavorites(loginMember);
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember);
 
         //then
-        assertThat(favorites).containsExactly(favorite);
+        assertAll(
+                () -> assertThat(favorites).isNotEmpty(),
+                () -> assertThat(favorites.size()).isEqualTo(1)
+        );
     }
-
+/*
     @DisplayName("즐겨찾기를 삭제할 수 있다.")
     @Test
     void delete() {
