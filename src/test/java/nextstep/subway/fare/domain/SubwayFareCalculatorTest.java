@@ -5,7 +5,6 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 import nextstep.subway.auth.fare.domain.SubwayFareCalculator;
 import nextstep.subway.common.exception.ErrorEnum;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -43,10 +42,11 @@ public class SubwayFareCalculatorTest {
     }
 
     @ParameterizedTest()
-    @CsvSource(value = {"51:1850", "80:2150"}, delimiter = ':')
+    @CsvSource(value = {"51:2150", "90:2450"}, delimiter = ':')
     void 거리_50km_초과_입력시_추가_운임요금_부과(int distance, int expected) {
         int fare = SubwayFareCalculator.calculate(distance);
 
+        System.out.println(fare);
         assertThat(fare).isEqualTo(expected);
     }
 
