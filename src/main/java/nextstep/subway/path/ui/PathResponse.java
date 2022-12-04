@@ -1,5 +1,6 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.station.dto.StationResponse;
 
 import java.util.List;
@@ -27,34 +28,11 @@ public class PathResponse {
         return distance;
     }
 
-    public int getAdditionalFare() {
+    public int getFare() {
         return fare;
     }
 
     public void applyDiscountFare(final int age) {
-        if (isChild(age)) {
-            applyChildDiscountFare();
-            return;
-        }
-
-        if (isTeen(age)) {
-            applyTeenDiscountFare();
-        }
-    }
-
-    private boolean isChild(int age) {
-        return age >= 6 && age < 13;
-    }
-
-    private boolean isTeen(int age) {
-        return age >= 13 && age < 19;
-    }
-
-    private void applyChildDiscountFare() {
-        fare = fare - ((fare - 350) / 5);
-    }
-
-    private void applyTeenDiscountFare() {
-        fare = fare - ((fare - 350) / 2);
+        fare = FareCalculator.applyDiscountFare(fare, age);
     }
 }

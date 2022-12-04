@@ -1,6 +1,5 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.ui.PathResponse;
@@ -16,11 +15,7 @@ import java.util.stream.Collectors;
 public class PathFinder {
     private final SubwayGraph graph;
     private final List<Section> sections;
-    public static final int BASIC_FARE = 1250;
-    public static final int ADDITIONAL_FARE_DISTANCE_LEVEL1 = 10;
-    public static final int ADDITIONAL_FARE_DISTANCE_LEVEL2 = 50;
-    public static final int DISTANCE_UNIT_LEVEL1 = 5;
-    public static final int DISTANCE_UNIT_LEVEL2 = 8;
+
 
     private PathFinder(List<Line> lines) {
         this.sections = lines.stream()
@@ -44,34 +39,9 @@ public class PathFinder {
                 .collect(Collectors.toList());
 
         List<Station> stations = shortestPath.getVertexList();
+        int fare = FareCalculator.calculateAdditionalFare(sections, stations, shortestPath.getWeight());
 
-        int additionalFareOfLine = checkIsAdditionalFareOfLine(stations);
-        int fare = BASIC_FARE + additionalFareOfLine + calculateAdditionalFareOfDistance(shortestPath.getWeight());
         return new PathResponse(responses, (int) shortestPath.getWeight(), fare);
-    }
-
-    private int checkIsAdditionalFareOfLine(final List<Station> stations) {
-        return sections.stream()
-                .filter(section -> stations.containsAll(section.stations()))
-                .map(section -> section.getLine().getAdditionalFare())
-                .max(Integer::compareTo)
-                .orElse(0);
-    }
-
-    private int calculateAdditionalFareOfDistance(final double weight) {
-        if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL2) {
-            return calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL2, DISTANCE_UNIT_LEVEL2);
-        }
-
-        if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL1) {
-            return calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL1, DISTANCE_UNIT_LEVEL1);
-        }
-
-        return 0;
-    }
-
-    private int calculateOverFare(double distance, int distanceUnit) {
-        return (int) ((Math.floor((distance - 1) / distanceUnit) + 1) * 100);
     }
 
     private void validate(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {

@@ -77,7 +77,7 @@ class PathFinderTest {
         PathResponse shortestPath = pathFinder.getShortestPath(강남역, 양재역);
 
         assertThat(shortestPath.getDistance()).isEqualTo(10);
-        assertThat(shortestPath.getAdditionalFare()).isEqualTo(1250);
+        assertThat(shortestPath.getFare()).isEqualTo(1250);
     }
 
     @DisplayName("10km 초과 ∼ 50km 이내 경로 조회 시 5km마다 100원 추가된 요금 정보가 포함된다")
@@ -88,7 +88,7 @@ class PathFinderTest {
         PathResponse shortestPath = pathFinder.getShortestPath(강남역, 남부터미널역);
 
         assertThat(shortestPath.getDistance()).isEqualTo(12);
-        assertThat(shortestPath.getAdditionalFare()).isEqualTo(1350);
+        assertThat(shortestPath.getFare()).isEqualTo(1350);
     }
 
     @DisplayName("50km 초과 경로 조회 시 8km마다 100원 추가된 요금 정보가 포함된다")
@@ -99,7 +99,7 @@ class PathFinderTest {
         PathResponse shortestPath = pathFinder.getShortestPath(명동역, 사당역);
 
         assertThat(shortestPath.getDistance()).isEqualTo(30);
-        assertThat(shortestPath.getAdditionalFare()).isEqualTo(1650);
+        assertThat(shortestPath.getFare()).isEqualTo(1650);
     }
 
     @DisplayName("경로 중 추가요금이 있는 노선을 환승 하여 이용 할 경우 가장 높은 금액의 추가 요금이 적용된다")
@@ -110,7 +110,7 @@ class PathFinderTest {
         PathResponse shortestPath = pathFinder.getShortestPath(동대문역사공원역, 광화문역);
 
         assertThat(shortestPath.getDistance()).isEqualTo(10);
-        assertThat(shortestPath.getAdditionalFare()).isEqualTo(2250);
+        assertThat(shortestPath.getFare()).isEqualTo(2250);
     }
 
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같으면 예외를 반환한다.")
