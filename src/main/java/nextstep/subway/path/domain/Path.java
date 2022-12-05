@@ -2,14 +2,8 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.fare.domain.Fare;
-import nextstep.subway.fare.policy.BasicFare;
-import nextstep.subway.fare.policy.DistanceSurchargePolicy;
-import nextstep.subway.fare.policy.LineSurchargePolicy;
-import nextstep.subway.fare.policy.FarePolicy;
-import nextstep.subway.fare.policy.MemberDiscountPolicy;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
@@ -54,14 +48,6 @@ public class Path {
 
     public Fare maxLineSurcharge() {
         return lines.maxLineSurcharge();
-    }
-
-    public Fare calculateFare(LoginMember loginMember) {
-        FarePolicy farePolicy = new BasicFare();
-        farePolicy = DistanceSurchargePolicy.of(farePolicy, distance);
-        farePolicy = LineSurchargePolicy.of(farePolicy, this);
-        farePolicy = MemberDiscountPolicy.of(farePolicy, loginMember);
-        return farePolicy.calculateFare();
     }
 
     public List<Station> stations() {

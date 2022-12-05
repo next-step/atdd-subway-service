@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 class DistanceSurchargeTest {
     @ParameterizedTest
-    @CsvSource(value = {"10:0", "15:100", "66:1000"}, delimiter = ':')
+    @CsvSource(value = {"10:1250", "15:1350", "66:2250"}, delimiter = ':')
     @DisplayName("거리 기준 추가 요금 계산")
     void calculateSurchargeByDistance(int distance, int expect) {
         // given & when

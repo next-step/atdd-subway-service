@@ -3,20 +3,18 @@ package nextstep.subway.fare.policy;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 
-public class DistanceSurchargePolicy extends FarePolicyDecorator {
+public class DistanceSurchargePolicy {
     private final Distance distance;
 
-    private DistanceSurchargePolicy(FarePolicy farePolicy, Distance distance) {
-        super(farePolicy);
+    private DistanceSurchargePolicy(Distance distance) {
         this.distance = distance;
     }
 
-    public static DistanceSurchargePolicy of(FarePolicy farePolicy, Distance distance) {
-        return new DistanceSurchargePolicy(farePolicy, distance);
+    public static DistanceSurchargePolicy from(Distance distance) {
+        return new DistanceSurchargePolicy(distance);
     }
 
-    @Override
     public Fare calculateFare() {
-        return super.calculateFare().add(DistanceSurcharge.calculate(distance));
+        return DistanceSurcharge.calculate(distance);
     }
 }

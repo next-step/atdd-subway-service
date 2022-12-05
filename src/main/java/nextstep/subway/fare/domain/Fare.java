@@ -5,10 +5,6 @@ import javax.persistence.Embeddable;
 
 @Embeddable
 public class Fare {
-    public static final int BASIC_FARE = 1_250;
-    public static final int BASIC_SECTION_NO_SURCHARGE = 0;
-    public static final int FIRST_SECTION_MAX_SURCHARGE = 800;
-
     @Column(nullable = false)
     private int fare;
 
