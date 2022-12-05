@@ -22,22 +22,26 @@ public class Sections {
 
     public List<Station> getStations() {
         List<Station> stations = new ArrayList<>();
-        Station downStation = findFinalUpStation();
-        stations.add(downStation);
-
-        while (downStation != null) {
-            downStation = ifPresentAddStation(downStation, stations);
+        if(findFinalUpStation().isPresent()){
+            addStations(stations);
         }
 
         return stations;
     }
 
-    private Station findFinalUpStation() {
+    private void addStations(List<Station> stations){
+        Station downStation = findFinalUpStation().get().getUpStation();
+        stations.add(downStation);
+
+        while (downStation != null) {
+            downStation = ifPresentAddStation(downStation, stations);
+        }
+    }
+
+    private Optional<Section> findFinalUpStation() {
         return sections.stream()
                 .filter(section -> !section.anyDownStation(sections))
-                .findFirst()
-                .get()
-                .getUpStation();
+                .findFirst();
     }
 
     private Station ifPresentAddStation(Station upStation, List<Station> stations) {
