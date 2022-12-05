@@ -37,10 +37,10 @@
 
 #### 구현 기능 목록
 - [x] `LineService` 기능 정리
-- [ ] 기능에 대한 유닛 테스트 작성
-  - [ ] `Service` 테스트 작성
-    - [ ] `LineService` 테스트 작성
-    - [ ] `StationService` 테스트 작성
+- [x] 기능에 대한 유닛 테스트 작성
+  - [x] `Service` 테스트 작성
+    - [x] `LineService` 테스트 작성
+    - [x] `StationService` 테스트 작성
   - [x] `Domain` 테스트 작성
     - [x] `Line` 테스트 작성
     - [x] `Station` 테스트 작성
