@@ -9,13 +9,6 @@ import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
-    @Transient
-    private static final int MIN_AGE_CHILD = 6;
-    @Transient
-    private static final int MIN_AGE_TEEN = 13;
-    @Transient
-    private static final int MIN_AGE_ADULT = 19;
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -58,18 +51,6 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
-    }
-
-    public boolean isAdult() {
-        return age >= MIN_AGE_ADULT;
-    }
-
-    public boolean isTeen() {
-        return age >= MIN_AGE_TEEN;
-    }
-
-    public boolean isChild() {
-        return age >= MIN_AGE_CHILD;
     }
 
     @Override

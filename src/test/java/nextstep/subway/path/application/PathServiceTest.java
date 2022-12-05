@@ -55,7 +55,7 @@ class PathServiceTest {
         when(sectionRepository.findAll()).thenReturn(Arrays.asList(
                 강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
 
-        assertThat(pathService.getShortestPath(pathRequest)).satisfies(path -> {
+        assertThat(pathService.getShortestPath(null, pathRequest)).satisfies(path -> {
             assertThat(path.getStations().stream().map(StationResponse::getName).collect(toList()))
                     .containsExactly("양재역", "남부터미널역", "교대역");
             assertThat(path.getDistance()).isEqualTo(10);

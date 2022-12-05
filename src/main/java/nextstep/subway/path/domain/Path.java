@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.domain.Member;
@@ -19,12 +20,12 @@ public class Path {
         this.fare = FareCalculator.calculateFare(distance);
     }
 
-    public void calculateFare(Member member, List<Line> lines) {
+    public void calculateFare(LoginMember loginMember, List<Line> lines) {
         Integer totalFare = fare + lines.stream()
                 .mapToInt(Line::getSurcharge)
                 .max()
                 .orElse(0);
-        fare = DiscountCalculator.getFare(member, totalFare);
+        fare = DiscountCalculator.getFare(loginMember, totalFare);
     }
 
     public List<Station> getStations() {

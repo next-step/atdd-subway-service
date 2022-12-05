@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.auth.domain.LoginMember;
 
 public class DiscountCalculator {
     private static final Integer DISCOUNT_DEFAULT = 350;
@@ -11,7 +11,7 @@ public class DiscountCalculator {
 
     }
 
-    public static Integer getFare(Member member, Integer fare) {
+    public static Integer getFare(LoginMember member, Integer fare) {
         if (member == null || member.isAdult()) {
             return fare;
         }

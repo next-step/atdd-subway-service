@@ -1,8 +1,8 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -36,7 +36,7 @@ class PathTest {
     @Test
     @DisplayName("어린이 요금을 계산한다")
     void 어린이_요금_계산() {
-        Member member = new Member("email@email.com", "password", 9);
+        LoginMember member = new LoginMember(0L, "email@email.com", 9);
         path.calculateFare(member, Arrays.asList(new Line("2호선", "bg-green", 100)));
         assertThat(path.getFare()).isEqualTo(600);
     }
@@ -44,7 +44,7 @@ class PathTest {
     @Test
     @DisplayName("청소년 요금을 계산한다")
     void 청소년_요금_계산() {
-        Member member = new Member("email@email.com", "password", 16);
+        LoginMember member = new LoginMember(0L, "email@email.com", 16);
         path.calculateFare(member, Arrays.asList(new Line("2호선", "bg-green", 100)));
         assertThat(path.getFare()).isEqualTo(960);
     }
@@ -52,7 +52,7 @@ class PathTest {
     @Test
     @DisplayName("성인 요금을 계산한다")
     void 성인_요금_계산() {
-        Member member = new Member("email@email.com", "password", 20);
+        LoginMember member = new LoginMember(0L, "email@email.com", 20);
         path.calculateFare(member, Arrays.asList(new Line("2호선", "bg-green", 100)));
         assertThat(path.getFare()).isEqualTo(1550);
     }
