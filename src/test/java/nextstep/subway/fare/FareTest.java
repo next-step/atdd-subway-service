@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
-public class FareTest {
+class FareTest {
     private final int 노선_추가_요금 = 900;
     private final int NON_MEMBER_AGE = -1;
 
