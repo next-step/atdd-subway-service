@@ -1,5 +1,7 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.ErrorMessage;
+import nextstep.subway.ErrorMessage;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -29,11 +31,12 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            throw new AuthorizationException(ErrorMessage.INVALID_TOKEN);
         }
-
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(
+                ()-> new AuthorizationException(ErrorMessage.LOGIN_EMAIL_NOT_FOUND)
+        );
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
