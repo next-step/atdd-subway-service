@@ -61,6 +61,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
      * Then 나의 정보 조회됨
      * When 나의 정보 수정 요청
      * Then 나의 정보 수정됨
+     * When 로그인 요청
+     * Then AccessToken 획득
      * When 나의 정보 삭제 요청
      * Then 나의 정보 삭제 됨
      */
@@ -85,6 +87,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         본인_정보_수정됨(updateResponse);
 
+        // given
+        accessToken = 로그인_요청(NEW_EMAIL, NEW_PASSWORD).as(TokenResponse.class).getAccessToken();
         // when
         ExtractableResponse<Response> deleteResponse = 본인_삭제_요청(accessToken);
         // then

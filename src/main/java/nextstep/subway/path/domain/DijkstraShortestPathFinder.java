@@ -2,19 +2,19 @@ package nextstep.subway.path.domain;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 import nextstep.subway.common.exception.SubwayException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.Path;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class DijkstraShortestPathFinder implements PathFinder {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
 
     private DijkstraShortestPathFinder(List<Line> lines) {
         initGraph(lines);
@@ -38,24 +38,32 @@ public class DijkstraShortestPathFinder implements PathFinder {
 
     private void setEdgeWeight(List<Section> sections) {
         sections.stream()
-                .forEach(section -> graph.setEdgeWeight(addEdge(section), section.getDistance()));
+                .forEach(section -> {
+                    SectionEdge sectionEdge = new SectionEdge(section);
+                    addEdge(section, sectionEdge);
+                    graph.setEdgeWeight(sectionEdge, section.getDistance());
+                });
     }
 
-    private DefaultWeightedEdge addEdge(Section section) {
-        return graph.addEdge(section.getUpStation(), section.getDownStation());
+    private boolean addEdge(Section section, SectionEdge sectionEdge) {
+        return graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
     }
 
     @Override
     public Path findPath(Station source, Station target) {
         validateSameStations(source, target);
 
-        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-        GraphPath<Station, DefaultWeightedEdge> graphPath = dijkstraShortestPath.getPath(source, target);
+        DijkstraShortestPath<Station, SectionEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+        GraphPath<Station, SectionEdge> graphPath = dijkstraShortestPath.getPath(source, target);
         validateNotConnectStations(graphPath);
 
         List<Station> stations = graphPath.getVertexList();
         double weight = graphPath.getWeight();
-        return Path.of(stations, (int) weight);
+        return new Path.Builder()
+                .stations(stations)
+                .distance((int) weight)
+                .extraFare(getMaxExtraFare(graphPath))
+                .build();
     }
 
     private void validateSameStations(Station source, Station target) {
@@ -64,10 +72,20 @@ public class DijkstraShortestPathFinder implements PathFinder {
         }
     }
 
-    private void validateNotConnectStations(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+    private void validateNotConnectStations(GraphPath<Station, SectionEdge> graphPath) {
         if (Objects.isNull(graphPath)) {
             throw new SubwayException("출발역과 도착역이 연결되어 있지 않습니다.");
         }
+    }
+
+    private Lines getLines(GraphPath<Station, SectionEdge> graphPath) {
+        return Lines.from(graphPath.getEdgeList().stream()
+                .map(SectionEdge::getLine)
+                .collect(Collectors.toList()));
+    }
+
+    private int getMaxExtraFare(GraphPath<Station, SectionEdge> graphPath) {
+        return getLines(graphPath).maxExtraFare();
     }
 }
 
