@@ -6,6 +6,8 @@ import java.util.List;
 
 public class PathResponse {
     private List<StationResponse> stations;
+    private int distance;
+    private int fare;
 
     public PathResponse(List<StationResponse> stations) {
         this.stations = stations;
