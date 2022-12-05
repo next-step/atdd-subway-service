@@ -1,9 +1,11 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.line.message.SectionMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.Objects;
+import java.util.Optional;
 
 @Entity
 public class Section {
@@ -35,6 +37,19 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section merge(Section upLineStationSection, Section downLineStationSection) {
+        if(!upLineStationSection.line.equals(downLineStationSection.line)) {
+            throw new IllegalArgumentException(SectionMessage.MERGE_ERROR_NOT_EQUALS_LINE.message());
+        }
+
+        return new Section(
+                upLineStationSection.line,
+                upLineStationSection.upStation,
+                downLineStationSection.downStation,
+                upLineStationSection.distance.plus(downLineStationSection.distance)
+        );
     }
 
     public Long getId() {

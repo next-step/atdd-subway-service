@@ -62,7 +62,7 @@ public class Line extends BaseEntity {
     }
 
     public void removeStation(Station station) {
-        this.sections.removeStation(this, station);
+        this.sections.removeStation(station);
     }
 
     @Override

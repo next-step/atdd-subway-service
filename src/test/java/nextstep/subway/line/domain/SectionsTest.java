@@ -18,6 +18,7 @@ class SectionsTest {
     private Station 선릉역;
     private Station 역삼역;
     private Station 삼성역;
+    private Station 잠실역;
 
     @BeforeEach
     void setUp() {
@@ -27,6 +28,7 @@ class SectionsTest {
         this.선릉역 = StationFixture.선릉역;
         this.역삼역 = StationFixture.역삼역;
         this.삼성역 = StationFixture.삼성역;
+        this.잠실역 = StationFixture.잠실역;
 
         // [교대약 4 강남역] - [강남역 5 선릉역] - [선릉역 5 역삼역]
         이호선.addSection(교대역, 강남역, 4);
@@ -81,7 +83,7 @@ class SectionsTest {
     @Test
     void add_section_with_not_enrolled_stations_test() {
         // when & then
-        assertThatThrownBy(() -> 이호선.addSection(역삼역, 삼성역, 3))
+        assertThatThrownBy(() -> 이호선.addSection(삼성역, 잠실역,3))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(SectionMessage.ADD_ERROR_NONE_MATCH_SECTION_STATIONS.message());
     }
@@ -107,11 +109,14 @@ class SectionsTest {
     @DisplayName("지하철역 제거 - 라인에 등록 된 역을 제거하는 경우")
     @Test
     void remove_station_test() {
+        // given
+        // [교대약 4 강남역] - [강남역 5 선릉역] - [선릉역 5 역삼역]
+
         // when
         이호선.removeStation(선릉역);
 
         // then
-        assertThat(이호선.getStations()).doesNotContain(선릉역);
+        assertThat(이호선.getStations()).containsExactly(교대역, 강남역, 역삼역);
     }
 
     /**
@@ -123,6 +128,7 @@ class SectionsTest {
     @Test
     void remove__station_if_has_one_section_test() {
         // given
+        이호선.removeStation(선릉역);
         이호선.removeStation(강남역);
 
         // when & then
