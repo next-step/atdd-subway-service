@@ -5,11 +5,9 @@ import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -25,9 +23,10 @@ public class PathService {
     public PathResponse findShortestPath(Long sourceId, Long targetId) {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
-        List<Station> stations = new PathFinder(lineRepository.findAll())
-                .getShortestPath(sourceStation, targetStation);
-        return new PathResponse(stations.stream().map(StationResponse::of).collect(Collectors.toList()));
+        PathFinder pathFinder = new PathFinder(lineRepository.findAll());
+        List<Station> stations = pathFinder.getShortestPath(sourceStation, targetStation);
+        int distance = pathFinder.getShortestDistance(sourceStation, targetStation);
+        return new PathResponse(stations, distance);
     }
 
     private Station findStationById(Long id) {

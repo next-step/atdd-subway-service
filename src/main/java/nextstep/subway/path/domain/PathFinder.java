@@ -62,5 +62,8 @@ public class PathFinder {
         }
     }
 
-
+    public int getShortestDistance(Station sourceStation, Station targetStation) {
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = validateLinkGraph(sourceStation, targetStation);
+        return (int) shortestPath.getWeight();
+    }
 }

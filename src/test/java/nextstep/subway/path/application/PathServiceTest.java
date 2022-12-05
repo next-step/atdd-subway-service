@@ -22,6 +22,7 @@ import static nextstep.subway.Fixture.createLine;
 import static nextstep.subway.Fixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -106,7 +107,8 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
         PathResponse pathResponse = pathService.findShortestPath(광산역.getId(), 양재역.getId());
-        assertThat(pathResponse.getStations().stream().map(StationResponse::getId))
-                .containsExactly(광산역.getId(), 교대역.getId(), 남부터미널역.getId(), 양재역.getId());
+        assertAll(
+                () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getId)).containsExactly(광산역.getId(), 교대역.getId(), 남부터미널역.getId(), 양재역.getId()),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(10));
     }
 }
