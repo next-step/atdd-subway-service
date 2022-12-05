@@ -47,10 +47,10 @@ public class SectionTest {
     @Test
     void 상행역_및_거리_갱신_테스트() {
         Section section = 당산_합정_구간(line);
-        section.updateUpStation(영등포구청역, new Distance(5));
+        section.updateUpStation(영등포구청역(), new Distance(5));
 
         assertAll(
-                () -> assertThat(section.hasEqualUpStation(영등포구청역)).isTrue(),
+                () -> assertThat(section.hasEqualUpStation(영등포구청역())).isTrue(),
                 () -> assertThat(section.getDistance()).isEqualTo(new Distance(2))
         );
     }
@@ -59,10 +59,10 @@ public class SectionTest {
     @Test
     void 하행역_및_거리_갱신_테스트() {
         Section section = 당산_합정_구간(line);
-        section.updateDownStation(홍대입구역, new Distance(5));
+        section.updateDownStation(홍대입구역(), new Distance(5));
 
         assertAll(
-                () -> assertThat(section.hasEqualDownStation(홍대입구역)).isTrue(),
+                () -> assertThat(section.hasEqualDownStation(홍대입구역())).isTrue(),
                 () -> assertThat(section.getDistance()).isEqualTo(new Distance(2))
         );
     }
@@ -73,7 +73,7 @@ public class SectionTest {
         Section section = 당산_합정_구간(line);
 
         assertThatThrownBy(
-                () -> section.updateDownStation(홍대입구역, new Distance(15))
+                () -> section.updateDownStation(홍대입구역(), new Distance(15))
         ).isInstanceOf(InvalidDataException.class);
     }
 
