@@ -2,6 +2,12 @@ package nextstep.subway.favorite;
 
 import static nextstep.subway.auth.acceptance.AuthFixture.로그인_요청_후_토큰_가져오기;
 import static nextstep.subway.line.acceptance.LineFixture.지하철_노선_등록되어_있음;
+import static nextstep.subway.member.MemberFixture.AGE;
+import static nextstep.subway.member.MemberFixture.EMAIL;
+import static nextstep.subway.member.MemberFixture.NEW_AGE;
+import static nextstep.subway.member.MemberFixture.NEW_EMAIL;
+import static nextstep.subway.member.MemberFixture.NEW_PASSWORD;
+import static nextstep.subway.member.MemberFixture.PASSWORD;
 import static nextstep.subway.member.MemberFixture.회원_생성을_요청;
 import static nextstep.subway.station.StationFixture.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,6 +34,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 정자역;
 
     private String accessToken;
+    private String newAccessToken;
 
     public static ExtractableResponse<Response> 즐겨찾기_생성(final String accessToken, Long source,
         Long target) {
@@ -71,8 +78,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         정자역 = 지하철역_등록되어_있음("정자역").as(StationResponse.class);
 
         지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 정자역.getId(), 10));
-        회원_생성을_요청("test@test.com", "1234", 10);
-        accessToken = 로그인_요청_후_토큰_가져오기("test@test.com", "1234");
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        accessToken = 로그인_요청_후_토큰_가져오기(EMAIL, PASSWORD);
+        newAccessToken = 로그인_요청_후_토큰_가져오기(NEW_EMAIL, NEW_PASSWORD);
     }
 
     /*
@@ -115,6 +124,40 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
+    /*
+    Feature: 즐겨찾기를 관리한다.
+
+        Background
+            Given 지하철역 등록되어 있음
+            And 지하철 노선 등록되어 있음
+            And 지하철 노선에 지하철역 등록되어 있음
+            And 회원 등록되어 있음
+            And 신규회원 등록되어 있음
+            And 로그인 되어있음
+            And 신규회원 로그인 되어있음
+
+        Scenario: 자신의 즐겨찾기 아닌 항목을 삭제
+            When 회원 즐겨찾기 생성을 요청
+            Then 회원 즐겨찾기 생성됨
+            When 신규회원 토큰으로 즐겨찾기 삭제 요청
+            Then 에러발생
+     */
+    @DisplayName("자신의 즐겨찾기 아닌 항목을 삭제")
+    @Test
+    void delete_others_favorite() {
+        //when
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성(accessToken, 강남역.getId(),
+            정자역.getId());
+        //then
+        즐겨찾기_생성됨(createResponse);
+
+        //when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(newAccessToken,
+            getURI(createResponse));
+        //then
+        즐겨찾기_삭제_에러_발생(deleteResponse);
+    }
+
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(getURI(response)).isNotNull();
     }
@@ -126,12 +169,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_목록_조회됨(List<FavoriteResponse> responses) {
         assertThat(responses)
             .hasSize(1)
-            .extracting(FavoriteResponse::getSource)
-            .map(StationResponse::getName)
-            .isEqualTo("강남역");
+            .map(FavoriteResponse::getSource)
+            .extracting(StationResponse::getName)
+            .containsExactly("강남역");
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    private void 즐겨찾기_삭제_에러_발생(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 }
