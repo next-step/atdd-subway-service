@@ -73,6 +73,42 @@ public class Line extends BaseEntity {
         addSection(new Section(this, upStation, downStation, distance));
     }
 
+    public void removeStation(Station station) {
+        checkValidationForEmptySections();
+
+        removeStation(getSectionUpLineStation(station), getSectionDownLineStation(station));
+    }
+
+    private void removeStation(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Section newUpLineStation = upLineStation.get();
+            Section newDownLineStation = downLineStation.get();
+            int newDistance = newUpLineStation.getDistance() + newDownLineStation.getDistance();
+            this.sections.add(new Section(this, newUpLineStation.getUpStation(), newDownLineStation.getDownStation(), newDistance));
+        }
+
+        upLineStation.ifPresent(it -> this.sections.remove(it));
+        downLineStation.ifPresent(it -> this.sections.remove(it));
+    }
+
+    private Optional<Section> getSectionUpLineStation(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getSectionDownLineStation(Station station) {
+        return this.sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private void checkValidationForEmptySections() {
+        if (this.sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
+
     private void updateSectionStation(Station upStation, Station downStation, int distance) {
         if (isUpStationExisted(upStation)) {
             this.sections.stream()

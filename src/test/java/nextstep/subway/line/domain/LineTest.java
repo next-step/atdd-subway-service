@@ -113,4 +113,24 @@ class LineTest {
 
         assertThat( line.getStations().stream().map(it -> it.getName()).collect(Collectors.toList()) ).containsExactly("강남", "판교", "양재", "양재시민의숲");
     }
+
+    @Test
+    @DisplayName("지하철 구간삭제 ( 실패 : 추가된 구간이 없을때 )")
+    public void removeLineStationTest1() {
+        Line line = new Line("6호선", "bg-red-600");
+
+        assertThatThrownBy(() -> line.removeStation(stationRepository.findByName("강남")))
+                .isInstanceOf(RuntimeException.class);
+    }
+
+    @Test
+    @DisplayName("지하철 구간삭제 ( 성공 )")
+    public void removeLineStationTest2() {
+        Line line = lineRepository.getByName("신분당선");
+        Station 강남 = stationRepository.findByName("양재");
+
+        line.removeStation(강남);
+
+        assertThat( line.getStations().stream().map(it -> it.getName()).collect(Collectors.toList()) ).containsExactly("강남", "양재시민의숲");
+    }
 }
