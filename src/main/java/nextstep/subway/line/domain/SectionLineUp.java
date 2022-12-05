@@ -5,6 +5,7 @@ import nextstep.subway.station.domain.StationLineUp;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -18,7 +19,8 @@ public class SectionLineUp {
     private static final int FIRST_INDEX = 0;
     private static final int MIN_SIZE = 1;
 
-    @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST, CascadeType.MERGE }, orphanRemoval = true)
+    @OneToMany(mappedBy = "line", cascade = { CascadeType.PERSIST,
+            CascadeType.MERGE }, orphanRemoval = true, fetch = FetchType.LAZY)
     private List<Section> sections = new ArrayList<>();
 
     public SectionLineUp(List<Section> sections) {
