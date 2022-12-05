@@ -24,7 +24,6 @@ public class FavoriteService {
     private final StationRepository stationRepository;
     private final FavoriteRepository favoriteRepository;
 
-
     public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository, FavoriteRepository favoriteRepository) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
