@@ -47,7 +47,8 @@ public class PathService {
     }
 
     private int findFare(Line line, int distance, int age) {
-        return new FareCalculator(line, new DistanceFare(distance, DistancePolicy.valueOfRange(distance)), AgePolicy.valueOfAge(age)).getCalculcate();
+        FareCalculator fareCalculator = new FareCalculator(line,new DistanceFare(distance),AgePolicy.valueOfAge(age));
+        return fareCalculator.getCalculcate();
     }
 
 }
