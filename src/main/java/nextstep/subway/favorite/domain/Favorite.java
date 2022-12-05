@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -8,7 +9,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import nextstep.subway.common.exception.InvalidParameterException;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -21,9 +21,8 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "member_id", nullable = false)
-    private Member member;
+    @Column(name = "member_id", nullable = false)
+    private Long memberId;
     @ManyToOne
     @JoinColumn(name = "departure_id", nullable = false)
     private Station departureStation;
@@ -33,27 +32,39 @@ public class Favorite {
 
     protected Favorite() {}
 
-    private Favorite(Member member, Station departureStation, Station arrivalStation) {
-        validFavorite(member, departureStation, arrivalStation);
-        this.member = member;
+    private Favorite(long memberId, Station departureStation, Station arrivalStation) {
+        validFavorite(memberId, departureStation, arrivalStation);
+        this.memberId = memberId;
         this.departureStation = departureStation;
         this.arrivalStation = arrivalStation;
     }
 
-    public static Favorite of(Member member, Station departureStation, Station arrivalStation) {
-        return new Favorite(member, departureStation, arrivalStation);
+    private Favorite(long id, long memberId, Station departureStation, Station arrivalStation) {
+        this(memberId, departureStation, arrivalStation);
+        this.id = id;
     }
 
-    private void validFavorite(Member member, Station departureStation, Station arrivalStation) {
-        validNotNull(member, departureStation, arrivalStation);
+    public static Favorite of(long memberId, Station departureStation, Station arrivalStation) {
+        return new Favorite(memberId, departureStation, arrivalStation);
+    }
+
+    public static Favorite of(long id, long memberId, Station departureStation, Station arrivalStation) {
+        return new Favorite(id, memberId, departureStation, arrivalStation);
+    }
+
+    private void validFavorite(long memberId, Station departureStation, Station arrivalStation) {
+        isPositive(memberId);
+        validNotNull(departureStation, arrivalStation);
         validSameStations(departureStation, arrivalStation);
     }
 
-    private void validNotNull(Member member, Station departureStation, Station arrivalStation) {
-        if (Objects.isNull(member)) {
+    private void isPositive(long memberId) {
+        if (memberId < 1) {
             throw new InvalidParameterException(ERROR_MESSAGE_FAVORITE_NOT_NULL_MEMBER);
         }
+    }
 
+    private void validNotNull(Station departureStation, Station arrivalStation) {
         if (Objects.isNull(departureStation)) {
             throw new InvalidParameterException(ERROR_MESSAGE_FAVORITE_NOT_NULL_DEPARTURE_STATION);
         }

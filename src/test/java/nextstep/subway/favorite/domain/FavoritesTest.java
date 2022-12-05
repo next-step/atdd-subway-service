@@ -5,7 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import java.util.Collections;
-import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +15,7 @@ class FavoritesTest {
     void createFavorites() {
         Favorites actual = Favorites.from(Collections.singletonList(
                 Favorite.of(
-                        Member.of("email@email.com", "password", 20),
+                        1L,
                         Station.from("강남역"),
                         Station.from("잠실역")
                 )));

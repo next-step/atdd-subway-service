@@ -5,13 +5,15 @@ import static nextstep.subway.member.domain.MemberTestFixture.member;
 import static nextstep.subway.station.domain.StationTestFixture.station;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.given;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.InvalidParameterException;
+import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -48,11 +50,11 @@ class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        member = member("email@email.com", "password", 20);
+        member = member(1L, "email@email.com", "password", 20);
         loginMember = new LoginMember(1L, member.emailValue(), member.ageValue());
         departureStation = station("강남역");
         arrivalStation = station("잠실역");
-        favorite = favorite(member, departureStation, arrivalStation);
+        favorite = favorite(1L, 1L, departureStation, arrivalStation);
     }
 
     @Test
@@ -109,42 +111,40 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 목록을 조회한다")
     void findFavorites() {
         // given
-        Favorite favorite2 = favorite(member, station("잠실역"), station("몽촌토성역"));
-        member.addFavorite(favorite);
-        member.addFavorite(favorite2);
-        given(memberService.findMemberById(1L)).willReturn(member);
+        Favorite favorite2 = favorite(1L, station("잠실역"), station("몽촌토성역"));
+        given(favoriteRepository.findAllByMemberId(loginMember.getId()))
+                .willReturn(Arrays.asList(favorite, favorite2));
 
         // when
-        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoritesByMemberId(loginMember);
+        List<FavoriteResponse> actual = favoriteService.findFavoritesByMemberId(loginMember);
 
-        assertThat(favoriteResponses).hasSize(2);
+        assertThat(actual).hasSize(2);
     }
     
     @Test
     @DisplayName("본인이 아닌 다른 회원의 즐겨찾기는 삭제 할 수 없다.")
     void deleteFavoriteByAnotherMember() {
         // given
-        Member newMember = member("email2@email.com", "password", 21);
-        given(memberService.findMemberById(any())).willReturn(newMember);
-        given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
+        LoginMember loginMember2 = new LoginMember(2L, "email2@email.com", 21);
 
         // when & then
-        assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember, 1L))
-                .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("즐겨찾기를 삭제할 수 없습니다.");
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember2, 1L))
+                .isInstanceOf(NotFoundException.class)
+                .hasMessage("즐겨찾기가 존재하지 않습니다. Favorite ID : 1");
     }
 
     @Test
     @DisplayName("즐겨찾기를 삭제한다")
     void deleteFavorite() {
         // given
-        member.addFavorite(favorite);
-        given(memberService.findMemberById(1L)).willReturn(member);
-        given(favoriteRepository.findById(1L)).willReturn(Optional.of(favorite));
+        given(favoriteRepository.findByIdAndMemberId(anyLong(), eq(loginMember.getId())))
+                .willReturn(Optional.of(favorite));
 
         // when
-        favoriteService.deleteFavorite(loginMember, 1L);
+        favoriteService.deleteFavorite(loginMember, favorite.getId());
+        List<FavoriteResponse> favoriteResponses = favoriteService.findFavoritesByMemberId(loginMember);
 
-        assertThat(member.favorites()).doesNotContain(favorite);
+
+        assertThat(favoriteResponses).isEmpty();
     }
 }
