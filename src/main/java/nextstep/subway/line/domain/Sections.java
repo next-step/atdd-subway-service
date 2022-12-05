@@ -92,7 +92,7 @@ public class Sections {
 
 	private Section sectionByUpStation(Station station) {
 		return this.sections.stream()
-			.filter(section -> section.getUpStation().getName().equals(station.getName()))
+			.filter(section -> section.getUpStation().name().equals(station.name()))
 			.findFirst()
 			.orElseThrow(() -> new NotFoundException("Section not exist"));
 	}

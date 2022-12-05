@@ -7,6 +7,7 @@ import static org.mockito.Mockito.*;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.common.domain.Name;
 import nextstep.subway.station.domain.Station;
 
 @DisplayName("구간 테스트")
@@ -16,7 +17,8 @@ class SectionTest {
 	@DisplayName("구간 생성")
 	void createSectionTest() {
 		assertDoesNotThrow(
-			() -> Section.of(null, Station.from("강남역"), Station.from("역삼역"), mock(Distance.class)));
+			() -> Section.of(null, Station.from(Name.from("강남역")), Station.from(Name.from("역삼역")),
+				mock(Distance.class)));
 	}
 
 	@Test
@@ -43,7 +45,7 @@ class SectionTest {
 	@Test
 	@DisplayName("구간 생성 - 상행역과 하행역이 같은 경우 예외")
 	void createSectionWithSameStationTest() {
-		Station 강남역 = Station.from("강남역");
+		Station 강남역 = Station.from(Name.from("강남역"));
 		assertThrows(IllegalArgumentException.class,
 			() -> Section.of(null, 강남역, 강남역, mock(Distance.class)));
 	}
@@ -51,18 +53,18 @@ class SectionTest {
 	@Test
 	@DisplayName("같은 상행역")
 	void isSameUpStationTest() {
-		Station 강남역 = Station.from("강남역");
-		Section section = Section.of(null, 강남역, Station.from("역삼역"), mock(Distance.class));
-		Section other = Section.of(null, 강남역, Station.from("삼성역"), mock(Distance.class));
+		Station 강남역 = Station.from(Name.from("강남역"));
+		Section section = Section.of(null, 강남역, Station.from(Name.from("역삼역")), mock(Distance.class));
+		Section other = Section.of(null, 강남역, Station.from(Name.from("삼성역")), mock(Distance.class));
 		assertThat(section.isSameUpStation(other)).isTrue();
 	}
 
 	@Test
 	@DisplayName("같은 하행역")
 	void isSameDownStationTest() {
-		Station 역삼역 = Station.from("역삼역");
-		Section section = Section.of(null, Station.from("강남역"), 역삼역, mock(Distance.class));
-		Section other = Section.of(null, Station.from("삼성역"), 역삼역, mock(Distance.class));
+		Station 역삼역 = Station.from(Name.from("역삼역"));
+		Section section = Section.of(null, Station.from(Name.from("강남역")), 역삼역, mock(Distance.class));
+		Section other = Section.of(null, Station.from(Name.from("삼성역")), 역삼역, mock(Distance.class));
 		assertThat(section.isSameDownStation(other)).isTrue();
 	}
 
@@ -70,9 +72,9 @@ class SectionTest {
 	@DisplayName("구간 연결")
 	void connectTest() {
 		// given
-		Station 강남역 = Station.from("강남역");
-		Station 역삼역 = Station.from("역삼역");
-		Station 삼성역 = Station.from("삼성역");
+		Station 강남역 = Station.from(Name.from("강남역"));
+		Station 역삼역 = Station.from(Name.from("역삼역"));
+		Station 삼성역 = Station.from(Name.from("삼성역"));
 		Section section = Section.of(null, 강남역, 역삼역, mock(Distance.class));
 
 		// when
@@ -87,7 +89,8 @@ class SectionTest {
 	@DisplayName("노선 설정")
 	void setLineTest() {
 		// given
-		Section section = Section.of(null, Station.from("강남역"), Station.from("역삼역"), mock(Distance.class));
+		Section section = Section.of(null,
+			Station.from(Name.from("강남역")), Station.from(Name.from("역삼역")), mock(Distance.class));
 
 		// when
 		Line mock = mock(Line.class);
@@ -101,9 +104,9 @@ class SectionTest {
 	@DisplayName("상행 종점 -> 새로운 구간의 하행 종점으로 교체")
 	void updateUpStationTest() {
 		// given
-		Station 강남역 = Station.from("강남역");
-		Station 역삼역 = Station.from("역삼역");
-		Station 삼성역 = Station.from("삼성역");
+		Station 강남역 = Station.from(Name.from("강남역"));
+		Station 역삼역 = Station.from(Name.from("역삼역"));
+		Station 삼성역 = Station.from(Name.from("삼성역"));
 		Section section = Section.of(null, 강남역, 역삼역, mock(Distance.class));
 		Section other = Section.of(null, 역삼역, 삼성역, mock(Distance.class));
 
@@ -118,9 +121,9 @@ class SectionTest {
 	@DisplayName("하행 종점 -> 새로운 구간의 상행 종점으로 교체")
 	void updateDownStationTest() {
 		// given
-		Station 강남역 = Station.from("강남역");
-		Station 역삼역 = Station.from("역삼역");
-		Station 삼성역 = Station.from("삼성역");
+		Station 강남역 = Station.from(Name.from("강남역"));
+		Station 역삼역 = Station.from(Name.from("역삼역"));
+		Station 삼성역 = Station.from(Name.from("삼성역"));
 		Section section = Section.of(null, 역삼역, 삼성역, mock(Distance.class));
 		Section other = Section.of(null, 강남역, 역삼역, mock(Distance.class));
 
@@ -130,6 +133,5 @@ class SectionTest {
 		// then
 		assertThat(section.getDownStation()).isEqualTo(강남역);
 	}
-
 
 }

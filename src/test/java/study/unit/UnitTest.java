@@ -15,21 +15,21 @@ import nextstep.subway.station.domain.Station;
 
 @DisplayName("단위 테스트")
 class UnitTest {
-    @Test
-    void update() {
-        // given
-        Name newName = Name.from( "구분당선" );
-        Color newColor = Color.from("GREEN");
+	@Test
+	void update() {
+		// given
+		Name newName = Name.from("구분당선");
+		Color newColor = Color.from("GREEN");
 
-        Station upStation = Station.from("강남역");
-        Station downStation = Station.from("광교역");
-        Line line = Line.of(Name.from("신분당선"), Color.from("RED"),
-            Sections.from(Section.of(upStation, downStation, Distance.from(10))));
+		Station upStation = Station.from(Name.from("강남역"));
+		Station downStation = Station.from(Name.from("광교역"));
+		Line line = Line.of(Name.from("신분당선"), Color.from("RED"),
+			Sections.from(Section.of(upStation, downStation, Distance.from(10))));
 
-        // when
-        line.update(newName, newColor);
+		// when
+		line.update(newName, newColor);
 
-        // then
-        assertThat(line.getName()).isEqualTo(newName.toString());
-    }
+		// then
+		assertThat(line.getName()).isEqualTo(newName.toString());
+	}
 }

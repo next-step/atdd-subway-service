@@ -26,9 +26,9 @@ class SectionsTest {
 
 	@BeforeEach
 	void setup() {
-		강남역 = Station.from("강남역");
-		역삼역 = Station.from("역삼역");
-		선릉역 = Station.from("선릉역");
+		강남역 = Station.from(Name.from("강남역"));
+		역삼역 = Station.from(Name.from("역삼역"));
+		선릉역 = Station.from(Name.from("선릉역"));
 		구간 = Section.of(null, 강남역, 역삼역, Distance.from(10));
 		이호선 = Line.of(Name.from("이호선"), Color.from("green"), Sections.from(구간));
 	}
@@ -107,7 +107,7 @@ class SectionsTest {
 	@Test
 	void addSectionWithNotExistsStationTest() {
 		// given
-		Station 삼성역 = Station.from("삼성역");
+		Station 삼성역 = Station.from(Name.from("삼성역"));
 		Section 새로운_구간 = Section.of(이호선, 삼성역, 선릉역, Distance.from(10));
 
 		Sections sections = Sections.from(구간);
@@ -290,7 +290,6 @@ class SectionsTest {
 	@Test
 	void removeFromOnlyOneSectionTest() {
 		// given
-		Section 새로운_구간 = Section.of(이호선, 역삼역, 선릉역, Distance.from(5));
 		Sections sections = Sections.from(구간);
 
 		// when & then

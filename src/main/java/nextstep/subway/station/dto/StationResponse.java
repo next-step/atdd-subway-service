@@ -13,10 +13,10 @@ public class StationResponse {
     private LocalDateTime modifiedDate;
 
     public static StationResponse of(Station station) {
-        return new StationResponse(station.getId(), station.getName(), station.getCreatedDate(), station.getModifiedDate());
+        return new StationResponse(station.getId(), station.name().toString(), station.getCreatedDate(), station.getModifiedDate());
     }
 
-    public StationResponse() {
+    private StationResponse() {
     }
 
     public StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
@@ -29,7 +29,7 @@ public class StationResponse {
     public static StationResponse from(Station station) {
         return new StationResponse(station.
             getId(),
-            station.getName(),
+            station.name().toString(),
             station.getCreatedDate(),
             station.getModifiedDate());
     }

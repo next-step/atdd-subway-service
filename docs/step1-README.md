@@ -31,7 +31,6 @@
   - 노선 조회
   - 노선 수정
   - 노선 삭제
-  - 상행 종점역 조회
 - 구간
   - 구간 생성
   - 구간 삭제
@@ -42,11 +41,11 @@
   - [ ] `Service` 테스트 작성
     - [ ] `LineService` 테스트 작성
     - [ ] `StationService` 테스트 작성
-  - [ ] `Domain` 테스트 작성
-    - [ ] `Line` 테스트 작성
-    - [ ] `Station` 테스트 작성
-    - [ ] `Sections` 테스트 작성
-- [ ] 테스트를 기반으로 `Service layer` 에 있는 기능을 `Domain layer` 로 이동
-  - [ ] 노선 관련 기능 리팩터링
-  - [ ] 구간 관련 기능 리팩터링
+  - [x] `Domain` 테스트 작성
+    - [x] `Line` 테스트 작성
+    - [x] `Station` 테스트 작성
+    - [x] `Sections` 테스트 작성
+- [x] 테스트를 기반으로 `Service layer` 에 있는 기능을 `Domain layer` 로 이동
+  - [x] 노선 관련 기능 리팩터링
+  - [x] 구간 관련 기능 리팩터링
 ##  

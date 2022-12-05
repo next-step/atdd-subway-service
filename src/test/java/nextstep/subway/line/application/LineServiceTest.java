@@ -62,8 +62,8 @@ class LineServiceTest {
 	private void 초기_노선_생성() {
 		강남역_번호 = 1L;
 		역삼역_번호 = 2L;
-		강남역 = station(강남역_번호, "강남역");
-		역삼역 = station(역삼역_번호,"역삼역");
+		강남역 = station(강남역_번호, Name.from("강남역"));
+		역삼역 = station(역삼역_번호, Name.from("역삼역"));
 
 		이호선_생성_요청 = new LineCreateRequest("이호선", "green", 강남역_번호, 역삼역_번호, 10);
 		이호선 = Line.of(Name.from("이호선"), Color.from("green"),
@@ -115,7 +115,6 @@ class LineServiceTest {
 		assertThatExceptionOfType(DuplicateDataException.class)
 			.isThrownBy(() -> lineService.saveLine(이호선_생성_요청));
 	}
-
 
 	@Test
 	@DisplayName("노선 목록 조회")
@@ -204,7 +203,6 @@ class LineServiceTest {
 	private void 검색된_노선(Line line) {
 		given(lineRepository.findById(anyLong())).willReturn(Optional.of(line));
 	}
-
 
 	private void 생성된_노선() {
 		when(lineRepository.save(any(Line.class))).then(AdditionalAnswers.returnsFirstArg());
