@@ -41,20 +41,20 @@ public class Favorite {
         this.member = member;
     }
 
-    private void validateStation (Station station) {
-        if(Objects.isNull(station)){
+    private void validateStation(Station station) {
+        if (Objects.isNull(station)) {
             throw new IllegalArgumentException("역 데이터가 존재하지 않습니다.");
         }
     }
 
-    private void validateMember (Member member) {
-        if(Objects.isNull(member)){
+    private void validateMember(Member member) {
+        if (Objects.isNull(member)) {
             throw new IllegalArgumentException("사용자 데이터가 존재하지 않습니다.");
         }
     }
 
     public void validateSameMember(Member member) {
-        if(this.member != member){
+        if (this.member != member) {
             throw new RuntimeException("사용자가 일치하지 않습니다.");
         }
     }
