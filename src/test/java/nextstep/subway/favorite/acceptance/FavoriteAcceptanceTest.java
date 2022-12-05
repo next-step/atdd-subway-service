@@ -1,6 +1,11 @@
 package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceSupport.로그인_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceSupport.즐겨찾기_목록_조회_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceSupport.즐겨찾기_삭제됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceSupport.즐겨찾기_생성_요청;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceSupport.즐겨찾기_생성됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceSupport.즐겨찾기_제거_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceSupport.지하철_노선_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceSupport.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceSupport.지하철역_등록되어_있음;
@@ -80,45 +85,5 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_제거_요청(TOKEN, createResponse);
 
         즐겨찾기_삭제됨(response);
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteRequest favoriteRequest) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(favoriteRequest)
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 즐겨찾기_제거_요청(String accessToken, ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
-    }
-
-    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response){
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
-    }
-
-    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
