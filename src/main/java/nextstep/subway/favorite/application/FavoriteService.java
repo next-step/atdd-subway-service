@@ -44,10 +44,6 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findAllFavoriteByMember(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new FavoriteException(NONE_EXISTS_MEMBER));
-        List<FavoriteResponse>favoriteResponses = favoriteRepository.findAllByMember(member)
-                .stream()
-                .map(favorite -> FavoriteResponse.of(favorite))
-                .collect(Collectors.toList());
         return favoriteRepository.findAllByMember(member)
                 .stream()
                 .map(favorite -> FavoriteResponse.of(favorite))
