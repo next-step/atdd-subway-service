@@ -145,10 +145,17 @@ class PathAcceptanceTest extends AcceptanceTest {
          * |                        |                                                        |
          * V                        V                                                        V
          * [잠실새내역] ---이호선(10)----> [종합운동장역]     ----------이호선,구호선(1)------------>    [삼전역]
+         *
+         * 연결되지 않은 구간
+         * [인천공항역] ---공항철도(1)----> [김포공항역]
          */
+        //given:
+        StationResponse 인천공항역 = StationAcceptanceTest.지하철역_등록되어_있음("인천공항역").as(StationResponse.class);
+        StationResponse 김포공항역 = StationAcceptanceTest.지하철역_등록되어_있음("김포공항역").as(StationResponse.class);
+        LineResponse 공항철도 = 지하철_노선_등록되어_있음("공항철도", "bg-red-500", 인천공항역, 김포공항역, 1);
 
         //when, then:
-        assertThat(최단_경로_조회_요청(잠실새내역, 남부터미널역).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(최단_경로_조회_요청(강남역, 김포공항역).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse 출발역, StationResponse 도착역) {
