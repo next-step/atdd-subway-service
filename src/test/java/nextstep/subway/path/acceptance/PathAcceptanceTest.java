@@ -4,6 +4,9 @@ import static nextstep.subway.line.acceptance.LineSectionTestFixture.지하철_�
 import static nextstep.subway.line.acceptance.LineTestFixture.지하철_노선_등록되어_있음;
 import static nextstep.subway.path.acceptance.PathTestFixture.경로_조회_요청_성공됨;
 import static nextstep.subway.path.acceptance.PathTestFixture.경로_조회_요청_실패됨;
+import static nextstep.subway.path.acceptance.PathTestFixture.지하철_이용_요금이_응답됩;
+import static nextstep.subway.path.acceptance.PathTestFixture.총_거리가_응답됨;
+import static nextstep.subway.path.acceptance.PathTestFixture.최단_거리_경로가_응답됨;
 import static nextstep.subway.path.acceptance.PathTestFixture.출발역에서_도착역_경로_조회됨;
 
 import io.restassured.response.ExtractableResponse;
@@ -59,6 +62,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         //then
         경로_조회_요청_성공됨(response);
+        최단_거리_경로가_응답됨(response);
+        총_거리가_응답됨(response);
+        지하철_이용_요금이_응답됩(response);
     }
 
     @DisplayName("출발역과 도착역이 다른 경우를 조회환다.")
