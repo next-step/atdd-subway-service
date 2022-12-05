@@ -22,6 +22,7 @@ import java.util.List;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.common.exception.ErrorEnum;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
@@ -92,6 +93,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * Then 즐겨찾기 목록 조회됨
      * When 즐겨찾기 삭제 요청
      * Then 즐겨찾기 삭제됨
+     * When 삭제된 즐겨찾기 조회 요청
+     * Then 즐겨찾기 조회되지 않음
      */
     @DisplayName("즐겨찾기를 관리한다.")
     @Test
@@ -100,13 +103,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         즐겨찾기_생성됨(createResponse);
 
-        ExtractableResponse<Response> readResponse = 즐겨찾기_목록_조회_요청(accessToken);
+        ExtractableResponse<Response> selectResponse = 즐겨찾기_목록_조회_요청(accessToken);
 
-        즐겨찾기_목록_조회됨(readResponse, 강남역.getId(), 광교역.getId());
+        즐겨찾기_목록_조회됨(selectResponse, 강남역.getId(), 광교역.getId());
 
-        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, readResponse.as(FavoriteResponse[].class)[0].getId());
+        Long favoriteId = selectResponse.as(FavoriteResponse[].class)[0].getId();
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, favoriteId);
 
         즐겨찾기_삭제됨(deleteResponse);
+
+        ExtractableResponse<Response> selectOneResponse = 즐겨찾기_조회_요청(favoriteId);
+
+        즐겨찾기_조회되지_않음(selectOneResponse, ErrorEnum.NOT_EXISTS_FAVORITE.message());
+    }
+
+    private void 즐겨찾기_조회되지_않음(ExtractableResponse<Response> response, String expectedErrorMessage) {
+        String errorMessage = response.body().path("message").toString();
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
+                () -> assertThat(errorMessage).isEqualTo(expectedErrorMessage)
+        );
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_조회_요청(Long favoriteId) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites/{favoriteId}", favoriteId)
+                .then().log().all()
+                .extract();
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {

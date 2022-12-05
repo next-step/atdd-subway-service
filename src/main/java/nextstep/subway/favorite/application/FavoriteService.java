@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 import nextstep.subway.common.exception.ErrorEnum;
@@ -64,5 +65,11 @@ public class FavoriteService {
         Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
                 .orElseThrow(() -> new EntityNotFoundException(ErrorEnum.NOT_EXISTS_FAVORITE.message()));
         favoriteRepository.delete(favorite);
+    }
+
+    public FavoriteResponse findById(Long favoriteId) {
+        Optional<Favorite> favorite = favoriteRepository.findById(favoriteId);
+        favorite.orElseThrow(() -> new EntityNotFoundException(ErrorEnum.NOT_EXISTS_FAVORITE.message()));
+        return FavoriteResponse.from(favorite.get());
     }
 }
