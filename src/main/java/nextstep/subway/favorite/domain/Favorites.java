@@ -13,12 +13,6 @@ public class Favorites {
     public Favorites() {
     }
 
-    private static void validateDuplicate(Favorite favorite, Favorite value) {
-        if (value.isSame(favorite)) {
-            throw new IllegalArgumentException(FAVORITE_DUPLICATE_EXCEPTION_MESSAGE);
-        }
-    }
-
     public void addAll(List<Favorite> favorites) {
         this.favorites.addAll(favorites);
     }
@@ -28,15 +22,21 @@ public class Favorites {
         this.favorites.add(favorite);
     }
 
+    public void validateDeleteFavorite(Favorite deleteFavorite) {
+        if (!this.favorites.contains(deleteFavorite)) {
+            throw new NoSuchElementException(HAS_NOT_FAVORITE_EXCEPTION_MESSAGE);
+        }
+    }
+
     private void validate(Favorite favorite) {
         for (Favorite value : this.favorites) {
             validateDuplicate(favorite, value);
         }
     }
 
-    public void validateDeleteFavorite(Favorite deleteFavorite) {
-        if (!this.favorites.contains(deleteFavorite)) {
-            throw new NoSuchElementException(HAS_NOT_FAVORITE_EXCEPTION_MESSAGE);
+    private static void validateDuplicate(Favorite favorite, Favorite value) {
+        if (value.isSame(favorite)) {
+            throw new IllegalArgumentException(FAVORITE_DUPLICATE_EXCEPTION_MESSAGE);
         }
     }
 }
