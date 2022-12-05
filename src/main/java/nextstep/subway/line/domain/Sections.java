@@ -9,6 +9,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -43,6 +44,14 @@ public class Sections {
         if (!sections.isEmpty() && !hasUpStation && !hasDownStation) {
             throw new InvalidSectionException();
         }
+    }
+
+    public List<Line> findLinesContainedStations(List<Station> stations) {
+        return sections.stream()
+                .map(Section::getLine)
+                .filter(line -> stations.containsAll(line.getStations()))
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public List<Section> getSections() {
