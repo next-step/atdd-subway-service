@@ -23,7 +23,9 @@ public class PathFinder {
 
     public Path findPath(Station source, Station target) {
         validSearchPath(source, target);
-        return new Path(createSections(findPath(source, target, registerStationInfo())));
+        GraphPath<Station, SectionEdge> path = findPath(source, target, registerStationInfo());
+        Sections sections = createSections(path);
+        return new Path(sections);
     }
 
     private void validSearchPath(Station source, Station target) {
