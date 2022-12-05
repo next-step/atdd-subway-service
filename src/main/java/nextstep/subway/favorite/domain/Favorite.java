@@ -5,6 +5,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -27,10 +28,23 @@ public class Favorite extends BaseEntity {
     private Station source;
 
     public Favorite(Member member, Station source, Station target) {
-        validateStation(source, target);
+        validate(member, source, target);
         this.member = member;
         this.source = source;
         this.target = target;
+    }
+
+    private void validate(Member member, Station source, Station target) {
+        if (Objects.isNull(member)) {
+            throw new IllegalArgumentException();
+        }
+        if (Objects.isNull(source)) {
+            throw new IllegalArgumentException();
+        }
+        if (Objects.isNull(target)) {
+            throw new IllegalArgumentException();
+        }
+        validateStation(target, source);
     }
 
     private void validateStation(Station target, Station source) {
