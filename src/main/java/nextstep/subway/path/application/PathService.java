@@ -1,26 +1,41 @@
-package nextstep.subway.path.ui;
+package nextstep.subway.path.application;
 
-import nextstep.subway.path.application.PathService;
+import java.util.List;
+import nextstep.subway.common.exception.ErrorEnum;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
-import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-@RestController
-@RequestMapping("/paths")
-public class PathController {
+@Service
+@Transactional(readOnly = true)
+public class PathService {
+    private final LineRepository lineRepository;
+    private final StationRepository stationRepository;
 
-    private final PathService pathService;
-
-    public PathController(PathService pathService) {
-        this.pathService = pathService;
+    public PathService(LineRepository lineRepository, StationRepository stationRepository) {
+        this.lineRepository = lineRepository;
+        this.stationRepository = stationRepository;
     }
 
-    @GetMapping
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam(name = "source") Long source,
-                                                         @RequestParam(name = "target") Long target) {
-        return ResponseEntity.ok(pathService.findShortestPath(source, target));
+    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+        Station sourceStation = findStationById(sourceId);
+        Station targetStation = findStationById(targetId);
+        List<Line> lines = lineRepository.findAll();
+
+        PathFinder pathFinder = PathFinder.from(lines);
+        Path path = pathFinder.findShortestPath(sourceStation, targetStation);
+
+        return PathResponse.from(path);
+    }
+
+    private Station findStationById(Long stationId) {
+        return stationRepository.findById(stationId)
+                .orElseThrow(() -> new RuntimeException(ErrorEnum.NOT_EXISTS_STATION.message()));
     }
 }
