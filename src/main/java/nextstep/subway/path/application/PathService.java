@@ -15,18 +15,16 @@ import nextstep.subway.station.application.StationService;
 @Service
 public class PathService {
 
-    private final PathFinder pathFinder;
     private final LineService lineService;
     private final StationService stationService;
 
-    public PathService(PathFinder pathFinder, LineService lineService, StationService stationService) {
-        this.pathFinder = pathFinder;
+    public PathService(LineService lineService, StationService stationService) {
         this.lineService = lineService;
         this.stationService = stationService;
     }
 
     public PathResponse findPath(long sourceId, long targetId) {
-        PathFinderResult result = pathFinder.find(lineService.findAll(), sourceId, targetId);
+        PathFinderResult result = new PathFinder(lineService.findAll()).find(sourceId, targetId);
         return new PathResponse(toPathStationResponse(result.getStationsIds()), result.getDistance());
     }
 

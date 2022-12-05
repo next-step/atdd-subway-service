@@ -51,10 +51,10 @@ class PathFinderTest {
     @Test
     void find1() {
         // given
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        PathFinderResult result = pathFinder.find(Arrays.asList(신분당선, 이호선, 삼호선), 강남역.getId(), 남부터미널역.getId());
+        PathFinderResult result = pathFinder.find(강남역.getId(), 남부터미널역.getId());
 
         // then
         assertThat(result.getDistance()).isEqualTo(12);
@@ -66,10 +66,10 @@ class PathFinderTest {
     @Test
     void find2() {
         // given
-        PathFinder pathFinder = new PathFinder();
+        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        PathFinderResult result = pathFinder.find(Arrays.asList(신분당선, 이호선, 삼호선), 교대역.getId(), 양재역.getId());
+        PathFinderResult result = pathFinder.find(교대역.getId(), 양재역.getId());
 
         // then
         assertThat(result.getDistance()).isEqualTo(5);
