@@ -19,13 +19,16 @@ public class Favorite extends BaseEntity {
     @JoinColumn(name = "member_id", nullable = false)
     private Member member;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "target_id", nullable = false)
     private Station target;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "source_id", nullable = false)
     private Station source;
+
+    protected Favorite() {
+    }
 
     public Favorite(Member member, Station source, Station target) {
         validate(member, source, target);
@@ -45,6 +48,19 @@ public class Favorite extends BaseEntity {
             throw new IllegalArgumentException();
         }
         validateStation(target, source);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Favorite favorite = (Favorite) o;
+        return Objects.equals(id, favorite.id) && Objects.equals(member, favorite.member) && Objects.equals(target, favorite.target) && Objects.equals(source, favorite.source);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, member, target, source);
     }
 
     private void validateStation(Station target, Station source) {

@@ -11,8 +11,9 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.EntityExistsException;
 import javax.persistence.EntityNotFoundException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional(readOnly = true)
@@ -33,5 +34,11 @@ public class FavoriteService {
         Station target = stationRepository.findById(request.getTargetId()).orElseThrow(EntityNotFoundException::new);
         Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
         return new FavoriteResponse(favorite);
+    }
+
+    public List<FavoriteResponse> findAll() {
+        return favoriteRepository.findAll().stream()
+                .map(FavoriteResponse::new)
+                .collect(Collectors.toList());
     }
 }

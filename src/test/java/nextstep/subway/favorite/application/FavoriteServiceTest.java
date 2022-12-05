@@ -41,6 +41,7 @@ class FavoriteServiceTest {
     private Member member;
     private Station stationA;
     private Station stationB;
+    private Station stationC;
 
     @BeforeEach
     void setUp() {
@@ -48,6 +49,7 @@ class FavoriteServiceTest {
         member = memberRepository.save(new Member("email", "password", 20));
         stationA = stationRepository.save(new Station("A"));
         stationB = stationRepository.save(new Station("B"));
+        stationC = stationRepository.save(new Station("C"));
         favoriteService = new FavoriteService(memberRepository, stationRepository, favoriteRepository);
     }
 
@@ -72,5 +74,13 @@ class FavoriteServiceTest {
         assertThatThrownBy(() -> favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationA.getId())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TARGET_SOURCE_SAME_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("즐겨찾기 목록 조회")
+    @Test
+    void findAll() {
+        favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
+        favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationC.getId()));
+        assertThat(favoriteService.findAll()).hasSize(2);
     }
 }
