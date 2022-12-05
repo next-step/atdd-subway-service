@@ -3,6 +3,8 @@ package nextstep.subway.favorite.ui;
 import static org.mockito.ArgumentMatchers.any;
 
 import java.net.URI;
+import java.util.Collections;
+import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -35,6 +37,21 @@ class FavoriteControllerTest {
         //then
         Assertions.assertThat(response.getHeaders().getLocation())
             .isEqualTo(URI.create("/favorites/1"));
+    }
 
+    @Test
+    void 즐겨찾기_조회_테스트() {
+        //given
+        Mockito.when(favoriteService.getFavorites(any()))
+            .thenReturn(Collections.singletonList(new FavoriteResponse()));
+        FavoriteController favoriteController = new FavoriteController(favoriteService);
+
+        //when
+        ResponseEntity<List<FavoriteResponse>> favorites = favoriteController
+            .getFavorites(LoginMember.GUEST);
+
+        //then
+        Assertions.assertThat(favorites.getBody())
+            .isNotEmpty();
     }
 }

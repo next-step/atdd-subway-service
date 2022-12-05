@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -27,11 +28,11 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
-    public FavoriteResponse saveFavorite(Long id, FavoriteRequest favoriteRequest) {
+    public FavoriteResponse saveFavorite(Long memberId, FavoriteRequest favoriteRequest) {
         Long sourceId = favoriteRequest.getSourceId();
         Long targetId = favoriteRequest.getTargetId();
 
-        Member member = findMemberById(id);
+        Member member = findMemberById(memberId);
         Station source = findStationById(sourceId);
         Station target = findStationById(targetId);
 
@@ -47,5 +48,9 @@ public class FavoriteService {
     private Station findStationById(final Long id) {
         return stationRepository.findById(id)
             .orElseThrow(() -> new NoSuchElementException("정류장이 존재하지 않습니다."));
+    }
+
+    public List<FavoriteResponse> getFavorites(Long memberId) {
+        return null;
     }
 }
