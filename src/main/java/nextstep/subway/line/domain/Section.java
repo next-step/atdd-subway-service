@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -24,7 +25,7 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -68,5 +69,17 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean isDownStation(Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
+    public boolean isUpStation(Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
+    public boolean anyDownStation(List<Section> sections) {
+        return sections.stream().anyMatch(it -> it.isDownStation(upStation));
     }
 }
