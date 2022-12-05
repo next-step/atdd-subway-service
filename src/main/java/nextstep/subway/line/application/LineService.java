@@ -9,6 +9,9 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -41,7 +44,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    public List<Line> findLines() {
+    private List<Line> findLines() {
         return lineRepository.findAll();
     }
 
@@ -76,4 +79,9 @@ public class LineService {
         findLineById(lineId).removeStation(stationService.findStationById(stationId));
     }
 
+    public WeightedMultigraph<Station, DefaultWeightedEdge> getSectionDistanceGraph() {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        findLines().stream().forEach(line -> line.makeGraph(graph));
+        return graph;
+    }
 }

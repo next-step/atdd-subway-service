@@ -9,7 +9,9 @@ public enum ErrorMessage {
     DO_NOT_DELETE_UNIQUE_SECTION("구간이 하나여서 삭제할 수 없습니다."),
     INVALID_SECTION("유효하지 않은 구간 입니다."),
     DO_NOT_EXIST_STATION_ID("존재하지 않는 역 아이디입니다."),
-    DO_NOT_EXIST_LINE_ID("존재하지 않는 노선 아이디 입니다.");
+    DO_NOT_EXIST_LINE_ID("존재하지 않는 노선 아이디 입니다."),
+    SOURCE_TARGET_EQUAL("출발역과 도착역이 동일 합니다."),
+    DISCONNECT_SOURCE_TARGET("출발지에서 도착지로 이동할 수 없습니다.");
 
     private String message;
 

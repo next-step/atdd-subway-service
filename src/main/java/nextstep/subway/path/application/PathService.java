@@ -1,17 +1,10 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.domain.Station;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
-
-import java.util.List;
 
 @Service
 public class PathService {
@@ -25,12 +18,8 @@ public class PathService {
     }
 
     public PathResponse findShortestRoute(Long sourceStationId, Long targetStationId) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        Station sourceStation = stationService.findStationById(sourceStationId);
-        Station targetStation = stationService.findStationById(targetStationId);
-        lineService.findLines().stream().forEach(line -> line.makeGraph(graph));
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        return PathResponse.of(dijkstraShortestPath.getPath(sourceStation, targetStation).getVertexList(),
-                (int) dijkstraShortestPath.getPath(sourceStation, targetStation).getWeight());
+        PathFinder pathFinder = new PathFinder(stationService.findStationById(sourceStationId),
+                stationService.findStationById(targetStationId), lineService.getSectionDistanceGraph());
+        return PathResponse.of(pathFinder.getShortestPathStationList(), pathFinder.getShortestPathDistance());
     }
 }
