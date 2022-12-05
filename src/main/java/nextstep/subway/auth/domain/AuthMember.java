@@ -4,4 +4,5 @@ public interface AuthMember {
     Long getId();
     String getEmail();
     Integer getAge();
+    boolean isLoginMember();
 }

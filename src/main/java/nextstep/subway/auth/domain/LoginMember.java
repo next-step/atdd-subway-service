@@ -28,4 +28,9 @@ public class LoginMember implements AuthMember {
     public Integer getAge() {
         return age;
     }
+
+    @Override
+    public boolean isLoginMember() {
+        return true;
+    }
 }

@@ -15,4 +15,9 @@ public class AnonymousMember implements AuthMember {
     public Integer getAge() {
         return 0;
     }
+
+    @Override
+    public boolean isLoginMember() {
+        return false;
+    }
 }
