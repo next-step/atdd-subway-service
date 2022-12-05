@@ -7,8 +7,10 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -17,24 +19,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @Transactional
 public class FavoriteService {
-    private final MemberRepository memberRepository;
-    private final StationRepository stationRepository;
+    private final MemberService memberService;
+    private final StationService stationService;
     private final FavoriteRepository favoriteRepository;
 
     public FavoriteService(
-        MemberRepository memberRepository,
-        StationRepository stationRepository,
+        MemberService memberService,
+        StationService stationService,
         FavoriteRepository favoriteRepository
     ) {
-        this.memberRepository = memberRepository;
-        this.stationRepository = stationRepository;
+        this.memberService = memberService;
+        this.stationService = stationService;
         this.favoriteRepository = favoriteRepository;
     }
 
     public FavoriteResponse createFavorite(Long loginMemberId, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.findById(loginMemberId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
-        Station source = stationRepository.findById(favoriteRequest.getSource()).orElseThrow(() -> new RuntimeException("출발역을 찾을 수 없습니다."));
-        Station target = stationRepository.findById(favoriteRequest.getTarget()).orElseThrow(() -> new RuntimeException("도착역을 찾을 수 없습니다."));
+        Member member = memberService.findById(loginMemberId);
+        Station source = stationService.findById(favoriteRequest.getSource());
+        Station target = stationService.findById(favoriteRequest.getTarget());
         validateAlreadyExist(member, source, target);
         Favorite favorite = new Favorite(source, target, member);
         favoriteRepository.save(favorite);
@@ -57,7 +59,7 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long loginMemberId, Long id) {
-        Member member = memberRepository.findById(loginMemberId).orElseThrow(() -> new RuntimeException("사용자를 찾을 수 없습니다."));
+        Member member = memberService.findById(loginMemberId);
         Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new RuntimeException("즐겨찾기를 찾을 수 없습니다."));
         favorite.validateSameMember(member);
         favoriteRepository.delete(favorite);
