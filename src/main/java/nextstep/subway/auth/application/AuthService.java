@@ -9,6 +9,8 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static nextstep.subway.utils.Message.MEMBER_NOT_EXISTS;
+
 @Service
 public class AuthService {
     private MemberRepository memberRepository;
@@ -20,7 +22,8 @@ public class AuthService {
     }
 
     public TokenResponse login(TokenRequest request) {
-        Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
+        Member member = memberRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new AuthorizationException(MEMBER_NOT_EXISTS));
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
