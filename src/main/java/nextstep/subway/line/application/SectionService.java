@@ -24,11 +24,13 @@ public class SectionService {
 		return sectionRepository.findAllByStations(upStation, downStation);
 	}
 
+	@Transactional(readOnly = true)
 	public Section findSectionByDownStation(Long stationId) {
 		return sectionRepository.findByUpStationId(stationId)
 			.orElseThrow(() -> new NotFoundException("해당하는 구간이 없습니다."));
 	}
 
+	@Transactional(readOnly = true)
 	public Section findSectionByUpStation(Long stationId) {
 		return sectionRepository.findByDownStationId(stationId)
 			.orElseThrow(() -> new NotFoundException("해당하는 구간이 없습니다."));

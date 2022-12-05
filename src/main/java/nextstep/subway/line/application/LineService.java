@@ -1,7 +1,6 @@
 package nextstep.subway.line.application;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
@@ -9,7 +8,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
-import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -83,13 +81,12 @@ public class LineService {
 		line.connectSection(section, sectionsToUpdate);
 	}
 
-	public void new_removeLineStation(Long lineId, Long stationId) {
+	public void removeLineStation(Long lineId, Long stationId) {
 		Section sectionByUpStation = sectionService.findSectionByUpStation(stationId);
 		Section sectionByDownStation = sectionService.findSectionByDownStation(stationId);
 		Line line = findById(lineId);
 
 		line.removeSection(sectionByUpStation, sectionByDownStation);
-
 	}
 
 	private Line findById(Long id) {
@@ -101,31 +98,6 @@ public class LineService {
 		if (lineRepository.existsByName(name)) {
 			throw new DuplicateDataException(String.format("%s는 이미 존재하는 노선 이름입니다.", name));
 		}
-	}
-
-	public void removeLineStation(Long lineId, Long stationId) {
-		Line line = findById(lineId);
-		Station station = stationService.findById(stationId);
-		if (line.getSections().size() <= 1) {
-			throw new InvalidDataException("구간이 하나인 노선에서는 역을 제거할 수 없습니다.");
-		}
-
-		Optional<Section> upLineStation = line.getSections().stream()
-			.filter(it -> it.getUpStation() == station)
-			.findFirst();
-		Optional<Section> downLineStation = line.getSections().stream()
-			.filter(it -> it.getDownStation() == station)
-			.findFirst();
-
-		if (upLineStation.isPresent() && downLineStation.isPresent()) {
-			Station newUpStation = downLineStation.get().getUpStation();
-			Station newDownStation = upLineStation.get().getDownStation();
-			int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
-			line.getSections().add(Section.of(line, newUpStation, newDownStation, Distance.from(newDistance)));
-		}
-
-		upLineStation.ifPresent(it -> line.getSections().remove(it));
-		downLineStation.ifPresent(it -> line.getSections().remove(it));
 	}
 
 	private Line savedLine(LineCreateRequest request) {
