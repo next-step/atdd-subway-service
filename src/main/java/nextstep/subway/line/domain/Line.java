@@ -63,8 +63,10 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         validateName(name);
         validateColor(color);
+
         this.name = line.getName();
         this.color = line.getColor();
+        this.fare = line.getFare();
     }
 
     public void updateSections(Section request, List<Section> matchedSections) {
@@ -72,7 +74,7 @@ public class Line extends BaseEntity {
     }
 
     public void deleteSectionContainsStation(Optional<Section> sectionOfUpStation,
-                                             Optional<Section> sectionOfDownStation) {
+            Optional<Section> sectionOfDownStation) {
         sections.deleteSectionContainsStation(this, sectionOfUpStation, sectionOfDownStation);
     }
 
