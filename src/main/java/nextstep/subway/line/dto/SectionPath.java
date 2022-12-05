@@ -7,7 +7,7 @@ public class SectionPath {
     private Station downStation;
     private int distance;
 
-    public SectionPath(Station upStation, Station downStation, int distance) {
+    private SectionPath(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;

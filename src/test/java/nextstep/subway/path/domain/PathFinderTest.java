@@ -33,7 +33,7 @@ class PathFinderTest {
         Station 잠실새내역 = Station.from("잠실새내역");
         Station 석촌고분역 = Station.from("석촌고분역");
         final int 거리 = 10;
-        PathBag pathBag = new PathBag(Arrays.asList(
+        PathBag pathBag = PathBag.from(Arrays.asList(
                 SectionPath.of(삼전역, 종합운동장역, 거리),
                 SectionPath.of(종합운동장역, 잠실새내역, 거리),
                 SectionPath.of(잠실새내역, 석촌고분역, 거리)));
@@ -49,16 +49,18 @@ class PathFinderTest {
     @Test
     void find_path_IllegalArgumentException() {
         //given: [삼전역] -(10)-> [종합운동장역] -(10)-> [잠실새내역]
-        //given: 석촌고분역은 연결되지 않음
+        //given: [석촌고분역] -(10)-> [석촌역]
         PathFinder pathFinder = PathFinder.from(new WeightedMultigraph<>(DefaultWeightedEdge.class));
         Station 삼전역 = Station.from("삼전역");
         Station 종합운동장역 = Station.from("종합운동장역");
         Station 잠실새내역 = Station.from("잠실새내역");
         Station 석촌고분역 = Station.from("석촌고분역");
+        Station 석촌역 = Station.from("석촌역");
         final int 거리 = 10;
-        PathBag pathBag = new PathBag(Arrays.asList(
+        PathBag pathBag = PathBag.from(Arrays.asList(
                 SectionPath.of(삼전역, 종합운동장역, 거리),
-                SectionPath.of(종합운동장역, 잠실새내역, 거리)));
+                SectionPath.of(종합운동장역, 잠실새내역, 거리),
+                SectionPath.of(석촌고분역, 석촌역, 거리)));
         //when, then:
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(pathBag, 삼전역, 석촌고분역));
     }

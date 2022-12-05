@@ -10,8 +10,12 @@ import java.util.Set;
 public class PathBag {
     private final List<SectionPath> sectionPaths;
 
-    public PathBag(List<SectionPath> sectionPaths) {
+    private PathBag(List<SectionPath> sectionPaths) {
         this.sectionPaths = sectionPaths;
+    }
+
+    public static PathBag from(List<SectionPath> sectionPaths) {
+        return new PathBag(sectionPaths);
     }
 
     public List<Station> findVertex() {
