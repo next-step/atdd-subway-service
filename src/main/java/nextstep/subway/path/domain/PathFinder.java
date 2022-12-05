@@ -25,7 +25,7 @@ public class PathFinder {
         try {
             return new PathResult(dijkstraShortestPath.getPath(source, target).getVertexList(),
                     dijkstraShortestPath.getPath(source, target).getWeight());
-        } catch (IllegalArgumentException e) {
+        } catch (NullPointerException e) {
             throw new IllegalArgumentException(
                     "출발역과 도착역 사이에 연결이 끊어져 있습니다. 출발역:" + source.getName() + " 도착역:" + target.getName());
         }
