@@ -1,9 +1,11 @@
 package nextstep.subway.member.domain;
 
+import nextstep.subway.auth.domain.AnonymousMember;
 import nextstep.subway.auth.domain.LoginMember;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -29,5 +31,11 @@ class MemberDiscountPolicyTest {
     void 청소년_할인(int totalFare, int expected) {
         LoginMember loginMember = new LoginMember(1L, "testuser@test.com", 13);
         assertEquals(expected, MemberDiscountPolicy.getFare(loginMember, totalFare));
+    }
+
+    @ParameterizedTest
+    @ValueSource(ints = { 1350, 1550, 2550, 3000, 2850 })
+    void 비회원은_할인이_적용되지_않음(int totalFare) {
+        assertEquals(totalFare, MemberDiscountPolicy.getFare(new AnonymousMember(), totalFare));
     }
 }
