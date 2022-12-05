@@ -11,9 +11,15 @@ public class PathResponse {
     private int distance;
     private int fare;
 
-    public PathResponse(List<Station> stations,int distance) {
+    public PathResponse(List<Station> stations, int distance) {
         this.stations = stations.stream().map(StationResponse::of).collect(Collectors.toList());
         this.distance = distance;
+    }
+
+    public PathResponse(List<Station> stations, int distance, int fare) {
+        this.stations = stations.stream().map(StationResponse::of).collect(Collectors.toList());
+        this.distance = distance;
+        this.fare = fare;
     }
 
     public List<StationResponse> getStations() {
