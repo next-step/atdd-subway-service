@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import static nextstep.subway.generator.SectionGenerator.*;
 import static nextstep.subway.generator.StationGenerator.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.BDDMockito.*;
@@ -30,6 +31,7 @@ import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineCreateRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.LineUpdateRequest;
+import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -44,6 +46,9 @@ class LineServiceTest {
 	@Mock
 	private StationService stationService;
 
+	@Mock
+	private SectionService sectionService;
+
 	@InjectMocks
 	private LineService lineService;
 
@@ -51,8 +56,13 @@ class LineServiceTest {
 	private Line 이호선;
 	private Station 강남역;
 	private Station 역삼역;
+	private Station 선릉역;
 	private Long 강남역_번호;
 	private Long 역삼역_번호;
+	private Long 선릉역_번호;
+
+	private Section 강남역_역삼역_구간;
+	private Section 역삼역_선릉역_구간;
 
 	@BeforeEach
 	void setUp() {
@@ -62,12 +72,16 @@ class LineServiceTest {
 	private void 초기_노선_생성() {
 		강남역_번호 = 1L;
 		역삼역_번호 = 2L;
+		선릉역_번호 = 3L;
 		강남역 = station(강남역_번호, Name.from("강남역"));
 		역삼역 = station(역삼역_번호, Name.from("역삼역"));
+		선릉역 = station(선릉역_번호, Name.from("선릉역"));
 
 		이호선_생성_요청 = new LineCreateRequest("이호선", "green", 강남역_번호, 역삼역_번호, 10);
+
+		강남역_역삼역_구간 = Section.of(강남역, 역삼역, Distance.from(10));
 		이호선 = Line.of(Name.from("이호선"), Color.from("green"),
-			Sections.from(Section.of(강남역, 역삼역, Distance.from(10))));
+			Sections.from(강남역_역삼역_구간));
 	}
 
 	@Test
@@ -184,6 +198,41 @@ class LineServiceTest {
 		assertThatExceptionOfType(DuplicateDataException.class)
 			.isThrownBy(() -> lineService.updateLine(Long.MAX_VALUE, 이호선_수정_요청));
 	}
+
+	@Test
+	@DisplayName("구간 추가")
+	void addSectionTest() {
+		// given
+		검색된_노선(이호선);
+		검색된_지하철역(강남역_번호, 강남역);
+		검색된_지하철역(선릉역_번호, 선릉역);
+
+		// when
+		when(sectionService.findSectionsToUpdate(강남역, 선릉역)).thenReturn(Collections.emptyList());
+		lineService.addLineStation(1L, new SectionRequest(강남역_번호, 선릉역_번호, 10));
+
+		// then
+		assertThat(이호선.getSections()).hasSize(2);
+	}
+
+	@Test
+	@DisplayName("구간 삭제")
+	void removeSectionTest() {
+		// given
+		Section 역삼역_선릉역_구간 = section("강남역", "선릉역", 10);
+		이호선.connectSection(역삼역_선릉역_구간, Collections.singletonList(강남역_역삼역_구간));
+
+		// when
+		when(sectionService.findSectionByUpStation(강남역_번호)).thenReturn(강남역_역삼역_구간);
+		when(sectionService.findSectionByDownStation(강남역_번호)).thenReturn(강남역_역삼역_구간);
+		when(lineRepository.findById(any())).thenReturn(Optional.ofNullable(이호선));
+
+		lineService.removeLineStation(이호선.getId(), 강남역_번호);
+
+		// then
+		assertThat(이호선.getSections()).hasSize(1);
+	}
+
 
 	private List<String> 노선에_속한_역_목록(LineResponse response) {
 		return response.getStations().stream()

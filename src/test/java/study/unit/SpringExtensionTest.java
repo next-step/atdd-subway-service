@@ -12,6 +12,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.google.common.collect.Lists;
 
+import nextstep.subway.generator.LineGenerator;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.application.SectionService;
 import nextstep.subway.line.domain.Line;
@@ -32,7 +33,7 @@ class SpringExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(이호선()));
         LineService lineService = new LineService(lineRepository, stationService, sectionService);
 
         // when
@@ -40,5 +41,9 @@ class SpringExtensionTest {
 
         // then
         assertThat(responses).hasSize(1);
+    }
+
+    private Line 이호선() {
+        return LineGenerator.line("이호선", "green", "강남역", "역삼역", 10);
     }
 }

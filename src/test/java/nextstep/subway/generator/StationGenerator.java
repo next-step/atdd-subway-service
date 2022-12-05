@@ -8,4 +8,8 @@ public class StationGenerator {
 	public static Station station(Long id, Name name) {
 		return Station.of(id, name);
 	}
+
+	public static Station station(Name name) {
+		return Station.from(name);
+	}
 }
