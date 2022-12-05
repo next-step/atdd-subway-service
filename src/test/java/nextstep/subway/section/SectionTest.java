@@ -56,7 +56,8 @@ class SectionTest {
         Section section = Section.of(신분당선, 강남역, 광교역, TEN);
         assertThatThrownBy(
                 () -> section.updateUpStation(판교역, FIFTY))
-        .isInstanceOf(RuntimeException.class);
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
     @Test

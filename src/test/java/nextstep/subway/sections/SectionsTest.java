@@ -91,7 +91,8 @@ class SectionsTest {
 
         assertThatThrownBy(
                 () -> sections.addSection(신분당선, 강남역, 광교역, TEN))
-        .isInstanceOf(RuntimeException.class);
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("이미 등록된 구간 입니다.");
     }
 
     @Test
@@ -101,7 +102,8 @@ class SectionsTest {
 
         assertThatThrownBy(
                 () -> sections.addSection(신분당선, 판교역, 정자역, FIVE))
-        .isInstanceOf(RuntimeException.class);
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("등록할 수 없는 구간 입니다.");
     }
 
     @Test
@@ -110,6 +112,8 @@ class SectionsTest {
 
         assertThatThrownBy(
                 () -> sections.removeStation(신분당선, 판교역)
-        ).isInstanceOf(RuntimeException.class);
+        )
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("노선에 역이 존재하지 않습니다.");
     }
 }

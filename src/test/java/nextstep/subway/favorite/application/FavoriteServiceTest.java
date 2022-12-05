@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -51,8 +52,8 @@ public class FavoriteServiceTest {
 
     @BeforeEach
     void setUp() {
-        강남역 = new Station("강남역");
-        광교역 = new Station("광교역");
+        강남역 = new Station(1L, "강남역");
+        광교역 = new Station(2L, "광교역");
         사용자 = new Member("email@email.com", "password", 10);
         다른_사용자 = new Member("other@email.com", "password", 20);
         로그인_사용자 = new LoginMember(1L, "email@email.com", 10);
@@ -83,7 +84,9 @@ public class FavoriteServiceTest {
 
         assertThatThrownBy(
                 () -> favoriteService.createFavorite(로그인_사용자.getId(), new FavoriteRequest(강남역.getId(), 광교역.getId()))
-        ).isInstanceOf(RuntimeException.class);
+        )
+        .isInstanceOf(RuntimeException.class)
+        .hasMessageContaining("이미 등록하였습니다.");
     }
 
     @Test

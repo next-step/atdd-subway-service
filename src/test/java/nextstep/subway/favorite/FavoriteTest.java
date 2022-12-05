@@ -31,18 +31,29 @@ class FavoriteTest {
     }
 
     @Test
-    void 유효성_검증() {
+    void 역_데이터가_없는_경우_유효성_검증() {
         assertAll(
                 () -> assertThatThrownBy(
                         () -> new Favorite(null, 광교역, 사용자)
-                ).isInstanceOf(IllegalArgumentException.class),
+                )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("역 데이터가 존재하지 않습니다."),
+
                 () -> assertThatThrownBy(
                         () -> new Favorite(강남역, null, 사용자)
-                ).isInstanceOf(IllegalArgumentException.class),
-                () -> assertThatThrownBy(
-                        () -> new Favorite(강남역, 광교역, null)
-                ).isInstanceOf(IllegalArgumentException.class)
+                )
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining("역 데이터가 존재하지 않습니다.")
         );
+    }
+
+    @Test
+    void 사용자_데이터가_없는_경우_유효성_검증() {
+        assertThatThrownBy(
+                () -> new Favorite(강남역, 광교역, null)
+        )
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("사용자 데이터가 존재하지 않습니다.");
     }
 
     @Test

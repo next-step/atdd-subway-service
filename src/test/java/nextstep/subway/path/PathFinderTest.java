@@ -60,16 +60,28 @@ public class PathFinderTest {
 
     @Test
     void 출발역과_도착역이_같은_경우() {
-        assertThatThrownBy(() -> pathFinder.findPath(강남역.getId(), 강남역.getId())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(
+                () -> pathFinder.findPath(강남역.getId(), 강남역.getId())
+        )
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("출발역과 도착역이 같습니다");
     }
 
     @Test
     void 노선에_없는_역_조회() {
-        assertThatThrownBy(() -> pathFinder.findPath(강남역.getId(), 판교역.getId())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(
+                () -> pathFinder.findPath(강남역.getId(), 판교역.getId())
+        )
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("경로를 찾을 수 없습니다");
     }
 
     @Test
     void 출발역과_도착역이_연결되어_있지_않은_경우() {
-        assertThatThrownBy(() -> pathFinder.findPath(강남역.getId(), 인천역.getId())).isInstanceOf(IllegalArgumentException.class);
+        assertThatThrownBy(
+                () -> pathFinder.findPath(강남역.getId(), 인천역.getId())
+        )
+        .isInstanceOf(IllegalArgumentException.class)
+        .hasMessageContaining("경로를 찾을 수 없습니다");
     }
 }

@@ -150,7 +150,7 @@ public class Sections {
 
     private void validateSize() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("노선에 역이 존재하지 않습니다.");
         }
     }
 }
