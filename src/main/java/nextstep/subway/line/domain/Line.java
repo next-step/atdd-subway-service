@@ -56,8 +56,64 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public void addSection(Section section) {
+    private void addSection(Section section) {
         this.sections.add(section);
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance) {
+        checkValidationForDuplicationSection(upStation, downStation);
+        checkValidationForValidSection(upStation, downStation, getStations());
+
+        if (isEmptySection(upStation, downStation, distance)) {
+            this.sections.add(new Section(this, upStation, downStation, distance));
+            return;
+        }
+
+        updateSectionStation(upStation, downStation, distance);
+        addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    private void updateSectionStation(Station upStation, Station downStation, int distance) {
+        if (isUpStationExisted(upStation)) {
+            this.sections.stream()
+                    .filter(it -> it.getUpStation() == upStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
+        }else if (isDownStationExisted(downStation)) {
+            this.sections.stream()
+                    .filter(it -> it.getDownStation() == downStation)
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
+        }
+    }
+
+    private boolean isEmptySection(Station upStation, Station downStation, int distance) {
+        if (this.sections.isEmpty()) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean isUpStationExisted(Station upStation) {
+        return getStations().stream().anyMatch(it -> it.equals(upStation));
+    }
+
+    private boolean isDownStationExisted(Station downStation) {
+        return getStations().stream().anyMatch(it -> it.equals(downStation));
+    }
+
+    private void checkValidationForDuplicationSection(Station upStation, Station downStation) {
+        if (isUpStationExisted(upStation) && isDownStationExisted(downStation)) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void checkValidationForValidSection(Station upStation, Station downStation, List<Station> stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it.equals(upStation)) &&
+                stations.stream().noneMatch(it -> it.equals(downStation))) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     private Station findSectionFirstStation() {
@@ -65,7 +121,7 @@ public class Line extends BaseEntity {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .filter(it -> it.getDownStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -76,6 +132,7 @@ public class Line extends BaseEntity {
         return downStation;
     }
 
+    // 리팩토링 메소드
     public List<Station> getStations() {
         if (this.getSections().isEmpty()) {
             return Arrays.asList();
@@ -85,10 +142,16 @@ public class Line extends BaseEntity {
         Station downStation = findSectionFirstStation();
         stations.add(downStation);
 
+        settingDownStations(downStation, stations);
+
+        return stations;
+    }
+
+    private void settingDownStations(Station downStation, List<Station> stations) {
         while (downStation != null) {
-            Station finalDownStation = downStation;
+            Station finalDownStation =  downStation;
             Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .filter(it -> it.getUpStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -96,7 +159,5 @@ public class Line extends BaseEntity {
             downStation = nextLineStation.get().getDownStation();
             stations.add(downStation);
         }
-
-        return stations;
     }
 }

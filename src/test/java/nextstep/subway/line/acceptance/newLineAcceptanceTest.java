@@ -39,6 +39,16 @@ public class newLineAcceptanceTest  extends AcceptanceTest {
         lineRequest2 = new LineRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
     }
 
+    @DisplayName("지하철 노선을 생성한다.")
+    @Test
+    void createLine() {
+        // when
+        ExtractableResponse<Response> response = 지하철_노선_생성_요청(lineRequest1);
+
+        // then
+        지하철_노선_생성됨(response);
+    }
+
     @DisplayName("기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성한다.")
     @Test
     void createLineWithDuplicateName() {
