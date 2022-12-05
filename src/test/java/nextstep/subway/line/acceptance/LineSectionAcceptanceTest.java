@@ -19,18 +19,20 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.domain.LineId;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.StationId;
+import nextstep.subway.station.domain.StationIds;
 import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
-    private Long 신분당선;
-    private Long 강남역;
-    private Long 양재역;
-    private Long 정자역;
-    private Long 광교역;
+    private LineId 신분당선;
+    private StationId 강남역;
+    private StationId 양재역;
+    private StationId 정자역;
+    private StationId 광교역;
 
     /**
      * Given 지하철역 등록되어 있음
@@ -81,11 +83,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_추가_등록_응답);
 
         // when
-        ExtractableResponse<Response> 지하철_노선_조회_응답 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        ExtractableResponse<Response> 지하철_노선_조회_응답 = 지하철_노선_조회_요청(신분당선);
 
         // then
         지하철_노선에_지하철역_등록됨(지하철_노선_조회_응답);
-        지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_응답, Arrays.asList(정자역, 강남역, 양재역, 광교역));
+        지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_응답, StationIds.from(Arrays.asList(정자역, 강남역, 양재역, 광교역)).toLongList());
 
         // when
         ExtractableResponse<Response> 지하철_노선_지하철역_제외_응답 = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
@@ -94,10 +96,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외됨(지하철_노선_지하철역_제외_응답);
 
         // when
-        ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
 
         // then
-        지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 광교역));
+        지하철_노선에_지하철역_순서_정렬됨(response, StationIds.from(Arrays.asList(정자역, 강남역, 광교역)).toLongList());
     }
 
     /**
@@ -133,21 +135,21 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_실패됨(response);
 
         // when
-        ExtractableResponse<Response> 지하철_노선_조회_응답 = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        ExtractableResponse<Response> 지하철_노선_조회_응답 = 지하철_노선_조회_요청(신분당선);
 
         // then
-        지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_응답, Arrays.asList(강남역, 광교역));
+        지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_응답, StationIds.from(Arrays.asList(강남역, 광교역)).toLongList());
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(Long line, Long upStation,
-        Long downStation, int distance) {
-        SectionRequest sectionRequest = new SectionRequest(upStation, downStation, distance);
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineId line, StationId upStation,
+        StationId downStation, int distance) {
+        SectionRequest sectionRequest = new SectionRequest(upStation.getLong(), downStation.getLong(), distance);
 
         return RestAssured
             .given().log().all()
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(sectionRequest)
-            .when().post("/lines/{lineId}/sections", line)
+            .when().post("/lines/{lineId}/sections", line.getLong())
             .then().log().all()
             .extract();
     }
@@ -170,10 +172,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertThat(stationIds).containsExactlyElementsOf(expectedStations);
     }
 
-    private ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(Long line, Long station) {
+    private ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineId line, StationId station) {
         return RestAssured
             .given().log().all()
-            .when().delete("/lines/{lineId}/sections?stationId={stationId}", line, station)
+            .when().delete("/lines/{lineId}/sections?stationId={stationId}", line.getString(), station.getString())
             .then().log().all()
             .extract();
     }
