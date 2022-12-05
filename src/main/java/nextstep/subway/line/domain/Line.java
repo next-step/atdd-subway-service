@@ -91,6 +91,6 @@ public class Line extends BaseEntity {
     }
 
     public void removeSection(Section sectionByUpStation, Section SectionByDownStation) {
-        this.sections.remove(sectionByUpStation, sectionByUpStation);
+        this.sections.remove(sectionByUpStation, SectionByDownStation);
     }
 }
