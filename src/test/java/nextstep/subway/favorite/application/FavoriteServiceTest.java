@@ -14,8 +14,11 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.util.NoSuchElementException;
+
 import static nextstep.subway.favorite.domain.Favorite.TARGET_SOURCE_SAME_EXCEPTION_MESSAGE;
 import static nextstep.subway.favorite.domain.Favorites.FAVORITE_DUPLICATE_EXCEPTION_MESSAGE;
+import static nextstep.subway.favorite.domain.Favorites.HAS_NOT_FAVORITE_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -107,5 +110,15 @@ class FavoriteServiceTest {
         favoriteService.delete(memberA, favoriteId);
 
         assertThat(favoriteService.findAll(memberA)).hasSize(0);
+    }
+
+    @DisplayName("가지고 있지 않은 즐겨찾기를 삭제할 수 없다.")
+    @Test
+    void delete_fail() {
+        Long favoriteId = favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId())).getId();
+
+        assertThatThrownBy(() -> favoriteService.delete(memberB, favoriteId))
+                .isInstanceOf(NoSuchElementException.class)
+                .hasMessageContaining(HAS_NOT_FAVORITE_EXCEPTION_MESSAGE);
     }
 }
