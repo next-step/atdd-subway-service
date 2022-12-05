@@ -59,9 +59,7 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(Long loginMemberId, Long id) {
-        Member member = memberService.findById(loginMemberId);
-        Favorite favorite = favoriteRepository.findById(id).orElseThrow(() -> new RuntimeException("즐겨찾기를 찾을 수 없습니다."));
-        favorite.validateSameMember(member);
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(id, loginMemberId).orElseThrow(() -> new RuntimeException("즐겨찾기를 찾을 수 없습니다."));
         favoriteRepository.delete(favorite);
     }
 }
