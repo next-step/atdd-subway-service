@@ -18,6 +18,7 @@ import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -83,12 +84,16 @@ class FavoriteServiceTest {
         // 사용자정보를 통해 해당 사용자의 즐겨찾기 목록을 조회한다.
         // given
         FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationRepository, memberRepository);
+        ArgumentCaptor<Favorite> arg = ArgumentCaptor.forClass(Favorite.class);
 
         // when
-        when(favoriteRepository.findById(any())).thenReturn(Optional.of(new Favorite(new Station("강남역"), new Station("잠실역"), new Member("test@test.com", "password", 10))));
+        Favorite favorite = new Favorite(new Station("강남역"), new Station("잠실역"),
+                new Member("test@test.com", "password", 10));
+        when(favoriteRepository.findById(any())).thenReturn(Optional.of(favorite));
         favoriteService.deleteFavorite(1L);
 
         // then
-        // 여기는 어떻게 검증해보는게 좋을까요...?ㅠ 생각이 잘 안나서요...ㅠㅠ
+        verify(favoriteRepository).delete(arg.capture());
+        assertThat(arg.getValue()).isEqualTo(favorite);
     }
 }
