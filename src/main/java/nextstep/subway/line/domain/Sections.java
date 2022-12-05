@@ -9,9 +9,6 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
 import nextstep.subway.line.excpetion.LastSectionException;
 import nextstep.subway.station.domain.Station;
 
@@ -132,11 +129,4 @@ public class Sections {
             .findFirst();
     }
 
-    public void updateGraphEdgeWeight(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
-        for (Section section : sections) {
-            graph.setEdgeWeight(graph.addEdge(String.valueOf(section.getUpStation().getId()),
-                String.valueOf(section.getDownStation().getId())),
-                section.getDistance());
-        }
-    }
 }
