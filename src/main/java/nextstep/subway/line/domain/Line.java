@@ -25,6 +25,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    @Embedded
     private Fare surcharge;
     @Embedded
     private Sections sections = new Sections();
