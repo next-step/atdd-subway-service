@@ -32,6 +32,13 @@ public enum AgeFarePolicy {
     }
 
     public int discount(int fare) {
+        checkFareIsNotLessThanDeductionFare(fare);
         return (int) ((fare - this.deductionFare) * (1 - this.discountRate));
+    }
+
+    private void checkFareIsNotLessThanDeductionFare(int fare) {
+        if (fare < this.deductionFare) {
+            throw new IllegalArgumentException(ErrorEnum.FARE_LESS_THAN_DEDUCTION_FARE.message());
+        }
     }
 }

@@ -2,6 +2,8 @@ package nextstep.subway.fare.domain;
 
 import nextstep.subway.common.exception.ErrorEnum;
 import org.assertj.core.api.Assertions;
+import org.codehaus.groovy.control.messages.ExceptionMessage;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -34,4 +36,12 @@ public class AgeFarePolicyTest {
         Assertions.assertThat(result).isEqualTo(expected);
     }
 
+    @Test
+    void 운임요금이_공제금액보다_작으면_예외_발생() {
+        AgeFarePolicy policy = AgeFarePolicy.findByAge(10);
+
+        Assertions.assertThatThrownBy(() -> policy.discount(0))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageStartingWith(ErrorEnum.FARE_LESS_THAN_DEDUCTION_FARE.message());
+    }
 }
