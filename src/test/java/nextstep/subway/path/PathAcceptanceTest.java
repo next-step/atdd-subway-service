@@ -8,6 +8,7 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -15,6 +16,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -62,11 +64,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단경로 조회 확인")
     void findShortestRoute() {
         //given
-        PathResponse pathResponse = 최단경로확인(교대역.getId(), 양재역.getId())
-                .jsonPath()
-                .getObject("", PathResponse.class);
+        PathResponse pathResponse = 최단경로확인(교대역.getId(), 양재역.getId()).as(PathResponse.class);
+        //when
         //then
-        assertThat(pathResponse.getStations()).containsExactly(교대역, 남부터미널역, 양재역);
+        assertThat(pathResponse.getStations().stream().map(station -> station.getId()).collect(Collectors.toList()))
+                .containsExactly(교대역.getId(), 남부터미널역.getId(), 양재역.getId());
         assertThat(pathResponse.getDistance()).isEqualTo(5);
     }
 
@@ -109,7 +111,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static ExtractableResponse<Response> 최단경로확인(Long source, Long target) {
         final Map<String, Long> paramMap = new HashMap();
         paramMap.put("source", source);
-        paramMap.put("source", target);
+        paramMap.put("target", target);
 
         return RestAssured
                 .given().log().all()
