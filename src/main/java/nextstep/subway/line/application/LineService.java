@@ -35,10 +35,14 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
-    public List<LineResponse> findLines() {
-        return lineRepository.findAll().stream()
+    public List<LineResponse> findLinesResponse() {
+        return findLines().stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public List<Line> findLines() {
+        return lineRepository.findAll();
     }
 
     public Line findLineById(Long id) {

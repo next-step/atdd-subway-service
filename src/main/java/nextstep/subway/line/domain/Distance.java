@@ -1,12 +1,13 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.ErrorMessage;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.Embeddable;
 import java.util.Objects;
 
 @Embeddable
-public class Distance {
+public class Distance extends DefaultWeightedEdge {
 
     private static int LOWER_LIMIT = 0;
 
@@ -40,6 +41,11 @@ public class Distance {
 
     public int getDistance() {
         return distance;
+    }
+
+    @Override
+    protected double getWeight() {
+        return (double) getDistance();
     }
 
     @Override

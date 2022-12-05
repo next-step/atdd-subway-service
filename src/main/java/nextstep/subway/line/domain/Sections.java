@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.ErrorMessage;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -159,4 +161,29 @@ public class Sections {
                 .findFirst();
     }
 
+    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        Station nextStation = findUpStation();
+        boolean isLastSection = false;
+        while (!isLastSection) {
+            Station beforeStation = nextStation.copyOf();
+            Optional<Section> nextSection = sections.stream()
+                    .filter(section -> beforeStation.equals(section.getUpStation()))
+                    .findFirst();
+            isLastSection = !nextSection.isPresent();
+            drawGraph(graph, nextSection);
+            nextStation = nextSection.map(Section::getDownStation).orElse(null);
+        }
+    }
+
+    private void drawGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
+                           Optional<Section> nextSection) {
+        if (!nextSection.isPresent()) {
+            return;
+        }
+        Section section = nextSection.get();
+        graph.addVertex(section.getUpStation());
+        graph.addVertex(section.getDownStation());
+        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+                section.getDistance().getWeight());
+    }
 }

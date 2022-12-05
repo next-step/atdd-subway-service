@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -63,4 +65,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.makeGraph(graph);
+    }
 }
