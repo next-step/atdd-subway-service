@@ -1,5 +1,8 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.AuthMember;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.member.domain.MemberDiscountPolicy;
 import nextstep.subway.station.domain.Station;
 
 import java.util.Collections;
@@ -18,8 +21,9 @@ public class Path {
         this.fare = pathFare.getFare(this.distance);
     }
 
-    public void calculateFare(int age, int lineFare) {
-        fare = FareCalculator.calculate(age, fare, lineFare);
+    public void calculateFare(AuthMember member, Lines lines) {
+        int totalFare = fare + lines.findMaxFare();
+        fare = MemberDiscountPolicy.getFare(member, totalFare);
     }
 
     public List<Station> getStations() {

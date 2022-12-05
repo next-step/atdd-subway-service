@@ -1,5 +1,8 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -31,8 +34,10 @@ class PathTest {
 
     @Test
     void 지하철_운임_비용_계산() {
+        LoginMember loginMember = new LoginMember(1L, "testuser@test.com", 6);
         Path path = new Path(Arrays.asList(강남역, 역삼역, 선릉역), 20);
-        path.calculateFare(6, 100);
+        path.calculateFare(loginMember,
+                new Lines(Arrays.asList(new Line("2호선", "bg-green-600", 100))));
 
         assertEquals(600, path.getFare());
     }

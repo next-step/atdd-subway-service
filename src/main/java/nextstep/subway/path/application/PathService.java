@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.AuthMember;
 import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
@@ -28,14 +29,14 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse getShortestPath(int age, PathRequest pathRequest) {
+    public PathResponse getShortestPath(AuthMember member, PathRequest pathRequest) {
         Station source = findStationById(pathRequest.getSource());
         Station target = findStationById(pathRequest.getTarget());
         List<Section> sections = sectionRepository.findAll();
 
         Path path = new PathFinder(sections).getShortestPath(source, target);
         Lines lines = Sections.of(sections).findLinesContainedStations(path.getStations());
-        path.calculateFare(age, lines.findMaxFare());
+        path.calculateFare(member, lines);
 
         return PathResponse.of(path);
     }

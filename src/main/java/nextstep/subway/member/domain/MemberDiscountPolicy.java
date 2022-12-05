@@ -1,5 +1,7 @@
 package nextstep.subway.member.domain;
 
+import nextstep.subway.auth.domain.AuthMember;
+
 import java.util.function.Function;
 
 public enum MemberDiscountPolicy {
@@ -17,8 +19,12 @@ public enum MemberDiscountPolicy {
         this.expression = expression;
     }
 
-    public static int getFare(int age, int totalFare) {
-        MemberDiscountPolicy policy = match(age);
+    public static int getFare(AuthMember member, int totalFare) {
+        if(!member.isLoginMember()) {
+            return totalFare;
+        }
+
+        MemberDiscountPolicy policy = match(member.getAge());
         return policy.discount(totalFare);
     }
 

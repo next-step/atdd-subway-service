@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
@@ -62,6 +63,7 @@ class PathServiceTest {
 
     @Test
     void 출발역과_도착역으로_최단_거리를_검색() {
+        LoginMember loginMember = new LoginMember(1L, "testuser@test.com", 15);
         PathRequest pathRequest = new PathRequest(SOURCE, TARGET);
         Section 강남역_양재역 = new Section(신분당선, 강남역, 양재역, 20);
         Section 교대역_강남역 = new Section(이호선, 교대역, 강남역, 30);
@@ -73,7 +75,7 @@ class PathServiceTest {
         when(sectionRepository.findAll()).thenReturn(Arrays.asList(
            강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
 
-        assertThat(pathService.getShortestPath(15, pathRequest)).satisfies(path -> {
+        assertThat(pathService.getShortestPath(loginMember, pathRequest)).satisfies(path -> {
             assertThat(path.getStations().stream().map(StationResponse::getName).collect(toList()))
                     .containsExactly("양재역", "남부터미널역", "교대역");
             assertEquals(15, path.getDistance());
