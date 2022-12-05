@@ -1,5 +1,7 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.http.ResponseEntity;
@@ -17,8 +19,9 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<PathResponse> findShortestPath(@RequestParam long sourceId, @RequestParam long targetId) {
-        return ResponseEntity.ok(pathService.findShortestPath(sourceId, targetId));
+    public ResponseEntity<PathResponse> findShortestPath(@AuthenticationPrincipal LoginMember loginMember,
+                                                         @RequestParam long sourceId, @RequestParam long targetId) {
+        return ResponseEntity.ok(pathService.findShortestPath(sourceId, targetId, loginMember.getAge()));
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
