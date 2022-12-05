@@ -1,6 +1,6 @@
 package nextstep.subway.fare.domain;
 
-import static nextstep.subway.auth.domain.LoginMember.NON_MEMBER_AGE;
+import static nextstep.subway.auth.domain.NonLoginMember.NON_MEMBER_AGE;
 
 public class Fare {
     public static final int BASIC_FARE = 1250;
