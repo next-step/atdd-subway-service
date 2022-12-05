@@ -80,4 +80,8 @@ public class Favorite extends BaseEntity {
     public Station getTarget() {
         return this.target;
     }
+
+    public boolean isSame(Favorite favorite) {
+        return this.getSource().equals(favorite.getSource()) && this.target.equals(favorite.getTarget());
+    }
 }

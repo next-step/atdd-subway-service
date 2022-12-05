@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.domain.Favorites;
 import nextstep.subway.favorite.dto.FavoriteCreatedRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
@@ -32,8 +33,15 @@ public class FavoriteService {
         Member member = memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
         Station source = stationRepository.findById(request.getSourceId()).orElseThrow(EntityNotFoundException::new);
         Station target = stationRepository.findById(request.getTargetId()).orElseThrow(EntityNotFoundException::new);
-        Favorite favorite = favoriteRepository.save(new Favorite(member, source, target));
-        return new FavoriteResponse(favorite);
+        Favorite favorite = new Favorite(member, source, target);
+        validateDuplicate(favorite);
+        return new FavoriteResponse(favoriteRepository.save(favorite));
+    }
+
+    private void validateDuplicate(Favorite favorite) {
+        Favorites favorites = new Favorites();
+        favorites.addAll(favoriteRepository.findAll());
+        favorites.add(favorite);
     }
 
     public List<FavoriteResponse> findAll() {

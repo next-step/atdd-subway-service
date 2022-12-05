@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
 import static nextstep.subway.favorite.domain.Favorite.TARGET_SOURCE_SAME_EXCEPTION_MESSAGE;
+import static nextstep.subway.favorite.domain.Favorites.FAVORITE_DUPLICATE_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -74,6 +75,17 @@ class FavoriteServiceTest {
         assertThatThrownBy(() -> favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationA.getId())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TARGET_SOURCE_SAME_EXCEPTION_MESSAGE);
+    }
+
+    @DisplayName("출발역과 도착역이 같은 즐겨찾기를 생성할 수 없다.")
+    @Test
+    void add_fail_sameFavorite() {
+
+        favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
+
+        assertThatThrownBy(() -> favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId())))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessageContaining(FAVORITE_DUPLICATE_EXCEPTION_MESSAGE);
     }
 
     @DisplayName("즐겨찾기 목록 조회")

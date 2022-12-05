@@ -8,10 +8,10 @@ public class Favorites {
     public static final String FAVORITE_DUPLICATE_EXCEPTION_MESSAGE = "출발역과 도착역이 같은 즐겨찾기를 생성할 수 없다.";
     private List<Favorite> favorites = new ArrayList<>();
 
-    private static void validateDuplicate(Favorite favorite, Favorite value) {
-        if (value.equals(favorite)) {
-            throw new IllegalArgumentException(FAVORITE_DUPLICATE_EXCEPTION_MESSAGE);
-        }
+    public Favorites() {}
+
+    public void addAll(List<Favorite> favorites) {
+        this.favorites.addAll(favorites);
     }
 
     public void add(Favorite favorite) {
@@ -22,6 +22,12 @@ public class Favorites {
     private void validate(Favorite favorite) {
         for (Favorite value : this.favorites) {
             validateDuplicate(favorite, value);
+        }
+    }
+
+    private static void validateDuplicate(Favorite favorite, Favorite value) {
+        if (value.isSame(favorite)) {
+            throw new IllegalArgumentException(FAVORITE_DUPLICATE_EXCEPTION_MESSAGE);
         }
     }
 }
