@@ -62,6 +62,10 @@ public class Section {
         return distance;
     }
 
+    public int getDistanceInt() {
+        return distance.getDistance();
+    }
+
     public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
         this.distance = this.distance.minus(newDistance);
