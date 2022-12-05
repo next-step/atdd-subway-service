@@ -4,9 +4,9 @@ public class DistanceFare {
     private int distance;
     private DistancePolicy policy;
 
-    public DistanceFare(int distance,DistancePolicy policy){
+    public DistanceFare(int distance){
         this.distance = distance;
-        this.policy = policy;
+        this.policy = DistancePolicy.valueOfRange(distance);
     }
 
     public int getFare(int fare){

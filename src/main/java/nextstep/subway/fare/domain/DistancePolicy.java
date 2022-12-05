@@ -9,9 +9,9 @@ import static nextstep.subway.fare.exception.AgeFareExceptionCode.NONE_EXISTS_AG
 
 public enum DistancePolicy {
 
-    BASE(0, 10, distance -> distance),
+    BASE(0, 10, distance -> distance / ( distance + 1 ) ),
     MIDDLE(10, 50, distance -> (int) ((Math.floor((distance - 1) / 5.0) + 1) * 100)),
-    LONG(50, Integer.MAX_VALUE, distance -> (int) ((Math.floor((distance - 1) / 8.0) + 1 * 100)));
+    LONG(50, Integer.MAX_VALUE, distance -> (int) ((Math.floor((distance - 1) / 8.0) + 1) * 100));
 
     private int minDistance;
     private int maxDistance;
