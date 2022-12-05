@@ -60,18 +60,18 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 #### 요구사항 2
 - (선택) LineSectionAcceptanceTest 리팩터링
 #### 구현 리스트
-- [ ] 기존 서비스 복사하기 ( strangler pattern )
-- [ ] Domain으로 옮길 로직을 찾기
-    - [ ] [1]saveLine메소드의 getStations.
-    - [ ] [2]findLines메소드의 persistLines.stream().
-    - [ ] [3]findLineResponseById메소드의 getStations.
-    - [ ] [4]addLineStation메소드의 line.getSections().stream(), line.getSections().add
-    - [ ] [5]removeLineStation메소드의 line.getSections().stream(), line.getSections().add, ifPresent
-    - [ ] [6]getStations메소드의 line.getSections().stream()
-    - [ ] [7]findUpStation메소드의 line.getSections().stream()
-- [ ] Domain의 단위 테스트를 작성하기
-    - [ ] [1] ~ [7] 단위 테스트 작성
-- [ ] 로직을 옮기기
-    - [ ] 새로운 로직 만들어서 수행
-    - [ ] 정상 동작 확인 후 기존 로직 제거 
-- [ ] 인수 테스트 통합
+- [x] 기존 서비스 복사하기 ( strangler pattern )
+- [x] Domain으로 옮길 로직을 찾기
+    - [x] [1]saveLine메소드의 getStations.
+    - [x] [2]findLines메소드의 persistLines.stream().
+    - [x] [3]findLineResponseById메소드의 getStations.
+    - [x] [4]addLineStation메소드의 line.getSections().stream(), line.getSections().add
+    - [x] [5]removeLineStation메소드의 line.getSections().stream(), line.getSections().add, ifPresent
+    - [x] [6]getStations메소드의 line.getSections().stream()
+    - [x] [7]findUpStation메소드의 line.getSections().stream()
+- [x] Domain의 단위 테스트를 작성하기
+    - [x] [1] ~ [7] 단위 테스트 작성
+- [x] 로직을 옮기기
+    - [x] 새로운 로직 만들어서 수행
+    - [x] 정상 동작 확인 후 기존 로직 제거 
+- [x] 인수 테스트 통합 리팩토링
