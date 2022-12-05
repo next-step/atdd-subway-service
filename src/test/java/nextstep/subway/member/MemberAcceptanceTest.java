@@ -106,7 +106,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
+    private ExtractableResponse<Response> 회원_정보_조회_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
         return RestAssured
@@ -117,7 +117,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email,
+    private ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email,
         String password, Integer age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
@@ -131,7 +131,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
+    private ExtractableResponse<Response> 회원_삭제_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
         return RestAssured
             .given().log().all()
@@ -140,22 +140,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 회원_생성됨(ExtractableResponse<Response> response) {
+    private void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String expectedEmail, int expectedAge) {
+    private void 회원_정보_조회됨(ExtractableResponse<Response> response, String expectedEmail, int expectedAge) {
         MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(expectedEmail);
         assertThat(memberResponse.getAge()).isEqualTo(expectedAge);
     }
 
-    public static void 회원_정보_수정됨(ExtractableResponse<Response> response) {
+    private void 회원_정보_수정됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 회원_삭제됨(ExtractableResponse<Response> response) {
+    private void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
@@ -178,7 +178,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password,
+    private ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password,
         Integer age) {
         Map<String, String> params = new HashMap<>();
         params.put("email", email);
@@ -195,11 +195,11 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 내_정보_수정_성공(ExtractableResponse<Response> response) {
+    private void 내_정보_수정_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+    private ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
         return RestAssured
             .given().log().all()
             .auth().oauth2(accessToken)
@@ -209,7 +209,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    public static void 내_정보_삭제_성공(ExtractableResponse<Response> response) {
+    private void 내_정보_삭제_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }

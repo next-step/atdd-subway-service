@@ -59,13 +59,12 @@ public class FavoriteService {
         favoriteRepository.delete(favorite);
     }
 
-    public Favorite findByIdAndMember(Long id, Member member) {
+    private Favorite findByIdAndMember(Long id, Member member) {
         return favoriteRepository.findByIdAndMember(id, member)
             .orElseThrow(() -> new IllegalArgumentException("유저의 해당 즐겨찾기를 찾을 수 없습니다. id: " + id));
     }
 
-    public List<Favorite> findAllMemberFavorites(Member member) {
+    private List<Favorite> findAllMemberFavorites(Member member) {
         return favoriteRepository.findAllByMember(member);
     }
-
 }

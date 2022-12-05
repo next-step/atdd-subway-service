@@ -174,18 +174,18 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    public static void 최단_경로_조회_성공(ExtractableResponse<Response> response, int expectedDistance) {
+    private void 최단_경로_조회_성공(ExtractableResponse<Response> response, int expectedDistance) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
             () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(expectedDistance)
         );
     }
 
-    public static void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
+    private void 최단_경로_조회_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static ExtractableResponse<Response> 최단_경로_조회_요청(Long source, Long target) {
+    private ExtractableResponse<Response> 최단_경로_조회_요청(Long source, Long target) {
         Map<String, String> params = new HashMap<>();
         params.put("source", source.toString());
         params.put("target", target.toString());
