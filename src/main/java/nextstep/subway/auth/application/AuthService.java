@@ -9,6 +9,7 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import static nextstep.subway.utils.Message.INVALID_ACCESS_TOKEN;
 import static nextstep.subway.utils.Message.MEMBER_NOT_EXISTS;
 
 @Service
@@ -32,7 +33,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+            new AuthorizationException(INVALID_ACCESS_TOKEN);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
