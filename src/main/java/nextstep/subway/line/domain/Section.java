@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -22,7 +24,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
@@ -31,7 +34,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.from(distance);
     }
 
     public Long getId() {
@@ -50,23 +53,45 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateUpStation(Station station, Distance newDistance) {
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = distance.subtract(newDistance);
     }
 
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
+    public void updateDownStation(Station station, Distance newDistance) {
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = distance.subtract(newDistance);
+    }
+
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
+    public void rebase(Section section) {
+        rebaseIfUpStationEquals(section);
+        rebaseIfDownStationEquals(section);
+    }
+
+    private void rebaseIfUpStationEquals(Section section) {
+        if(this.upStation.equals(section.upStation)) {
+            distance = distance.subtract(section.distance);
+            upStation = section.downStation;
+        }
+    }
+
+    private void rebaseIfDownStationEquals(Section section) {
+        if(this.downStation.equals(section.downStation)) {
+            distance = distance.subtract(section.distance);
+            downStation = section.upStation;
+        }
+    }
+
+    public void mergeUpStation(Section upSection) {
+        this.upStation = upSection.getUpStation();
+        this.distance = distance.add(upSection.distance);
     }
 }
