@@ -35,17 +35,16 @@ public class FavoriteService {
         Member member = findMember(loginMember);
         Station source = findStation(favoriteRequest.getSource());
         Station target = findStation(favoriteRequest.getTarget());
-
-        Favorite favorite = Favorite.of(member, source, target);
-        member.addFavorite(favorite);
+        validRedundantFavorite(member, source, target);
+        Favorite favorite = favoriteRepository.save(Favorite.of(member, source, target));
         return FavoriteResponse.from(favorite);
     }
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = findMember(loginMember);
-        return member.getFavorites()
-                .stream()
+        List<Favorite> favorites = favoriteRepository.findFavoritesByMember(member);
+        return favorites.stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
@@ -53,7 +52,14 @@ public class FavoriteService {
     public void deleteFavorite(LoginMember loginMember, Long id) {
         Member member = findMember(loginMember);
         Favorite favorite = findFavorite(id);
-        member.deleteFavorite(favorite);
+        favorite.isOwner(member);
+        favoriteRepository.delete(favorite);
+    }
+
+    private void validRedundantFavorite(Member member, Station source, Station target) {
+        if (favoriteRepository.existsByMemberAndSourceStationAndTargetStation(member, source, target)) {
+            throw new IllegalArgumentException("동일한 즐겨찾기가 존재합니다");
+        }
     }
 
     private Favorite findFavorite(Long id) {
