@@ -16,10 +16,9 @@ public class Fare {
     }
 
     private int calculate(int distance, int additionalFare, int age){
-        int fare = BASIC_FARE;
+        int fare = subtractionByAge(age);
         fare += additionByDistance(distance);
         fare += additionByLine(additionalFare);
-        fare -= subtractionByAge(age);
         return fare;
     }
 

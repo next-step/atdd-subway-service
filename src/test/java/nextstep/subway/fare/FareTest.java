@@ -9,6 +9,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.ValueSource;
 
 class FareTest {
+    private final int 청소년_나이 = 13;
     private final int 노선_추가_요금 = 900;
     private final int NON_MEMBER_AGE = -1;
 
@@ -29,17 +30,17 @@ class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5, 10})
     void 회원_청소년_기본_요금_생성(int distance) {
-        Fare fare = new Fare(distance, 0, 15);
-        int 할인 = (int) Math.ceil((BASIC_FARE - 350) * 0.2);
-        assertThat(fare.getFare()).isEqualTo(BASIC_FARE - 할인);
+        Fare fare = new Fare(distance, 0, 청소년_나이);
+        int 요금 = (int) Math.ceil((BASIC_FARE - 350) * 0.8);
+        assertThat(fare.getFare()).isEqualTo(요금);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5, 10})
     void 회원_어린이_기본_요금_생성(int distance) {
         Fare fare = new Fare(distance, 0, 7);
-        int 할인 = (int) Math.ceil((BASIC_FARE - 350) * 0.5);
-        assertThat(fare.getFare()).isEqualTo(BASIC_FARE - 할인);
+        int 요금 = (int) Math.ceil((BASIC_FARE - 350) * 0.5);
+        assertThat(fare.getFare()).isEqualTo(요금);
     }
 
     @Test
