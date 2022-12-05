@@ -4,7 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.member.domain.Age;
 
-public class MemberDiscountPolicy {
+class MemberDiscountPolicy {
     private final LoginMember loginMember;
 
     private MemberDiscountPolicy(LoginMember loginMember) {

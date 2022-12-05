@@ -6,7 +6,7 @@ import nextstep.subway.common.exception.InvalidParameterException;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 
-public enum DistanceSurcharge {
+enum DistanceSurcharge {
     BASIC_SECTION(0, 10, 0, 0, (distance, distanceSurcharge) -> 0),
     FIRST_SECTION(11, 50, 5, 0, DistanceSurcharge::calculateSurcharge),
     SECOND_SECTION(51, Integer.MAX_VALUE, 8, 800, DistanceSurcharge::calculateSurcharge);

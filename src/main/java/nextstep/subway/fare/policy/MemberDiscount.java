@@ -7,7 +7,7 @@ import java.util.function.BiFunction;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.member.domain.Age;
 
-public enum MemberDiscount {
+enum MemberDiscount {
     CHILDREN(6, 12, 0.5, MemberDiscount::calculateDiscount),
     TEENAGER(13, 18, 0.2, MemberDiscount::calculateDiscount);
 
