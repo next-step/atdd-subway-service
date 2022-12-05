@@ -28,10 +28,19 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        if(StringUtils.isEmpty(credentials)) {
+        if(isAnonymousMember(parameter, credentials)) {
             return new AnonymousMember();
         }
 
         return authService.findMemberByToken(credentials);
+    }
+
+    private boolean isAnonymousMember(MethodParameter parameter, String credentials) {
+        AuthenticationPrincipal principal = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
+        if (!principal.required() && StringUtils.isEmpty(credentials)) {
+            return true;
+        }
+
+        return false;
     }
 }
