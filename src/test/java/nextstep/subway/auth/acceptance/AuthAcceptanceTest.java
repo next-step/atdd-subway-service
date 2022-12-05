@@ -7,7 +7,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.MemberAcceptanceTest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -58,10 +57,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         String accessToken = 로그인_요청(email, password).as(TokenResponse.class).getAccessToken();
 
         // When 유효한 토큰으로 정보 조회 요청
-        ExtractableResponse<Response> response = 내정보_요청(accessToken);
+        ExtractableResponse<Response> response = MemberAcceptanceTest.내정보_요청(accessToken);
 
         // Then 요청이 성공
-        내정보_요청_성공함(response);
+        MemberAcceptanceTest.내정보_요청_성공함(response, email);
     }
 
     @DisplayName("유효하지 않은 토큰으로 정보 요청")
@@ -69,13 +68,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     void myInfoWithWrongBearerAuth() {
         // When 잘못된 토큰으로 정보 조회 요청
         String accessToken = "failToken";
-        ExtractableResponse<Response> response = 내정보_요청(accessToken);
+        ExtractableResponse<Response> response = MemberAcceptanceTest.내정보_요청(accessToken);
 
         // Then 요청이 실패
-        내정보_요청_실패함(response);
+        MemberAcceptanceTest.내정보_요청_실패함(response);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest request = new TokenRequest(email, password);
 
         return RestAssured
@@ -95,25 +94,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private void 로그인_실패함(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-    }
-
-    public static ExtractableResponse<Response> 내정보_요청(String accessToken) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
-
-    private void 내정보_요청_성공함(ExtractableResponse<Response> response) {
-        MemberResponse memberResponse = response.as(MemberResponse.class);
-
-        assertThat(memberResponse.getEmail()).isEqualTo(email);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
-    }
-
-    private void 내정보_요청_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
