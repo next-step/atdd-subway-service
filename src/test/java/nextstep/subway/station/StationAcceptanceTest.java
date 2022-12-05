@@ -1,11 +1,11 @@
 package nextstep.subway.station;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import io.restassured.response.ResponseBodyExtractionOptions;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -43,7 +43,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
 
         // then
-        지하철역_생성_실패됨(response, ErrorEnum.CREATE_FAIL.message());
+        지하철역_생성_실패됨(response, ErrorEnum.EXISTS_STATION.message());
     }
 
     @DisplayName("지하철역을 조회한다.")
@@ -115,8 +115,11 @@ public class StationAcceptanceTest extends AcceptanceTest {
 
     public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response, String expectedErrorMessage) {
         String errorMessage = response.body().path("message").toString();
-        assertThat(errorMessage).isEqualTo(expectedErrorMessage);
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+
+        assertAll(
+                () -> assertThat(errorMessage).isEqualTo(expectedErrorMessage),
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value())
+        );
     }
 
     public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {

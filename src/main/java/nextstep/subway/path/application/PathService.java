@@ -36,6 +36,6 @@ public class PathService {
 
     private Station findStationById(Long stationId) {
         return stationRepository.findById(stationId)
-                .orElseThrow(() -> new RuntimeException(ErrorEnum.STATION_NOT_EXISTS.message()));
+                .orElseThrow(() -> new RuntimeException(ErrorEnum.NOT_EXISTS_STATION.message()));
     }
 }
