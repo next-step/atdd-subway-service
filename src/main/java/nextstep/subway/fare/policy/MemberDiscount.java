@@ -1,25 +1,27 @@
 package nextstep.subway.fare.policy;
 
-import static nextstep.subway.fare.policy.MemberDiscountPolicy.*;
-
 import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.Optional;
-import java.util.function.Function;
+import java.util.function.BiFunction;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.member.domain.Age;
 
-enum MemberDiscount {
-    CHILDREN(6, 12, MemberDiscount::calculateChildren),
-    TEENAGER(13, 18, MemberDiscount::calculateTeenager);
+public enum MemberDiscount {
+    CHILDREN(6, 12, 0.5, MemberDiscount::calculateDiscount),
+    TEENAGER(13, 18, 0.2, MemberDiscount::calculateDiscount);
+
+    private static final Fare DEDUCTIBLE_FARE = Fare.from(350);
 
     private final int start;
     private final int end;
-    private final Function<Fare, Integer> calculation;
+    private final BigDecimal discountRate;
+    private final BiFunction<Fare, BigDecimal, Integer> calculation;
 
-    MemberDiscount(int start, int end, Function<Fare, Integer> calculation) {
+    MemberDiscount(int start, int end, double discountRate, BiFunction<Fare, BigDecimal, Integer> calculation) {
         this.start = start;
         this.end = end;
+        this.discountRate = BigDecimal.valueOf(discountRate);
         this.calculation = calculation;
     }
 
@@ -29,15 +31,9 @@ enum MemberDiscount {
                 .findFirst();
     }
 
-    private static int calculateChildren(Fare fare) {
+    private static int calculateDiscount(Fare fare, BigDecimal discountRate) {
         BigDecimal deducibleAmount = calculateDeducibleAmount(fare);
-        BigDecimal discountAmount = calculateDiscountAmount(deducibleAmount, CHILDREN_DISCOUNT_RATE);
-        return deducibleAmount.subtract(discountAmount).intValue();
-    }
-
-    private static int calculateTeenager(Fare fare) {
-        BigDecimal deducibleAmount = calculateDeducibleAmount(fare);
-        BigDecimal discountAmount = calculateDiscountAmount(deducibleAmount, TEENAGER_DISCOUNT_RATE);
+        BigDecimal discountAmount = calculateDiscountAmount(deducibleAmount, discountRate);
         return deducibleAmount.subtract(discountAmount).intValue();
     }
 
@@ -51,7 +47,7 @@ enum MemberDiscount {
 
     public static Fare discountFare(Fare fare, Age age) {
         Optional<MemberDiscount> findMemberDiscount = MemberDiscount.from(age);
-        return findMemberDiscount.map(memberDiscount -> Fare.from(memberDiscount.calculation.apply(fare)))
+        return findMemberDiscount.map(memberDiscount -> Fare.from(memberDiscount.calculation.apply(fare, memberDiscount.discountRate)))
                 .orElse(fare);
     }
 }
