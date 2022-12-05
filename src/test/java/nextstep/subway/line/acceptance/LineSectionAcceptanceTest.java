@@ -42,6 +42,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
+    /**
+     * when 지하철 구간 등록 요청을 하고
+     * then 지하철 노선에 지하철역 등록됨
+     */
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
@@ -54,6 +58,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
     }
 
+    /**
+     * when 지하철 노선에 여러지하철역 등록을 요청
+     * then 지하철 노선에 지하철역 등록됨
+     */
     @DisplayName("지하철 노선에 여러개의 역을 순서 상관 없이 등록한다.")
     @Test
     void addLineSection2() {
@@ -67,6 +75,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(정자역, 강남역, 양재역, 광교역));
     }
 
+    /**
+     * when 지하철 노선에 이미 등록되어있는 역을 등록 요청
+     * then 지하철 노선에 지하철역 등록 실패됨
+     */
     @DisplayName("지하철 노선에 이미 등록되어있는 역을 등록한다.")
     @Test
     void addLineSectionWithSameStation() {
@@ -77,6 +89,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_실패됨(response);
     }
 
+    /**
+     * when 지하철 노선에 등록되지 않은 역을 기준으로 등록 요청
+     * then 지하철 노선에 지하철역 등록 실패됨
+     */
     @DisplayName("지하철 노선에 등록되지 않은 역을 기준으로 등록한다.")
     @Test
     void addLineSectionWithNoStation() {
@@ -87,6 +103,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_실패됨(response);
     }
 
+    /**
+     * given 지하철 노선에 지하철역 등록 요청
+     * when  지하철 노선에 지하철역 제외 요청 요청
+     * then  지하철 노선에 지하철역 제외됨
+     */
     @DisplayName("지하철 노선에 등록된 지하철역을 제외한다.")
     @Test
     void removeLineSection1() {
@@ -103,6 +124,10 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 정자역, 광교역));
     }
 
+    /**
+     * when  지하철 노선에 등록된 지하철역이 두개일때, 지하철 노선에 해당 지하철역 제외 요청
+     * then  지하철 노선에 지하철역 제외 실패됨
+     */
     @DisplayName("지하철 노선에 등록된 지하철역이 두개일 때 한 역을 제외한다.")
     @Test
     void removeLineSection2() {
