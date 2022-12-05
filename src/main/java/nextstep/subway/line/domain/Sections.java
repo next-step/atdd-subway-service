@@ -9,6 +9,9 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
+
 import nextstep.subway.line.excpetion.LastSectionException;
 import nextstep.subway.station.domain.Station;
 
@@ -50,10 +53,6 @@ public class Sections {
         }
         upLineStation.ifPresent(it -> this.sections.remove(it));
         downLineStation.ifPresent(it -> this.sections.remove(it));
-    }
-
-    public List<Section> getSections() {
-        return Collections.unmodifiableList(sections);
     }
 
     private void addWhenMiddleStationRemove(Section upLineStation, Section downLineStation) {
@@ -131,5 +130,13 @@ public class Sections {
         return this.sections.stream()
             .filter(it -> it.getDownStation() == downStation)
             .findFirst();
+    }
+
+    public void updateGraphEdgeWeight(WeightedMultigraph<String, DefaultWeightedEdge> graph) {
+        for (Section section : sections) {
+            graph.setEdgeWeight(graph.addEdge(String.valueOf(section.getUpStation().getId()),
+                String.valueOf(section.getDownStation().getId())),
+                section.getDistance());
+        }
     }
 }

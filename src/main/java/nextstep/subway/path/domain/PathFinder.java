@@ -13,7 +13,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.dto.PathFinderResult;
 import nextstep.subway.station.domain.Station;
 
@@ -50,11 +50,8 @@ public class PathFinder {
     }
 
     private void setEdgeWeight(WeightedMultigraph<String, DefaultWeightedEdge> graph, Line line) {
-        for (Section section : line.getSections()) {
-            graph.setEdgeWeight(graph.addEdge(String.valueOf(section.getUpStation().getId()),
-                String.valueOf(section.getDownStation().getId())),
-                section.getDistance());
-        }
+        Sections sections = line.getSections();
+        sections.updateGraphEdgeWeight(graph);
     }
 
     private void addVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph, Line line) {
