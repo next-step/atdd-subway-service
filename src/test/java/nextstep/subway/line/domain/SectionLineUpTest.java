@@ -16,10 +16,10 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class SectionLineUpTest {
 
     private final Line 분당선 = new Line("분당선", "color");
-    private final Station 삼전역 = new Station("삼전역");
-    private final Station 석촌고분역 = new Station("석촌고분역");
-    private final Station 잠실새내역 = new Station("잠실새내역");
-    private final Station 선릉역 = new Station("선릉역");
+    private final Station 삼전역 = Station.from("삼전역");
+    private final Station 석촌고분역 = Station.from("석촌고분역");
+    private final Station 잠실새내역 = Station.from("잠실새내역");
+    private final Station 선릉역 = Station.from("선릉역");
     private final Distance 거리 = new Distance(10);
     private final Section 삼전역_석촌고분역_구간 = new Section(분당선, 삼전역, 석촌고분역, 거리);
     private final Section 석촌고분역_잠실새내역_구간 = new Section(분당선, 석촌고분역, 잠실새내역, 거리);

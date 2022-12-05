@@ -22,8 +22,8 @@ class StationLineUpTest {
     @Test
     void stationExisted_station_success() {
         //givne:
-        Station 삼전역 = new Station("삼전역");
-        Station 잠실역 = new Station("잠실역");
+        Station 삼전역 = Station.from("삼전역");
+        Station 잠실역 = Station.from("잠실역");
         StationLineUp stationLineUp = new StationLineUp(Arrays.asList(삼전역, 잠실역));
 
         //when, then:
@@ -34,9 +34,9 @@ class StationLineUpTest {
     @Test
     void unKnownStation_station_success() {
         //givne:
-        Station 삼전역 = new Station("삼전역");
-        Station 잠실역 = new Station("잠실역");
-        Station 목록에_포함되지_않는_역 = new Station("목록에 포함되지 않는 역");
+        Station 삼전역 = Station.from("삼전역");
+        Station 잠실역 = Station.from("잠실역");
+        Station 목록에_포함되지_않는_역 = Station.from("목록에 포함되지 않는 역");
         StationLineUp stationLineUp = new StationLineUp(Arrays.asList(삼전역, 잠실역));
 
         //when, then:
