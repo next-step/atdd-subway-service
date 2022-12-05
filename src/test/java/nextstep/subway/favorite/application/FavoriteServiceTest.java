@@ -99,9 +99,13 @@ class FavoriteServiceTest {
         assertThat(favoriteService.findAll(memberA)).hasSize(2);
     }
 
-//    @DisplayName("즐겨찾기 삭제")
-//    @Test
-//    void delete() {
-//        favoriteService.delete();
-//    }
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void delete() {
+        Long favoriteId = favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId())).getId();
+
+        favoriteService.delete(memberA, favoriteId);
+
+        assertThat(favoriteService.findAll(memberA)).hasSize(0);
+    }
 }

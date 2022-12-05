@@ -49,4 +49,12 @@ public class FavoriteService {
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
+
+    public void delete(Member member, Long favoriteId) {
+        Favorites favorites = new Favorites();
+        favorites.addAll(favoriteRepository.findAllByMember(member));
+        Favorite deleteFavorite = favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
+        favorites.validateDeleteFavorite(deleteFavorite);
+        favoriteRepository.deleteById(favoriteId);
+    }
 }

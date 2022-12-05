@@ -55,12 +55,12 @@ public class Favorite extends BaseEntity {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Favorite favorite = (Favorite) o;
-        return Objects.equals(id, favorite.id) && Objects.equals(member, favorite.member) && Objects.equals(target, favorite.target) && Objects.equals(source, favorite.source);
+        return Objects.equals(id, favorite.id) && Objects.equals(target, favorite.target) && Objects.equals(source, favorite.source);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, member, target, source);
+        return Objects.hash(id, target, source);
     }
 
     private void validateStation(Station target, Station source) {
