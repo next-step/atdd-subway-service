@@ -30,12 +30,34 @@ public class Sections {
         this.sections.remove(section);
     }
 
-    public boolean isStationExisted(Station station) {
-        return this.getStations().stream().anyMatch(it -> it == station);
+    public boolean isStationExisted(Station target) {
+        return this.getStations().stream().anyMatch(station -> station.equals(target));
     }
 
-    public boolean isStationNotExisted(Station station) {
-        return this.getStations().stream().noneMatch(it -> it == station);
+    public void updateUpStation(Station upStation, Station downStation, int distance) {
+        this.sections.stream()
+                .filter(station -> station.getUpStation().equals(upStation))
+                .findFirst()
+                .ifPresent(station -> station.updateUpStation(downStation, distance));
+    }
+
+    public void updateDownStation(Station upStation, Station downStation, int distance) {
+        this.sections.stream()
+                .filter(station -> station.getDownStation().equals(downStation))
+                .findFirst()
+                .ifPresent(station -> station.updateDownStation(upStation, distance));
+    }
+
+    public Optional<Section> getUpStation(Station station) {
+        return this.sections.stream()
+                .filter(section -> section.getUpStation().equals(station))
+                .findFirst();
+    }
+
+    public Optional<Section> getDownStation(Station station) {
+        return this.sections.stream()
+                .filter(section -> section.getDownStation().equals(station))
+                .findFirst();
     }
 
     public List<Station> getStations() {

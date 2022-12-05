@@ -43,7 +43,7 @@ public class SectionTest {
     void updateUpStation() {
         section.updateUpStation(new Station("판교역"), 7);
         assertThat(section.getUpStation()).isEqualTo(new Station("판교역"));
-        assertThat(section.getDistance()).isEqualTo(new Distance(8));
+        assertThat(section.getDistance()).isEqualTo(Distance.from(8));
     }
 
     @DisplayName("구간에 하행역과 거리를 수정한다.")
@@ -51,12 +51,12 @@ public class SectionTest {
     void updateDownStation() {
         section.updateDownStation(new Station("판교역"), 7);
         assertThat(section.getUpStation()).isEqualTo(new Station("강남역"));
-        assertThat(section.getDistance()).isEqualTo(new Distance(8));
+        assertThat(section.getDistance()).isEqualTo(Distance.from(8));
     }
 
     @DisplayName("구간 거리를 더한다.")
     @Test
     void plusDistance() {
-        assertThat(section.plus(new Distance(5))).isEqualTo(20);
+        assertThat(section.plus(Distance.from(5))).isEqualTo(20);
     }
 }

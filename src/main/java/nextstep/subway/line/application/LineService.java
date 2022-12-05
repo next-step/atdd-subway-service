@@ -1,6 +1,6 @@
 package nextstep.subway.line.application;
 
-import nextstep.subway.exception.NotFoundException;
+import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineRequest;
@@ -39,22 +39,26 @@ public class LineService {
         return LineResponse.from(persistLine);
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         return lineRepository.findAll().stream()
                 .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
+    @Transactional(readOnly = true)
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(NotFoundException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND.getMessage()));
     }
 
+    @Transactional(readOnly = true)
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.from(findLineById(id));
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        Line persistLine = lineRepository.findById(id).orElseThrow(NotFoundException::new);
+        Line persistLine = findLineById(id);
         persistLine.update(lineUpdateRequest.getName(), lineUpdateRequest.getColor());
     }
 

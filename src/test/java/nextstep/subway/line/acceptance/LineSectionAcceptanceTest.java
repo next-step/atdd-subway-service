@@ -130,7 +130,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
      *     When 지하철 노선에 등록된 역 목록 조회 요청
      *     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
      */
-    @DisplayName("지하철 구관 관리")
+    @DisplayName("지하철 구간 관리")
     @TestFactory
     Stream<DynamicTest> manageLineSection() {
         return Stream.of(

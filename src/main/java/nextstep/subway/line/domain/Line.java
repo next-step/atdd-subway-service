@@ -1,10 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.exception.CannotAddSectionException;
-import nextstep.subway.exception.CannotRemoveSectionException;
-import nextstep.subway.exception.DuplicatedSectionException;
-import nextstep.subway.exception.NotAllowRegisterSectionException;
+import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -13,6 +10,8 @@ import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
+    private static final int MIN_SIZE = 1;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -45,46 +44,30 @@ public class Line extends BaseEntity {
     }
 
     public void addLineStation(Station upStation, Station downStation, int distance) {
-        validateDuplicate(upStation, downStation);
-        validateNotExist(upStation, downStation);
+        this.validateDuplicate(upStation, downStation);
+        this.validateNotExist(upStation, downStation);
+        this.checkExistedAndUpdateStation(upStation, downStation, distance);
+        this.addSection(new Section(this, upStation, downStation, distance));
+    }
 
-        if (isStationsEmpty()) {
-            this.addSection(new Section(this, upStation, downStation, distance));
-            return;
-        }
-
+    private void checkExistedAndUpdateStation(Station upStation, Station downStation, int distance) {
         if (this.sections.isStationExisted(upStation)) {
-            this.getSections().stream()
-                    .filter(it -> it.getUpStation() == upStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, distance));
-
-            this.addSection(new Section(this, upStation, downStation, distance));
-            return;
+            this.sections.updateUpStation(upStation, downStation, distance);
         }
-
         if (this.sections.isStationExisted(downStation)) {
-            this.getSections().stream()
-                    .filter(it -> it.getDownStation() == downStation)
-                    .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, distance));
-
-            this.addSection(new Section(this, upStation, downStation, distance));
-            return;
+            this.sections.updateDownStation(upStation, downStation, distance);
         }
-
-        throw new CannotAddSectionException();
     }
 
     private void validateNotExist(Station upStation, Station downStation) {
         if (isNotExisted(upStation, downStation)) {
-            throw new NotAllowRegisterSectionException();
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_SECTION.getMessage());
         }
     }
 
     private void validateDuplicate(Station upStation, Station downStation) {
         if (isDuplicated(upStation, downStation)) {
-            throw new DuplicatedSectionException();
+            throw new IllegalArgumentException(ErrorMessage.DUPLICATED_SECTION.getMessage());
         }
     }
 
@@ -98,19 +81,15 @@ public class Line extends BaseEntity {
 
     private boolean isNotExisted(Station upStation, Station downStation) {
         return !isStationsEmpty()
-                && this.sections.isStationNotExisted(upStation)
-                && this.sections.isStationNotExisted(downStation);
+                && !this.sections.isStationExisted(upStation)
+                && !this.sections.isStationExisted(downStation);
     }
 
     public void removeLineStation(Station station) {
         validateRemoveSection();
 
-        Optional<Section> upLineStation = this.getSections().stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = this.getSections().stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Optional<Section> upLineStation = this.sections.getUpStation(station);
+        Optional<Section> downLineStation = this.sections.getDownStation(station);
 
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Station newUpStation = downLineStation.get().getUpStation();
@@ -124,8 +103,8 @@ public class Line extends BaseEntity {
     }
 
     private void validateRemoveSection() {
-        if (this.getSections().size() <= 1) {
-            throw new CannotRemoveSectionException();
+        if (this.getSections().size() <= MIN_SIZE) {
+            throw new IllegalArgumentException(ErrorMessage.CANNOT_REMOVE_SECTION.getMessage());
         }
     }
 

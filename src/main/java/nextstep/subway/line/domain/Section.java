@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -32,7 +33,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = new Distance(distance);
+        this.distance = Distance.from(distance);
     }
 
     public Long getId() {
@@ -61,17 +62,17 @@ public class Section {
 
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance.value() <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_DISTANCE.getMessage());
         }
         this.upStation = station;
-        this.distance = this.distance.subtract(new Distance(newDistance));
+        this.distance = this.distance.subtract(Distance.from(newDistance));
     }
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance.value() <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(ErrorMessage.INVALID_DISTANCE.getMessage());
         }
         this.downStation = station;
-        this.distance = this.distance.subtract(new Distance(newDistance));
+        this.distance = this.distance.subtract(Distance.from(newDistance));
     }
 }

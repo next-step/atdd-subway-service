@@ -9,10 +9,9 @@ public class Distance {
 
     private int distance;
 
-    protected Distance() {
-    }
+    protected Distance() {}
 
-    public Distance(int distance) {
+    private Distance(int distance) {
         validate(distance);
         this.distance = distance;
     }
@@ -23,12 +22,16 @@ public class Distance {
         }
     }
 
+    public static Distance from(int distance) {
+        return new Distance(distance);
+    }
+
     public Distance add(Distance distance) {
-        return new Distance(this.distance + distance.value());
+        return Distance.from(this.distance + distance.value());
     }
 
     public Distance subtract(Distance distance) {
-        return new Distance(this.distance - distance.value());
+        return Distance.from(this.distance - distance.value());
     }
 
     public int value() {

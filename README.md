@@ -46,7 +46,6 @@ npm run dev
     - Distance 값 타입 변경
   - [X] findLines
   - [X] findLineById
-    - 커스텀 예외 사용
   - [X] findLineResponseById
   - [X] updateLine
   - [X] addLineStation
@@ -57,6 +56,8 @@ npm run dev
 - LineSectionAcceptanceTest 리팩터링
   - [X] 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
     - dynamicTest 활용하여 시나리오 검증
+- [ ] 커스텀 예외 제거
+- 
 
 ```
 Feature: 지하철 구간 관련 기능

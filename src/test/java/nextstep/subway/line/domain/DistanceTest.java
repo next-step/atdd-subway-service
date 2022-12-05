@@ -11,34 +11,34 @@ class DistanceTest {
     @DisplayName("거리를 생성한다.")
     @Test
     void createDistance() {
-        Distance distance = new Distance(1);
+        Distance distance = Distance.from(1);
         assertThat(distance.value()).isEqualTo(1);
     }
 
     @DisplayName("거리는 1보다 작을 수 없습니다.")
     @Test
     void createDistance_exception() {
-        assertThatIllegalArgumentException().isThrownBy(() -> new Distance(0));
+        assertThatIllegalArgumentException().isThrownBy(() -> Distance.from(0));
     }
 
     @DisplayName("거리를 더한다.")
     @Test
     void add() {
-        Distance distance = new Distance(1);
-        assertThat(distance.add(new Distance(5)).value()).isEqualTo(6);
+        Distance distance = Distance.from(1);
+        assertThat(distance.add(Distance.from(5)).value()).isEqualTo(6);
     }
 
     @DisplayName("거리를 뺀다.")
     @Test
     void subtract() {
-        Distance distance = new Distance(5);
-        assertThat(distance.subtract(new Distance(4)).value()).isEqualTo(1);
+        Distance distance = Distance.from(5);
+        assertThat(distance.subtract(Distance.from(4)).value()).isEqualTo(1);
     }
 
     @DisplayName("거리를 빼는 경우 1보다 작으면 예외가 발생한다.")
     @Test
     void subtract_exception() {
-        Distance distance = new Distance(1);
-        assertThatIllegalArgumentException().isThrownBy(() -> distance.subtract(new Distance(4)).value());
+        Distance distance = Distance.from(1);
+        assertThatIllegalArgumentException().isThrownBy(() -> distance.subtract(Distance.from(4)).value());
     }
 }

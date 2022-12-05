@@ -6,7 +6,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class SectionsTest {
@@ -58,12 +57,5 @@ public class SectionsTest {
     void isStationExisted() {
         assertTrue(sections.isStationExisted(upStation));
         assertTrue(sections.isStationExisted(downStation));
-    }
-
-    @DisplayName("구간에 지하철역의 존재여부를 반환한다.")
-    @Test
-    void isStationNotExisted() {
-        assertFalse(sections.isStationNotExisted(upStation));
-        assertFalse(sections.isStationNotExisted(downStation));
     }
 }
