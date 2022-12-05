@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -51,6 +52,9 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> getFavorites(Long memberId) {
-        return null;
+        return favoriteRepository.findByMemberId(memberId)
+            .stream()
+            .map(FavoriteResponse::from)
+            .collect(Collectors.toList());
     }
 }
