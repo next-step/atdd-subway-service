@@ -9,10 +9,12 @@ public class Message {
 
     public static final String INVALID_CONNECTED_STATIONS = "출발역과 도착역이 연결되어 있지 않습니다.";
     public static final String INVALID_SAME_STATIONS = "출발역과 다른 도착역을 입력해주세요.";
+    public static final String INVALID_EMPTY_STRING = "빈값은 입력할 수 없습니다.";
 
     public static final String MEMBER_NOT_EXISTS = "회원 정보가 존재하지 않습니다.";
     public static final String INVALID_ACCESS_TOKEN = "유효하지 않은 토큰입니다.";
+    public static final String WRONG_PASSWORD = "비밀번호가 일치하지 않습니다.";
 
-    public static final String INVALID_EMPTY_STRING = "빈값은 입력할 수 없습니다.";
+
 
 }

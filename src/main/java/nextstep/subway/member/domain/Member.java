@@ -9,6 +9,10 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
+import java.util.Objects;
+
+import static nextstep.subway.utils.Message.WRONG_PASSWORD;
+
 @Entity
 public class Member extends BaseEntity {
     @Id
@@ -51,7 +55,20 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException(WRONG_PASSWORD);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id) && Objects.equals(email, member.email) && Objects.equals(password, member.password) && Objects.equals(age, member.age);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, age);
     }
 }
