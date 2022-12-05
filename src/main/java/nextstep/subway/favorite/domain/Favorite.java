@@ -37,19 +37,6 @@ public class Favorite extends BaseEntity {
         this.target = target;
     }
 
-    private void validate(Member member, Station source, Station target) {
-        if (Objects.isNull(member)) {
-            throw new IllegalArgumentException();
-        }
-        if (Objects.isNull(source)) {
-            throw new IllegalArgumentException();
-        }
-        if (Objects.isNull(target)) {
-            throw new IllegalArgumentException();
-        }
-        validateStation(target, source);
-    }
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -61,12 +48,6 @@ public class Favorite extends BaseEntity {
     @Override
     public int hashCode() {
         return Objects.hash(id, target, source);
-    }
-
-    private void validateStation(Station target, Station source) {
-        if (target.equals(source)) {
-            throw new IllegalArgumentException(TARGET_SOURCE_SAME_EXCEPTION_MESSAGE);
-        }
     }
 
     public Long getId() {
@@ -84,4 +65,24 @@ public class Favorite extends BaseEntity {
     public boolean isSame(Favorite favorite) {
         return this.getSource().equals(favorite.getSource()) && this.target.equals(favorite.getTarget());
     }
+
+    private void validate(Member member, Station source, Station target) {
+        if (Objects.isNull(member)) {
+            throw new IllegalArgumentException();
+        }
+        if (Objects.isNull(source)) {
+            throw new IllegalArgumentException();
+        }
+        if (Objects.isNull(target)) {
+            throw new IllegalArgumentException();
+        }
+        validateStation(target, source);
+    }
+
+    private void validateStation(Station target, Station source) {
+        if (target.equals(source)) {
+            throw new IllegalArgumentException(TARGET_SOURCE_SAME_EXCEPTION_MESSAGE);
+        }
+    }
+
 }
