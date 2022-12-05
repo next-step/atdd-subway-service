@@ -29,6 +29,7 @@ public class PathService {
         Station source = stationRepository.findById(sourceId).orElseThrow(EntityNotFoundException::new);
         Station target = stationRepository.findById(targetId).orElseThrow(EntityNotFoundException::new);
 
-        return new PathResponse(new PathFinder(lines).findPath(source, target));
+        PathFinder pathFinder = new PathFinder(lines);
+        return new PathResponse(pathFinder.findStations(source, target), pathFinder.findDistance(source, target));
     }
 }
