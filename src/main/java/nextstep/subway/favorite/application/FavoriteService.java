@@ -10,7 +10,6 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,7 +27,7 @@ public class FavoriteService {
 
     public FavoriteResponse saveFavorite(Long id, FavoriteRequest favoriteRequest) {
         Favorite favorite = favoriteRepository.save(new Favorite(getStation(favoriteRequest.getSource()), getStation(favoriteRequest.getTarget()), getMember(id)));
-        return new FavoriteResponse(favorite.getId(), StationResponse.of(favorite.getSource()), StationResponse.of(favorite.getTarget()));
+        return FavoriteResponse.of(favorite);
     }
 
     private Member getMember(Long id) {
