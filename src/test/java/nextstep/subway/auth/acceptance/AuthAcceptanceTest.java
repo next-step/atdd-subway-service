@@ -80,14 +80,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    void Bearer_Auth_유효하지_않은_토큰으로_로그인_요청시_실패() {
+    void Bearer_Auth_유효하지_않은_토큰으로_회원정보_페이지_요청() {
         ExtractableResponse<Response> response = 내_정보_조회_요청("invalidToken");
 
         내_정보_조회_실패(response, ErrorEnum.INVALID_TOKEN.message());
-    }
-
-    @Test
-    void Bearer_Auth_유효하지_않은_토큰으로_회원정보_페이지_요청() {
     }
 
     public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
