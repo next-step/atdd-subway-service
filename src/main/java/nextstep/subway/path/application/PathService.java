@@ -1,6 +1,8 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -20,12 +22,14 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId,int age) {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
-        PathFinder pathFinder = new PathFinder(lineRepository.findAll());
+        List<Line> lines = lineRepository.findAll();
+        PathFinder pathFinder = new PathFinder(lines);
         List<Station> stations = pathFinder.getShortestPath(sourceStation, targetStation);
         int distance = pathFinder.getShortestDistance(sourceStation, targetStation);
+        int lineFare = findFare(Lines.of(lines), stations, distance, age);
         return new PathResponse(stations, distance);
     }
 
@@ -33,4 +37,11 @@ public class PathService {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(NONE_EXISTS_STATION));
     }
+
+    private int findFare(Lines lines, List<Station> stations, int distance, int age) {
+        Lines filteredLines = lines.getLinesFrom(stations);
+        int fare = filteredLines.getMaxLineFare();
+        return fare;
+    }
+
 }
