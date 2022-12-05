@@ -39,7 +39,8 @@ class FavoriteServiceTest {
     @Autowired
     private DatabaseCleanup databaseCleanup;
 
-    private Member member;
+    private Member memberA;
+    private Member memberB;
     private Station stationA;
     private Station stationB;
     private Station stationC;
@@ -47,7 +48,8 @@ class FavoriteServiceTest {
     @BeforeEach
     void setUp() {
         databaseCleanup.execute();
-        member = memberRepository.save(new Member("email", "password", 20));
+        memberA = memberRepository.save(new Member("emailA", "passwordA", 20));
+        memberB = memberRepository.save(new Member("emailB", "passwordB", 20));
         stationA = stationRepository.save(new Station("A"));
         stationB = stationRepository.save(new Station("B"));
         stationC = stationRepository.save(new Station("C"));
@@ -58,7 +60,7 @@ class FavoriteServiceTest {
     @Test
     void create() {
 
-        FavoriteResponse response = favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
+        FavoriteResponse response = favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
 
         assertAll(
                 () -> assertThat(response.getId()).isNotNull(),
@@ -72,7 +74,7 @@ class FavoriteServiceTest {
     @DisplayName("출발역과 도착역이 같을 수 없다.")
     @Test
     void create_fail_sameStation() {
-        assertThatThrownBy(() -> favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationA.getId())))
+        assertThatThrownBy(() -> favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationA.getId())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(TARGET_SOURCE_SAME_EXCEPTION_MESSAGE);
     }
@@ -81,9 +83,9 @@ class FavoriteServiceTest {
     @Test
     void add_fail_sameFavorite() {
 
-        favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
+        favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
 
-        assertThatThrownBy(() -> favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId())))
+        assertThatThrownBy(() -> favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId())))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(FAVORITE_DUPLICATE_EXCEPTION_MESSAGE);
     }
@@ -91,8 +93,15 @@ class FavoriteServiceTest {
     @DisplayName("즐겨찾기 목록 조회")
     @Test
     void findAll() {
-        favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
-        favoriteService.create(member.getId(), new FavoriteCreatedRequest(stationA.getId(), stationC.getId()));
-        assertThat(favoriteService.findAll()).hasSize(2);
+        favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
+        favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationC.getId()));
+        favoriteService.create(memberB.getId(), new FavoriteCreatedRequest(stationA.getId(), stationC.getId()));
+        assertThat(favoriteService.findAll(memberA)).hasSize(2);
     }
+
+//    @DisplayName("즐겨찾기 삭제")
+//    @Test
+//    void delete() {
+//        favoriteService.delete();
+//    }
 }

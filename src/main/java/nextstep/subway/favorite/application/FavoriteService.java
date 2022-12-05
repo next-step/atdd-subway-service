@@ -34,18 +34,18 @@ public class FavoriteService {
         Station source = stationRepository.findById(request.getSourceId()).orElseThrow(EntityNotFoundException::new);
         Station target = stationRepository.findById(request.getTargetId()).orElseThrow(EntityNotFoundException::new);
         Favorite favorite = new Favorite(member, source, target);
-        validateDuplicate(favorite);
+        validateDuplicate(member, favorite);
         return new FavoriteResponse(favoriteRepository.save(favorite));
     }
 
-    private void validateDuplicate(Favorite favorite) {
+    private void validateDuplicate(Member member, Favorite favorite) {
         Favorites favorites = new Favorites();
-        favorites.addAll(favoriteRepository.findAll());
+        favorites.addAll(favoriteRepository.findAllByMember(member));
         favorites.add(favorite);
     }
 
-    public List<FavoriteResponse> findAll() {
-        return favoriteRepository.findAll().stream()
+    public List<FavoriteResponse> findAll(Member member) {
+        return favoriteRepository.findAllByMember(member).stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
