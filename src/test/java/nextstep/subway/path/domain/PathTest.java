@@ -19,6 +19,7 @@ import java.util.Arrays;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+@DisplayName("경로 관련 도메인 테스트")
 @DataJpaTest
 public class PathTest extends JpaEntityTest {
     @Autowired
