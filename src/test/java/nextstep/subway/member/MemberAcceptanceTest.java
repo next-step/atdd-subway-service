@@ -15,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -72,6 +73,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성됨(createResponse);
 
         // Given 로그인 되어있음
+        ExtractableResponse<Response> loginResponse = AuthAcceptanceTest.로그인_요청(new TokenRequest(EMAIL, PASSWORD));
+        AuthAcceptanceTest.로그인_됨(loginResponse);
+        String accessToken = loginResponse.as(TokenResponse.class).getAccessToken();
+
+        // When 내 정보 조회 요청
+        ExtractableResponse<Response> myInfoResponse = 내_정보_조회_요청(accessToken);
+
+        // Then 내 정보 조회 됨
+        내_정보_조회됨(myInfoResponse, EMAIL, AGE);
 
 
     }
@@ -149,4 +159,17 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
+    private void 내_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(memberResponse.getId()).isNotNull(),
+                () -> assertThat(memberResponse.getEmail()).isEqualTo(email),
+                () -> assertThat(memberResponse.getAge()).isEqualTo(age)
+        );
+    }
+
+
 }
