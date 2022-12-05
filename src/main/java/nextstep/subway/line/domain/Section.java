@@ -43,6 +43,10 @@ public class Section {
         this.distance = new Distance(distance);
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     public void addLine(Line line) {
         this.line = line;
     }

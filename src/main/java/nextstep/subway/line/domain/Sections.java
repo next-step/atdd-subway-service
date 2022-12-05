@@ -53,6 +53,10 @@ public class Sections {
         return sections;
     }
 
+    public static Sections from(List<Section> sections) {
+        return new Sections(sections);
+    }
+
     private Optional<Section> findFirstSection() {
         List<Station> downStations = this.sections.stream().map(Section::getDownStation).collect(Collectors.toList());
         return this.sections.stream()
@@ -63,6 +67,14 @@ public class Sections {
         return this.sections.stream()
                 .filter(section -> section.isNext(currentSection))
                 .findFirst();
+    }
+
+    public Lines findLinesFrom(List<Station> stations) {
+        return Lines.of(sections.stream()
+                .filter(it -> stations.contains(it.getUpStation()) && stations.contains(it.getDownStation()))
+                .map(Section::getLine)
+                .distinct()
+                .collect(Collectors.toList()));
     }
 
     public void add(Section newSection) {

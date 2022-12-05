@@ -13,7 +13,7 @@ public class SubwayFareCalculator {
     public static final int SECOND_SECTION_DISTANCE = 50;
 
     private static int lineFare;
-    private static int age = 19;
+    private static int age;
 
     private static final int MIN_LINE_FARE = 0;
     private static final int MIN_ADULT_AGE = 19;
@@ -33,15 +33,16 @@ public class SubwayFareCalculator {
     }
 
     public static int calculate(int distance) {
-        checkInvalidDistance(distance);
         int fare = calculateWithDistance(distance);
         fare += lineFare;
 
         AgeFarePolicy policy = AgeFarePolicy.findByAge(age);
-        return policy.discount(fare);
+        int discount = policy.discount(fare);
+        return discount;
     }
 
-    private static int calculateWithDistance(int distance) {
+    static int calculateWithDistance(int distance) {
+        checkInvalidDistance(distance);
         int fare = BASIC_FARE;
 
         if (distance <= MAX_DISTANCE_OF_BASIC_FARE) {
