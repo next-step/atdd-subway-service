@@ -19,8 +19,7 @@ import org.springframework.http.MediaType;
 
 import java.util.List;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_생성_성공함;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_생성_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
@@ -166,6 +165,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         즐겨찾기_목록_조회됨(response);
+    }
+
+    /**
+     * Given 즐겨찾기 생성됨
+     * When 엉뚱한 accessToken 으로 즐겨찾기 목록 조회 요청
+     * Then 즐겨찾기 목록 실패됨
+     */
+    @DisplayName("엉뚱한 accessToken으로 즐겨찾기 목록을 조회 시 인증 예외 인수 테스트")
+    @Test
+    void getFavoritesWithWrongAccessTokenException() {
+        // given
+        즐겨찾기_생성을_요청(accessToken, 사당역.getId(), 양재역.getId());
+
+        // when
+        String wrongAccessToken = "TOKEN";
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(wrongAccessToken);
+
+        // then
+        로그인_AccessToken_으로_실패됨(response);
     }
 
     /**

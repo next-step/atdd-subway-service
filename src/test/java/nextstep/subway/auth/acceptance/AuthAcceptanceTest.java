@@ -149,13 +149,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public void 로그인_AccessToken_으로_성공함(ExtractableResponse<Response> response, String email) {
+    public static void 로그인_AccessToken_으로_성공함(ExtractableResponse<Response> response, String email) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         MemberResponse member = response.as(MemberResponse.class);
         assertThat(member.getEmail()).isEqualTo(email);
     }
 
-    public void 로그인_AccessToken_으로_실패됨(ExtractableResponse<Response> response) {
+    public static void 로그인_AccessToken_으로_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
