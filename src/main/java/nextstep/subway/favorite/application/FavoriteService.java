@@ -11,9 +11,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.NoResultException;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
 public class FavoriteService {
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
@@ -33,5 +34,14 @@ public class FavoriteService {
 
         Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
         return FavoriteResponse.of(favorite);
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> getFavorites(Long memberId) {
+        return memberRepository.findById(memberId).orElseThrow(NoResultException::new)
+                .getFavorites()
+                .stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }

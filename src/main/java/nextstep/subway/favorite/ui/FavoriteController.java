@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
+import java.util.List;
 
 @RestController
 @RequestMapping("/favorites")
@@ -24,6 +25,11 @@ public class FavoriteController {
     public ResponseEntity<Void> createFavorite(@AuthenticationPrincipal LoginMember loginMember, @RequestBody FavoriteRequest favoriteRequest) {
         FavoriteResponse favorite = favoriteService.createFavorite(loginMember.getId(), favoriteRequest.getSource(), favoriteRequest.getTarget());
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember) {
+        return ResponseEntity.ok(favoriteService.getFavorites(loginMember.getId()));
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class})

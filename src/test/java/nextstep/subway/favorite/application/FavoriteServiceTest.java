@@ -16,6 +16,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Optional;
 
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -41,7 +42,7 @@ public class FavoriteServiceTest {
     @DisplayName("즐겨찾기 생성 서비스 메소드 테스트 with mocking")
     @Test
     void createFavorite() {
-        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(new Member()));
+        when(memberRepository.findById(anyLong())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
         when(stationRepository.findById(anyLong())).thenReturn(Optional.of(new Station("강남역")));
         when(stationRepository.findById(anyLong())).thenReturn(Optional.of(new Station("양재역")));
         when(favoriteRepository.save(any(Favorite.class))).thenReturn(new Favorite(null, null, null));

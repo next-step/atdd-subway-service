@@ -4,6 +4,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 @Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"member_id", "source_station_id", "target_station_id"})})
@@ -44,5 +45,26 @@ public class Favorite {
 
     public Station getTargetStation() {
         return targetStation;
+    }
+
+    public void setMember(Member member) {
+        if (Objects.isNull(this.member)) {
+            this.member = member;
+        }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Favorite)) return false;
+        Favorite favorite = (Favorite) o;
+        return Objects.equals(getMember(), favorite.getMember()) &&
+                Objects.equals(getSourceStation(), favorite.getSourceStation()) &&
+                Objects.equals(getTargetStation(), favorite.getTargetStation());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(getMember(), getSourceStation(), getTargetStation());
     }
 }
