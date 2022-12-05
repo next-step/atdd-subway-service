@@ -88,7 +88,7 @@ public class AuthServiceTest {
         when(jwtTokenProvider.getPayload(anyString())).thenReturn(EMAIL);
         when(memberRepository.findByEmail(anyString())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
 
-        LoginMember member = authService.findMemberByToken("TOKEN");
+        LoginMember member = authService.findMemberByToken("token");
 
         Assertions.assertThat(member).isEqualTo(new LoginMember(member.getId(), EMAIL, AGE));
     }
