@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.station.domain.Station;
 
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -17,17 +16,18 @@ public class Lines {
         return new Lines(lines);
     }
 
-    public Lines getLinesFrom(List<Station> stations) {
-        return Lines.of(lines
+    private List<Line> findLinesByStations(List<Station> stations) {
+        return lines
                 .stream()
                 .flatMap(line -> line.getSections().stream())
                 .filter(section -> stations.contains(section.getUpStation()) && stations.contains(section.getDownStation()))
                 .map(section -> section.getLine())
-                .collect(Collectors.toList()));
+                .collect(Collectors.toList());
     }
 
-    public Line getMaxFareLine() {
-        return lines.stream()
+    public Line findMaxFareLineByStations(List<Station> stations) {
+        return findLinesByStations(stations)
+                .stream()
                 .sorted((o1, o2) -> o1.getFare() - o2.getFare())
                 .findFirst()
                 .orElse(new Line());
