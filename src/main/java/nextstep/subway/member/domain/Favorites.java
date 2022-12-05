@@ -12,6 +12,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static nextstep.subway.common.domain.BizExceptionMessages.FAVORITE_IS_DUPLICATION;
+import static nextstep.subway.common.domain.BizExceptionMessages.FAVORITE_IS_NOT_REMOVABLE;
 
 @Embeddable
 public class Favorites {
@@ -29,6 +30,17 @@ public class Favorites {
     public void add(Favorite favorite) {
         validateDuplicationFavorite(favorite);
         favorites.add(favorite);
+    }
+
+    public void delete(Favorite favorite) {
+        isOwnerOfFavorite(favorite);
+        favorites.remove(favorite);
+    }
+
+    private void isOwnerOfFavorite(Favorite favorite) {
+        if (!favorites.contains(favorite)) {
+            throw new IllegalArgumentException(FAVORITE_IS_NOT_REMOVABLE.message());
+        }
     }
 
     private void validateDuplicationFavorite(Favorite favorite) {

@@ -74,5 +74,36 @@ class FavoriteTest extends JpaEntityTest {
     @DisplayName("favorite 삭제 테스트")
     @Test
     void deleteFavorte() {
+        // given
+        Favorite 즐겨찾기 = new Favorite(강남역, 양재역);
+        즐겨찾기.setMember(멤버);
+        favoriteRepository.save(즐겨찾기);
+        flushAndClear();
+
+        // when
+        즐겨찾기 = favoriteRepository.getById(1L);
+        멤버 = memberRepository.getById(1L);
+        멤버.deleteFavorite(즐겨찾기);
+        favoriteRepository.delete(즐겨찾기);
+        flushAndClear();
+
+        // then
+        멤버 = memberRepository.getById(1L);
+        assertThat(멤버.getFavorites()).isEmpty();
+    }
+
+    @DisplayName("다른 멤버의 즐겨찾기를 지우는 경우 Exception 발생")
+    @Test
+    void deleteFavoriteIsNotOwnerException() {
+        // given
+        Favorite 즐겨찾기 = new Favorite(강남역, 양재역);
+        즐겨찾기.setMember(멤버);
+        favoriteRepository.save(즐겨찾기);
+        flushAndClear();
+
+        // when / then
+        Member 신멤버 = new Member("123123", "123132", 11);
+        assertThatThrownBy(() -> 신멤버.deleteFavorite(즐겨찾기))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }

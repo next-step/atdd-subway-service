@@ -103,16 +103,19 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void favoriteAcceptanceTestIntegration() {
         // when
-        ExtractableResponse<Response> response = 즐겨찾기_생성을_요청(accessToken, 사당역.getId(), 양재역.getId());
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(accessToken, 사당역.getId(), 양재역.getId());
         // then
-        즐겨찾기_생성됨(response);
+        즐겨찾기_생성됨(createResponse);
 
         // when
         ExtractableResponse<Response> favoritesResponse = 즐겨찾기_목록_조회_요청(accessToken);
         // then
         즐겨찾기_목록_조회됨(favoritesResponse);
 
-        // TODO : implements
+        // when
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, accessToken);
+        // then
+        즐겨찾기_삭제됨(deleteResponse);
     }
 
     /**
@@ -177,17 +180,38 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(accessToken, 사당역.getId(), 양재역.getId());
 
         // when
-        String uri = createResponse.header("Location");
-
-        ExtractableResponse<Response> deleteResponse = RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(createResponse, accessToken);
 
         // then
-        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        즐겨찾기_삭제됨(deleteResponse);
+    }
+
+    /**
+     * Given 기존 멤버의 즐겨찾기를 생성
+     * Given 새로운 멤버를 생성
+     * When 새로운 멤버가 기존 멤버의 즐겨찾기를 삭제 요청
+     * Then 즐겨찾기 삭제 실패
+     */
+    @DisplayName("다른 멤버의 즐겨찾기를 삭제하는 경우 실패")
+    @Test
+    void deleteAnotherMembersFavoriteException() {
+        // given
+        ExtractableResponse<Response> createFavoriteResponse = 즐겨찾기_생성을_요청(accessToken, 사당역.getId(), 양재역.getId());
+
+        // given
+        ExtractableResponse<Response> createMemberResponse = 회원_생성을_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        회원_생성됨(createMemberResponse);
+        ExtractableResponse<Response> createTokenResponse = 로그인_토큰_생성_요청(new TokenRequest(NEW_EMAIL, NEW_PASSWORD));
+        로그인_토큰_생성_성공함(createTokenResponse);
+        String newAccessToken = createTokenResponse.as(TokenResponse.class).getAccessToken();
+        ExtractableResponse<Response> findResponse = 회원_정보_조회_요청_with_accessToken(newAccessToken);
+        회원_정보_조회됨(findResponse, NEW_EMAIL, NEW_AGE);
+
+        // when
+        ExtractableResponse<Response> deleteFavoriteResponse = 즐겨찾기_삭제_요청(createFavoriteResponse, newAccessToken);
+
+        // then
+        즐겨찾기_삭제_실패됨(deleteFavoriteResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String accessToken, Long sourceId, Long targetId) {
@@ -202,7 +226,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
@@ -212,18 +236,37 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> createResponse, String accessToken) {
+        String uri = createResponse.header("Location");
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private static void 즐겨찾기_실패됨(ExtractableResponse<Response> response) {
+    public static void 즐겨찾기_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    private static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
+    public static void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
 
         List<FavoriteResponse> favorites = response.jsonPath().getList("", FavoriteResponse.class);
         assertThat(favorites).isNotNull();
+    }
+
+    public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 즐겨찾기_삭제_실패됨(ExtractableResponse<Response> deleteFavoriteResponse) {
+        assertThat(deleteFavoriteResponse.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
