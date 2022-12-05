@@ -1,5 +1,6 @@
 package nextstep.subway.path.dto;
 
+import nextstep.subway.path.domain.PathResult;
 import nextstep.subway.station.dto.StationPathResponse;
 
 import java.util.List;
@@ -13,6 +14,14 @@ public class PathResponse {
     public PathResponse(List<StationPathResponse> stationPathResponses, double distance) {
         this.stationPathResponses = stationPathResponses;
         this.distance = distance;
+    }
+
+    public static PathResponse from(PathResult pathResult) {
+        return new PathResponse(
+                pathResult.getStations().stream()
+                        .map(StationPathResponse::from)
+                        .collect(Collectors.toList()),
+                pathResult.getWeight());
     }
 
     public List<StationPathResponse> getStationPathResponses() {

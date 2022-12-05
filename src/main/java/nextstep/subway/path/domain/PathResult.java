@@ -15,6 +15,10 @@ public class PathResult {
         this.weight = weight;
     }
 
+    public List<Station> getStations() {
+        return stations;
+    }
+
     public List<String> getStationNames() {
         return this.stations.stream().map(Station::getName).collect(Collectors.toList());
     }
