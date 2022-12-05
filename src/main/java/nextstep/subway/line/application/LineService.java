@@ -67,9 +67,9 @@ public class LineService {
     }
 
     @Transactional
-    public void updateLine(Long id, LineRequest lineUpdateRequest) {
+    public void updateLine(Long id, LineRequest lineRequest) {
         Line persistLine = findLineById(id);
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineRequest.getName(), lineRequest.getColor(), lineRequest.getFare()));
     }
 
     @Transactional

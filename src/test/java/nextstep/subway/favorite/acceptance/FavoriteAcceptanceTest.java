@@ -37,7 +37,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         강남역 = StationAcceptance.create_station("강남역").as(StationResponse.class);
         잠실역 = StationAcceptance.create_station("잠실역").as(StationResponse.class);
-        이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 강남역.getId(),
+        이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 강남역.getId(),
                 잠실역.getId(), 30).as(LineResponse.class);
 
         MemberAcceptance.create_member("testuser@test.com", "password157#", 20);

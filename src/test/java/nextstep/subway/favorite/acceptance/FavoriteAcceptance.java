@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.List;

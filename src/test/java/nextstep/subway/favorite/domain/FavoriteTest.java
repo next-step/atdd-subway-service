@@ -3,11 +3,11 @@ package nextstep.subway.favorite.domain;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.exception.FavoriteExceptionCode;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.exception.MemberExceptionCode;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.test.util.ReflectionTestUtils;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -66,10 +66,11 @@ class FavoriteTest {
     @Test
     void 로그인한_member와_Favorite을_등록한_member가_다르면_AuthorizedException_발생() {
         Favorite favorite = new Favorite(member, 강남역, 잠실역);
+        ReflectionTestUtils.setField(favorite, "id", 1L);
 
         assertThatThrownBy(() -> {
-            favorite.checkLoginMember("loginuser@test.com");
+            favorite.checkLoginMember(2L);
         }).isInstanceOf(AuthorizationException.class)
-                .hasMessage(MemberExceptionCode.EMAIL_NOT_MATCH.getMessage());
+                .hasMessage(FavoriteExceptionCode.MEMBER_NOT_MATCH.getMessage());
     }
 }

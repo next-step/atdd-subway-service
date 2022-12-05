@@ -42,7 +42,7 @@ class SectionAcceptanceFailureTest extends AcceptanceTest {
     @Test
     void updateAlreadyAddedSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 교대역.getId(),
                 강남역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -62,7 +62,7 @@ class SectionAcceptanceFailureTest extends AcceptanceTest {
     @Test
     void updateWithInvalidDistance() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 교대역.getId(),
                 역삼역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -82,7 +82,7 @@ class SectionAcceptanceFailureTest extends AcceptanceTest {
     @Test
     void updateWhenPositionNotFound() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 교대역.getId(),
                 강남역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -102,7 +102,7 @@ class SectionAcceptanceFailureTest extends AcceptanceTest {
     @Test
     void deleteWhenSectionNotContainLine() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 교대역.getId(),
                 강남역.getId(), 10).as(LineResponse.class);
 
         // when
@@ -122,7 +122,7 @@ class SectionAcceptanceFailureTest extends AcceptanceTest {
     @Test
     void deleteWhenLastOneSection() {
         // given
-        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 교대역.getId(),
+        LineResponse 이호선 = LineAcceptance.create_line("2호선", "bg-green-600", 0, 교대역.getId(),
                 강남역.getId(), 10).as(LineResponse.class);
 
         // when

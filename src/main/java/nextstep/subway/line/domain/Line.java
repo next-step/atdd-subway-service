@@ -14,26 +14,33 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true, nullable = false)
     private String name;
+
     @Column(unique = true, nullable = false)
     private String color;
 
     @Embedded
-    private final Sections sections = new Sections();
+    private Fare fare;
+
+    @Embedded
+    private Sections sections = new Sections();
 
     protected Line() {
     }
 
-    public Line(String name, String color) {
+    public Line(String name, String color, int fare) {
         validateName(name);
         validateColor(color);
+
         this.name = name;
         this.color = color;
+        this.fare = new Fare(fare);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this(name, color);
+    public Line(String name, String color, int fare, Station upStation, Station downStation, int distance) {
+        this(name, color, fare);
         addSection(new Section(this, upStation, downStation, distance));
     }
 
@@ -56,8 +63,10 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         validateName(name);
         validateColor(color);
+
         this.name = line.getName();
         this.color = line.getColor();
+        this.fare = line.getFare();
     }
 
     public void updateSections(Section request, List<Section> matchedSections) {
@@ -65,7 +74,7 @@ public class Line extends BaseEntity {
     }
 
     public void deleteSectionContainsStation(Optional<Section> sectionOfUpStation,
-                                             Optional<Section> sectionOfDownStation) {
+            Optional<Section> sectionOfDownStation) {
         sections.deleteSectionContainsStation(this, sectionOfUpStation, sectionOfDownStation);
     }
 
@@ -83,6 +92,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public Fare getFare() {
+        return fare;
     }
 
     public List<Station> getSortedStations() {

@@ -21,7 +21,7 @@ class SectionDeleteManagerTest {
 
     @BeforeEach
     void setUp() {
-        line = new Line("2호선", "bg-green-600");
+        line = new Line("2호선", "bg-green-600", 0);
         교대역 = new Station("교대역");
         강남역 = new Station("강남역");
         역삼역 = new Station("역삼역");

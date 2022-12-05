@@ -17,13 +17,13 @@ class LineTest {
 
     @Test
     void 동등성_테스트() {
-        assertEquals(new Line("신분당선", "bg-red-600"), new Line("신분당선", "bg-red-600"));
+        assertEquals(new Line("신분당선", "bg-red-600", 0), new Line("신분당선", "bg-red-600", 0));
     }
 
     @Test
     void 지하철_노선_객체_생성시_name이_null이면_IllegalArgumentException_발생() {
         assertThatThrownBy(() -> {
-            new Line(null, "bg-red-600");
+            new Line(null, "bg-red-600", 0);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(LineExceptionCode.REQUIRED_NAME.getMessage());
     }
@@ -31,7 +31,7 @@ class LineTest {
     @Test
     void 지하철_노선_객체_생성시_color가_null이면_IllegalArgumentException_발생() {
         assertThatThrownBy(() -> {
-            new Line("신분당선", null);
+            new Line("신분당선", null, 0);
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(LineExceptionCode.REQUIRED_COLOR.getMessage());
     }
@@ -39,8 +39,8 @@ class LineTest {
     @Test
     void 지하철_노선_수정시_name이_null이면_IllegalArgumentException_발생() {
         assertThatThrownBy(() -> {
-           Line line = new Line("신분당선", "bg-red-600");
-           line.update(new Line(null, "bg-red-600"));
+           Line line = new Line("신분당선", "bg-red-600", 0);
+           line.update(new Line(null, "bg-red-600", 0));
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(LineExceptionCode.REQUIRED_NAME.getMessage());
     }
@@ -48,8 +48,8 @@ class LineTest {
     @Test
     void 지하철_노선_수정시_color가_null이면_IllegalArgumentException_발생() {
         assertThatThrownBy(() -> {
-            Line line = new Line("신분당선", "bg-red-600");
-            line.update(new Line("신분당선", null));
+            Line line = new Line("신분당선", "bg-red-600", 0);
+            line.update(new Line("신분당선", null, 0));
         }).isInstanceOf(IllegalArgumentException.class)
                 .hasMessage(LineExceptionCode.REQUIRED_COLOR.getMessage());
     }
@@ -60,7 +60,7 @@ class LineTest {
         Station 교대역 = new Station("교대역");
         Station 강남역 = new Station("강남역");
 
-        Line line = new Line("2호선", "bg-green-600", 서초역, 강남역, 10);
+        Line line = new Line("2호선", "bg-green-600", 0, 서초역, 강남역, 10);
 
         line.updateSections(new Section(line, 서초역, 교대역, 7), Arrays.asList(new Section(line, 서초역, 강남역, 10)));
 
@@ -73,7 +73,7 @@ class LineTest {
         Station 교대역 = new Station("교대역");
         Station 강남역 = new Station("강남역");
 
-        Line line = new Line("2호선", "bg-green-600");
+        Line line = new Line("2호선", "bg-green-600", 0);
         Section upSection = new Section(line, 서초역, 교대역, 10);
         Section downSection = new Section(line, 교대역, 강남역, 10);
         line.addSection(upSection);

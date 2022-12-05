@@ -21,7 +21,7 @@ public class LineAcceptanceFailureTest extends AcceptanceTest {
     void createLineWithNullTypeName() {
         // when
         ExtractableResponse<Response> response =
-                LineAcceptance.create_line(null, "bg-red-600", 1L, 2L, 10);
+                LineAcceptance.create_line(null, "bg-red-600", 0, 1L, 2L, 10);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -36,7 +36,7 @@ public class LineAcceptanceFailureTest extends AcceptanceTest {
     void createLineWithNullTypeColor() {
         // when
         ExtractableResponse<Response> response =
-                LineAcceptance.create_line("신분당선", null, 1L, 2L, 10);
+                LineAcceptance.create_line("신분당선", null, 0, 1L, 2L, 10);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -51,7 +51,7 @@ public class LineAcceptanceFailureTest extends AcceptanceTest {
     void createLineWithNullTypeUpStationId() {
         // when
         ExtractableResponse<Response> response =
-                LineAcceptance.create_line("신분당선", "bg-red-600", null, 2L, 10);
+                LineAcceptance.create_line("신분당선", "bg-red-600", 0, null, 2L, 10);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -66,7 +66,7 @@ public class LineAcceptanceFailureTest extends AcceptanceTest {
     void createLineWithNullTypeDownStationId() {
         // when
         ExtractableResponse<Response> response =
-                LineAcceptance.create_line("신분당선", "bg-red-600", 1L, null, 10);
+                LineAcceptance.create_line("신분당선", "bg-red-600", 0, 1L, null, 10);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -81,7 +81,7 @@ public class LineAcceptanceFailureTest extends AcceptanceTest {
     void createLineWithSameUpStationIdAndDownStationId() {
         // when
         ExtractableResponse<Response> response =
-                LineAcceptance.create_line("신분당선", "bg-red-600", 1L, 1L, 10);
+                LineAcceptance.create_line("신분당선", "bg-red-600", 0, 1L, 1L, 10);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());
@@ -96,7 +96,7 @@ public class LineAcceptanceFailureTest extends AcceptanceTest {
     void createLineWithNagetiveDistance() {
         // when
         ExtractableResponse<Response> response =
-                LineAcceptance.create_line("신분당선", "bg-red-600", 1L, 2L, -1);
+                LineAcceptance.create_line("신분당선", "bg-red-600", 0, 1L, 2L, -1);
 
         // then
         assertEquals(HttpStatus.BAD_REQUEST.value(), response.statusCode());

@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.Map;
 
 public class LineAcceptance {
-    public static ExtractableResponse<Response> create_line(String name, String color, Long upStationId,
+    public static ExtractableResponse<Response> create_line(String name, String color, int fare, Long upStationId,
             Long downStationId, int distance) {
-        LineRequest request = new LineRequest(name, color, upStationId, downStationId, distance);
+        LineRequest request = new LineRequest(name, color, fare, upStationId, downStationId, distance);
 
         return RestAssured.given().log().all()
                 .body(request)
@@ -41,10 +41,11 @@ public class LineAcceptance {
                 .extract().as(LineResponse.class);
     }
 
-    public static ExtractableResponse<Response> update_line(Long id, String name, String color) {
+    public static ExtractableResponse<Response> update_line(Long id, String name, String color, int fare) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
+        params.put("fare", String.valueOf(fare));
 
         return RestAssured.given().log().all()
                 .body(params)

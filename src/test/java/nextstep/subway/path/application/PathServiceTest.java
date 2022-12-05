@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
@@ -50,9 +51,9 @@ class PathServiceTest {
 
     @BeforeEach
     void setUp() {
-        이호선 = new Line("2호선", "bg-green-600");
-        신분당선 = new Line("신분당선", "bg-red-600");
-        삼호선 = new Line("3호선", "bg-orange-600");
+        이호선 = new Line("2호선", "bg-green-600", 0);
+        신분당선 = new Line("신분당선", "bg-red-600", 0);
+        삼호선 = new Line("3호선", "bg-orange-600", 0);
 
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
@@ -62,21 +63,23 @@ class PathServiceTest {
 
     @Test
     void 출발역과_도착역으로_최단_거리를_검색() {
+        LoginMember loginMember = new LoginMember(1L, "testuser@test.com", 15);
         PathRequest pathRequest = new PathRequest(SOURCE, TARGET);
-        Section 강남역_양재역 = new Section(신분당선, 강남역, 양재역, 10);
-        Section 교대역_강남역 = new Section(이호선, 교대역, 강남역, 10);
-        Section 교대역_남부터미널역 = new Section(삼호선, 교대역, 남부터미널역, 3);
-        Section 남부터미널역_양재역 = new Section(삼호선, 남부터미널역, 양재역, 2);
+        Section 강남역_양재역 = new Section(신분당선, 강남역, 양재역, 20);
+        Section 교대역_강남역 = new Section(이호선, 교대역, 강남역, 30);
+        Section 교대역_남부터미널역 = new Section(삼호선, 교대역, 남부터미널역, 10);
+        Section 남부터미널역_양재역 = new Section(삼호선, 남부터미널역, 양재역, 5);
 
         when(stationRepository.findById(SOURCE)).thenReturn(Optional.of(양재역));
         when(stationRepository.findById(TARGET)).thenReturn(Optional.of(교대역));
         when(sectionRepository.findAll()).thenReturn(Arrays.asList(
            강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
 
-        assertThat(pathService.getShortestPath(pathRequest)).satisfies(path -> {
+        assertThat(pathService.getShortestPath(loginMember, pathRequest)).satisfies(path -> {
             assertThat(path.getStations().stream().map(StationResponse::getName).collect(toList()))
                     .containsExactly("양재역", "남부터미널역", "교대역");
-            assertEquals(5, path.getDistance());
+            assertEquals(15, path.getDistance());
+            assertEquals(800, path.getFare());
         });
     }
 }

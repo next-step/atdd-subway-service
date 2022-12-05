@@ -28,7 +28,7 @@ class LineRepositoryTest {
     void findAll() {
         Station upStation = stationRepository.save(new Station("강남역"));
         Station downStation = stationRepository.save(new Station("양재역"));
-        lineRepository.save(new Line("신분당선", "bg-red-600", upStation, downStation, 10));
+        lineRepository.save(new Line("신분당선", "bg-red-600", 0, upStation, downStation, 10));
 
         List<Line> lines =  lineRepository.findAll();
 
