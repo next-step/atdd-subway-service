@@ -16,7 +16,7 @@ class StationResponseTest {
         String stationName = "강남역";
         Station 강남역 = new Station(stationName);
 
-        StationResponse stationResponse = StationResponse.of(강남역);
+        StationResponse stationResponse = StationResponse.from(강남역);
 
         assertThat(stationResponse.getName()).isEqualTo(stationName);
     }
