@@ -55,7 +55,7 @@ public class PathFinderTest {
     void findShortestPath() {
         PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        Path path = pathFinder.findShortestPath(강남역, 남부터미널역);
+        Path path = pathFinder.findShortestPath(강남역, 남부터미널역, 20);
 
         assertThat(path.getDistance().value()).isEqualTo(12);
     }
@@ -65,7 +65,7 @@ public class PathFinderTest {
     void validateSameStationException() {
         PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 강남역))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 강남역, 20))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -74,7 +74,7 @@ public class PathFinderTest {
     void validateNotConnectException() {
         PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선, 오호선));
 
-        assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 마곡역))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(강남역, 마곡역, 20))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -83,7 +83,7 @@ public class PathFinderTest {
     void validateNotExistStationException() {
         PathFinder pathFinder = PathFinder.from(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        assertThatThrownBy(() -> pathFinder.findShortestPath(마곡역, 마포역))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(마곡역, 마포역, 20))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

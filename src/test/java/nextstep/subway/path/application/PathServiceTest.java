@@ -84,7 +84,7 @@ public class PathServiceTest {
         when(stationRepository.findById(target)).thenReturn(Optional.of(남부터미널역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 삼호선, 신분당선));
 
-        PathResponse response = pathService.findShortestPath(source, target);
+        PathResponse response = pathService.findShortestPath(source, target, 20);
 
         assertAll(
             () -> assertThat(response.getDistance()).isEqualTo(12),
@@ -104,7 +104,7 @@ public class PathServiceTest {
         when(stationRepository.findById(source)).thenReturn(Optional.of(강남역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 삼호선, 신분당선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(source, source))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, source, 20))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -117,7 +117,7 @@ public class PathServiceTest {
         when(stationRepository.findById(target)).thenReturn(Optional.of(마곡역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 삼호선, 신분당선, 오호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, target, 20))
             .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -130,7 +130,7 @@ public class PathServiceTest {
         when(stationRepository.findById(target)).thenReturn(Optional.of(마포역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 삼호선, 신분당선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(source, target))
+        assertThatThrownBy(() -> pathService.findShortestPath(source, target, 20))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

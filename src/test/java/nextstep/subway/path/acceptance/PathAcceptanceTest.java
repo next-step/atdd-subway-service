@@ -70,7 +70,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_최단경로_조회_요청_응답됨(response);
-        지하철_최단경로_조회_요청_포함됨(response, Arrays.asList("강남역", "양재역", "남부터미널역"));
+        지하철_최단경로_조회_요청_포함됨(response, Arrays.asList("강남역", "양재역", "남부터미널역"), 12, 1_350);
     }
 
     @DisplayName("출발역과 도착역이 동일한 경우 에러가 발생된다.")
