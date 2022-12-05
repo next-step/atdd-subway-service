@@ -9,7 +9,7 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-@Transactional
+@Transactional(readOnly = true)
 @Service
 public class AuthService {
     private final MemberRepository memberRepository;
@@ -20,7 +20,6 @@ public class AuthService {
         this.jwtTokenProvider = jwtTokenProvider;
     }
 
-    @Transactional(readOnly = true)
     public TokenResponse login(TokenRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail()).orElseThrow(AuthorizationException::new);
         member.checkPassword(request.getPassword());
@@ -29,7 +28,6 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    @Transactional(readOnly = true)
     public LoginMember findMemberByToken(String credentials) {
         jwtTokenProvider.validateToken(credentials);
 
