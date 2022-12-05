@@ -4,6 +4,9 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
@@ -45,9 +48,31 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
+
+    /**
+     * Feature: 나의 정보 관리 기능
+     *
+     * Background
+     * Given 내 정보가 회원으로 등록되어 있음
+     * Given 로그인 되어있음
+     *
+     * Scenario: 나의 정보를 관리(조회/수정/삭제)한다.
+     * When 내 정보 조회 요청
+     * Then 내 정보 조회 됨
+     * When 내 정보 수정 요청
+     * Then 내 정보 수정 됨
+     * When 내 정보 삭제 요청
+     * Then 내 정보 삭제 됨
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
+        // Given 내 정보가 회원으로 등록되어 있음
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+
+        // Given 로그인 되어있음
+
 
     }
 
@@ -92,6 +117,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
