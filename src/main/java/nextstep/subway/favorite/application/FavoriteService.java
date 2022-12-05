@@ -34,25 +34,25 @@ public class FavoriteService {
         Station source = stationRepository.findById(request.getSourceId()).orElseThrow(EntityNotFoundException::new);
         Station target = stationRepository.findById(request.getTargetId()).orElseThrow(EntityNotFoundException::new);
         Favorite favorite = new Favorite(member, source, target);
-        validateDuplicate(member, favorite);
+        validateDuplicate(memberId, favorite);
         return new FavoriteResponse(favoriteRepository.save(favorite));
     }
 
-    private void validateDuplicate(Member member, Favorite favorite) {
+    private void validateDuplicate(Long memberId, Favorite favorite) {
         Favorites favorites = new Favorites();
-        favorites.addAll(favoriteRepository.findAllByMember(member));
+        favorites.addAll(favoriteRepository.findAllByMember_Id(memberId));
         favorites.add(favorite);
     }
 
-    public List<FavoriteResponse> findAll(Member member) {
-        return favoriteRepository.findAllByMember(member).stream()
+    public List<FavoriteResponse> findAll(Long memberId) {
+        return favoriteRepository.findAllByMember_Id(memberId).stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
 
-    public void delete(Member member, Long favoriteId) {
+    public void delete(Long loginMemberId, Long favoriteId) {
         Favorites favorites = new Favorites();
-        favorites.addAll(favoriteRepository.findAllByMember(member));
+        favorites.addAll(favoriteRepository.findAllByMember_Id(loginMemberId));
         Favorite deleteFavorite = favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
         favorites.validateDeleteFavorite(deleteFavorite);
         favoriteRepository.deleteById(favoriteId);

@@ -99,7 +99,7 @@ class FavoriteServiceTest {
         favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
         favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationC.getId()));
         favoriteService.create(memberB.getId(), new FavoriteCreatedRequest(stationA.getId(), stationC.getId()));
-        assertThat(favoriteService.findAll(memberA)).hasSize(2);
+        assertThat(favoriteService.findAll(memberA.getId())).hasSize(2);
     }
 
     @DisplayName("즐겨찾기 삭제")
@@ -107,9 +107,9 @@ class FavoriteServiceTest {
     void delete() {
         Long favoriteId = favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId())).getId();
 
-        favoriteService.delete(memberA, favoriteId);
+        favoriteService.delete(memberA.getId(), favoriteId);
 
-        assertThat(favoriteService.findAll(memberA)).hasSize(0);
+        assertThat(favoriteService.findAll(memberA.getId())).hasSize(0);
     }
 
     @DisplayName("가지고 있지 않은 즐겨찾기를 삭제할 수 없다.")
@@ -117,7 +117,7 @@ class FavoriteServiceTest {
     void delete_fail() {
         Long favoriteId = favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId())).getId();
 
-        assertThatThrownBy(() -> favoriteService.delete(memberB, favoriteId))
+        assertThatThrownBy(() -> favoriteService.delete(memberB.getId(), favoriteId))
                 .isInstanceOf(NoSuchElementException.class)
                 .hasMessageContaining(HAS_NOT_FAVORITE_EXCEPTION_MESSAGE);
     }

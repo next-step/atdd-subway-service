@@ -24,16 +24,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        회원_생성_되어_있음(EMAIL, PASSWORD, AGE);
     }
 
     @DisplayName("Bearer Auth")
     @Test
     void myInfoWithBearerAuth() {
 
-        String accessToken = 로그인_되어_있음(EMAIL, PASSWORD);
-
-        ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(accessToken);
+        ExtractableResponse<Response> response = 베어러_인증으로_내_회원_정보_조회_요청(memberA);
 
         베어러_인증_성공(response);
 
