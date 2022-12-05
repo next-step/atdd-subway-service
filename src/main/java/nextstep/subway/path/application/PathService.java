@@ -37,7 +37,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(source, target);
-        Fare fare = new Fare(path.getDistance(), path.getAdditionalFareByLine(), loginMember.getAge());
+        Fare fare = new Fare(path, loginMember.getAge());
         List<StationResponse> stations = stationService.findAllByIdIsIn(path.getStationIds());
         return PathResponse.from(stations, path.getDistance(), fare.getFare());
     }
