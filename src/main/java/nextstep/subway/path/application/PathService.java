@@ -1,5 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.fare.domain.AgePolicy;
+import nextstep.subway.fare.domain.DistanceFare;
+import nextstep.subway.fare.domain.DistancePolicy;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
@@ -29,11 +33,8 @@ public class PathService {
         PathFinder pathFinder = new PathFinder(lines);
         List<Station> stations = pathFinder.getShortestPath(sourceStation, targetStation);
         int distance = pathFinder.getShortestDistance(sourceStation, targetStation);
-        Line line = findFare(Lines.of(lines), stations);
-        //노선별비용
-        //나이
-        //거리
-        return new PathResponse(stations, distance);
+        Line line = findLine(Lines.of(lines), stations);
+        return new PathResponse(stations, distance, findFare(line, distance, age));
     }
 
     private Station findStationById(Long id) {
@@ -41,8 +42,12 @@ public class PathService {
                 .orElseThrow(() -> new IllegalArgumentException(NONE_EXISTS_STATION));
     }
 
-    private Line findFare(Lines lines, List<Station> stations) {
-        return lines.getLinesFrom(stations).getMaxFareLine();
+    private Line findLine(Lines lines, List<Station> stations) {
+        return lines.findMaxFareLineByStations(stations);
+    }
+
+    private int findFare(Line line, int distance, int age) {
+        return new FareCalculator(line, new DistanceFare(distance, DistancePolicy.valueOfRange(distance)), AgePolicy.valueOfAge(age)).getCalculcate();
     }
 
 }
