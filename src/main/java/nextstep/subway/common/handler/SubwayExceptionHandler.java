@@ -20,7 +20,7 @@ public class SubwayExceptionHandler {
     @ExceptionHandler({AuthorizationException.class})
     public ResponseEntity handleAuthorizationException(Exception e) {
         return ResponseEntity
-                .status(HttpStatus.FORBIDDEN)
+                .status(HttpStatus.UNAUTHORIZED)
                 .body(e.getMessage());
     }
 }
