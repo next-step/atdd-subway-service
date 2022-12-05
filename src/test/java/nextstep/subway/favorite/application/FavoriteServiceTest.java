@@ -32,7 +32,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class FavoriteServiceTest {
+class FavoriteServiceTest {
     private Station 강남역;
     private Station 광교역;
     private Member 사용자;
