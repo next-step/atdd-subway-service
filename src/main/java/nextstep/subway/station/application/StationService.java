@@ -2,7 +2,7 @@ package nextstep.subway.station.application;
 
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.GetStationDto;
+import nextstep.subway.station.dto.SourceAndTargetStationDto;
 import nextstep.subway.station.dto.StationRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
@@ -39,10 +39,10 @@ public class StationService {
         return stationRepository.findById(id).orElseThrow(RuntimeException::new);
     }
 
-    public GetStationDto findStationById(Long sourceId, Long targetId) {
+    public SourceAndTargetStationDto findStationById(Long sourceId, Long targetId) {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
-        return GetStationDto.of(sourceStation, targetStation);
+        return SourceAndTargetStationDto.of(sourceStation, targetStation);
     }
 
     public Station findById(Long id) {

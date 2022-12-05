@@ -7,7 +7,7 @@ import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.PathStrategy;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
-import nextstep.subway.station.dto.GetStationDto;
+import nextstep.subway.station.dto.SourceAndTargetStationDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -27,10 +27,10 @@ public class PathService {
 
     @Transactional(readOnly = true)
     public PathResponse getPath(Long sourceId, Long targetId) {
-        GetStationDto station = stationService.findStationById(sourceId, targetId);
+        SourceAndTargetStationDto station = stationService.findStationById(sourceId, targetId);
         List<Line> lines = lineService.findAll();
-        PathStrategy strategy = DijkstraShortestPathStrategy.from(lines);
-        PathFinder pathFinder = PathFinder.of(strategy, station.getSourceStation(), station.getTargetStation());
+        PathStrategy strategy = new DijkstraShortestPathStrategy();
+        PathFinder pathFinder = PathFinder.of(strategy, station.getSourceStation(), station.getTargetStation(), lines);
 
         return PathResponse.from(pathFinder);
     }

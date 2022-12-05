@@ -7,7 +7,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.GetStationDto;
+import nextstep.subway.station.dto.SourceAndTargetStationDto;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.exception.type.ValidExceptionType.IS_TARGET_ANS_SOURCE_SAME;
-import static nextstep.subway.exception.type.ValidExceptionType.NOT_CONNECT_STATION;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.mockito.Mockito.when;
@@ -65,7 +64,7 @@ class PathServiceTest {
         Long sourceId = 1L;
         Long targetId = 2L;
 
-        when(stationService.findStationById(sourceId, targetId)).thenReturn(GetStationDto.of(신도림역, 가디역));
+        when(stationService.findStationById(sourceId, targetId)).thenReturn(SourceAndTargetStationDto.of(신도림역, 가디역));
         when(lineService.findAll()).thenReturn(Arrays.asList(일호선, 이호선, 칠호선));
 
         PathResponse result = pathService.getPath(sourceId, targetId);
@@ -81,7 +80,7 @@ class PathServiceTest {
         Long sourceId = 1L;
         Long targetId = 1L;
 
-        when(stationService.findStationById(sourceId, targetId)).thenReturn(GetStationDto.of(신도림역, 신도림역));
+        when(stationService.findStationById(sourceId, targetId)).thenReturn(SourceAndTargetStationDto.of(신도림역, 신도림역));
 
         assertThatThrownBy(() -> {
             pathService.getPath(sourceId, targetId);

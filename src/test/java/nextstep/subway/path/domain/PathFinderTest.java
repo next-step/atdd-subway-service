@@ -27,7 +27,7 @@ class PathFinderTest {
     @Test
     @DisplayName("최단거리 전략을 이용하여 역들과 거리를 구한다")
     void strategyGetStationsAndWeight() {
-        PathFinder result = PathFinder.of(new MockShortestPathStrategy(), 신도림역, 대림역);
+        PathFinder result = PathFinder.of(new DijkstraShortestPathStrategy(), 신도림역, 대림역, Arrays.asList(일호선, 이호선));
 
         assertThat(result.getWeight()).isEqualTo(10.0);
         assertThat(result.getStations()).containsAll(Arrays.asList(신도림역, 대림역));

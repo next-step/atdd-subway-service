@@ -1,10 +1,14 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.exception.NotFoundDataException;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
+
+import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_SOURCE_AND_TARGET_STATION;
 
 public class PathFinder {
 
@@ -12,12 +16,19 @@ public class PathFinder {
     private final double weight;
 
     public PathFinder(List<Station> stations, double weight) {
+        validCheckStationIsEmpty(stations);
         this.stations = stations;
         this.weight = weight;
     }
 
-    public static PathFinder of(PathStrategy strategy, Station sourceStation, Station targetStation) {
-        return strategy.getShortPath(sourceStation, targetStation);
+    private void validCheckStationIsEmpty(List<Station> stations) {
+        if (stations.isEmpty()) {
+            throw new NotFoundDataException(NOT_FOUND_SOURCE_AND_TARGET_STATION.getMessage());
+        }
+    }
+
+    public static PathFinder of(PathStrategy strategy, Station sourceStation, Station targetStation, List<Line> lines) {
+        return strategy.getShortPath(sourceStation, targetStation, lines);
     }
 
     public static PathFinder from(GraphPath<Station, DefaultWeightedEdge> graph) {

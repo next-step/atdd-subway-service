@@ -21,10 +21,7 @@ public class Distance {
     }
 
     public boolean isOverDistance(int distance) {
-        if (this.distance <= distance) {
-            return true;
-        }
-        return false;
+        return this.distance <= distance;
     }
 
     public void validCheckMinDistanceSize(int distance) {
