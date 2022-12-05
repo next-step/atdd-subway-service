@@ -25,19 +25,27 @@ public class PathFinderTest {
     final Station 인천역 = new Station("인천역");
     final Station 동인천역 = new Station("동인천역");
     final Station 도원역 = new Station("도원역");
-    final Station 신도림역 = new Station("신도림역");
 
     final Line 일호선 = new Line ("일호선", "bg-blue-600");
     final Line 이호선 = new Line ("이호선", "bg-green-600");
     final Line 삼호선 = new Line ("이호선", "bg-yellow-600");
-    final Line 분당선 = new Line("분당선", "bg-red-600");
+    final Line 신분당선 = new Line("분당선", "bg-red-600");
 
     WeightedMultigraph<Station, DefaultWeightedEdge> sectionDistanceGraph
             = new WeightedMultigraph(DefaultWeightedEdge.class);
 
+
+    /**
+     * 교대역    --- *2호선* ---   강남역    --- *2호선* ---   역삼역
+     * |                        |
+     * *3호선*                   *신분당선*
+     * |                        |
+     * 남부터미널역  --- *3호선* ---   양재    --- *신분당선* ---   양재시민의숲역
+     *
+     * 인천역    --- *1호선* ---   동인천역     --- *1호선* ---   도원역
+     */
     @BeforeEach
     void setUp() {
-        일호선.addSection(new Section(일호선, 신도림역, 도원역, new Distance(10)));
         일호선.addSection(new Section(일호선, 도원역, 동인천역, new Distance(10)));
         일호선.addSection(new Section(일호선, 동인천역, 인천역, new Distance(10)));
 
@@ -47,13 +55,13 @@ public class PathFinderTest {
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, new Distance(5)));
         삼호선.addSection(new Section(이호선, 남부터미널역, 양재역, new Distance(5)));
 
-        분당선.addSection(new Section(분당선, 강남역, 양재역, new Distance(10)));
-        분당선.addSection(new Section(분당선, 양재역, 양재시민의숲역, new Distance(10)));
+        신분당선.addSection(new Section(신분당선, 강남역, 양재역, new Distance(10)));
+        신분당선.addSection(new Section(신분당선, 양재역, 양재시민의숲역, new Distance(10)));
 
         일호선.makeGraph(sectionDistanceGraph);
         이호선.makeGraph(sectionDistanceGraph);
         삼호선.makeGraph(sectionDistanceGraph);
-        분당선.makeGraph(sectionDistanceGraph);
+        신분당선.makeGraph(sectionDistanceGraph);
     }
 
     @Test
