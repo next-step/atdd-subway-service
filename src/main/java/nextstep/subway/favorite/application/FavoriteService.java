@@ -5,6 +5,7 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteException;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -20,18 +21,18 @@ import static nextstep.subway.favorite.exception.FavoriteExceptionCode.*;
 @Service
 public class FavoriteService {
 
-    private final MemberRepository memberRepository;
+    private final MemberService memberService;
     private final StationRepository stationRepository;
     private final FavoriteRepository favoriteRepository;
 
-    public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository, FavoriteRepository favoriteRepository) {
-        this.memberRepository = memberRepository;
+    public FavoriteService(MemberService memberService, StationRepository stationRepository, FavoriteRepository favoriteRepository) {
+        this.memberService = memberService;
         this.stationRepository = stationRepository;
         this.favoriteRepository = favoriteRepository;
     }
 
     public FavoriteResponse createFavorite(Long memberId, FavoriteRequest favoriteRequest) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new FavoriteException(NONE_EXISTS_MEMBER));
+        Member member = memberService.getMember(memberId);
         Station sourceStation = stationRepository.findById(favoriteRequest.getSourceId()).orElseThrow(() -> new FavoriteException(NONE_EXISTS_SOURCE_STATION));
         Station targetStation = stationRepository.findById(favoriteRequest.getTargetId()).orElseThrow(() -> new FavoriteException(NONE_EXISTS_TARGET_STATION));
         favoriteRepository.findByMemberAndSourceStationAndTargetStation(member, sourceStation, targetStation)
@@ -42,7 +43,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findAllFavoriteByMember(Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new FavoriteException(NONE_EXISTS_MEMBER));
+        Member member = memberService.getMember(memberId);
         return favoriteRepository.findAllByMember(member)
                 .stream()
                 .map(favorite -> FavoriteResponse.of(favorite))
@@ -51,7 +52,7 @@ public class FavoriteService {
 
     @Transactional
     public void deleteFavorite(Long favoriteId, Long memberId) {
-        Member member = memberRepository.findById(memberId).orElseThrow(() -> new FavoriteException(NONE_EXISTS_MEMBER));
+        Member member = memberService.getMember(memberId);
         Favorite favorite = favoriteRepository.findById(favoriteId).orElseThrow(() -> new FavoriteException(NONE_EXISTS_FAVORITE));
         favorite.validateOwner(member);
         favoriteRepository.delete(favorite);

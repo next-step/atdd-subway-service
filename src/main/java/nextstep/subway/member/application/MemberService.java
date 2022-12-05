@@ -24,6 +24,10 @@ public class MemberService {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }
+    
+    public Member getMember(Long id){
+        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+    }
 
     public void updateMember(Long id, MemberRequest param) {
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
