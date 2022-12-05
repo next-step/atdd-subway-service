@@ -32,7 +32,13 @@ public class FavoriteController {
         return ResponseEntity.ok(favoriteService.getFavorites(loginMember.getId()));
     }
 
-    @ExceptionHandler({DataIntegrityViolationException.class})
+    @DeleteMapping("/{favoriteId}")
+    public ResponseEntity<List<FavoriteResponse>> getFavorites(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long favoriteId) {
+        favoriteService.getFavorites(loginMember.getId());
+        return ResponseEntity.noContent().build();
+    }
+
+    @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class})
     public ResponseEntity<Void> handleException() {
         return ResponseEntity.badRequest().build();
     }

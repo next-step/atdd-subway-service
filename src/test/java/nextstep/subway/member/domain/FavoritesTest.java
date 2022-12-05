@@ -42,7 +42,8 @@ public class FavoritesTest extends JpaEntityTest {
         memberRepository.save(멤버);
 
         // favorite 생성
-        즐겨찾기 = new Favorite(멤버, 강남역, 양재역);
+        즐겨찾기 = new Favorite(강남역, 양재역);
+        즐겨찾기.setMember(멤버);
         favoriteRepository.save(즐겨찾기);
         flushAndClear();
     }

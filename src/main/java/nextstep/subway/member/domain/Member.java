@@ -18,7 +18,7 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
     @Embedded
-    private Favorites favorites;
+    private final Favorites favorites = new Favorites();
 
     protected Member() {
     }
@@ -58,10 +58,7 @@ public class Member extends BaseEntity {
     }
 
     public void addFavorite(Favorite favorite) {
-        if (!favorites.isExist(favorite)) {
-            favorites.add(favorite);
-            favorite.setMember(this);
-        }
+        favorites.add(favorite);
     }
 
     public List<Favorite> getFavorites() {

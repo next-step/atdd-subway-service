@@ -45,7 +45,7 @@ public class FavoriteServiceTest {
         when(memberRepository.findById(anyLong())).thenReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
         when(stationRepository.findById(anyLong())).thenReturn(Optional.of(new Station("강남역")));
         when(stationRepository.findById(anyLong())).thenReturn(Optional.of(new Station("양재역")));
-        when(favoriteRepository.save(any(Favorite.class))).thenReturn(new Favorite(null, null, null));
+        when(favoriteRepository.save(any(Favorite.class))).thenReturn(new Favorite(null, null));
 
         FavoriteResponse favoriteResponse = favoriteService.createFavorite(1L, 5L, 3L);
 

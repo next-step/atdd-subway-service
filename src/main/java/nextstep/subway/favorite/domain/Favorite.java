@@ -12,21 +12,20 @@ public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @ManyToOne
-    @JoinColumn(name = "member_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
-    @ManyToOne
-    @JoinColumn(name = "source_station_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "source_station_id", nullable = false)
     private Station sourceStation;
-    @ManyToOne
-    @JoinColumn(name = "target_station_id")
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "target_station_id", nullable = false)
     private Station targetStation;
 
     protected Favorite() {
     }
 
-    public Favorite(Member member, Station sourceStation, Station targetStation) {
-        this.member = member;
+    public Favorite(Station sourceStation, Station targetStation) {
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
     }
@@ -50,6 +49,7 @@ public class Favorite {
     public void setMember(Member member) {
         if (Objects.isNull(this.member)) {
             this.member = member;
+            this.member.addFavorite(this);
         }
     }
 

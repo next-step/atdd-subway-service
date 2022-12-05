@@ -11,6 +11,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import static nextstep.subway.common.domain.BizExceptionMessages.FAVORITE_IS_DUPLICATION;
+
 @Embeddable
 public class Favorites {
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
@@ -25,10 +27,13 @@ public class Favorites {
     }
 
     public void add(Favorite favorite) {
+        validateDuplicationFavorite(favorite);
         favorites.add(favorite);
     }
 
-    public boolean isExist(Favorite favorite) {
-        return favorites.contains(favorite);
+    private void validateDuplicationFavorite(Favorite favorite) {
+        if (favorites.contains(favorite)) {
+            throw new IllegalArgumentException(FAVORITE_IS_DUPLICATION.message());
+        }
     }
 }

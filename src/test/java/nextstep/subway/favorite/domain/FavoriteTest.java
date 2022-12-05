@@ -9,7 +9,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 
 import java.util.Arrays;
 
@@ -45,7 +44,9 @@ class FavoriteTest extends JpaEntityTest {
     @Test
     void createFavorite() {
         // when
-        Favorite favorite = favoriteRepository.save(new Favorite(멤버, 강남역, 양재역));
+        Favorite 즐겨찾기 = new Favorite(강남역, 양재역);
+        즐겨찾기.setMember(멤버);
+        Favorite favorite = favoriteRepository.save(즐겨찾기);
         flushAndClear();
 
         // then
@@ -54,15 +55,24 @@ class FavoriteTest extends JpaEntityTest {
         assertThat(findFavorite.getSourceStation()).isEqualTo(강남역);
         assertThat(findFavorite.getTargetStation()).isEqualTo(양재역);
     }
+
     @DisplayName("즐겨찾기 도메인 생성 UK 중복 오류 발생")
     @Test
     void createFavoriteUKException() {
         // when
-        favoriteRepository.save(new Favorite(멤버, 강남역, 양재역));
+        Favorite 즐겨찾기 = new Favorite(강남역, 양재역);
+        즐겨찾기.setMember(멤버);
+        favoriteRepository.save(즐겨찾기);
         flushAndClear();
 
         // then
-        assertThatThrownBy(() -> favoriteRepository.save(new Favorite(멤버, 강남역, 양재역)))
-                .isInstanceOf(DataIntegrityViolationException.class);
+        Favorite 즐겨찾기2 = new Favorite(강남역, 양재역);
+        assertThatThrownBy(() -> 즐겨찾기2.setMember(멤버))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("favorite 삭제 테스트")
+    @Test
+    void deleteFavorte() {
     }
 }

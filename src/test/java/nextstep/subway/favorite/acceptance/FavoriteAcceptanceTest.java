@@ -173,6 +173,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @DisplayName("즐겨찾기 삭제 인수 테스트")
     @Test
     void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(accessToken, 사당역.getId(), 양재역.getId());
+
+        // when
+        String uri = createResponse.header("Location");
+
+        ExtractableResponse<Response> deleteResponse = RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+
+        // then
+        assertThat(deleteResponse.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성을_요청(String accessToken, Long sourceId, Long targetId) {

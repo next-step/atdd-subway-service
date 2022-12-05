@@ -32,7 +32,10 @@ public class FavoriteService {
         Station sourceStation = stationRepository.findById(sourceStationId).orElseThrow(NoResultException::new);
         Station targetStation = stationRepository.findById(targetStationId).orElseThrow(NoResultException::new);
 
-        Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
+        Favorite favorite = new Favorite(sourceStation, targetStation);
+        favorite.setMember(member);
+
+        favorite = favoriteRepository.save(favorite);
         return FavoriteResponse.of(favorite);
     }
 
