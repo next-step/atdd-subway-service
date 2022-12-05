@@ -63,6 +63,23 @@ public class Sections {
         addStation(section);
     }
 
+    private void checkValidSection(Station requestUpStation, Station requestDownStation) {
+        boolean isUpStationExisted = isStationExisted(requestUpStation);
+        boolean isDownStationExisted = isStationExisted(requestDownStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new IllegalArgumentException(ErrorMessage.ALREADY_EXIST_SECTION.getMessage());
+        }
+
+        if (!getStations().isEmpty() && !isUpStationExisted && !isDownStationExisted) {
+            throw new IllegalArgumentException(ErrorMessage.NO_EXIST_STATIONS_TO_REGISTER.getMessage());
+        }
+    }
+
+    private boolean isStationExisted(Station station) {
+        return getStations().contains(station);
+    }
+
     private void addStation(Section section) {
         if (getStations().isEmpty()) {
             initSection(section);
@@ -80,23 +97,6 @@ public class Sections {
         }
 
         throw new IllegalArgumentException(ErrorMessage.INVALID_SECTION.getMessage());
-    }
-
-    private void checkValidSection(Station requestUpStation, Station requestDownStation) {
-        boolean isUpStationExisted = isStationExisted(requestUpStation);
-        boolean isDownStationExisted = isStationExisted(requestDownStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
-            throw new IllegalArgumentException(ErrorMessage.ALREADY_EXIST_SECTION.getMessage());
-        }
-
-        if (!getStations().isEmpty() && !isUpStationExisted && !isDownStationExisted) {
-            throw new IllegalArgumentException(ErrorMessage.NO_EXIST_STATIONS_TO_REGISTER.getMessage());
-        }
-    }
-
-    private boolean isStationExisted(Station station) {
-        return getStations().contains(station);
     }
 
     private void initSection(Section section) {
@@ -184,6 +184,6 @@ public class Sections {
         graph.addVertex(section.getUpStation());
         graph.addVertex(section.getDownStation());
         graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance().getWeight());
+                section.getDistance().getDistance());
     }
 }
