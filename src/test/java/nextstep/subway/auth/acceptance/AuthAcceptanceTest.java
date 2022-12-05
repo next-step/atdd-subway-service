@@ -71,7 +71,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuthNotSignUp() {
         // when 등록되지 않은 회원 정보로 로그인 요청
-        ExtractableResponse<Response> response = 로그인_요청(new TokenRequest("jylim@test.com", "no password"));
+        ExtractableResponse<Response> response = 로그인_요청(new TokenRequest("yalmung@gmail.com", "no password"));
 
         // then 로그인 실패
         로그인_실패(response);
