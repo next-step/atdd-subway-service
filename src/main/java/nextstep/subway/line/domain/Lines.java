@@ -26,10 +26,10 @@ public class Lines {
                 .collect(Collectors.toList()));
     }
 
-    public int getMaxLineFare() {
+    public Line getMaxFareLine() {
         return lines.stream()
-                .map(Line::getFare)
-                .max(Comparator.comparing(it -> it))
-                .orElse(0);
+                .sorted((o1, o2) -> o1.getFare() - o2.getFare())
+                .findFirst()
+                .orElse(new Line());
     }
 }

@@ -22,14 +22,17 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId,int age) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, int age) {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
         List<Station> stations = pathFinder.getShortestPath(sourceStation, targetStation);
         int distance = pathFinder.getShortestDistance(sourceStation, targetStation);
-        int lineFare = findFare(Lines.of(lines), stations, distance, age);
+        Line line = findFare(Lines.of(lines), stations);
+        //노선별비용
+        //나이
+        //거리
         return new PathResponse(stations, distance);
     }
 
@@ -38,10 +41,8 @@ public class PathService {
                 .orElseThrow(() -> new IllegalArgumentException(NONE_EXISTS_STATION));
     }
 
-    private int findFare(Lines lines, List<Station> stations, int distance, int age) {
-        Lines filteredLines = lines.getLinesFrom(stations);
-        int fare = filteredLines.getMaxLineFare();
-        return fare;
+    private Line findFare(Lines lines, List<Station> stations) {
+        return lines.getLinesFrom(stations).getMaxFareLine();
     }
 
 }
