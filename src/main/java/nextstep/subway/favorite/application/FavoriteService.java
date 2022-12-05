@@ -29,32 +29,32 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public FavoriteResponse create(Long memberId, FavoriteCreatedRequest request) {
-        Member member = memberRepository.findById(memberId).orElseThrow(EntityNotFoundException::new);
+    public FavoriteResponse create(Long loginMemberId, FavoriteCreatedRequest request) {
+        Member member = memberRepository.findById(loginMemberId).orElseThrow(EntityNotFoundException::new);
         Station source = stationRepository.findById(request.getSourceId()).orElseThrow(EntityNotFoundException::new);
         Station target = stationRepository.findById(request.getTargetId()).orElseThrow(EntityNotFoundException::new);
         Favorite favorite = new Favorite(member, source, target);
-        validateDuplicate(memberId, favorite);
+        Favorites favorites = initFavorites(loginMemberId);
+        favorites.add(favorite);
         return new FavoriteResponse(favoriteRepository.save(favorite));
     }
 
-    private void validateDuplicate(Long memberId, Favorite favorite) {
-        Favorites favorites = new Favorites();
-        favorites.addAll(favoriteRepository.findAllByMember_Id(memberId));
-        favorites.add(favorite);
-    }
-
-    public List<FavoriteResponse> findAll(Long memberId) {
-        return favoriteRepository.findAllByMember_Id(memberId).stream()
+    public List<FavoriteResponse> findAll(Long loginMemberId) {
+        return favoriteRepository.findAllByMember_Id(loginMemberId).stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
 
     public void delete(Long loginMemberId, Long favoriteId) {
-        Favorites favorites = new Favorites();
-        favorites.addAll(favoriteRepository.findAllByMember_Id(loginMemberId));
+        Favorites favorites = initFavorites(loginMemberId);
         Favorite deleteFavorite = favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
         favorites.validateDeleteFavorite(deleteFavorite);
         favoriteRepository.deleteById(favoriteId);
+    }
+
+    private Favorites initFavorites(Long loginMemberId) {
+        Favorites favorites = new Favorites();
+        favorites.addAll(favoriteRepository.findAllByMember_Id(loginMemberId));
+        return favorites;
     }
 }
