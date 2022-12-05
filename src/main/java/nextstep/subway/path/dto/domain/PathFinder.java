@@ -40,7 +40,7 @@ public class PathFinder {
     public Path findAllStationsByStations(Station source, Station target) {
         GraphPath<Station, DefaultWeightedEdge> graphPath = getShortestPath(source, target);
 
-        return Path.from(graphPath);
+        return Path.from(graphPath.getVertexList(), (int) graphPath.getWeight());
     }
 
 
