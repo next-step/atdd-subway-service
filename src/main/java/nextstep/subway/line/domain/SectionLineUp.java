@@ -31,6 +31,10 @@ public class SectionLineUp {
 
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public void add(Section section) {
         StationLineUp stationLineUp = new StationLineUp(getStations());
         if (stationLineUp.isEmpty()) {
