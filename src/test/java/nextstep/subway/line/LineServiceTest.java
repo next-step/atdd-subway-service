@@ -42,7 +42,7 @@ public class LineServiceTest {
     void setUp() {
         강남역 = new Station(1L, "강남역");
         광교역 = new Station(2L, "광교역");
-        신분당선 = Line.of("신분당선", "bg-red-300", 강남역, 광교역, Distance.from(10));
+        신분당선 = Line.of("신분당선", "bg-red-300", 강남역, 광교역, Distance.from(10), 100);
         노선_목록 = Arrays.asList(신분당선);
     }
 
@@ -50,7 +50,7 @@ public class LineServiceTest {
     void saveLine() {
         when(stationService.findById(강남역.getId())).thenReturn(강남역);
         when(stationService.findById(광교역.getId())).thenReturn(광교역);
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 광교역.getId(), 10, 500);
 
         LineResponse response = lineService.saveLine(lineRequest);
 
@@ -91,7 +91,7 @@ public class LineServiceTest {
     @Test
     void updateLine() {
         when(lineRepository.findById(신분당선.getId())).thenReturn(Optional.of(신분당선));
-        LineRequest request = new LineRequest("구분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineRequest request = new LineRequest("구분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 500);
 
         lineService.updateLine(신분당선.getId(), request);
 

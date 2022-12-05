@@ -50,7 +50,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 500);
         신분당선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 

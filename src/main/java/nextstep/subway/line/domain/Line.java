@@ -32,8 +32,13 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    private Line(String name, String color, Station upStation, Station downStation, Distance distance) {
+    private Line(
+            String name, String color,
+            Station upStation, Station downStation,
+            Distance distance, int additionalFare
+    ) {
         this(name, color);
+        this.additionalFare = additionalFare;
         sections.addSection(this, upStation, downStation, distance);
     }
 
@@ -41,8 +46,12 @@ public class Line extends BaseEntity {
         return new Line(name, color);
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, Distance distance){
-        return new Line(name, color, upStation, downStation, distance);
+    public static Line of(
+            String name, String color,
+            Station upStation, Station downStation,
+            Distance distance, int additionalFare
+    ){
+        return new Line(name, color, upStation, downStation, distance, additionalFare);
     }
 
     public void update(String name, String color) {
