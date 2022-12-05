@@ -83,6 +83,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // Then 내 정보 조회 됨
         내_정보_조회됨(myInfoResponse, EMAIL, AGE);
 
+        // When 내 정보 수정 요청
+        ExtractableResponse<Response> myInfoPutResponse = 내_정보_수정_요청(accessToken, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+
+        // Then 내 정보 수정 됨
+        내_정보_수정됨(myInfoPutResponse);
+
 
     }
 
@@ -169,6 +175,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(memberResponse.getEmail()).isEqualTo(email),
                 () -> assertThat(memberResponse.getAge()).isEqualTo(age)
         );
+    }
+
+    private static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, MemberRequest memberRequest) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(memberRequest)
+                .when().put("/members/me")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 내_정보_수정됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
 
