@@ -7,6 +7,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.favorite.exception.NotValidMemberException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -17,13 +18,13 @@ public class Favorite {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
+    @JoinColumn(name = "member_id", nullable = false)
     private Member member;
     @ManyToOne
-    @JoinColumn(name = "source_id")
+    @JoinColumn(name = "source_id", nullable = false)
     private Station source;
     @ManyToOne
-    @JoinColumn(name = "target_id")
+    @JoinColumn(name = "target_id", nullable = false)
     private Station target;
 
     public Favorite() {
@@ -55,5 +56,11 @@ public class Favorite {
 
     public Station getTarget() {
         return target;
+    }
+
+    public void validateBeforeRemove(Long memberId) {
+        if (!member.hasId(memberId)) {
+            throw new NotValidMemberException("자신의 즐겨찾기가 아닌 항목은 삭제할 수 없습니다.");
+        }
     }
 }

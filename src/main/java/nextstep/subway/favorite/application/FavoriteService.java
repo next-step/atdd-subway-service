@@ -57,4 +57,15 @@ public class FavoriteService {
             .map(FavoriteResponse::from)
             .collect(Collectors.toList());
     }
+
+    public void removeFavorite(Long id, Long memberId) {
+        Favorite favorite = getFavorite(id);
+        favorite.validateBeforeRemove(memberId);
+        favoriteRepository.delete(favorite);
+    }
+
+    private Favorite getFavorite(Long id) {
+        return favoriteRepository.findById(id)
+            .orElseThrow(() -> new NoSuchElementException("삭제하려는 즐겨찾기가 없습니다."));
+    }
 }

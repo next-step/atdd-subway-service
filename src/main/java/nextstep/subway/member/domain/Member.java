@@ -1,16 +1,16 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
-import org.apache.commons.lang3.StringUtils;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import nextstep.subway.BaseEntity;
+import nextstep.subway.auth.application.AuthorizationException;
+import org.apache.commons.lang3.StringUtils;
 
 @Entity
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,6 +19,10 @@ public class Member extends BaseEntity {
     private Integer age;
 
     public Member() {
+    }
+
+    public Member(Long id) {
+        this.id = id;
     }
 
     public Member(String email, String password, Integer age) {
@@ -53,5 +57,9 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public boolean hasId(Long memberId) {
+        return memberId.equals(id);
     }
 }
