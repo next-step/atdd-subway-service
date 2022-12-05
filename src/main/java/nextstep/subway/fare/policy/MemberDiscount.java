@@ -9,7 +9,7 @@ import java.util.function.Function;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.member.domain.Age;
 
-public enum MemberDiscount {
+enum MemberDiscount {
     CHILDREN(6, 12, MemberDiscount::calculateChildren),
     TEENAGER(13, 18, MemberDiscount::calculateTeenager);
 
