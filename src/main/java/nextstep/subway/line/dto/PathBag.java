@@ -1,11 +1,13 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class PathBag {
     private final List<SectionPath> sectionPaths;
@@ -16,6 +18,12 @@ public class PathBag {
 
     public static PathBag from(List<SectionPath> sectionPaths) {
         return new PathBag(sectionPaths);
+    }
+    public static PathBag fromLines(List<Line> lines) {
+        return new PathBag(lines.stream().map(Line::getSections)
+                .flatMap(List::stream)
+                .map(it -> SectionPath.of(it.getUpStation(),  it.getDownStation(), it.getDistanceInt()))
+                .collect(Collectors.toList()));
     }
 
     public List<Station> findVertex() {
