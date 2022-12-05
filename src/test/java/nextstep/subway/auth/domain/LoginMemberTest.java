@@ -24,7 +24,7 @@ class LoginMemberTest {
         Assertions.assertThat(member1).isNotEqualTo(member2);
     }
 
-    @DisplayName("이메일이 다르면 LoginMember는 동등하지 않다.")
+    @DisplayName("이메일이 다르면 LoginMember는 다르다.")
     @Test
     void notEqual2(){
         LoginMember member1 = new LoginMember(1L, "yalmung@gmail.com", 10);
