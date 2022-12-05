@@ -18,9 +18,9 @@ public class DistanceTest {
         assertThatNoException().isThrownBy(() -> new Distance(distance));
     }
 
-    @DisplayName("거리는 0보다 작을 수 없다.")
+    @DisplayName("거리는 0보다 같거나 작을 수 없다.")
     @ParameterizedTest
-    @ValueSource(ints = {-1})
+    @ValueSource(ints = {0, -1})
     void negative(int distance) {
         assertThatThrownBy(() -> new Distance(distance))
                 .isInstanceOf(IllegalArgumentException.class);
