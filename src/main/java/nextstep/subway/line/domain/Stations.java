@@ -4,9 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
-
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import nextstep.subway.station.domain.Station;
 
@@ -37,8 +36,12 @@ public class Stations {
         return stations.isEmpty();
     }
 
-    public void addVertex(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        stations.forEach(graph::addVertex);
+    public Stations mergeDistinct(Stations other) {
+        return new Stations(
+            Stream.concat(this.stations.stream(), other.stations.stream())
+                .distinct()
+                .collect(Collectors.toList())
+        );
     }
 
     public List<Station> getList() {

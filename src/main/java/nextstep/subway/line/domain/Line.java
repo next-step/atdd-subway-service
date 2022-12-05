@@ -53,10 +53,6 @@ public class Line extends BaseEntity {
         sections.removeStation(station);
     }
 
-    public void addVertexAndEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.addVertexAndEdge(graph);
-    }
-
     public Long getId() {
         return id;
     }

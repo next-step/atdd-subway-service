@@ -6,13 +6,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import nextstep.subway.station.domain.Station;
 
@@ -30,6 +29,10 @@ public class Sections {
 
     public static Sections from(List<Section> sections) {
         return new Sections(sections);
+    }
+
+    public static Sections empty() {
+        return new Sections(new ArrayList<>());
     }
 
     public void add(Section section) {
@@ -138,16 +141,18 @@ public class Sections {
         sections.add(upSection.merge(downSection));
     }
 
+    public Sections merge(Sections other) {
+        return new Sections(
+            Stream.concat(this.sections.stream(), other.sections.stream())
+                .collect(Collectors.toList())
+        );
+    }
+
     public int size() {
         return sections.size();
     }
 
     public List<Section> getList() {
         return Collections.unmodifiableList(this.sections);
-    }
-
-    public void addVertexAndEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        toStations().addVertex(graph);
-        sections.forEach(section -> section.addEdgeWeight(graph));
     }
 }
