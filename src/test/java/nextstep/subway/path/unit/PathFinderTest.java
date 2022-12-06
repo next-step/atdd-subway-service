@@ -18,9 +18,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class PathFinderTest {
-    private final Line 이호선 = Line.ofNameAndColor("2호선", "초록색");
-    private final Line 신분당선 = Line.ofNameAndColor("신분당선", "빨간색");
-    private final Line 삼호선 = Line.ofNameAndColor("3호선", "주황색");
+    private final Line 이호선 = Line.ofNameAndColorAndSurCharge("2호선", "초록색", 400);
+    private final Line 신분당선 = Line.ofNameAndColorAndSurCharge("신분당선", "빨간색", 300);
+    private final Line 삼호선 = Line.ofNameAndColorAndSurCharge("3호선", "주황색", 200);
     private final Station 강남역 = new Station("강남역");
     private final Station 양재역 = new Station("양재역");
     private final Station 교대역 = new Station("교대역");
@@ -46,6 +46,35 @@ public class PathFinderTest {
         // then
         assertThat(path.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
         assertThat(path.getDistance().value()).isEqualTo(15);
+    }
+
+    @DisplayName("경로 요금을 구한다")
+    @Test
+    void findFare() {
+        // given
+        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
+
+        PathFinder pathFinder = new DijkstraShortestPathFinder(stationGraph);
+
+        // when
+        Path path = pathFinder.findPath(강남역, 남부터미널역);
+
+        // then
+        assertThat(path.getFare().value()).isEqualTo(1650);
+    }
+
+    @DisplayName("로그인 유저의 경로 요금을 구한다.")
+    @Test
+    void findDiscountedFare() {
+        // given
+        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
+        PathFinder pathFinder = new DijkstraShortestPathFinder(stationGraph);
+
+        // when
+        Path path = pathFinder.findPathByLoginMember(강남역, 남부터미널역, Integer.valueOf(10));
+
+        // then
+        assertThat(path.getFare().value()).isEqualTo(650);
     }
 
     @DisplayName("최단 경로를 구할때 두개 역이 같으면 IllegalStateException 발생한다.")
