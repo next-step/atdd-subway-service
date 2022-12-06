@@ -23,7 +23,7 @@ public class PathBag {
     public static PathBag fromLines(List<Line> lines) {
         return new PathBag(lines.stream().map(Line::getSections)
                 .flatMap(List::stream)
-                .map(SectionPath::of)
+                .map(SectionPath::from)
                 .collect(Collectors.toList()));
     }
 

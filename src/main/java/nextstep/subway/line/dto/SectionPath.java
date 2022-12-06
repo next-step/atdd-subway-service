@@ -14,7 +14,7 @@ public class SectionPath {
         this.distance = distance;
     }
 
-    public static SectionPath of(Section section) {
+    public static SectionPath from(Section section) {
         return new SectionPath(section.getUpStation(), section.getDownStation(), section.getDistanceInt());
     }
 
