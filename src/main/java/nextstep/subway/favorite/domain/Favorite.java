@@ -25,9 +25,12 @@ public class Favorite {
     protected Favorite() {
     }
 
-    public Favorite(Station sourceStation, Station targetStation) {
+    public Favorite(Member member, Station sourceStation, Station targetStation) {
+        this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+
+        this.member.addFavorite(this);
     }
 
     public Long getId() {
@@ -44,13 +47,6 @@ public class Favorite {
 
     public Station getTargetStation() {
         return targetStation;
-    }
-
-    public void setMember(Member member) {
-        if (Objects.isNull(this.member)) {
-            this.member = member;
-            this.member.addFavorite(this);
-        }
     }
 
     @Override
