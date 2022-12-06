@@ -85,12 +85,12 @@ public class Section {
 
     public void updateUpStation(Section section) {
         this.upStation = section.downStation;
-        this.distance = distance.subtract(section.distance);
+        this.distance = distance.minus(section.distance);
     }
 
     public void updateDownStation(Section section) {
         this.downStation = section.upStation;
-        this.distance = distance.subtract(section.distance);
+        this.distance = distance.minus(section.distance);
     }
 
     public Distance addDistance(Section other) {

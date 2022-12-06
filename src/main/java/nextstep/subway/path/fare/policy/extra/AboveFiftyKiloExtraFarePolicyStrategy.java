@@ -7,18 +7,18 @@ import nextstep.subway.path.fare.Fare;
 public class AboveFiftyKiloExtraFarePolicyStrategy implements ExtraFarePolicyStrategy {
 
     private static final Distance MIN_DISTANCE = Distance.valueOf(50);
-    private static final Distance DIVIDEND = Distance.valueOf(8);
     private static final Fare EXTRA_FARE = Fare.valueOf(100);
+    private static final int DIVIDEND = 8;
 
     @Override
     public Fare calculate(Path path) {
         Distance distance = path.getDistance();
-        if (distance.isLessThan(MIN_DISTANCE)) {
+        if (distance.isLessThanOrEqualTo(MIN_DISTANCE)) {
             return Fare.ZERO;
         }
 
         Distance extraDistance = getExtraDistance(distance);
-        return EXTRA_FARE.multiply(extraDistance.divide(DIVIDEND).toInt());
+        return EXTRA_FARE.multiply(extraDistance.toInt() / DIVIDEND);
     }
 
     private Distance getExtraDistance(Distance distance) {
