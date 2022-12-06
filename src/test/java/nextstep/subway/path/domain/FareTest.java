@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import java.util.ArrayList;
+import nextstep.subway.line.domain.Lines;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -12,7 +14,7 @@ class FareTest {
     @CsvSource(value = {"0:1250", "10:1250", "15:1350", "20:1450", "40:1850", "50:2050", "58:2150", "122:2950"},
             delimiter = ':')
     void distance_fare(int distance, int expect) {
-        Fare actual = Fare.from(distance);
+        Fare actual = Fare.of(distance, Lines.From(new ArrayList<>()));
 
         Assertions.assertThat(actual.getFare()).isEqualTo(expect);
     }
