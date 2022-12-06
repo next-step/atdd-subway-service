@@ -16,11 +16,6 @@ public class FavoriteResponse {
         this.target = target;
     }
 
-
-    public Long getId() {
-        return id;
-    }
-
     public static FavoriteResponse from(Favorite favorite) {
         return new FavoriteResponse(
                 favorite.getId(),
@@ -28,4 +23,19 @@ public class FavoriteResponse {
                 StationResponse.from(favorite.getTargetStation())
         );
     }
+
+
+    public Long getId() {
+        return id;
+    }
+
+    public StationResponse getSource() {
+        return source;
+    }
+
+    public StationResponse getTarget() {
+        return target;
+    }
+
+
 }

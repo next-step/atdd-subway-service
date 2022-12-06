@@ -4,10 +4,10 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.exception.AuthorizationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import static nextstep.subway.utils.Message.INVALID_ACCESS_TOKEN;
 import static nextstep.subway.utils.Message.MEMBER_NOT_EXISTS;

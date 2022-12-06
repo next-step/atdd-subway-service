@@ -1,9 +1,8 @@
 package nextstep.subway.member.domain;
 
 
-import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.exception.AuthorizationException;
 import org.assertj.core.api.Assertions;
-import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

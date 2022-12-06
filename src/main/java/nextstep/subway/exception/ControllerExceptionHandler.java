@@ -19,6 +19,11 @@ public class ControllerExceptionHandler {
         return new ResponseEntity<>(new DomainException(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(AuthorizationException.class)
+    public ResponseEntity<AuthorizationException> handleAuthorizationException(Exception e) {
+        return new ResponseEntity<>(new AuthorizationException(e.getMessage()), HttpStatus.UNAUTHORIZED);
+    }
+
     private ResponseEntity<Void> badRequest() {
         return ResponseEntity.badRequest().build();
     }
