@@ -1,7 +1,8 @@
 package nextstep.subway.common.domain;
 
 public enum BizMagicNumber {
-    SECTION_MIN_SIZE(1);
+    SECTION_MIN_SIZE(1),
+    SURCHARGE_MIN_BOUNDARY(0);
 
     private final int number;
 

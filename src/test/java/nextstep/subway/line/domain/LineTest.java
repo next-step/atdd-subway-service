@@ -34,14 +34,14 @@ public class LineTest extends JpaEntityTest {
     @DisplayName("노선 이름이 없거나, 색이 지정되지 않은 경우 예외 발생")
     @Test
     void createLineWithNoPassValidate() {
-        assertThatThrownBy(() -> lineRepository.save(new Line(null, "빨간색")))
+        assertThatThrownBy(() -> new Line(null, "빨간색"))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> lineRepository.save(new Line("", "빨간색")))
+        assertThatThrownBy(() -> new Line("", "빨간색"))
                 .isInstanceOf(IllegalArgumentException.class);
 
-        assertThatThrownBy(() -> lineRepository.save(new Line("신분당선", null)))
+        assertThatThrownBy(() -> new Line("신분당선", null))
                 .isInstanceOf(IllegalArgumentException.class);
-        assertThatThrownBy(() -> lineRepository.save(new Line("신분당선", "")))
+        assertThatThrownBy(() -> new Line("신분당선", ""))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -69,5 +69,20 @@ public class LineTest extends JpaEntityTest {
 
         assertThat(line).isEqualTo(newLine);
         assertThat(line.getColor()).isEqualTo("빨간색");
+    }
+
+    @DisplayName("초과운임을 포함하여 노선 생성")
+    @Test
+    void createLineWithSurcharge() {
+        Line 신분당선 = new Line("신분당선", "빨간색", 1_900);
+
+        assertThat(신분당선.getSurcharge()).isEqualTo(1_900);
+    }
+
+    @DisplayName("초과운임을 포함하여 노선 생성 시, 음의 초과운임 입력 시 에러")
+    @Test
+    void createLineWithMinusSurchargeException() {
+        assertThatThrownBy(() -> new Line("신분당선", "빨간색", -9_000))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 }
