@@ -8,13 +8,13 @@ public class Fare {
     public static final int HIGH_SECTOR_CHARGE_DISTANCE = 8;
     private static final int BASIC_FARE = 1_250;
 
-    private int fare;
+    private final int fare;
 
     private Fare(int fare) {
         this.fare = fare;
     }
 
-    public static Fare from(int distance) {
+    public static Fare from(double distance) {
         return new Fare(calFare(distance));
     }
 
@@ -22,7 +22,7 @@ public class Fare {
         return fare;
     }
 
-    private static int calFare(int distance) {
+    private static int calFare(double distance) {
         return BASIC_FARE + FareDistance.calAdditionalFare(distance);
     }
 }
