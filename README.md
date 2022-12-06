@@ -36,6 +36,49 @@ npm run dev
 ```
 ./gradlew bootRun
 ```
+
+### 요구사항
+
+- LineService 비즈니스 로직 도메인으로 옮기기
+  - [X] saveLine
+    - 정적 메소드 from 사용하기
+    - Sections 일급컬렉션 사용하여 비즈니스 로직 옮기기
+    - Distance 값 타입 변경
+  - [X] findLines
+  - [X] findLineById
+  - [X] findLineResponseById
+  - [X] updateLine
+  - [X] addLineStation
+    - 비즈니스 로직 도메인으로 이동
+  - [X] removeLineStation
+    - 비즈니스 로직 도메인으로 이동
+
+- LineSectionAcceptanceTest 리팩터링
+  - [X] 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
+    - dynamicTest 활용하여 시나리오 검증
+- [ ] 커스텀 예외 제거
+- 
+
+```
+Feature: 지하철 구간 관련 기능
+
+  Background 
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+
+  Scenario: 지하철 구간을 관리
+    When 지하철 구간 등록 요청
+    Then 지하철 구간 등록됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+    When 지하철 구간 삭제 요청
+    Then 지하철 구간 삭제됨
+    When 지하철 노선에 등록된 역 목록 조회 요청
+    Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+```
+
+
 <br>
 
 ## ✏️ Code Review Process

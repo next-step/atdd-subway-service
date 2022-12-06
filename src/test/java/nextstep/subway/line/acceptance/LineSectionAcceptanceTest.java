@@ -9,17 +9,18 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
@@ -111,6 +112,55 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
+    }
+
+    /**
+     * Feature: 지하철 구간 관련 기능
+     *   Background
+     *     Given 지하철역 등록되어 있음
+     *     And 지하철 노선 등록되어 있음
+     *     And 지하철 노선에 지하철역 등록되어 있음
+     *   Scenario: 지하철 구간을 관리
+     *     When 지하철 구간 등록 요청
+     *     Then 지하철 구간 등록됨
+     *     When 지하철 노선에 등록된 역 목록 조회 요청
+     *     Then 등록한 지하철 구간이 반영된 역 목록이 조회됨
+     *     When 지하철 구간 삭제 요청
+     *     Then 지하철 구간 삭제됨
+     *     When 지하철 노선에 등록된 역 목록 조회 요청
+     *     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+     */
+    @DisplayName("지하철 구간 관리")
+    @TestFactory
+    Stream<DynamicTest> manageLineSection() {
+        return Stream.of(
+                dynamicTest("지하철 구간 등록 요청 성공", createSectionSuccess(신분당선, 강남역, 양재역, 3)),
+                dynamicTest("지하철 노선에 등록된 역 목록 조회 요청 성공", getSectionSuccess(신분당선, Arrays.asList(강남역, 양재역, 광교역))),
+                dynamicTest("지하철 구간 삭제 성공", removeSectionSuccess(신분당선, 광교역)),
+                dynamicTest("지하철 노선에 등록된 역 목록 조회 요청 성공", getSectionSuccess(신분당선, Arrays.asList(강남역, 양재역)))
+        );
+    }
+
+    private Executable createSectionSuccess(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+        return () -> {
+            ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+            지하철_노선에_지하철역_등록됨(response);
+        };
+    }
+
+    private Executable getSectionSuccess(LineResponse line, List<StationResponse> stations) {
+        return () -> {
+            ExtractableResponse<Response> response = LineAcceptanceTest.지하철_노선_조회_요청(line);
+            지하철_노선에_지하철역_등록됨(response);
+            지하철_노선에_지하철역_순서_정렬됨(response, stations);
+        };
+    }
+
+    private Executable removeSectionSuccess(LineResponse line, StationResponse station) {
+        return () -> {
+            ExtractableResponse<Response> response = 지하철_노선에_지하철역_제외_요청(line, station);
+            지하철_노선에_지하철역_제외됨(response);
+        };
     }
 
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {

@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -22,7 +23,8 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
     public Section() {
     }
@@ -31,7 +33,7 @@ public class Section {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = Distance.from(distance);
     }
 
     public Long getId() {
@@ -50,23 +52,27 @@ public class Section {
         return downStation;
     }
 
-    public int getDistance() {
+    public Distance getDistance() {
         return distance;
     }
 
+    public int plus(Distance distance) {
+        return this.distance.add(distance).value();
+    }
+
     public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        if (this.distance.value() <= newDistance) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_DISTANCE.getMessage());
         }
         this.upStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.subtract(Distance.from(newDistance));
     }
 
     public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        if (this.distance.value() <= newDistance) {
+            throw new IllegalArgumentException(ErrorMessage.INVALID_DISTANCE.getMessage());
         }
         this.downStation = station;
-        this.distance -= newDistance;
+        this.distance = this.distance.subtract(Distance.from(newDistance));
     }
 }

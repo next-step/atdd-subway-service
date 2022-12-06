@@ -13,8 +13,8 @@ import org.springframework.stereotype.Component;
 @Component
 @Profile("!test")
 public class DataLoaderConfig implements CommandLineRunner {
-    private LineRepository lineRepository;
-    private MemberRepository memberRepository;
+    private final LineRepository lineRepository;
+    private final MemberRepository memberRepository;
 
     public DataLoaderConfig(LineRepository lineRepository, MemberRepository memberRepository) {
         this.lineRepository = lineRepository;
@@ -28,9 +28,29 @@ public class DataLoaderConfig implements CommandLineRunner {
         Station 양재역 = new Station("양재역");
         Station 남부터미널역 = new Station("남부터미널역");
 
-        Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 10);
-        Line 이호선 = new Line("2호선", "green lighten-1", 교대역, 강남역, 10);
-        Line 삼호선 = new Line("3호선", "orange darken-1", 교대역, 양재역, 10);
+        Line 신분당선 = Line.builder()
+                .name("신분당선")
+                .color("red lighten-1")
+                .upStation(강남역)
+                .downStation(양재역)
+                .distance(10)
+                .build();
+
+        Line 이호선 = Line.builder()
+                .name("2호선")
+                .color("green lighten-1")
+                .upStation(교대역)
+                .downStation(강남역)
+                .distance(10)
+                .build();
+
+        Line 삼호선 = Line.builder()
+                .name("3호선")
+                .color("orange darken-1")
+                .upStation(교대역)
+                .downStation(양재역)
+                .distance(10)
+                .build();
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
