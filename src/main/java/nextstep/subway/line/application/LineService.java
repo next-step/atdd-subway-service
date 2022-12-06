@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -8,10 +9,14 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,20 +32,25 @@ public class LineService {
 
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(),
-                stationService.findById(request.getUpStationId()),
-                stationService.findById(request.getDownStationId()),
+                stationService.findStationById(request.getUpStationId()),
+                stationService.findStationById(request.getDownStationId()),
                 new Distance(request.getDistance())));
         return LineResponse.of(persistLine);
     }
 
-    public List<LineResponse> findLines() {
-        return lineRepository.findAll().stream()
+    public List<LineResponse> findLinesResponse() {
+        return findLines().stream()
                 .map(LineResponse::of)
                 .collect(Collectors.toList());
     }
 
+    private List<Line> findLines() {
+        return lineRepository.findAll();
+    }
+
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id).orElseThrow(() ->
+                new NoSuchElementException(ErrorMessage.DO_NOT_EXIST_LINE_ID.getMessage()));
     }
 
 
@@ -50,9 +60,7 @@ public class LineService {
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
-        lineRepository.findById(id)
-                .orElseThrow(RuntimeException::new)
-                .update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        findLineById(id).update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
     public void deleteLineById(Long id) {
@@ -68,8 +76,12 @@ public class LineService {
     }
 
     public void removeLineStation(Long lineId, Long stationId) {
-        Line line = findLineById(lineId);
-        line.removeStation(stationService.findStationById(stationId));
+        findLineById(lineId).removeStation(stationService.findStationById(stationId));
     }
 
+    public WeightedMultigraph<Station, DefaultWeightedEdge> getSectionDistanceGraph() {
+        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        findLines().stream().forEach(line -> line.makeGraph(graph));
+        return graph;
+    }
 }

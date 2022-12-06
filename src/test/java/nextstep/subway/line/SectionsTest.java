@@ -8,9 +8,7 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +40,7 @@ public class SectionsTest {
     @DisplayName("이미 구간에 등록된 경우 오류가 발생한다.")
     @Test
     void already_registered_station_section_add_exception_test() {
-        assertThatThrownBy(()->sections.checkValidSection(station1, station2))
+        assertThatThrownBy(()->sections.add(new Section(line, station1, station2, new Distance(10))))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -55,7 +53,7 @@ public class SectionsTest {
 
         //when
         //then
-        assertThatThrownBy(()->sections.checkValidSection(station3, station4))
+        assertThatThrownBy(()->sections.add(new Section(line, station3, station4, new Distance(10))))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -68,17 +66,10 @@ public class SectionsTest {
         );
     }
 
-    @DisplayName("구간에 등록되어 있는 역인지 체크 테스트")
-    @ParameterizedTest
-    @MethodSource
-    void station_exist_test(Station input, boolean expected) {
-        assertThat(sections.isStationExisted(input)).isEqualTo(expected);
-    }
-
     @DisplayName("첫번째 역 찾기 테스트")
     @Test
     void find_first_station_test() {
-        assertThat(sections.findUpStation()).isEqualTo(station1);
+        assertThat(sections.getStations().get(0)).isEqualTo(station1);
     }
 
     @DisplayName("지하철역 목록조회 테스트")
@@ -99,7 +90,7 @@ public class SectionsTest {
         sections.add(newSection);
 
         //then
-        assertThat(sections.findUpStation()).isEqualTo(newStation);
+        assertThat(sections.getStations().get(0)).isEqualTo(newStation);
     }
 
     @DisplayName("맨끝 구간 추가 테스트")

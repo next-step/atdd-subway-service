@@ -52,3 +52,11 @@ npm run dev
 ## 📝 License
 
 This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/master/LICENSE.md) licensed.
+
+## 요구사항
+- [x] LineService 리팩토링
+- [x] 최단경로조회 인수테스트 만들기
+- [x] 최단경로조회 기능 구현하기
+- [x] 출발역과 도착역이 같은 경우 조회에 실패한다.
+- [x] 출발역과 도착역이 연결되어 있지 않은 경우 조회에 실패한다.
+- [x] 존재하지 않은 출발역이나 도착역을 조회할 경우 조회에 실패한다.

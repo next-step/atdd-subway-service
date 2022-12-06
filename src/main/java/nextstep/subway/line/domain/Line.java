@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
 import java.util.ArrayList;
@@ -18,7 +20,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
-    private Sections sections = new Sections(new ArrayList<>());
+    private Sections sections = new Sections();
 
     public Line() {
     }
@@ -32,6 +34,18 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void addSection(Section section) {
+        sections.add(section);
+    }
+
+    public void removeStation(Station station) {
+        sections.removeSectionByStation(station);
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 
     public void update(Line line) {
@@ -51,16 +65,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public void addSection(Section section) {
-        sections.add(section);
+    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
+        sections.makeGraph(graph);
     }
-
-    public void removeStation(Station station) {
-        sections.removeSectionByStation(station);
-    }
-
-    public List<Station> getStations() {
-        return sections.getStations();
-    }
-
 }

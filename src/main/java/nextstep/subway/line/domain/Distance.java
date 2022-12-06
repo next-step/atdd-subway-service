@@ -14,7 +14,7 @@ public class Distance {
 
     public Distance(int distance) {
         if(distance <= LOWER_LIMIT) {
-            throw new RuntimeException(
+            throw new IllegalArgumentException(
                     ErrorMessage.INVALID_DISTANCE_VALUE.setLimitValueAndGetMessage(String.valueOf(LOWER_LIMIT)));
         }
         this.distance = distance;
@@ -22,6 +22,20 @@ public class Distance {
 
     protected Distance() {
 
+    }
+
+    public Distance subtract(Distance distance) {
+        int newDistance = this.distance - distance.getDistance();
+        if (newDistance <= LOWER_LIMIT) {
+            throw new IllegalArgumentException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
+        }
+        this.distance = newDistance;
+        return this;
+    }
+
+    public Distance add(Distance distance) {
+        this.distance += distance.getDistance();
+        return this;
     }
 
     public int getDistance() {
@@ -39,20 +53,6 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
-    }
-
-    public Distance subtract(Distance distance) {
-        int newDistance = this.distance - distance.getDistance();
-        if (newDistance <= LOWER_LIMIT) {
-            throw new RuntimeException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
-        }
-        this.distance = newDistance;
-        return this;
-    }
-
-    public Distance add(Distance distance) {
-        this.distance += distance.getDistance();
-        return this;
     }
 
 }
