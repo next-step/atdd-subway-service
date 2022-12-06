@@ -219,7 +219,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 요청_결과가_인증_오류로_인해_실패됨(ExtractableResponse<Response> 즐겨찾기_생성_요청_결과) {
-        assertThat(즐겨찾기_생성_요청_결과.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(즐겨찾기_생성_요청_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long sourceId, Long targetId) {
