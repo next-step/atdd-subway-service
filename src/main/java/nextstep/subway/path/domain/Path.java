@@ -11,7 +11,6 @@ public class Path {
 
     private List<Station> stations;
     private Distance distance;
-
     private Fare fare;
 
     private Path(List<Station> stations, Distance distance, Fare fare) {
