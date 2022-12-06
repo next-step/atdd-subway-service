@@ -2,6 +2,6 @@
 
 # 인수 테스트 기반 리팩터링 
     [] LineService 리팩터링
-        [] Domain 으로 옮길 로직
+        [o] Domain 으로 옮길 로직
         [] Domain 단위 테스트를 작성
         [] 로직 옮기기

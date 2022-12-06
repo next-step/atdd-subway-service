@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.consts.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -102,12 +103,12 @@ public class Line extends BaseEntity {
         boolean isDownStationExisted = stations.stream().anyMatch(it -> it == newSection.getDownStation());
 
         if (isUpStationExisted && isDownStationExisted) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new RuntimeException(ErrorMessage.ERROR_SECTION_ALREADY_EXIST);
         }
 
         if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == newSection.getUpStation()) &&
                 stations.stream().noneMatch(it -> it == newSection.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new RuntimeException(ErrorMessage.ERROR_SECTION_NOT_REGISTER);
         }
 
         if (stations.isEmpty()) {
