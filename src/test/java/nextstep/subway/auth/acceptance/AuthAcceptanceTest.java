@@ -21,6 +21,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     private Integer age = 5;
 
     private String incorrectPassword = "incorrectPassword";
+    private String incorrectToken = "abc.def.efg";
 
 
     @BeforeEach
@@ -48,9 +49,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        ExtractableResponse<Response> response = 내_정보_조회_요청(incorrectToken);
+
+        내_정보_조회_실패됨(response);
     }
 
-    private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest request = new TokenRequest(email, password);
         return RestAssured
             .given().log().all()
@@ -61,11 +65,26 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
+    private ExtractableResponse<Response> 내_정보_조회_요청(String token) {
+        return RestAssured
+            .given().log().all()
+            .auth()
+            .oauth2(token)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
     private void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
     private void 로그인_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 내_정보_조회_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
