@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Lines;
+
 public class Fare {
     public static final int MIDDLE_DISTANCE = 10;
     public static final int HIGH_DISTANCE = 50;
@@ -14,15 +16,15 @@ public class Fare {
         this.fare = fare;
     }
 
-    public static Fare from(double distance) {
-        return new Fare(calFare(distance));
+    public static Fare of(double distance, Lines lines) {
+        return new Fare(calFare(distance, lines));
     }
 
     public int getFare() {
         return fare;
     }
 
-    private static int calFare(double distance) {
-        return BASIC_FARE + FareDistance.calAdditionalFare(distance);
+    private static int calFare(double distance, Lines lines) {
+        return BASIC_FARE + FareDistance.calAdditionalFare(distance) + lines.getMaxAdditionalFare();
     }
 }

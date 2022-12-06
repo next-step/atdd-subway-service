@@ -12,7 +12,7 @@ import java.util.function.Predicate;
 
 public enum FareDistance {
     MIDDLE(distance -> distance > MIDDLE_DISTANCE,
-            distance -> calSectorFare(Math.min(distance - MIDDLE_DISTANCE, HIGH_DISTANCE - MIDDLE_DISTANCE),
+            distance -> calSectorFare(Math.min((distance - MIDDLE_DISTANCE), HIGH_DISTANCE - MIDDLE_DISTANCE),
                     MIDDLE_SECTOR_CHARGE_DISTANCE)),
     HIGH(distance -> distance > HIGH_DISTANCE,
             distance -> calSectorFare(distance - HIGH_DISTANCE, HIGH_SECTOR_CHARGE_DISTANCE));
@@ -34,7 +34,7 @@ public enum FareDistance {
 
 
     private static int calSectorFare(double distance, int chargingDistance) {
-        return (int) ((Math.ceil((distance - 1) / chargingDistance) + 1) * ADDITIONAL_FARE);
+        return (int) ((Math.ceil(((int)distance - 1) / chargingDistance) + 1) * ADDITIONAL_FARE);
     }
 
 
