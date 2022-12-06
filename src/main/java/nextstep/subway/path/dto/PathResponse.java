@@ -33,6 +33,8 @@ public class PathResponse {
     }
 
     public List<String> getStationNames() {
-        return stationPathResponses.stream().map(StationPathResponse::getName).collect(Collectors.toList());
+        return stationPathResponses.stream()
+                .map(StationPathResponse::getName)
+                .collect(Collectors.toList());
     }
 }
