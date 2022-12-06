@@ -8,8 +8,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
-    private static final int SURCHARGE_DISTANCE_STEP1 = 10;
-    private static final int SURCHARGE_DISTANCE_STEP2 = 50;
+    public static final int SURCHARGE_DISTANCE_STEP1 = 10;
+    public static final int SURCHARGE_DISTANCE_STEP2 = 50;
 
     @Column(name = "distance")
     private int value;
