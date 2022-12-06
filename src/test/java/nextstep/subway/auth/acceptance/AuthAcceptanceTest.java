@@ -1,16 +1,14 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestUtils.*;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTestUtils.*;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import org.junit.jupiter.api.*;
-
-import java.util.Arrays;
-import java.util.Collection;
-
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTestUtils.*;
-import static nextstep.subway.member.acceptance.MemberAcceptanceTestUtils.*;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 class AuthAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "woowa@email.com";
@@ -37,32 +35,34 @@ class AuthAcceptanceTest extends AcceptanceTest {
      *     When 로그인 요청
      *     Then 로그인 성공
      */
-    @TestFactory
-    @DisplayName("로그인 통합 인수 테스트")
-    Collection<DynamicTest> loginAuthAcceptance() {
-        return Arrays.asList(
-                dynamicTest("로그인 요청시 로그인 실패 (아이디 오입력)", () -> {
-                    // when
-                    ExtractableResponse<Response> response = 로그인_요청("wrong@email.com", PASSWORD);
+    @Test
+    @DisplayName("로그인 요청시 로그인 실패 (아이디 오입력)")
+    void loginByWrongId() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청("wrong@email.com", PASSWORD);
 
-                    // then
-                    로그인_실패(response);
-                }),
-                dynamicTest("로그인 요청시 로그인 실패 (비밀번호 오입력)", () -> {
-                    // when
-                    ExtractableResponse<Response> response = 로그인_요청(EMAIL, "wrongPassword");
+        // then
+        로그인_실패(response);
+    }
 
-                    // then
-                    로그인_실패(response);
-                }),
-                dynamicTest("로그인 요청시 로그인 성공", () -> {
-                    // when
-                    ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+    @Test
+    @DisplayName("로그인 요청시 로그인 실패 (비밀번호 오입력)")
+    void loginByWrongPassword() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, "wrongPassword");
 
-                    // then
-                    로그인_성공(response);
-                })
-        );
+        // then
+        로그인_실패(response);
+    }
+
+    @Test
+    @DisplayName("로그인 요청시 로그인 성공")
+    void loginSuccess() {
+        // when
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+
+        // then
+        로그인_성공(response);
     }
 
     @Test

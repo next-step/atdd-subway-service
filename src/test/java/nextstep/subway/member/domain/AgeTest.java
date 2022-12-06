@@ -25,15 +25,6 @@ class AgeTest {
         );
     }
 
-    @Test
-    @DisplayName("Null 입력시 나이 생성 실패")
-    void createAgeInputNull() {
-        // when & then
-        assertThatThrownBy(() -> Age.from(null))
-                .isInstanceOf(InvalidParameterException.class)
-                .hasMessage("나이를 입력해주세요.");
-    }
-
     @ParameterizedTest
     @ValueSource(ints = {-1, 0})
     @DisplayName("0보다 작을 경우 나이 생성 실패")

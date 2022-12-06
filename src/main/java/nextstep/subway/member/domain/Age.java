@@ -1,14 +1,11 @@
 package nextstep.subway.member.domain;
 
-import nextstep.subway.common.exception.InvalidParameterException;
-
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.util.Objects;
+import nextstep.subway.common.exception.InvalidParameterException;
 
 @Embeddable
 public class Age {
-    private static final String ERROR_MESSAGE_NULL_AGE = "나이를 입력해주세요.";
     private static final String ERROR_MESSAGE_INVALID_AGE_CRITERION = "나이는 0보다 커야합니다.";
     private static final int INVALID_AGE_CRITERION = 0;
 
@@ -17,17 +14,16 @@ public class Age {
 
     protected Age() {}
 
-    private Age(Integer age) {
+    private Age(int age) {
         validAge(age);
         this.age = age;
     }
 
-    private void validAge(Integer age) {
-        validNull(age);
+    private void validAge(int age) {
         validAgeCriterion(age);
     }
 
-    public static Age from(Integer age) {
+    public static Age from(int age) {
         return new Age(age);
     }
 
@@ -37,10 +33,8 @@ public class Age {
         }
     }
 
-    private static void validNull(Integer age) {
-        if (Objects.isNull(age)) {
-            throw new InvalidParameterException(ERROR_MESSAGE_NULL_AGE);
-        }
+    public boolean between(int start, int end) {
+        return start <= age && age <= end;
     }
 
     public Integer value() {

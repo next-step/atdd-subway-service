@@ -1,7 +1,10 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.policy.FarePolicy;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
@@ -19,10 +22,12 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findShortestPath(PathRequest pathRequest) {
+    public PathResponse findShortestPath(LoginMember loginMember, PathRequest pathRequest) {
         Station departureStation = stationService.findStationById(pathRequest.getDepartureId());
         Station arrivalStation = stationService.findStationById(pathRequest.getArrivalId());
         PathFinder pathFinder = PathFinder.from(Lines.from(lineService.findAll()));
-        return PathResponse.from(pathFinder.findShortestPath(departureStation, arrivalStation));
+        Path shortestPath = pathFinder.findShortestPath(departureStation, arrivalStation);
+        FarePolicy farePolicy = FarePolicy.of(loginMember, shortestPath);
+        return PathResponse.from(shortestPath, farePolicy.calculateFare());
     }
 }

@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import java.util.List;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -17,11 +18,13 @@ class LinesTest {
     private Station 양재역;
 
     private Section 이호선_구간;
+    private Section 삼호선_구간;
     private Section 신분당선_구간;
     private Section 신분당선_구간2;
 
     private Line 신분당선;
     private Line 이호선;
+    private Line 삼호선;
 
     @BeforeEach
     void setUp() {
@@ -29,14 +32,17 @@ class LinesTest {
         신논현역 = Station.from("신논현역");
         양재역 = Station.from("양재역");
         선릉역 = Station.from("선릉역");
+        Station 고속터미널역 = Station.from("고속터미널역");
 
         신분당선_구간 = Section.of(신논현역, 양재역, Distance.from(10));
         신분당선_구간2 = Section.of(강남역, 양재역, Distance.from(5));
         이호선_구간 = Section.of(강남역, 선릉역, Distance.from(5));
+        삼호선_구간 = Section.of(고속터미널역, 양재역, Distance.from(5));
 
         이호선 = Line.of("이호선", "bg-green-600", 이호선_구간);
-        신분당선 = Line.of("신분당선", "bg-red-600", 신분당선_구간);
+        신분당선 = Line.of("신분당선", "bg-red-600", 900, 신분당선_구간);
         신분당선.addSection(신분당선_구간2);
+        삼호선 = Line.of("삼호선", "bg-red-600", 300, 삼호선_구간);
     }
 
     @Test
@@ -69,5 +75,18 @@ class LinesTest {
                 () -> assertThat(actual).hasSize(3),
                 () -> assertThat(actual).contains(신분당선_구간, 신분당선_구간2, 이호선_구간)
         );
+    }
+
+    @Test
+    @DisplayName("구간 추가 요금 최대값 반환")
+    void maxLineSurcharge() {
+        // given
+        Lines lines = Lines.from(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        // when
+        Fare actual = lines.maxLineSurcharge();
+
+        // then
+        assertThat(actual.value()).isEqualTo(900);
     }
 }

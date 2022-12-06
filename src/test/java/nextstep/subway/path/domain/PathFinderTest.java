@@ -1,12 +1,13 @@
 package nextstep.subway.path.domain;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static nextstep.subway.line.domain.LineTestFixture.line;
+import static nextstep.subway.line.domain.SectionTestFixture.section;
+import static nextstep.subway.station.domain.StationTestFixture.station;
+import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import java.util.Arrays;
 import nextstep.subway.common.exception.InvalidParameterException;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
@@ -17,6 +18,9 @@ import org.junit.jupiter.api.Test;
 
 class PathFinderTest {
     private Lines lines;
+    private Line 이호선;
+    private Line 삼호선;
+    private Line 신분당선;
     private Station 선릉역;
     private Station 강남역;
     private Station 양재역;
@@ -35,20 +39,20 @@ class PathFinderTest {
 
     @BeforeEach
     void setUp() {
-        선릉역 = Station.from("선릉역");
-        남부터미널역 = Station.from("남부터미널역");
-        강남역 = Station.from("강남역");
-        양재역 = Station.from("양재역");
-        도곡역 = Station.from("도곡역");
-        Station 한티역 = Station.from("한티역");
-        Station 신논현역 = Station.from("신논현역");
+        선릉역 = station("선릉역");
+        남부터미널역 = station("남부터미널역");
+        강남역 = station("강남역");
+        양재역 = station("양재역");
+        도곡역 = station("도곡역");
+        Station 한티역 = station("한티역");
+        Station 신논현역 = station("신논현역");
 
-        Section 신분당선_구간 = Section.of(강남역, 양재역, Distance.from(5));
+        Section 신분당선_구간 = section(강남역, 양재역, 5);
 
-        Line 이호선 = Line.of("이호선", "bg-green-600", Section.of(선릉역, 강남역, Distance.from(3)));
-        Line 삼호선 = Line.of("삼호선", "bg-orange-600", Section.of(양재역, 남부터미널역, Distance.from(5)));
-        Line 신분당선 = Line.of("신분당선", "bg-red-600", Section.of(신논현역, 양재역, Distance.from(10)));
-        Line 수인분당선 = Line.of("신분당선", "bg-red-600", Section.of(도곡역, 한티역, Distance.from(10)));
+        이호선 = line("이호선", "bg-green-600", section(선릉역, 강남역, 3));
+        삼호선 = line("삼호선", "bg-orange-600", section(양재역, 남부터미널역, 5));
+        신분당선 = line("신분당선", "bg-red-600", section(신논현역, 양재역, 10));
+        Line 수인분당선 = line("신분당선", "bg-red-600", section(도곡역, 한티역, 10));
         신분당선.addSection(신분당선_구간);
 
         lines = Lines.from(Arrays.asList(이호선, 삼호선, 신분당선, 수인분당선));
@@ -67,6 +71,7 @@ class PathFinderTest {
         assertAll(
                 () -> assertThat(actual.stations()).hasSize(4),
                 () -> assertThat(actual.stations()).containsExactly(선릉역, 강남역, 양재역, 남부터미널역),
+                () -> assertThat(actual.lines()).contains(이호선, 삼호선, 신분당선),
                 () -> assertThat(actual.distanceValue()).isEqualTo(13)
         );
     }

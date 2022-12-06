@@ -6,6 +6,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.domain.Favorites;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
@@ -30,8 +31,10 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavoritesByMemberId(LoginMember loginMember) {
-        Member member = memberService.findMemberById(loginMember.getId());
-        return member.favorites().stream().map(FavoriteResponse::from).collect(Collectors.toList());
+        Favorites favorites = Favorites.from(favoriteRepository.findAllByMemberId(loginMember.getId()));
+        return favorites.list().stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 
     @Transactional
@@ -39,14 +42,13 @@ public class FavoriteService {
         Member member = memberService.findMemberById(loginMember.getId());
         Station departureStation = stationService.findStationById(favoriteRequest.getDepartureId());
         Station arrivalStation = stationService.findStationById(favoriteRequest.getArrivalId());
-        return favoriteRepository.save(Favorite.of(member, departureStation, arrivalStation));
+        return favoriteRepository.save(Favorite.of(member.getId(), departureStation, arrivalStation));
     }
 
     @Transactional
     public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
-        Member member = memberService.findMemberById(loginMember.getId());
-        Favorite favorite = favoriteRepository.findById(favoriteId)
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
                 .orElseThrow(() -> new NotFoundException(ERROR_MESSAGE_NOT_FOUND_FAVORITE, favoriteId));
-        member.removeFavorite(favorite);
+        favoriteRepository.delete(favorite);
     }
 }

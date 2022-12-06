@@ -54,8 +54,12 @@ public class Email {
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Email email1 = (Email) o;
         return Objects.equals(email, email1.email);
     }

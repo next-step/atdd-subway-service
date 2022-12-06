@@ -1,7 +1,5 @@
 package nextstep.subway.member.domain;
 
-import java.util.Collections;
-import java.util.List;
 import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,8 +7,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.exception.AuthorizationException;
-import nextstep.subway.favorite.domain.Favorite;
-import nextstep.subway.favorite.domain.Favorites;
 
 @Entity
 public class Member extends BaseEntity {
@@ -25,20 +21,26 @@ public class Member extends BaseEntity {
     private Password password;
     @Embedded
     private Age age;
-    @Embedded
-    private Favorites favorites;
 
     protected Member() {}
 
-    private Member(String email, String password, Integer age, List<Favorite> favorites) {
+    private Member(String email, String password, Integer age) {
         this.email = Email.from(email);
         this.password = Password.from(password);
         this.age = Age.from(age);
-        this.favorites = Favorites.from(favorites);
     }
 
-    public static Member of(String email, String password, Integer age) {
-        return new Member(email, password, age, Collections.emptyList());
+    private Member(long id, String email, String password, int age) {
+        this(email, password, age);
+        this.id = id;
+    }
+
+    public static Member of(String email, String password, int age) {
+        return new Member(email, password, age);
+    }
+
+    public static Member of(long id, String email, String password, int age) {
+        return new Member(id, email, password, age);
     }
 
     public void update(Member member) {
@@ -48,18 +50,9 @@ public class Member extends BaseEntity {
     }
 
     public void checkPassword(String password) {
-        if (this.password.checkPassword(password)) {
+        if (this.password.isWrongPassword(password)) {
             throw new AuthorizationException(ERROR_MESSAGE_VALID_ID_OR_PASSWORD);
         }
-    }
-
-    public void addFavorite(Favorite favorite) {
-        favorites.addFavorite(favorite);
-        favorite.changeMember(this);
-    }
-
-    public void removeFavorite(Favorite favorite) {
-        favorites.removeFavorite(favorite);
     }
 
     public Long getId() {
@@ -76,9 +69,5 @@ public class Member extends BaseEntity {
 
     public String passwordValue() {
         return password.value();
-    }
-
-    public List<Favorite> favorites() {
-        return favorites.list();
     }
 }

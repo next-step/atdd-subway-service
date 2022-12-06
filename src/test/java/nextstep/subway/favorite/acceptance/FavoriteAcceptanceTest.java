@@ -1,15 +1,7 @@
 package nextstep.subway.favorite.acceptance;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestUtils.로그인되어_있음;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_목록_조회_실패됨;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_목록_조회_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_목록_조회됨;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_삭제_실패됨;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_삭제_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_삭제됨;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_생성_실패됨;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_생성_요청;
-import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.즐겨찾기_생성됨;
+import static nextstep.subway.favorite.acceptance.FavoriteAcceptanceTestUtils.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestUtils.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.member.acceptance.MemberAcceptanceTestUtils.회원_등록되어_있음;
@@ -27,6 +19,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -34,6 +27,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     private static final String EMAIL = "email@email.com";
     private static final String PASSWORD = "password";
     private static final int AGE = 20;
+    private static final String wrongToken = "wrongToken";
 
     private StationResponse 신논현역;
     private StationResponse 강남역;
@@ -92,8 +86,6 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
     @TestFactory
     @DisplayName("즐겨찾기 기능 통합 인수 테스트")
     Collection<DynamicTest> manageFavorite() {
-        String wrongToken = "wrongToken";
-
         return Arrays.asList(
                 DynamicTest.dynamicTest("회원은 즐겨찾기를 생성할 수 있다.", () -> {
                     // when
@@ -117,28 +109,37 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 
                     // then
                     즐겨찾기_삭제됨(response);
-                }),
-                DynamicTest.dynamicTest("유효하지 않은 토큰은 즐겨찾기를 생성할 수 없다.", () -> {
-                    // when
-                    ExtractableResponse<Response> response = 즐겨찾기_생성_요청(wrongToken, 양재역.getId(), 판교역.getId());
-
-                    // then
-                    즐겨찾기_생성_실패됨(response);
-                }),
-                DynamicTest.dynamicTest("유효하지 않은 토큰은 즐겨찾기 목록을 조회 할 수 없다.", () -> {
-                    // when
-                    ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(wrongToken);
-
-                    // then
-                    즐겨찾기_목록_조회_실패됨(response);
-                }),
-                DynamicTest.dynamicTest("유효하지 않은 토큰은 즐겨찾기를 삭제할 수 없다.", () -> {
-                    // when
-                    ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(wrongToken, 1L);
-
-                    // then
-                    즐겨찾기_삭제_실패됨(response);
                 })
         );
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 토큰은 즐겨찾기를 생성할 수 없다.")
+    void createFavoriteByInvalidToken() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(wrongToken, 양재역.getId(), 판교역.getId());
+
+        // then
+        즐겨찾기_생성_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 토큰은 즐겨찾기 목록을 조회 할 수 없다.")
+    void findFavoriteByInvalidToken() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(wrongToken);
+
+        // then
+        즐겨찾기_목록_조회_실패됨(response);
+    }
+
+    @Test
+    @DisplayName("유효하지 않은 토큰은 즐겨찾기를 삭제할 수 없다.")
+    void deleteFavoriteByInvalidToken() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(wrongToken, 1L);
+
+        // then
+        즐겨찾기_삭제_실패됨(response);
     }
 }

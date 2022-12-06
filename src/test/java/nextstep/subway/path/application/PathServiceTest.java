@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import static nextstep.subway.auth.domain.LoginMember.NON_MEMBER;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -73,7 +74,7 @@ class PathServiceTest {
         when(lineService.findAll()).thenReturn(Arrays.asList(신분당선, 수인분당선));
 
         // when
-        PathResponse pathResponse = pathService.findShortestPath(pathRequest);
+        PathResponse pathResponse = pathService.findShortestPath(NON_MEMBER, pathRequest);
 
         // then
         assertAll(
@@ -93,7 +94,7 @@ class PathServiceTest {
         when(lineService.findAll()).thenReturn(Arrays.asList(신분당선, 수인분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(NON_MEMBER, pathRequest))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("출발역과 도착역은 같을 수 없습니다.");
     }
@@ -108,7 +109,7 @@ class PathServiceTest {
         when(lineService.findAll()).thenReturn(Arrays.asList(신분당선, 수인분당선));
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(NON_MEMBER, pathRequest))
                 .isInstanceOf(InvalidParameterException.class)
                 .hasMessage("출발역과 도착역이 연결되지 않았습니다.");
     }
@@ -122,7 +123,7 @@ class PathServiceTest {
         given(stationService.findStationById(pathRequest.getArrivalId())).willThrow(NotFoundException.class);
 
         // when & then
-        assertThatThrownBy(() -> pathService.findShortestPath(pathRequest))
+        assertThatThrownBy(() -> pathService.findShortestPath(NON_MEMBER, pathRequest))
                 .isInstanceOf(NotFoundException.class);
     }
 }

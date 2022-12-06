@@ -113,7 +113,7 @@ public class Section {
         return id;
     }
 
-    public Line getLine() {
+    public Line line() {
         return line;
     }
 
