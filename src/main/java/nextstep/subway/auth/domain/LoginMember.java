@@ -23,11 +23,11 @@ public class LoginMember {
     }
 
     public boolean isTeen() {
-        return age >= MIN_AGE_TEEN;
+        return age >= MIN_AGE_TEEN && age < MIN_AGE_ADULT;
     }
 
     public boolean isChild() {
-        return age >= MIN_AGE_CHILD;
+        return age >= MIN_AGE_CHILD && age < MIN_AGE_TEEN;
     }
 
     public Long getId() {
