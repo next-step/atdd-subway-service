@@ -88,7 +88,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * * When 즐겨찾기 삭제 요청
      * * Then 즐겨찾기 삭제됨
      */
-    @DisplayName("나의 회원정보 관리 통합 테스트")
+    @DisplayName("즐겨찾기 관련 기능 통합 테스트")
     @TestFactory
     Stream<DynamicTest> dynamicTestsFromCollection() {
         Long 강남역_ID = 강남역.getId();
