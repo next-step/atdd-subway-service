@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Optional;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -58,10 +59,14 @@ class PathServiceTest {
         양재역 = new Station("양재역");
         남부터미널역 = new Station("남부터미널역");
 
-        강남_교대 = new Section(null, 강남역, 양재역, 10);
-        교대_강남 = new Section(null, 교대역, 강남역, 10);
-        교대_남부 = new Section(null, 교대역, 남부터미널역, 2);
-        남부_양재 = new Section(null, 남부터미널역, 양재역, 3);
+        Line 이호선 = new Line("이호선", "green");
+        Line 삼호선 = new Line("삼호선", "orange");
+        Line 신분당선 = new Line("신분당선", "red");
+
+        강남_교대 = new Section(신분당선, 강남역, 양재역, 10);
+        교대_강남 = new Section(이호선, 교대역, 강남역, 10);
+        교대_남부 = new Section(삼호선, 교대역, 남부터미널역, 2);
+        남부_양재 = new Section(삼호선, 남부터미널역, 양재역, 3);
     }
 
     @DisplayName("출발역과 도착역으로 최단거리를 조회할 수 있다.")
