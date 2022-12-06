@@ -1,8 +1,8 @@
-package nextstep.subway.path.fare.policy;
+package nextstep.subway.path.fare.policy.extra;
 
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
 
-public interface FarePolicy {
+public interface ExtraFarePolicyStrategy {
     Fare calculate(Path path);
 }

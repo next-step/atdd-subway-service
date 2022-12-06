@@ -1,4 +1,4 @@
-package nextstep.subway.path.fare.policy;
+package nextstep.subway.path.fare.policy.extra;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -13,16 +13,16 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class LineFarePolicyTest {
+class LineExtraFarePolicyStrategyTest {
 
     static final Fare ONE = Fare.valueOf(100);
     static final Fare THREE = Fare.valueOf(300);
 
-    LineFarePolicy farePolicy;
+    LineExtraFarePolicyStrategy farePolicy;
 
     @BeforeEach
     void setUp() {
-        farePolicy = new LineFarePolicy();
+        farePolicy = new LineExtraFarePolicyStrategy();
     }
 
     @Test

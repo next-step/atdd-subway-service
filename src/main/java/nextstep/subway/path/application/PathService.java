@@ -5,7 +5,7 @@ import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.fare.Fare;
-import nextstep.subway.path.fare.policy.FarePolicies;
+import nextstep.subway.path.fare.policy.FarePolicyService;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -17,13 +17,13 @@ public class PathService {
 
     private final StationService stationService;
     private final LineQueryService lineQueryService;
-    private final FarePolicies farePolicies;
+    private final FarePolicyService farePolicyService;
 
     public PathService(StationService stationService, LineQueryService lineQueryService,
-                       FarePolicies farePolicies) {
+                       FarePolicyService farePolicyService) {
         this.stationService = stationService;
         this.lineQueryService = lineQueryService;
-        this.farePolicies = farePolicies;
+        this.farePolicyService = farePolicyService;
     }
 
     public PathResponse findPath(Long sourceStationId, Long targetStationId) {
@@ -32,7 +32,7 @@ public class PathService {
         PathFinder pathFinder = createPathFinder();
 
         Path path = pathFinder.find(sourceStation, targetStation);
-        Fare fare = farePolicies.calculate(path);
+        Fare fare = farePolicyService.calculate(path);
 
         return new PathResponse(path.getStations(), path.getDistance(), fare);
     }

@@ -194,4 +194,8 @@ public class Sections {
                 .map(Line::getFare)
                 .collect(Collectors.toList());
     }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
+    }
 }

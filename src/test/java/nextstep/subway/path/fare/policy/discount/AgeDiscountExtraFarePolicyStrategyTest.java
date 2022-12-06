@@ -1,4 +1,4 @@
-package nextstep.subway.path.fare.policy;
+package nextstep.subway.path.fare.policy.discount;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.fare.Fare;
@@ -8,13 +8,13 @@ import org.junit.jupiter.params.provider.CsvSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AgeDiscountFarePolicyTest {
+class AgeDiscountExtraFarePolicyStrategyTest {
 
-    AgeDiscountFarePolicy discountFarePolicy;
+    AgeDiscountFarePolicyStrategy discountFarePolicy;
 
     @BeforeEach
     void setUp() {
-        discountFarePolicy = new AgeDiscountFarePolicy();
+        discountFarePolicy = new AgeDiscountFarePolicyStrategy();
     }
 
     @ParameterizedTest

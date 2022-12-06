@@ -1,11 +1,9 @@
-package nextstep.subway.path.fare.policy;
+package nextstep.subway.path.fare.policy.discount;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.fare.Fare;
-import org.springframework.stereotype.Component;
 
-@Component
-public class AgeDiscountFarePolicy implements DiscountFarePolicy {
+public class AgeDiscountFarePolicyStrategy implements DiscountFarePolicyStrategy {
 
     public static final Fare BASIC_DISCOUNT_FARE = Fare.valueOf(350);
     public static final double CHILDREN_DISCOUNT_PERCENT = 0.5;
