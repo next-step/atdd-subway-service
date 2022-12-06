@@ -18,7 +18,7 @@ public class PathFinder {
         setGraphVertexAndEdge(lines);
         GraphPath<Station, DefaultWeightedEdge> graphPath = getGraphPath(sourceStation, targetStation);
         checkIsLinkedStation(graphPath);
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
+        return new Path(graphPath.getVertexList(), new Distance((int) graphPath.getWeight()));
     }
 
     private void setGraphVertexAndEdge(List<Line> lines) {

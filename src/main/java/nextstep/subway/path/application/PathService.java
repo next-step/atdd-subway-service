@@ -33,6 +33,7 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder();
         Path path = pathFinder.findFastPaths(lines, sourceStation, targetStation);
+        path.calculatorPrice();
 
         return PathResponse.of(path);
     }

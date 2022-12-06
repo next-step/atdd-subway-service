@@ -41,11 +41,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 없는역;
 
     /**
-     * 교대역    --- *2호선* ---   강남역
-     * |                        |
-     * *3호선*                   *신분당선*
-     * |                        |
-     * 남부터미널역  --- *3호선* ---   양재
+     * 교대역  ---  *2호선* 10 ---   강남역
+     * |                         |
+     * *3호선*  3                 *신분당선* 10
+     * |                         |
+     * 남부터미널역--- *3호선* 12 ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -84,7 +84,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         "bg-red-600",
                         교대역.getId(),
                         양재역.getId(),
-                        5))
+                        15))
                 .as(LineResponse.class);
 
         별도호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
@@ -103,11 +103,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단 경로 조회")
     void getPaths() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response_distance_15 = 지하철_최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response_distance_3 = 지하철_최단_경로_조회_요청(교대역, 남부터미널역);
 
         // then
-        지하철_최단_경로_응답됨(response);
-        지하철_최단_경로_결과_비교(response, Arrays.asList(교대역.getId(), 남부터미널역.getId(), 양재역.getId()), 5);
+        지하철_최단_경로_응답됨(response_distance_15);
+        지하철_최단_경로_결과_비교(response_distance_15, Arrays.asList(교대역.getId(), 남부터미널역.getId(), 양재역.getId()), 15, 1350);
+        지하철_최단_경로_응답됨(response_distance_3);
+        지하철_최단_경로_결과_비교(response_distance_3, Arrays.asList(교대역.getId(), 남부터미널역.getId()), 3, 1250);
     }
 
     @Test
@@ -154,13 +157,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(PathResponse.class)).isNotNull();
     }
 
-    public static void 지하철_최단_경로_결과_비교(ExtractableResponse<Response> response, List<Long> ids, int distance) {
+    public static void 지하철_최단_경로_결과_비교(ExtractableResponse<Response> response, List<Long> ids, int distance, int price) {
         PathResponse pathResponse = response.as(PathResponse.class);
+        최단_경로_역_포함_비교(pathResponse, ids);
+        최단_경로_거리_비교(pathResponse, distance);
+        최단_경로_금액_비교(pathResponse, price);
+    }
+
+    private static void 최단_경로_역_포함_비교(PathResponse pathResponse, List<Long> ids) {
         List<Long> pathStationIds = pathResponse.getStations().stream()
                 .map(PathStationResponse::getId)
                 .collect(Collectors.toList());
         assertThat(pathStationIds.containsAll(ids)).isTrue();
+    }
+
+    private static void 최단_경로_거리_비교(PathResponse pathResponse, int distance) {
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
+    }
+
+    private static void 최단_경로_금액_비교(PathResponse pathResponse, int price) {
+        assertThat(pathResponse.getPrice()).isEqualTo(price);
     }
 
     public static void 지하철_최단_경로_응답_실패됨(ExtractableResponse<Response> response) {

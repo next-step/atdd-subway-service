@@ -7,11 +7,17 @@ import java.util.List;
 public class Path {
 
     private List<Station> stations;
-    private int distance;
+    private Distance distance;
+    private Price price;
 
-    public Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, Distance distance) {
         this.stations = stations;
         this.distance = distance;
+        this.price = new Price();
+    }
+
+    public void calculatorPrice() {
+        price.calculatorPrice(distance.value());
     }
 
     public List<Station> getStations() {
@@ -19,7 +25,11 @@ public class Path {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.value();
+    }
+
+    public int getPrice() {
+        return price.value();
     }
 
 }

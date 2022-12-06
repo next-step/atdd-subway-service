@@ -9,19 +9,21 @@ public class PathResponse {
 
     private List<PathStationResponse> stations;
     private int distance;
+    private int price;
 
     public PathResponse() {}
 
-    public PathResponse(List<PathStationResponse> stations, int distance) {
+    public PathResponse(List<PathStationResponse> stations, int distance, int price) {
         this.stations = stations;
         this.distance = distance;
+        this.price = price;
     }
 
     public static PathResponse of(Path path) {
         return new PathResponse(path.getStations()
                 .stream()
                 .map(station -> PathStationResponse.of(station))
-                .collect(Collectors.toList()), path.getDistance());
+                .collect(Collectors.toList()), path.getDistance(), path.getPrice());
     }
 
     public List<PathStationResponse> getStations() {
@@ -30,5 +32,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getPrice() {
+        return price;
     }
 }
