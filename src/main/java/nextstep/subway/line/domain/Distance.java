@@ -23,7 +23,7 @@ public class Distance implements Comparable<Distance> {
     }
 
     private static void validate(int distance) {
-        if (distance < MINIMUM_DISTANCE) {
+        if (distance <= MINIMUM_DISTANCE) {
             throw new IllegalArgumentException();
         }
     }

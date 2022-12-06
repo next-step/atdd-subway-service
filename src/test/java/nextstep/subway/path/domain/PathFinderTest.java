@@ -68,7 +68,7 @@ class PathFinderTest {
 
         PathFinder pathFinder = new PathFinder(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
 
-        assertThatThrownBy(() -> pathFinder.findPath(stationA, stationA))
+        assertThatThrownBy(() -> pathFinder.findStations(stationA, stationA))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE);
     }
@@ -79,7 +79,7 @@ class PathFinderTest {
 
         PathFinder pathFinder = new PathFinder(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
 
-        assertThatThrownBy(() -> pathFinder.findPath(stationA, stationE))
+        assertThatThrownBy(() -> pathFinder.findStations(stationA, stationE))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -90,8 +90,8 @@ class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
 
         assertAll(
-                () -> assertThat(pathFinder.findPath(stationA, stationC).findStations()).containsExactly(stationA, stationD, stationC),
-                () -> assertThat(pathFinder.findPath(stationA, stationC).findDistance()).isEqualTo(new Distance(2))
+                () -> assertThat(pathFinder.findStations(stationA, stationC)).containsExactly(stationA, stationD, stationC),
+                () -> assertThat(pathFinder.findDistance(stationA, stationC)).isEqualTo(2)
         );
     }
 }

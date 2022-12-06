@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -21,9 +20,12 @@ public class PathFinder {
         this.lines = lines;
     }
 
-    public Path findPath(Station source, Station target) {
-        validSearchPath(source, target);
-        return new Path(createSections(findPath(source, target, registerStationInfo())));
+    public List<Station> findStations(Station source, Station target) {
+        return findPath(source, target, registerStationInfo()).getVertexList();
+    }
+
+    public int findDistance(Station source, Station target) {
+        return (int) findPath(source, target, registerStationInfo()).getWeight();
     }
 
     private void validSearchPath(Station source, Station target) {
@@ -32,13 +34,9 @@ public class PathFinder {
         }
     }
 
-    private Sections createSections(GraphPath<Station, SectionEdge> result) {
-        Sections sections = new Sections();
-        result.getEdgeList().stream().map(SectionEdge::getSection).forEach(sections::add);
-        return sections;
-    }
+    public GraphPath<Station, SectionEdge> findPath(Station source, Station target, SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
 
-    private GraphPath<Station, SectionEdge> findPath(Station source, Station target, SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
+        validSearchPath(source, target);
 
         GraphPath<Station, SectionEdge> result = new DijkstraShortestPath<>(graph).getPath(source, target);
 

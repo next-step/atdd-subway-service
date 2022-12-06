@@ -26,7 +26,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
     @Test
     void createStation() {
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(memberA, 강남역);
 
         // then
         지하철역_생성됨(response);
@@ -39,7 +39,7 @@ public class StationAcceptanceTest extends AcceptanceTest {
         지하철역_등록되어_있음(강남역);
 
         // when
-        ExtractableResponse<Response> response = 지하철역_생성_요청(강남역);
+        ExtractableResponse<Response> response = 지하철역_생성_요청(memberA, 강남역);
 
         // then
         지하철역_생성_실패됨(response);
@@ -74,14 +74,15 @@ public class StationAcceptanceTest extends AcceptanceTest {
     }
 
     public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
-        return 지하철역_생성_요청(name);
+        return 지하철역_생성_요청(memberA, name);
     }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+    public static ExtractableResponse<Response> 지하철역_생성_요청(String token, String name) {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
                 .given().log().all()
+                .auth().oauth2(token)
                 .body(stationRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().post("/stations")

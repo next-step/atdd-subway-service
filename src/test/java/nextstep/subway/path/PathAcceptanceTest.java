@@ -44,12 +44,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        stationA = 지하철역_생성_요청("A").jsonPath().getLong("id");
-        stationB = 지하철역_생성_요청("B").jsonPath().getLong("id");
-        stationC = 지하철역_생성_요청("C").jsonPath().getLong("id");
-        stationD = 지하철역_생성_요청("D").jsonPath().getLong("id");
-        stationE = 지하철역_생성_요청("E").jsonPath().getLong("id");
-        stationF = 지하철역_생성_요청("F").jsonPath().getLong("id");
+        stationA = 지하철역_생성_요청(memberA,  "A").jsonPath().getLong("id");
+        stationB = 지하철역_생성_요청(memberA, "B").jsonPath().getLong("id");
+        stationC = 지하철역_생성_요청(memberA, "C").jsonPath().getLong("id");
+        stationD = 지하철역_생성_요청(memberA, "D").jsonPath().getLong("id");
+        stationE = 지하철역_생성_요청(memberA, "E").jsonPath().getLong("id");
+        stationF = 지하철역_생성_요청(memberA, "F").jsonPath().getLong("id");
 
         lineA = 지하철_노선_생성_요청(createLineCreateParams("A", "red", stationA, stationB, 5)).jsonPath().getLong("id");
         lineB = 지하철_노선_생성_요청(createLineCreateParams("B", "blue", stationB, stationC, 3)).jsonPath().getLong("id");
