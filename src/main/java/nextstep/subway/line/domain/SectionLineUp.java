@@ -63,8 +63,8 @@ public class SectionLineUp {
 
         if (isInternalSection(station)) {
             // 이미 upSection과 downSection이 존재하는 것이 검증 되었기에 Optional 값에 대한 별도 체크를 하지 않는다
-            Section upSection = this.sections.stream().filter(it -> it.isSameDownSection(station)).findFirst().get();
-            Section downSection = this.sections.stream().filter(it -> it.isSameUpSection(station)).findFirst().get();
+            Section upSection = sameDownStation(station);
+            Section downSection = sameUpStation(station);
             sections.add(Section.mergeSection(upSection, downSection));
             sections.remove(upSection);
             sections.remove(downSection);
@@ -75,6 +75,14 @@ public class SectionLineUp {
 
     public int sectionSize() {
         return this.sections.size();
+    }
+
+    private Section sameDownStation(Station station) {
+        return this.sections.stream().filter(it -> it.isSameDownSection(station)).findFirst().get();
+    }
+
+    private Section sameUpStation(Station station) {
+        return this.sections.stream().filter(it -> it.isSameUpSection(station)).findFirst().get();
     }
 
     private void addSection(StationLineUp stationLineUp, Section section) {
