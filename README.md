@@ -412,3 +412,11 @@ fun MutableList<Int>.swap(index1: Int, index2: Int){
 	this[index2] = tmp
 }
 ```
+
+### 3단계 피드백
+- [ ] Favorite은 member를 필수로 가지므로, 생성자의 parameter로 member 추가
+- Q) member --> favorite 의존성이 설정한 이유?
+  - A) `getFavorite()`은 accessToken 으로 인증된 멤버의 즐겨찾기를 가져오는 기능이다.
+    따라서, member와 favorite의 객체간 연관관계의 객체 그래프를 통해 조회하는 것이 좋은 방법이라고 생각함  
+    이게 아니라면, favoriteRepository에서 memberId로 조회를 하거나 모든 favorite을 가져와서,
+    memberId로 필터링 하는 수 밖에 없을텐데, 이는 데이터 중심 위주인 것 같아 member --> favorite의 의존성 추가
