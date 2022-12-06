@@ -34,6 +34,12 @@ public class FavoriteController {
         return ResponseEntity.created(URI.create("/favorites/" + favorite.getId())).body(favorite);
     }
 
+    @GetMapping("/{favoriteId}")
+    public ResponseEntity<FavoriteResponse> findFavorite(@AuthenticationPrincipal LoginMember loginMember,
+                                                @PathVariable(name = "favoriteId") Long favoriteId) {
+        return ResponseEntity.ok(favoriteService.findById(favoriteId));
+    }
+
     @GetMapping
     public ResponseEntity<List<FavoriteResponse>> findAllFavorites(@AuthenticationPrincipal LoginMember loginMember) {
         return ResponseEntity.ok(favoriteService.findAllFavorites(loginMember.getId()));
