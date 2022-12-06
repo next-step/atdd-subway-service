@@ -42,6 +42,49 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 
+    /**
+     * Feature: 지하철 구간 관리 기능
+     *  Background:
+     *      given: 지하철역이 기존에 등록되어 있음
+     *      and: 지하철 노선이 기존에 등록되어 있음
+     *      and: 노선에 역 구간이 등록되어 있음
+     *
+     *  Scenario: 지하철 구간 관리
+     *      when: 지하철 노선 신규 구간 등록 요청
+     *      then: 지하철 구간 등록됨
+     *      when: 지하철 노선에 등록된 역 목록 조회 요청
+     *      then: 등록한 지하철 구간이 반영된 역 목록이 조회됨
+     *      when: 지하철 구간 삭제 요청
+     *      then: 지하철 구간 삭제됨
+     *      when: 지하철 노선에 등록된 역 목록 조회 요청
+     *      then: 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+     */
+    @Test
+    @DisplayName("지하철 구간 관련 테스트")
+    void sectionScenario(){
+        // when: 지하철 노선 신규 구간 등록 요청
+        ExtractableResponse<Response> addResponse = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 4);
+        // then: 지하철 구간 등록됨
+        지하철_노선에_지하철역_등록됨(addResponse);
+
+        // when: 지하철 노선에 등록된 역 목록 조회 요청
+        ExtractableResponse<Response> afterAddResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        LineResponse 등록_후_조회_결과 = afterAddResponse.as(LineResponse.class);
+        // then: 등록한 지하철 구간이 반영된 역 목록이 조회됨
+        지하철_노선에_지하철역_순서_정렬됨(afterAddResponse, 등록_후_조회_결과.getStations());
+
+        // when: 지하철 구간 삭제 요청
+        ExtractableResponse<Response> deleteResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 강남역);
+        // then: 지하철 구간 삭제됨
+        지하철_노선에_지하철역_제외됨(deleteResponse);
+
+        // when: 지하철 노선에 등록된 역 목록 조회 요청
+        ExtractableResponse<Response> afterDeleteResponse = LineAcceptanceTest.지하철_노선_조회_요청(신분당선);
+        LineResponse 제거_후_조회_결과 = afterDeleteResponse.as(LineResponse.class);
+        // then: 삭제한 지하철 구간이 반영된 역 목록이 조회됨
+        지하철_노선에_지하철역_순서_정렬됨(afterDeleteResponse, 제거_후_조회_결과.getStations());
+    }
+
     @DisplayName("지하철 구간을 등록한다.")
     @Test
     void addLineSection() {
