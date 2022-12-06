@@ -21,15 +21,17 @@ import static org.mockito.Mockito.when;
 @DisplayName("단위 테스트 - mockito의 MockitoExtension을 활용한 가짜 협력 객체 사용")
 @ExtendWith(MockitoExtension.class)
 public class MockitoExtensionTest {
+    
     @Mock
     private LineRepository lineRepository;
+    
     @Mock
     private StationService stationService;
 
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(Line.of("수원역", "red")));
+        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line.Builder().name("1호선").color("red").build()));
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when

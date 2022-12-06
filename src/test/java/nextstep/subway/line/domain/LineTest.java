@@ -8,7 +8,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class LineTest {
 
-    private final Line line = Line.of("1호선", "red");
+    private final Line line = new Line.Builder().name("1호선").color("red").build();
     private final Station stationA = Station.from("수원역");
     private final Station stationB = Station.from("성균관대역");
     private final Station stationC = Station.from("화서역");

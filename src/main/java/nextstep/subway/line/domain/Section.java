@@ -1,8 +1,11 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.NotValidDataException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+
+import static nextstep.subway.exception.type.ValidExceptionType.NOT_SHORT_VALID_DISTANCE;
 
 @Entity
 public class Section {
@@ -39,6 +42,38 @@ public class Section {
         return new Section(line, upStation, downStation, distance);
     }
 
+    public void updateUpStation(Station station, int newDistance) {
+        validCheckIsOverDistance(newDistance);
+
+        this.upStation = station;
+        this.distance = this.distance.minus(newDistance);
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        validCheckIsOverDistance(newDistance);
+
+        this.downStation = station;
+        this.distance.minus(newDistance);
+    }
+
+    private void validCheckIsOverDistance(int checkTargetDistance) {
+        if (distance.isOverDistance(checkTargetDistance)) {
+            throw new NotValidDataException(NOT_SHORT_VALID_DISTANCE.getMessage());
+        }
+    }
+
+    public Distance plusDistance(Section section) {
+        return this.distance.plus(section.distance);
+    }
+
+    public boolean isSameDownStation(Station downStation) {
+        return this.downStation.equals(downStation);
+    }
+
+    public boolean isSameUpStation(Station upStation) {
+        return this.upStation.equals(upStation);
+    }
+
     public Long getId() {
         return id;
     }
@@ -55,29 +90,7 @@ public class Section {
         return downStation;
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        distance.validCheckOverDistance(newDistance);
-
-        this.upStation = station;
-        this.distance = this.distance.minus(newDistance);
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        distance.validCheckOverDistance(newDistance);
-
-        this.downStation = station;
-        this.distance.minus(newDistance);
-    }
-
-    public Distance plusDistance(Section section) {
-        return this.distance.plus(section.distance);
-    }
-
-    public boolean isSameDownStation(Station downStation) {
-        return this.downStation.equals(downStation);
-    }
-
-    public boolean isSameUpStation(Station upStation) {
-        return this.upStation.equals(upStation);
+    public int getDistance() {
+        return distance.getDistance();
     }
 }

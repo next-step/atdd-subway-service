@@ -9,12 +9,12 @@ import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
+
+import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_LINE;
 
 import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_LINE;
 
@@ -35,7 +35,7 @@ public class LineService {
         Line line = Line.of(request.getName(), request.getColor(), upStation, downStation, Distance.from(request.getDistance()));
         Line persistLine = lineRepository.save(line);
 
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     @Transactional(readOnly = true)
@@ -55,7 +55,7 @@ public class LineService {
     public LineResponse findLineResponseById(Long id) {
         Line persistLine = findLineById(id);
 
-        return LineResponse.of(persistLine);
+        return LineResponse.from(persistLine);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -79,5 +79,10 @@ public class LineService {
         Station station = stationService.findStationById(stationId);
 
         line.removeLineStation(station);
+    }
+
+    @Transactional(readOnly = true)
+    public List<Line> findAll() {
+        return lineRepository.findAll();
     }
 }

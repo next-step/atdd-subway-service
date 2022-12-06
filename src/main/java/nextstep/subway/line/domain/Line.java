@@ -22,9 +22,9 @@ public class Line extends BaseEntity {
     protected Line() {
     }
 
-    private Line(String name, String color) {
-        this.name = name;
-        this.color = color;
+    private Line(Builder builder) {
+        this.name = builder.name;
+        this.color = builder.color;
     }
 
     private Line(String name, String color, Station upStation, Station downStation, Distance distance) {
@@ -37,8 +37,26 @@ public class Line extends BaseEntity {
         return new Line(name, color, upStation, downStation, distance);
     }
 
-    public static Line of(String name, String color) {
-        return new Line(name, color);
+    public static class Builder {
+        private String name;
+        private String color;
+
+        public Builder() {
+        }
+
+        public Builder color(String color) {
+            this.color = color;
+            return this;
+        }
+
+        public Builder name(String name) {
+            this.name = name;
+            return this;
+        }
+
+        public Line build() {
+            return new Line(this);
+        }
     }
 
     public void update(String name, String color) {
@@ -83,3 +101,4 @@ public class Line extends BaseEntity {
         return sections.getSections();
     }
 }
+
