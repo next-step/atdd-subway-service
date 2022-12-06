@@ -28,7 +28,7 @@ public class Distance {
 	}
 
 	private boolean isPositive(int value) {
-		return value >= 0;
+		return value > 0;
 	}
 
 	public Distance subtract(Distance distance) {

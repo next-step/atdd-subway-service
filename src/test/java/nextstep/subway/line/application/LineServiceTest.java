@@ -219,7 +219,7 @@ class LineServiceTest {
 	@DisplayName("구간 삭제")
 	void removeSectionTest() {
 		// given
-		Section 역삼역_선릉역_구간 = section("강남역", "선릉역", 10);
+		Section 역삼역_선릉역_구간 = section("강남역", "선릉역", 5);
 		이호선.connectSection(역삼역_선릉역_구간, Collections.singletonList(강남역_역삼역_구간));
 
 		// when

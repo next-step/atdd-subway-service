@@ -12,7 +12,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 class DistanceTest {
 
 	@ParameterizedTest
-	@ValueSource(ints = {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
+	@ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
 	@DisplayName("거리 생성")
 	void createDistanceTest(int value) {
 		assertThatNoException().isThrownBy(() -> Distance.from(value));

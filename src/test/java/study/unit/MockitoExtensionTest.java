@@ -3,6 +3,7 @@ package study.unit;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.util.Collections;
 import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
@@ -10,8 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-
-import com.google.common.collect.Lists;
 
 import nextstep.subway.generator.LineGenerator;
 import nextstep.subway.line.application.LineService;
@@ -34,7 +33,7 @@ class MockitoExtensionTest {
     @Test
     void findAllLines() {
         // given
-        when(lineRepository.findAll()).thenReturn(Lists.newArrayList(new Line()));
+        when(lineRepository.findAll()).thenReturn(Collections.singletonList(이호선()));
         LineService lineService = new LineService(lineRepository, stationService, sectionService);
 
         // when
