@@ -9,19 +9,15 @@ import org.jgrapht.graph.WeightedMultigraph;
 public class PathFinder {
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    private PathFinder(WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultigraph) {
-        this.graph = weightedMultigraph;
-    }
-
-    public static PathFinder from(WeightedMultigraph<Station, DefaultWeightedEdge> weightedMultigraph) {
-        return new PathFinder(weightedMultigraph);
+    public PathFinder() {
+        this.graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     }
 
     public PathResult findShortestPath(PathBag pathBag, Station source, Station target) {
         pathBag.findVertex().forEach(graph::addVertex);
         pathBag.getSectionPaths().forEach(it -> graph.setEdgeWeight(
                 graph.addEdge(it.getUpStation(), it.getDownStation()), it.getDistance()));
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+        DijkstraShortestPath<Station, DefaultWeightedEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         try {
             return new PathResult(dijkstraShortestPath.getPath(source, target).getVertexList(),
                     dijkstraShortestPath.getPath(source, target).getWeight());

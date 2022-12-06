@@ -3,8 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.dto.PathBag;
 import nextstep.subway.line.dto.SectionPath;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,14 +18,14 @@ class PathFinderTest {
     @DisplayName("생성 성공")
     @Test
     void create_pathFinder_success() {
-        assertThatNoException().isThrownBy(() -> PathFinder.from(new WeightedMultigraph<>(DefaultWeightedEdge.class)));
+        assertThatNoException().isThrownBy(PathFinder::new);
     }
 
     @DisplayName("최단 경로 탐색 성공")
     @Test
     void find_path_succes() {
         //given: [삼전역] -(10)-> [종합운동장역] -(10)-> [잠실새내역] -(10)-> [석촌고분역]
-        PathFinder pathFinder = PathFinder.from(new WeightedMultigraph<>(DefaultWeightedEdge.class));
+        PathFinder pathFinder = new PathFinder();
         Station 삼전역 = Station.from("삼전역");
         Station 종합운동장역 = Station.from("종합운동장역");
         Station 잠실새내역 = Station.from("잠실새내역");
@@ -50,7 +48,7 @@ class PathFinderTest {
     void find_path_IllegalArgumentException() {
         //given: [삼전역] -(10)-> [종합운동장역] -(10)-> [잠실새내역]
         //given: [석촌고분역] -(10)-> [석촌역]
-        PathFinder pathFinder = PathFinder.from(new WeightedMultigraph<>(DefaultWeightedEdge.class));
+        PathFinder pathFinder = new PathFinder();
         Station 삼전역 = Station.from("삼전역");
         Station 종합운동장역 = Station.from("종합운동장역");
         Station 잠실새내역 = Station.from("잠실새내역");

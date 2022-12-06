@@ -26,7 +26,7 @@ public class PathService {
         Station sourceStation = stationService.findById(sourceId);
         Station targetStation = stationService.findById(targetId);
         validSameStation(sourceStation, targetStation);
-        PathFinder pathFinder = PathFinder.from(new WeightedMultigraph<>(DefaultWeightedEdge.class));
+        PathFinder pathFinder = new PathFinder();
         return PathResponse.from(pathFinder.findShortestPath(lineService.findPathBag(), sourceStation, targetStation));
     }
 
