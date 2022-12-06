@@ -7,4 +7,6 @@ import java.util.Optional;
 
 public interface FavoriteRepository extends JpaRepository<Favorite, Long> {
 
+    List<Favorite> findByMemberId(Long memberId);
+
 }

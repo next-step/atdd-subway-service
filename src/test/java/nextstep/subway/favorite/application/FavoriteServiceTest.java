@@ -1,8 +1,10 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.exception.FavoriteCreateException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
@@ -24,6 +26,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static nextstep.subway.utils.Message.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -65,6 +68,59 @@ class FavoriteServiceTest {
 
         Assertions.assertThat(favorite).isNotNull();
     }
+
+    @DisplayName("즐겨찾기를 생성 시 출발역이 없으면 예외가 발생한다.")
+    @Test
+    void createExceptionNotExistsSourceStation() {
+        when(stationService.findStationById(1L)).thenReturn(null);
+        when(stationService.findStationById(2L)).thenReturn(targetStation);
+        when(memberService.findMemberById(any())).thenReturn(member);
+
+        FavoriteRequest request = new FavoriteRequest(1L, 2L);
+        Assertions.assertThatThrownBy(() -> favoriteService.create(1L, request))
+                .isInstanceOf(FavoriteCreateException.class)
+                .hasMessageStartingWith(FAVORITE_NOT_CONTAIN_STATION);
+    }
+
+    @DisplayName("즐겨찾기를 생성 시 도착역이 없으면 예외가 발생한다.")
+    @Test
+    void createExceptionNotExistsTargetStation() {
+        when(stationService.findStationById(1L)).thenReturn(sourceStation);
+        when(stationService.findStationById(2L)).thenReturn(null);
+        when(memberService.findMemberById(any())).thenReturn(member);
+
+        FavoriteRequest request = new FavoriteRequest(1L, 2L);
+        Assertions.assertThatThrownBy(() -> favoriteService.create(1L, request))
+                .isInstanceOf(FavoriteCreateException.class)
+                .hasMessageStartingWith(FAVORITE_NOT_CONTAIN_STATION);
+    }
+
+    @DisplayName("즐겨찾기를 생성 시 회원이 없으면 예외가 발생한다.")
+    @Test
+    void createExceptionNotExistsMember() {
+        when(stationService.findStationById(1L)).thenReturn(sourceStation);
+        when(stationService.findStationById(2L)).thenReturn(targetStation);
+        when(memberService.findMemberById(any())).thenReturn(null);
+
+        FavoriteRequest request = new FavoriteRequest(1L, 2L);
+        Assertions.assertThatThrownBy(() -> favoriteService.create(1L, request))
+                .isInstanceOf(FavoriteCreateException.class)
+                .hasMessageStartingWith(FAVORITE_NOT_CONTAIN_MEMBER);
+    }
+
+    @DisplayName("즐겨찾기 목록을 조회한다.")
+    @Test
+    void findAllFavorites() {
+        List<Favorite> favorites = new ArrayList<>();
+        favorites.add(Favorite.of(member, sourceStation, targetStation));
+
+        when(favoriteRepository.findByMemberId(any())).thenReturn(favorites);
+
+        List<FavoriteResponse> results = favoriteService.findAllFavorites(1L);
+
+        Assertions.assertThat(results).isNotEmpty();
+    }
+
 
 
 }

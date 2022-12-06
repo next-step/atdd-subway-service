@@ -21,4 +21,11 @@ public class FavoriteResponse {
         return id;
     }
 
+    public static FavoriteResponse from(Favorite favorite) {
+        return new FavoriteResponse(
+                favorite.getId(),
+                StationResponse.from(favorite.getSourceStation()),
+                StationResponse.from(favorite.getTargetStation())
+        );
+    }
 }
