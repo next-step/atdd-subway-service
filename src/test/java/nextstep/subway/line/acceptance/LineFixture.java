@@ -22,6 +22,13 @@ public class LineFixture {
         return 지하철_노선_생성_요청(params);
     }
 
+    public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(String name, String color,
+        StationResponse upStation, StationResponse downStation, int distance, int surcharge) {
+        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(),
+            distance, surcharge);
+        return 지하철_노선_생성_요청(params);
+    }
+
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
     }
