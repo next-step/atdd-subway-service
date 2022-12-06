@@ -15,6 +15,7 @@ public class PathFinder {
     private WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
 
     public Path findFastPaths(List<Line> lines, Station sourceStation, Station targetStation) {
+        checkIsSameStation(sourceStation, targetStation);
         setGraphVertexAndEdge(lines);
         GraphPath<Station, SectionEdge> graphPath = getGraphPath(sourceStation, targetStation);
         checkIsLinkedStation(graphPath);
@@ -22,6 +23,12 @@ public class PathFinder {
                 graphPath.getVertexList(),
                 new Distance((int) graphPath.getWeight()),
                 graphPath.getEdgeList());
+    }
+
+    private void checkIsSameStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new InvalidRequestException("출발역과 도착역이 동일합니다.");
+        }
     }
 
     private void setGraphVertexAndEdge(List<Line> lines) {

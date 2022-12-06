@@ -47,9 +47,32 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("나의 정보를 관리한다. (내 정보를 요청하여 존재한다면 삭제한다)")
     @Test
-    void manageMyInfo() {
+    void manageMyInfo_findAndDelete() {
+        // given 나의 정보가 등록되어 있다.
+        회원_생성됨(회원_생성을_요청(EMAIL, PASSWORD, AGE));
+
+        // given 로그인 토큰을 발급받는다.
+        String accessToken = AuthAcceptanceTest.로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class).getAccessToken();
+
+        // when 나의 정보를 요청한다.
+        ExtractableResponse<Response> fineResponse = 내정보_요청(accessToken);
+
+        // then 정상 요청 받는다.
+        내정보_요청_성공함(fineResponse, EMAIL);
+
+        // when 나의 정보를 삭제한다.
+        ExtractableResponse<Response> removeResponse = 내정보_삭제_요청(accessToken);
+
+        // then 정상 삭제가 된다.
+        내정보_삭제_성공함(removeResponse);
+
+    }
+
+    @DisplayName("나의 정보를 관리한다. (내 정보를 수정하여 조회하면 수정된것이 반영되어 있다.)")
+    @Test
+    void manageMyInfo_updateAndFind() {
         // given 나의 정보가 등록되어 있다.
         회원_생성됨(회원_생성을_요청(EMAIL, PASSWORD, AGE));
 
@@ -70,13 +93,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // then 정상 요청 받는다.
         내정보_요청_성공함(fineResponse, NEW_EMAIL);
-
-        // when 나의 정보를 삭제한다.
-        ExtractableResponse<Response> removeResponse = 내정보_삭제_요청(accessToken);
-
-        // then 정상 삭제가 된다.
-        내정보_삭제_성공함(removeResponse);
-
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
