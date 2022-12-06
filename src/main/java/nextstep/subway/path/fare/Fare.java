@@ -9,9 +9,9 @@ import java.util.Objects;
 @Embeddable
 public class Fare {
 
-    public static final int SCALE = 0;
+    private static final int SCALE = 0;
+    private static final int MULTIPLY_SCALE = 2;
     public static final Fare ZERO = Fare.valueOf(0);
-    public static final int MULTIPLY_SCALE = 2;
 
     @Column(nullable = false)
     private BigDecimal value;
