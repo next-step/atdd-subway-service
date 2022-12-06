@@ -7,6 +7,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,7 +16,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import java.util.List;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -64,11 +65,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단_경로_조회() {
         ExtractableResponse<Response> response = 최단_경로_찾기(강남역, 남부터미널역);
-        List<StationResponse> stations = response.jsonPath().getList("", StationResponse.class);
+        PathResponse pathResponse = response.as(PathResponse.class);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(stations).containsExactly(강남역, 교대역, 남부터미널역)
+                () -> assertThat(pathResponse.getStations()
+                        .stream().map(it -> it.getName())
+                        .collect(Collectors.toList())).containsExactly("강남역", "양재역", "남부터미널역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(12)
         );
     }
 
@@ -76,7 +80,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().get(String.format("/paths?source=%d&target=%d"), source.getId(), target.getId())
+                .when().get(String.format("/paths?source=%d&target=%d", source.getId(), target.getId()))
                 .then().log().all()
                 .extract();
     }
