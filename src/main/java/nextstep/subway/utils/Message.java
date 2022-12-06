@@ -15,7 +15,7 @@ public class Message {
     public static final String INVALID_ACCESS_TOKEN = "유효하지 않은 토큰입니다.";
     public static final String WRONG_PASSWORD = "비밀번호가 일치하지 않습니다.";
 
-    public static final String FAVORITE_NOT_CONTAIN_MEMBER = "해당 회원 정보는 즐겨찾기 내역이 존재하지 않습니다.";
+    public static final String FAVORITE_NOT_CONTAIN_MEMBER = "즐겨찾기에 회원정보가 존재하지 안습니다.";
     public static final String FAVORITE_NOT_CONTAIN_STATION = "즐겨찾기에 출발역 또는 도착역 정보가 없습니다.";
 
 

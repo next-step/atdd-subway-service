@@ -40,7 +40,7 @@ public class MemberService {
     }
 
     public Member findMemberById(Long memberId) {
-        memberRepository.findById(memberId)
+        return memberRepository.findById(memberId)
                 .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_EXISTS));
     }
 }
