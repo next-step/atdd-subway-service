@@ -17,15 +17,15 @@ public enum FareDistance {
     HIGH(distance -> distance > HIGH_DISTANCE,
             distance -> calSectorFare(distance - HIGH_DISTANCE, HIGH_SECTOR_CHARGE_DISTANCE));
 
-    private final Predicate<Integer> range;
-    private final Function<Integer, Integer> formula;
+    private final Predicate<Double> range;
+    private final Function<Double, Integer> formula;
 
-    FareDistance(Predicate<Integer> range, Function<Integer, Integer> formula) {
+    FareDistance(Predicate<Double> range, Function<Double, Integer> formula) {
         this.range = range;
         this.formula = formula;
     }
 
-    public static int calAdditionalFare(int distance) {
+    public static int calAdditionalFare(double distance) {
         return Arrays.stream(FareDistance.values())
                 .filter(i -> i.range.test(distance))
                 .map(i -> i.formula.apply(distance))
@@ -33,7 +33,7 @@ public enum FareDistance {
     }
 
 
-    private static int calSectorFare(int distance, int chargingDistance) {
+    private static int calSectorFare(double distance, int chargingDistance) {
         return (int) ((Math.ceil((distance - 1) / chargingDistance) + 1) * ADDITIONAL_FARE);
     }
 
