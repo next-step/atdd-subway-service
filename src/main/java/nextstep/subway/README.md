@@ -19,8 +19,8 @@
     * [X] 로직 옮기기
 
 * removeLineStation 리펙터링
-    * [ ] 도메인 단위 테스트 작성
-    * [ ] 로직 옮기기
+    * [X] 도메인 단위 테스트 작성
+    * [X] 로직 옮기기
 
 ### LineSectionAcceptanceTest 리팩터링
 

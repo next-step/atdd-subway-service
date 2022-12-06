@@ -68,7 +68,40 @@ public class Sections {
                 .findFirst();
     }
 
+    private Optional<Section> findSectionByDownStation(Station downStation) {
+        return sections.stream()
+                .filter(it -> it.isDownStation(downStation))
+                .findFirst();
+    }
+
     public List<Section> getSections() {
         return sections;
+    }
+
+    public void removeStation(Station station) {
+        validateSections();
+
+        Optional<Section> upLineStation = findSectionByUpStation(station);
+        Optional<Section> downLineStation = findSectionByDownStation(station);
+
+        mergeSection(upLineStation,downLineStation);
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void mergeSection(Optional<Section> upLineStation, Optional<Section> downLineStation){
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(sections.get(0).getLine(), newUpStation, newDownStation, newDistance));
+        }
+    }
+
+    public void validateSections() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
     }
 }

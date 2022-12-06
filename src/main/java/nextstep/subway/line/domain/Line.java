@@ -49,10 +49,6 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections.getSections();
-    }
-
     public List<Station> getStations() {
         return sections.getStations();
     }
@@ -71,5 +67,9 @@ public class Line extends BaseEntity {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
     }
 }
