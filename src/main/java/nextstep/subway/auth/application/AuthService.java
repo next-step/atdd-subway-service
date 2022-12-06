@@ -33,10 +33,6 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        if (credentials == null) {
-            return new NoLoginMember();
-        }
-
         if (!jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException("토큰이 올바르지 않습니다.");
         }

@@ -8,7 +8,6 @@ import nextstep.subway.favorite.repository.FavoriteRepository;
 import nextstep.subway.line.repository.LineRepository;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
@@ -41,7 +40,7 @@ public class FavoriteService {
         Station sourceStation = findStation(favoriteRequest.getSource());
         Station targetStation = findStation(favoriteRequest.getTarget());
 
-        checkedLinkedStation(sourceStation, targetStation);
+        sourceStation.validationSaveFavoriteRequest(targetStation, lineRepository.findAll());
 
         Favorite favorite = favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
         return FavoriteResponse.of(favorite);
@@ -55,6 +54,7 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteFavoriteById(Long memberId, Long favoriteId) {
         Member member = findMember(memberId);
         Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, member.getId()).orElseThrow(
@@ -73,11 +73,6 @@ public class FavoriteService {
         return stationRepository.findById(stationId).orElseThrow(
                 () -> new EntityNotFoundException("Station", stationId)
         );
-    }
-
-    private void checkedLinkedStation(Station sourceStation, Station targetStation) {
-        PathFinder pathFinder = new PathFinder();
-        pathFinder.findFastPaths(lineRepository.findAll(), sourceStation, targetStation);
     }
 
 }

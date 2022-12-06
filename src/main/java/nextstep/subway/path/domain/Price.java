@@ -7,9 +7,10 @@ import java.util.List;
 
 public class Price {
 
+    private final int BASIC_PRICE = 1250;
+
     private final int BASIC_DISTANCE = 10;
     private final int EXCESS_DISTANCE = 50;
-    private final int BASIC_PRICE = 1250;
 
     private final int CHILDREN_START_AGE = 6;
     private final int CHILDREN_END_AGE = 13;
@@ -29,23 +30,39 @@ public class Price {
     }
 
     private int getStandardPriceByAge(int age) {
-        if (age >= CHILDREN_START_AGE && age < CHILDREN_END_AGE) {
+        if (isChildren(age)) {
             return (int) ((BASIC_PRICE - 350) * 0.5);
         }
-        if (age >= TEENAGER_START_AGE && age < TEENAGER_END_AGE) {
+        if (isTeenager(age)) {
             return (int) ((BASIC_PRICE - 350) * 0.8);
         }
         return BASIC_PRICE;
     }
 
+    private boolean isChildren(int age) {
+        return age >= CHILDREN_START_AGE && age < CHILDREN_END_AGE;
+    }
+
+    private boolean isTeenager(int age) {
+        return age >= TEENAGER_START_AGE && age < TEENAGER_END_AGE;
+    }
+
     private int calculatorPriceByDistance(int distance) {
-        if (distance <= BASIC_DISTANCE) {
+        if (isLessBasicDistance(distance)) {
             return 0;
         }
-        if (distance > BASIC_DISTANCE && distance <= EXCESS_DISTANCE) {
-            return calculateOverFare(5, distance - BASIC_DISTANCE);
+        if (isGatherExcessDistance(distance)) {
+            return calculateOverFare(8, distance - BASIC_DISTANCE);
         }
-        return calculateOverFare(8, distance - BASIC_DISTANCE);
+        return calculateOverFare(5, distance - BASIC_DISTANCE);
+    }
+
+    private boolean isGatherExcessDistance(int distance) {
+        return distance > EXCESS_DISTANCE;
+    }
+
+    private boolean isLessBasicDistance(int distance) {
+        return distance <= BASIC_DISTANCE;
     }
 
     private int calculatorPriceBySections(List<SectionEdge> sections) {
