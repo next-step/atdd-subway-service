@@ -4,10 +4,13 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.acceptance.AuthAcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.MemberAcceptanceTest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -28,6 +31,14 @@ import static org.assertj.core.api.Assertions.assertThat;
 @DisplayName("지하철 경로 조회")
 public class PathAcceptanceTest extends AcceptanceTest {
 
+    private final String 어린이_이메일 = "어린이@gmail.com";
+    private final int 어린이_나이 = 7;
+    private final String 청소년_이메일 = "청소년@gmail.com";
+    private final int 청소년_나이 = 17;
+    private final String 어른_이메일 = "어른@gmail.com";
+    private final int 어른_나이 = 28;
+    private final String 공통_비밀번호 = "1234";
+
     private LineResponse 신분당선;
     private LineResponse 이호선;
     private LineResponse 삼호선;
@@ -39,6 +50,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 이어지지않은역_1;
     private StationResponse 이어지지않은역_2;
     private StationResponse 없는역;
+
+    private String 어린이_토큰;
+    private String 청소년_토큰;
+    private String 어른_토큰;
 
     /**
      * 교대역  ---  *2호선* 10 ---   강남역
@@ -101,14 +116,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        MemberAcceptanceTest.회원_생성을_요청(어린이_이메일, 공통_비밀번호, 어린이_나이);
+        MemberAcceptanceTest.회원_생성을_요청(청소년_이메일, 공통_비밀번호, 청소년_나이);
+        MemberAcceptanceTest.회원_생성을_요청(어른_이메일, 공통_비밀번호, 어른_나이);
+
+        어린이_토큰 = AuthAcceptanceTest.로그인_요청(어린이_이메일, 공통_비밀번호).as(TokenResponse.class).getAccessToken();
+        청소년_토큰 = AuthAcceptanceTest.로그인_요청(청소년_이메일, 공통_비밀번호).as(TokenResponse.class).getAccessToken();
+        어른_토큰 = AuthAcceptanceTest.로그인_요청(어른_이메일, 공통_비밀번호).as(TokenResponse.class).getAccessToken();
     }
 
     @Test
     @DisplayName("지하철 최단 경로 조회 - 경로 내 포함 역 비교")
     void getPathsStations() {
         // when
-        ExtractableResponse<Response> response_1 = 지하철_최단_경로_조회_요청(교대역, 양재역);
-        ExtractableResponse<Response> response_2 = 지하철_최단_경로_조회_요청(교대역, 남부터미널역);
+        ExtractableResponse<Response> response_1 = 지하철_최단_경로_조회_요청_토큰_없음(교대역, 양재역);
+        ExtractableResponse<Response> response_2 = 지하철_최단_경로_조회_요청_토큰_없음(교대역, 남부터미널역);
 
         // then
         지하철_최단_경로_응답됨(response_1);
@@ -122,8 +145,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단 경로 조회 - 경로 길이 비교")
     void getPathsDistance() {
         // when
-        ExtractableResponse<Response> response_distance_20 = 지하철_최단_경로_조회_요청(교대역, 양재역);
-        ExtractableResponse<Response> response_distance_3 = 지하철_최단_경로_조회_요청(교대역, 남부터미널역);
+        ExtractableResponse<Response> response_distance_20 = 지하철_최단_경로_조회_요청_토큰_없음(교대역, 양재역);
+        ExtractableResponse<Response> response_distance_3 = 지하철_최단_경로_조회_요청_토큰_없음(교대역, 남부터미널역);
 
         // then
         지하철_최단_경로_응답됨(response_distance_20);
@@ -134,13 +157,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("지하철 최단 경로 조회 - 경로 운임금액 비교")
-    void getPathsPrice() {
+    @DisplayName("지하철 최단 경로 조회 - 경로 운임금액 비교 (비로그인 / 어른) ")
+    void getPathsPriceAdultAndNoLogin() {
         // when
         // 남부 - 양재 : [3호선(추가금액 없음) - 2호선 (300원) - 신분당선 (500원)] + 23키로 => 1250 + 500 + 300 = 2050
-        ExtractableResponse<Response> response_price_2050 = 지하철_최단_경로_조회_요청(남부터미널역, 양재역);
+        ExtractableResponse<Response> response_price_2050 = 지하철_최단_경로_조회_요청_토큰_있음(남부터미널역, 양재역, 어른_토큰);
         // 교대 - 남부 : [3호선(추가금액 없음)] + 10키로 이하 => 1,250원
-        ExtractableResponse<Response> response_price_1250 = 지하철_최단_경로_조회_요청(교대역, 남부터미널역);
+        ExtractableResponse<Response> response_price_1250 = 지하철_최단_경로_조회_요청_토큰_없음(교대역, 남부터미널역);
 
         // then
         지하철_최단_경로_응답됨(response_price_2050);
@@ -151,10 +174,27 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("지하철 최단 경로 조회 - 경로 운임금액 비교 (어린이 / 청소년) ")
+    void getPathsPriceTeenagerAndChildren() {
+        // when
+        // 남부 - 양재 : [3호선(추가금액 없음) - 2호선 (300원) - 신분당선 (500원)] + 23키로 => 450 + 500 + 300 = 1250
+        ExtractableResponse<Response> response_price_1250 = 지하철_최단_경로_조회_요청_토큰_있음(남부터미널역, 양재역, 어린이_토큰);
+        // 교대 - 남부 : [3호선(추가금액 없음)] + 10키로 이하 => 720원
+        ExtractableResponse<Response> response_price_720 = 지하철_최단_경로_조회_요청_토큰_있음(교대역, 남부터미널역, 청소년_토큰);
+
+        // then
+        지하철_최단_경로_응답됨(response_price_1250);
+        최단_경로_금액_비교(response_price_1250, 1250);
+
+        지하철_최단_경로_응답됨(response_price_720);
+        최단_경로_금액_비교(response_price_720, 720);
+    }
+
+    @Test
     @DisplayName("지하철 최단 경로 조회 - 출발역과 도착역이 같은 경우")
     void getPathsSameSourceAndTarget() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 교대역);
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청_토큰_없음(교대역, 교대역);
 
         // then
         지하철_최단_경로_응답_실패됨(response);
@@ -164,7 +204,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단 경로 조회 - 출발역과 도착역이 연결이 되어 있지 않은 경우")
     void getPathsNotLinkedSourceAndTarget() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역, 이어지지않은역_1);
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청_토큰_없음(교대역, 이어지지않은역_1);
 
         // then
         지하철_최단_경로_응답_실패됨(response);
@@ -174,13 +214,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("지하철 최단 경로 조회 - 존재하지 않은 출발역이나 도착역을 조회 할 경우")
     void getPathsNotFoundSourceAndTarget() {
         // when
-        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(없는역, 양재역);
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청_토큰_없음(없는역, 양재역);
 
         // then
         지하철_최단_경로_응답_실패됨(response);
     }
 
-    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청(nextstep.subway.station.dto.StationResponse source, nextstep.subway.station.dto.StationResponse target) {
+    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청_토큰_있음(StationResponse source, StationResponse target, String token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source=" + source.getId() + "&target=" + target.getId())
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_최단_경로_조회_요청_토큰_없음(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)

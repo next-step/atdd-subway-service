@@ -19,8 +19,8 @@ public class Path {
         this.sections = sections;
     }
 
-    public void calculatorPrice() {
-        price.calculatorPrice(distance.value(), sections);
+    public void calculatorPrice(int age) {
+        price.calculatorPrice(distance.value(), sections, age);
     }
 
     public List<Station> getStations() {
