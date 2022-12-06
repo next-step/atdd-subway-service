@@ -22,10 +22,6 @@ public class Favorite {
     @JoinColumn(name = "target_station_id")
     private Station target;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "member_id")
-    private Member member;
-
     protected Favorite(){
 
     }
@@ -38,7 +34,18 @@ public class Favorite {
         this.id = id;
         this.source = source;
         this.target = target;
-        this.member = member;
+
+        if(member != null){
+            addBy(member);
+        }
+    }
+
+    public void addBy(Member member){
+        member.addFavorite(this);
+    }
+
+    public void deleteBy(Member member){
+        member.deleteFavorite(this);
     }
 
     public Long getId() {
