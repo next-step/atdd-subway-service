@@ -2,7 +2,6 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.fare.domain.AgePolicy;
 import nextstep.subway.fare.domain.DistanceFare;
-import nextstep.subway.fare.domain.DistancePolicy;
 import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -47,7 +46,7 @@ public class PathService {
     }
 
     private int findFare(Line line, int distance, int age) {
-        FareCalculator fareCalculator = new FareCalculator(line,new DistanceFare(distance),AgePolicy.valueOfAge(age));
+        FareCalculator fareCalculator = new FareCalculator(line, new DistanceFare(distance), AgePolicy.valueOfAge(age));
         return fareCalculator.getCalculcate();
     }
 
