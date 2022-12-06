@@ -25,6 +25,14 @@ public class Distance {
         return new Distance(this.distance + distance.distance);
     }
 
+    public int getDistance() {
+        return distance;
+    }
+
+    protected void setDistance(int distance) {
+        this.distance = distance;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

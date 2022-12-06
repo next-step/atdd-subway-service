@@ -24,10 +24,10 @@ public class DataLoaderConfig implements CommandLineRunner {
 
     @Override
     public void run(String... args) throws Exception {
-        Station 강남역 = new Station("강남역");
-        Station 교대역 = new Station("교대역");
-        Station 양재역 = new Station("양재역");
-        Station 남부터미널역 = new Station("남부터미널역");
+        Station 강남역 = Station.from("강남역");
+        Station 교대역 = Station.from("교대역");
+        Station 양재역 = Station.from("양재역");
+        Station 남부터미널역 = Station.from("남부터미널역");
         Distance 거리 = new Distance(10);
 
         Line 신분당선 = new Line("신분당선", "red lighten-1", 강남역, 양재역, 거리);

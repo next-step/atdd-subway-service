@@ -16,8 +16,8 @@ class UnitTest {
         String newName = "구분당선";
         String newColor = "GREEN";
 
-        Station upStation = new Station("강남역");
-        Station downStation = new Station("광교역");
+        Station upStation = Station.from("강남역");
+        Station downStation = Station.from("광교역");
         Line line = new Line("신분당선", "RED", upStation, downStation, new Distance(10));
 
         // when

@@ -6,6 +6,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.PathBag;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -80,5 +81,17 @@ public class LineService {
 
     private Line findLineById(Long id) {
         return lineRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("등록되지 않은 노선입니다. 요청id:" + id));
+    }
+
+    public PathBag findPathBag() {
+        List<Line> lines = lineRepository.findAll();
+        validEmptyLine(lines);
+        return PathBag.fromLines(lines);
+    }
+
+    private void validEmptyLine(List<Line> lines) {
+        if (lines.isEmpty()) {
+            throw new IllegalStateException("노선이 존재하지 않습니다");
+        }
     }
 }

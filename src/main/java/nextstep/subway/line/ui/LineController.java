@@ -71,7 +71,7 @@ public class LineController {
 
     @ExceptionHandler({ DataIntegrityViolationException.class, IllegalArgumentException.class,
             IllegalStateException.class })
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+    public ResponseEntity handleIllegalArgsException(Exception e) {
         return ResponseEntity.badRequest().build();
     }
 }
