@@ -21,7 +21,7 @@ public class StationService {
 
     public StationResponse saveStation(StationRequest stationRequest) {
         Station persistStation = stationRepository.save(stationRequest.toStation());
-        return StationResponse.of(persistStation);
+        return StationResponse.from(persistStation);
     }
 
     @Transactional(readOnly = true)
