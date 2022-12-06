@@ -180,13 +180,59 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(즐겨찾기_삭제_요청_결과);
     }
 
+    /**
+     * Feature: 유효하지 않는 인증정보로 즐겨찾기 추가/삭제/조회 할 수 없다.
+     *  Background:
+     *      given: 유효하지 않은 인증정보
+     *
+     *  Scenario: 유효하지 않는 인증정보를 통한 즐쳐찾기 요청
+     *      when: 즐겨찾기 생성을 요청하면
+     *      then: 인증 실패결과에 따라 즐겨찾기가 생성되지 않고,
+     *      when: 즐겨찾기 삭제를 요청하면
+     *      then: 인증 실패결과에 따라 즐겨찾기가 삭제되지 않고,
+     *      when: 즐겨찾기 목록 조회를 요청하면
+     *      then: 인증 실패결과에 따라 즐겨찾기가 조회되지 않는다.
+     */
+    @Test
+    @DisplayName("인증 토큰 유효성 예외 테스트")
+    void tokenExpireException(){
+        // given
+        String unAuthorizedToken = "un-authorized-token";
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_생성_요청_결과 = 즐겨찾기_생성_요청(강남역.getId(), 잠실역.getId(), unAuthorizedToken);
+
+        // then
+        요청_결과가_인증_오류로_인해_실패됨(즐겨찾기_생성_요청_결과);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_요청_결과 = 즐겨찾기_목록_조회_요청(unAuthorizedToken);
+
+        // then
+        요청_결과가_인증_오류로_인해_실패됨(즐겨찾기_목록_조회_요청_결과);
+
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_요청_결과 = 즐겨찾기_삭제_요청(즐겨찾기_생성_요청(강남역.getId(), 잠실역.getId()), unAuthorizedToken);
+
+        // then
+        요청_결과가_인증_오류로_인해_실패됨(즐겨찾기_삭제_요청_결과);
+    }
+
+    private void 요청_결과가_인증_오류로_인해_실패됨(ExtractableResponse<Response> 즐겨찾기_생성_요청_결과) {
+        assertThat(즐겨찾기_생성_요청_결과.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long sourceId, Long targetId) {
+        return 즐겨찾기_생성_요청(sourceId, targetId, token);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(Long sourceId, Long targetId, String authToken) {
         Map<String, Long> params = new HashMap<>();
         params.put("source", sourceId);
         params.put("target", targetId);
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, BEARER_TYPE + " "+ token)
+                .header(AUTHORIZATION, BEARER_TYPE + " "+ authToken)
                 .body(params)
                 .when().post("/favorites")
                 .then().log().all()
@@ -198,9 +244,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청() {
+        return 즐겨찾기_목록_조회_요청(token);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String authToken) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, BEARER_TYPE + " "+ token)
+                .header(AUTHORIZATION, BEARER_TYPE + " "+ authToken)
                 .when().get("/favorites")
                 .then().log().all()
                 .extract();
@@ -211,10 +261,14 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> response) {
+        return 즐겨찾기_삭제_요청(response, token);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(ExtractableResponse<Response> response, String authToken) {
         FavoriteResponse favoriteResponse = response.as(FavoriteResponse.class);
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .header(AUTHORIZATION, BEARER_TYPE + " "+ token)
+                .header(AUTHORIZATION, BEARER_TYPE + " "+ authToken)
                 .when().delete("/favorites/{id}", favoriteResponse.getId())
                 .then().log().all()
                 .extract();

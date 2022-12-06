@@ -9,6 +9,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,7 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class FavoriteController {
-    private FavoriteService favoriteService;
+    private final FavoriteService favoriteService;
 
     public FavoriteController(FavoriteService favoriteService) {
         this.favoriteService = favoriteService;
@@ -28,6 +29,10 @@ public class FavoriteController {
     @PostMapping("/favorites")
     public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                            @RequestBody FavoriteRequest favoriteRequest) {
+        if(loginMember.isUnAuthorized()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         FavoriteResponse favoriteResponse = favoriteService.saveFavorite(loginMember.getId(), favoriteRequest);
 
         try {
@@ -39,6 +44,10 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> listFavorite(@AuthenticationPrincipal LoginMember loginMember) {
+        if(loginMember.isUnAuthorized()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         List<FavoriteResponse> favorites = favoriteService.findFavoriteAll(loginMember.getId());
         return ResponseEntity.ok(favorites);
     }
@@ -46,6 +55,10 @@ public class FavoriteController {
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity<List<FavoriteResponse>> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                                @PathVariable("id") Long id) {
+        if(loginMember.isUnAuthorized()){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
         favoriteService.deleteFavorite(id);
         return ResponseEntity.noContent().build();
     }
