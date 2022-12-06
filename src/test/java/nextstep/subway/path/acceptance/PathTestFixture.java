@@ -7,6 +7,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -34,14 +35,14 @@ public class PathTestFixture {
     }
 
     public static void 지하철_이용_요금이_응답됩(ExtractableResponse<Response> response) {
-        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(response.jsonPath().getString("fare")).isNotNull();
     }
 
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response) {
-        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(response.jsonPath().getString("distance")).isNotNull();
     }
 
     public static void 최단_거리_경로가_응답됨(ExtractableResponse<Response> response) {
-        PathResponse pathResponse = response.as(PathResponse.class);
+        assertThat(response.jsonPath().getList("stations")).isNotEmpty();
     }
 }
