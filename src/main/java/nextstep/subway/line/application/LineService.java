@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -40,10 +39,8 @@ public class LineService {
     }
 
     @Transactional(readOnly = true)
-    public List<LineResponse> findLines() {
-        return lineRepository.findAll().stream()
-                .map(LineResponse::from)
-                .collect(Collectors.toList());
+    public List<Line> findLines() {
+        return lineRepository.findAll();
     }
 
     @Transactional(readOnly = true)
