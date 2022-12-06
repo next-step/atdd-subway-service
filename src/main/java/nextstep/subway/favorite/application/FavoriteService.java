@@ -17,6 +17,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.utils.Message.FAVORITE_NOT_EXIST;
+
 @Service
 @Transactional(readOnly = true)
 public class FavoriteService {
@@ -50,10 +52,12 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-
-
-
-
+    @Transactional
+    public void delete(Long memberId, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, memberId)
+                .orElseThrow(() -> new EntityNotFoundException(FAVORITE_NOT_EXIST));
+        favoriteRepository.delete(favorite);
+    }
 
 
 }

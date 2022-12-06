@@ -17,7 +17,7 @@ public class Message {
 
     public static final String FAVORITE_NOT_CONTAIN_MEMBER = "즐겨찾기에 회원정보가 존재하지 안습니다.";
     public static final String FAVORITE_NOT_CONTAIN_STATION = "즐겨찾기에 출발역 또는 도착역 정보가 없습니다.";
-
+    public static final String FAVORITE_NOT_EXIST = "즐겨찾기가 존재하지 않습니다.";
 
 
 }
