@@ -158,8 +158,7 @@ public class Sections {
 	}
 
 	private void removeSection(Section sectionByUpStation, Section sectionByDownStation) {
-		SectionRemover.of(sectionByUpStation, sectionByDownStation)
-			.remove(this, sectionByUpStation, sectionByDownStation);
+		SectionRemoverNew.remove(this, sectionByUpStation, sectionByDownStation);
 	}
 
 	public void removeSection(Section section) {

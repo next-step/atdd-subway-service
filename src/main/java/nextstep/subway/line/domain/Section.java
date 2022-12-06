@@ -110,4 +110,14 @@ public class Section {
 		this.downStation = sectionByUpStation.downStation;
 		this.distance = this.distance.add(sectionByUpStation.distance);
 	}
+
+	public static Section removeMiddleSection(Section sectionByUpStation, Section sectionByDownStation) {
+		sectionByDownStation.extend(sectionByUpStation);
+		return sectionToRemove(sectionByUpStation);
+	}
+
+	private static Section sectionToRemove(Section sectionByUpStation) {
+		return sectionByUpStation;
+	}
+
 }
