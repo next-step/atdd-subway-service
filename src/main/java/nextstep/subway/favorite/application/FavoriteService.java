@@ -1,24 +1,48 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
+import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 @Transactional(readOnly = true)
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-    private final StationRepository stationRepository;
-    private final MemberRepository memberRepository;
+//    private final StationRepository stationRepository;
+//    private final MemberRepository memberRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository, MemberRepository memberRepository) {
+    private final StationService stationService;
+    private final MemberService memberService;
+
+    public FavoriteService(FavoriteRepository favoriteRepository, StationService stationService, MemberService memberService) {
         this.favoriteRepository = favoriteRepository;
-        this.stationRepository = stationRepository;
-        this.memberRepository = memberRepository;
+        this.stationService = stationService;
+        this.memberService = memberService;
     }
+
+    @Transactional
+    public Favorite create(Long memberId, FavoriteRequest request) {
+        Station sourceStation = stationService.findStationById(request.getSource());
+        Station targetStation = stationService.findStationById(request.getTarget());
+        Member member = memberService.findMemberById(memberId);
+
+        return favoriteRepository.save(Favorite.of(member, sourceStation, targetStation));
+    }
+
+
+
+
 
 
 }

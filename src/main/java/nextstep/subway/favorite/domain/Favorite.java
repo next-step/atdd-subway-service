@@ -1,9 +1,13 @@
 package nextstep.subway.favorite.domain;
 
+import nextstep.subway.exception.FavoriteCreateException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+
+import static nextstep.subway.utils.Message.FAVORITE_NOT_CONTAIN_MEMBER;
+import static nextstep.subway.utils.Message.FAVORITE_NOT_CONTAIN_STATION;
 
 @Entity
 public class Favorite {
@@ -30,6 +34,24 @@ public class Favorite {
         this.member = member;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+    }
+
+    public static Favorite of(Member member, Station sourceStation, Station targetStation) {
+        checkMemberNotNull(member);
+        checkStationNotNull(sourceStation, targetStation);
+        return new Favorite(member, sourceStation, targetStation);
+    }
+
+    private static void checkMemberNotNull(Member member) {
+        if (member == null) {
+            throw new FavoriteCreateException(FAVORITE_NOT_CONTAIN_MEMBER);
+        }
+    }
+
+    private static void checkStationNotNull(Station sourceStation, Station targetStation) {
+        if (sourceStation == null || targetStation == null) {
+            throw new FavoriteCreateException(FAVORITE_NOT_CONTAIN_STATION);
+        }
     }
 
 

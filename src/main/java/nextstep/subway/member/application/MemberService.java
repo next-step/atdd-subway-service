@@ -8,6 +8,8 @@ import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.persistence.EntityNotFoundException;
+
 import static nextstep.subway.utils.Message.MEMBER_NOT_EXISTS;
 
 @Service
@@ -37,4 +39,8 @@ public class MemberService {
         memberRepository.deleteById(id);
     }
 
+    public Member findMemberById(Long memberId) {
+        memberRepository.findById(memberId)
+                .orElseThrow(() -> new EntityNotFoundException(MEMBER_NOT_EXISTS));
+    }
 }
