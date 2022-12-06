@@ -1,5 +1,10 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
+
+import java.util.List;
+
 public class Price {
 
     private final int BASIC_DISTANCE = 10;
@@ -12,8 +17,9 @@ public class Price {
         return price;
     }
 
-    public void calculatorPrice(int distance) {
-        this.price = calculatorPriceByDistance(distance);
+    public void calculatorPrice(int distance, List<SectionEdge> sections) {
+        this.price += calculatorPriceByDistance(distance);
+        this.price += calculatorPriceBySections(sections);
     }
 
     private int calculatorPriceByDistance(int distance) {
@@ -24,6 +30,15 @@ public class Price {
             return BASIC_PRICE + calculateOverFare(5, distance - BASIC_DISTANCE);
         }
         return BASIC_PRICE + calculateOverFare(8, distance - BASIC_DISTANCE);
+    }
+
+    private int calculatorPriceBySections(List<SectionEdge> sections) {
+        return sections.stream()
+                .map(SectionEdge::getSection)
+                .map(Section::getLine)
+                .mapToInt(Line::getAddedPrice)
+                .max()
+                .orElse(0);
     }
 
     private int calculateOverFare(int overStandard, int distance) {

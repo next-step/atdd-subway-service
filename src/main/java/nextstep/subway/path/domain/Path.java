@@ -10,15 +10,17 @@ public class Path {
     private List<Station> stations;
     private Distance distance;
     private Price price;
+    private List<SectionEdge> sections;
 
-    public Path(List<Station> stations, Distance distance) {
+    public Path(List<Station> stations, Distance distance, List<SectionEdge> sections) {
         this.stations = stations;
         this.distance = distance;
         this.price = new Price();
+        this.sections = sections;
     }
 
     public void calculatorPrice() {
-        price.calculatorPrice(distance.value());
+        price.calculatorPrice(distance.value(), sections);
     }
 
     public List<Station> getStations() {

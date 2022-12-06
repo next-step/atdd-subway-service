@@ -45,7 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * |                         |
      * *3호선*  3                 *신분당선* 10
      * |                         |
-     * 남부터미널역--- *3호선* 12 ---   양재
+     * 남부터미널역--- *3호선* 32 ---   양재
      */
     @BeforeEach
     public void setUp() {
@@ -67,7 +67,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         "bg-red-600",
                         강남역.getId(),
                         양재역.getId(),
-                        10))
+                        10,
+                        500))
                 .as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
                 new LineRequest(
@@ -75,7 +76,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         "bg-red-600",
                         교대역.getId(),
                         강남역.getId(),
-                        10))
+                        10,
+                        300))
                 .as(LineResponse.class);
 
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
@@ -84,7 +86,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         "bg-red-600",
                         교대역.getId(),
                         양재역.getId(),
-                        15))
+                        35,
+                        0))
                 .as(LineResponse.class);
 
         별도호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
@@ -93,24 +96,58 @@ public class PathAcceptanceTest extends AcceptanceTest {
                         "bg-red-600",
                         이어지지않은역_1.getId(),
                         이어지지않은역_2.getId(),
-                        5))
+                        5,
+                        0))
                 .as(LineResponse.class);
 
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
     @Test
-    @DisplayName("지하철 최단 경로 조회")
-    void getPaths() {
+    @DisplayName("지하철 최단 경로 조회 - 경로 내 포함 역 비교")
+    void getPathsStations() {
         // when
-        ExtractableResponse<Response> response_distance_15 = 지하철_최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response_1 = 지하철_최단_경로_조회_요청(교대역, 양재역);
+        ExtractableResponse<Response> response_2 = 지하철_최단_경로_조회_요청(교대역, 남부터미널역);
+
+        // then
+        지하철_최단_경로_응답됨(response_1);
+        최단_경로_역_포함_비교(response_1, Arrays.asList(교대역.getId(), 강남역.getId(), 양재역.getId()));
+
+        지하철_최단_경로_응답됨(response_2);
+        최단_경로_역_포함_비교(response_2, Arrays.asList(교대역.getId(), 남부터미널역.getId()));
+    }
+
+    @Test
+    @DisplayName("지하철 최단 경로 조회 - 경로 길이 비교")
+    void getPathsDistance() {
+        // when
+        ExtractableResponse<Response> response_distance_20 = 지하철_최단_경로_조회_요청(교대역, 양재역);
         ExtractableResponse<Response> response_distance_3 = 지하철_최단_경로_조회_요청(교대역, 남부터미널역);
 
         // then
-        지하철_최단_경로_응답됨(response_distance_15);
-        지하철_최단_경로_결과_비교(response_distance_15, Arrays.asList(교대역.getId(), 남부터미널역.getId(), 양재역.getId()), 15, 1350);
+        지하철_최단_경로_응답됨(response_distance_20);
+        최단_경로_거리_비교(response_distance_20, 20);
+
         지하철_최단_경로_응답됨(response_distance_3);
-        지하철_최단_경로_결과_비교(response_distance_3, Arrays.asList(교대역.getId(), 남부터미널역.getId()), 3, 1250);
+        최단_경로_거리_비교(response_distance_3, 3);
+    }
+
+    @Test
+    @DisplayName("지하철 최단 경로 조회 - 경로 운임금액 비교")
+    void getPathsPrice() {
+        // when
+        // 남부 - 양재 : [3호선(추가금액 없음) - 2호선 (300원) - 신분당선 (500원)] + 23키로 => 1250 + 500 + 300 = 2050
+        ExtractableResponse<Response> response_price_2050 = 지하철_최단_경로_조회_요청(남부터미널역, 양재역);
+        // 교대 - 남부 : [3호선(추가금액 없음)] + 10키로 이하 => 1,250원
+        ExtractableResponse<Response> response_price_1250 = 지하철_최단_경로_조회_요청(교대역, 남부터미널역);
+
+        // then
+        지하철_최단_경로_응답됨(response_price_2050);
+        최단_경로_금액_비교(response_price_2050, 2050);
+
+        지하철_최단_경로_응답됨(response_price_1250);
+        최단_경로_금액_비교(response_price_1250, 1250);
     }
 
     @Test
@@ -157,25 +194,21 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(PathResponse.class)).isNotNull();
     }
 
-    public static void 지하철_최단_경로_결과_비교(ExtractableResponse<Response> response, List<Long> ids, int distance, int price) {
+    private static void 최단_경로_역_포함_비교(ExtractableResponse<Response> response, List<Long> ids) {
         PathResponse pathResponse = response.as(PathResponse.class);
-        최단_경로_역_포함_비교(pathResponse, ids);
-        최단_경로_거리_비교(pathResponse, distance);
-        최단_경로_금액_비교(pathResponse, price);
-    }
-
-    private static void 최단_경로_역_포함_비교(PathResponse pathResponse, List<Long> ids) {
         List<Long> pathStationIds = pathResponse.getStations().stream()
                 .map(PathStationResponse::getId)
                 .collect(Collectors.toList());
         assertThat(pathStationIds.containsAll(ids)).isTrue();
     }
 
-    private static void 최단_경로_거리_비교(PathResponse pathResponse, int distance) {
+    private static void 최단_경로_거리_비교(ExtractableResponse<Response> response, int distance) {
+        PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getDistance()).isEqualTo(distance);
     }
 
-    private static void 최단_경로_금액_비교(PathResponse pathResponse, int price) {
+    private static void 최단_경로_금액_비교(ExtractableResponse<Response> response, int price) {
+        PathResponse pathResponse = response.as(PathResponse.class);
         assertThat(pathResponse.getPrice()).isEqualTo(price);
     }
 

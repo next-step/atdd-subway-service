@@ -35,7 +35,8 @@ public class LineService {
                         request.getColor(),
                         upStation,
                         downStation,
-                        request.getDistance()));
+                        request.getDistance(),
+                        request.getAddedPrice()));
 
         return LineResponse.of(persistLine);
     }
