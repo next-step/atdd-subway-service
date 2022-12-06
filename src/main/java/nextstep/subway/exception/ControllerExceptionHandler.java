@@ -14,10 +14,16 @@ public class ControllerExceptionHandler {
         return badRequest();
     }
 
-    @ExceptionHandler(DomainException.class)
-    public ResponseEntity<DomainException> handleDomainException(Exception e) {
-        return new ResponseEntity<>(new DomainException(e.getMessage()), HttpStatus.BAD_REQUEST);
+    @ExceptionHandler(BadRequestException.class)
+    public ResponseEntity<BadRequestException> handleBadRequestException(Exception e) {
+        return new ResponseEntity<>(new BadRequestException(e.getMessage()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<NotFoundException> handleNotFoundException(Exception e) {
+        return new ResponseEntity<>(new NotFoundException(e.getMessage()), HttpStatus.BAD_REQUEST);
+    }
+
 
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<AuthorizationException> handleAuthorizationException(Exception e) {
