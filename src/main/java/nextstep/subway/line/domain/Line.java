@@ -58,6 +58,18 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
+        validation(section);
         sections.add(section);
+    }
+
+    private void validation(Section section) {
+        if (section.isExistsSections(getStations())) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!section.checkAnyIncludeStation(getStations())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
     }
 }

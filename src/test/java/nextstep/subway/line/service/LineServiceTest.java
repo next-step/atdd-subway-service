@@ -1,6 +1,6 @@
 package nextstep.subway.line.service;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
@@ -11,6 +11,7 @@ import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,6 +25,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class LineServiceTest {
     private Station 강남역;
     private Station 광교역;
+    private Station 역삼역;
     private Line 신분당선;
 
     @InjectMocks
@@ -32,14 +34,12 @@ public class LineServiceTest {
     @Mock
     private LineRepository lineRepository;
 
-    @Mock
-    private StationService stationService;
-
     @BeforeEach
     public void setUp() {
         // given
         강남역 = new Station("강남역");
         광교역 = new Station("광교역");
+        역삼역 = new Station("역삼역");
         신분당선 = new Line("2호선","bg-green-600", 강남역, 광교역, 10);
     }
     

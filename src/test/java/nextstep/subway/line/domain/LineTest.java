@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.List;
 import nextstep.subway.station.domain.Station;
@@ -21,7 +21,7 @@ public class LineTest {
         // given
         강남역 = new Station("강남역");
         광교역 = new Station("광교역");
-        신분당선 = new Line("2호선","bg-green-600", 강남역, 광교역, 10);
+        신분당선 = new Line("2호선", "bg-green-600", 강남역, 광교역, 10);
     }
 
     @Test
@@ -30,7 +30,5 @@ public class LineTest {
         List<Station> stations = 신분당선.getStations();
         assertThat(stations.get(0)).isEqualTo(강남역);
         assertThat(stations.get(1)).isEqualTo(광교역);
-
-
     }
 }

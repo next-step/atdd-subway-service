@@ -17,7 +17,15 @@ public class Sections {
     }
 
     public void add(Section section) {
+        ifContainsStationAdd(section);
         sections.add(section);
+    }
+
+    private void ifContainsStationAdd(Section newSection) {
+        sections.stream()
+                .filter(section -> section.containsStation(newSection))
+                .findFirst()
+                .ifPresent(section -> section.swapStation(newSection));
     }
 
     public List<Station> getStations() {
