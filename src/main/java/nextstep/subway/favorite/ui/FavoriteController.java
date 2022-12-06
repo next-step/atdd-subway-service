@@ -59,7 +59,7 @@ public class FavoriteController {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
         }
 
-        favoriteService.deleteFavorite(id);
+        favoriteService.deleteFavorite(loginMember.getId(), id);
         return ResponseEntity.noContent().build();
     }
 }

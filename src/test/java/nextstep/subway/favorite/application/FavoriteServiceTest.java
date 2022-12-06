@@ -87,10 +87,11 @@ class FavoriteServiceTest {
         ArgumentCaptor<Favorite> arg = ArgumentCaptor.forClass(Favorite.class);
 
         // when
-        Favorite favorite = new Favorite(new Station("강남역"), new Station("잠실역"),
-                new Member("test@test.com", "password", 10));
-        when(favoriteRepository.findById(any())).thenReturn(Optional.of(favorite));
-        favoriteService.deleteFavorite(1L);
+        Member member = new Member(100L,"test@test.com", "password", 10);
+        Favorite favorite = new Favorite(new Station("강남역"), new Station("잠실역"), member);
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
+        when(favoriteRepository.findFavoriteByIdAndMember(any(), any())).thenReturn(Optional.of(favorite));
+        favoriteService.deleteFavorite(100L, 1L);
 
         // then
         verify(favoriteRepository).delete(arg.capture());

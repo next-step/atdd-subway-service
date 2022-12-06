@@ -50,8 +50,9 @@ public class FavoriteService {
                 .collect(Collectors.toList());
     }
 
-    public void deleteFavorite(Long id) {
-        Favorite findFavorite = favoriteRepository.findById(id).orElseThrow(
+    public void deleteFavorite(Long memberId, Long id) {
+        Member member = getMember(memberId);
+        Favorite findFavorite = favoriteRepository.findFavoriteByIdAndMember(id, member).orElseThrow(
                 () -> new IllegalArgumentException("즐겨찾기 조회 실패")
         );
         favoriteRepository.delete(findFavorite);
