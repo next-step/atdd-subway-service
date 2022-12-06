@@ -127,7 +127,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_정상() {
         // given
-        노선_생성();
+        노선_생성(0);
 
         // when
         PathResponse pathResponse = 최단_경로_조회(양재역.getId(), 교대역.getId()).as(PathResponse.class);
@@ -153,7 +153,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_성인() {
         // given
-        노선_생성();
+        노선_생성(0);
         String token = 회원_생성과_로그인_후_토큰_조회(20);
 
         // when
@@ -180,7 +180,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_청소년() {
         // given
-        노선_생성();
+        노선_생성(0);
         String token = 회원_생성과_로그인_후_토큰_조회(16);
 
         // when
@@ -207,7 +207,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단경로조회_어린이() {
         // given
-        노선_생성();
+        노선_생성(0);
         String token = 회원_생성과_로그인_후_토큰_조회(9);
 
         // when
@@ -222,10 +222,35 @@ public class PathAcceptanceTest extends AcceptanceTest {
         });
     }
 
-    private void 노선_생성() {
+    /**
+     * Given 추가 요금이 있는 노선을 생성하고
+     * When 출발역과 도착역을 입력하면
+     * Then 최단 거리를 검색할 수 있다
+     * And 총 거리를 조회할 수 있다
+     * And 지하철 이용 요금을 조회할 수 있다
+     */
+    @DisplayName("추가 요금이 있는 노선에 대한 최단 거리를 검색한다.")
+    @Test
+    void 최단경로조회_노선추가요금() {
+        // given
+        노선_생성(1500);
+
+        // when
+        PathResponse pathResponse = 최단_경로_조회(양재역.getId(), 교대역.getId()).as(PathResponse.class);
+
+        // then
+        assertThat(pathResponse).satisfies(path -> {
+            assertThat(path.getStations().stream().map(StationResponse::getName).collect(Collectors.toList()))
+                    .containsExactly("양재역", "남부터미널역", "교대역");
+            assertEquals(5, path.getDistance());
+            assertEquals(2750, path.getFare());
+        });
+    }
+
+    private void 노선_생성(int surcharge) {
         LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 10, 0));
         LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 0));
-        LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 5, 0)).as(LineResponse.class);
+        LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 5, surcharge)).as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
