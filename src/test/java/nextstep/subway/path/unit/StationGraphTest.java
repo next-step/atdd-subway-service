@@ -6,8 +6,10 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.path.domain.StationGraph;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -32,14 +34,14 @@ public class StationGraphTest {
     void createStationGraph() {
         // when
         StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
-    
+        WeightedMultigraph<Station, SectionEdge> graph = stationGraph.getGraph();
         // then
 
         assertAll(
-                ()->assertThat(stationGraph.containsStation(강남역)),
-                ()->assertThat(stationGraph.containsStation(양재역)),
-                ()->assertThat(stationGraph.containsStation(교대역)),
-                ()->assertThat(stationGraph.containsStation(남부터미널역))
+                ()->assertThat(graph.containsVertex(강남역)),
+                ()->assertThat(graph.containsVertex(양재역)),
+                ()->assertThat(graph.containsVertex(교대역)),
+                ()->assertThat(graph.containsVertex(남부터미널역))
         );
     }
 
@@ -50,11 +52,10 @@ public class StationGraphTest {
         StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역));
 
         // when
-
         stationGraph.addGraphEdge(교대역_남부터미널역);
 
         // then
-        assertThat(stationGraph.containsStation(남부터미널역));
+        assertThat(stationGraph.getGraph().containsVertex(남부터미널역));
     }
 
 

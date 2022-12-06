@@ -12,34 +12,23 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class StationGraph {
 
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(
-            DefaultWeightedEdge.class);
+    private final WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(
+            SectionEdge.class);
 
     public StationGraph(List<Section> sections) {
         sections.forEach(this::addGraphEdge);
     }
 
     public void addGraphEdge(Section section) {
-        addVertex(section.getUpStation());
-        addVertex(section.getDownStation());
-        addEdge(section);
+        SectionEdge sectionEdge = new SectionEdge(section);
+        graph.addVertex(section.getUpStation());
+        graph.addVertex(section.getDownStation());
+        graph.addEdge(section.getUpStation(), section.getDownStation(), sectionEdge);
+        graph.setEdgeWeight(sectionEdge, section.getDistance().value());
     }
 
-    public WeightedMultigraph<Station, DefaultWeightedEdge> getGraph() {
+    public WeightedMultigraph<Station, SectionEdge> getGraph() {
         return graph;
     }
 
-    private void addEdge(Section section) {
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance().value());
-    }
-
-    private void addVertex(Station station) {
-        graph.addVertex(station);
-    }
-
-
-    public boolean containsStation(Station station) {
-        return graph.containsVertex(station);
-    }
 }
