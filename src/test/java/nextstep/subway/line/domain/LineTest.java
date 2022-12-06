@@ -76,7 +76,7 @@ public class LineTest extends JpaEntityTest {
     void createLineWithFare() {
         Line 신분당선 = new Line("신분당선", "빨간색", 1_900);
 
-        assertThat(신분당선.getFare()).isEqualTo(1_900);
+        assertThat(신분당선.getAdditionalFare()).isEqualTo(1_900);
     }
 
     @DisplayName("초과운임을 포함하여 노선 생성 시, 음의 초과운임 입력 시 에러")

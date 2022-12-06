@@ -4,6 +4,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -17,8 +19,11 @@ import org.springframework.http.HttpStatus;
 import java.util.Arrays;
 import java.util.List;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_생성_성공함;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_토큰_생성_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
@@ -32,6 +37,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 사당역;
+    private String accessToken;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -56,6 +62,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성됨(createResponse);
+        TokenRequest tokenRequest = new TokenRequest(EMAIL, PASSWORD);
+        ExtractableResponse<Response> createTokenResponse = 로그인_토큰_생성_요청(tokenRequest);
+        로그인_토큰_생성_성공함(createTokenResponse);
+
+        accessToken = createTokenResponse.as(TokenResponse.class).getAccessToken();
     }
 
     /**
@@ -67,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPaths() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 교대역.getId(), 양재역.getId());
 
         // then
         지하철_경로_조회됨(response);
@@ -82,7 +96,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsSameSourceTargetException() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(교대역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 교대역.getId(), 교대역.getId());
 
         // then
         지하철_경로_실패됨(response);
@@ -96,7 +110,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsUnconnectedException() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(사당역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 사당역.getId(), 교대역.getId());
 
         // then
         지하철_경로_실패됨(response);
@@ -110,14 +124,15 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsUnenrolledException() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(1000L, 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 1000L, 교대역.getId());
 
         // then
         지하철_경로_실패됨(response);
     }
 
-    public static ExtractableResponse<Response> 지하철_경로_조회(Long sourceId, Long targetId) {
+    public static ExtractableResponse<Response> 지하철_경로_조회(String accessToken, Long sourceId, Long targetId) {
         return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
                 .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
                 .then().log().all()
                 .extract();

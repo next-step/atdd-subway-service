@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static nextstep.subway.common.domain.BizExceptionMessages.*;
-import static nextstep.subway.common.domain.BizMagicNumber.SURCHARGE_MIN_BOUNDARY;
+import static nextstep.subway.common.domain.BizMagicNumber.ADDITIONAL_FARE_MIN_BOUNDARY;
 
 @Entity
 public class Line extends BaseEntity {
@@ -20,7 +20,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Column(nullable = false)
-    private int Fare = 0;
+    private int additionalFare = 0;
     @Embedded
     private final Sections sections = new Sections();
 
@@ -33,11 +33,11 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, int Fare) {
+    public Line(String name, String color, int additionalFare) {
         validateLine(name, color);
         this.name = name;
         this.color = color;
-        setFare(Fare);
+        setAdditionalFare(additionalFare);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -47,11 +47,11 @@ public class Line extends BaseEntity {
         addSection(upStation, downStation, distance);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance, int Fare) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
         validateLine(name, color);
         this.name = name;
         this.color = color;
-        setFare(Fare);
+        setAdditionalFare(additionalFare);
 
         addSection(upStation, downStation, distance);
     }
@@ -73,11 +73,11 @@ public class Line extends BaseEntity {
         sections.remove(station);
     }
 
-    public void setFare(int fare) {
-        if (fare < SURCHARGE_MIN_BOUNDARY.number()) {
-            throw new IllegalArgumentException(CHARGE_IS_NOT_NEGATIVE.message());
+    public void setAdditionalFare(int additionalFare) {
+        if (additionalFare < ADDITIONAL_FARE_MIN_BOUNDARY.number()) {
+            throw new IllegalArgumentException(FARE_IS_NOT_NEGATIVE.message());
         }
-        this.Fare = fare;
+        this.additionalFare = additionalFare;
     }
 
     public List<Station> getStations() {
@@ -96,8 +96,8 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public int getFare() {
-        return Fare;
+    public int getAdditionalFare() {
+        return additionalFare;
     }
 
     @Override
