@@ -8,8 +8,8 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
-    private static final int MAX_DEFAULT_DISTANCE = 10;
-    private static final int MAX_MIDDLE_DISTANCE = 50;
+    private static final int SURCHARGE_DISTANCE_STEP1 = 10;
+    private static final int SURCHARGE_DISTANCE_STEP2 = 50;
 
     @Column(name = "distance")
     private int value;
@@ -37,15 +37,15 @@ public class Distance {
     }
 
     public boolean isDefaultDistance() {
-        return value <= MAX_DEFAULT_DISTANCE;
+        return value <= SURCHARGE_DISTANCE_STEP1;
     }
 
     public boolean isMiddleDistance() {
-        return value > MAX_DEFAULT_DISTANCE && value <= MAX_MIDDLE_DISTANCE;
+        return value > SURCHARGE_DISTANCE_STEP1 && value <= SURCHARGE_DISTANCE_STEP2;
     }
 
     public boolean isLongDistance() {
-        return value > MAX_MIDDLE_DISTANCE;
+        return value > SURCHARGE_DISTANCE_STEP2;
     }
 
     public int getDistance() {
