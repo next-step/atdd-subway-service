@@ -29,10 +29,6 @@ public class FavoriteController {
     @PostMapping("/favorites")
     public ResponseEntity<FavoriteResponse> createFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                            @RequestBody FavoriteRequest favoriteRequest) {
-        if(loginMember.isUnAuthorized()){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         FavoriteResponse favoriteResponse = favoriteService.saveFavorite(loginMember.getId(), favoriteRequest);
 
         try {
@@ -44,10 +40,6 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> listFavorite(@AuthenticationPrincipal LoginMember loginMember) {
-        if(loginMember.isUnAuthorized()){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         List<FavoriteResponse> favorites = favoriteService.findFavoriteAll(loginMember.getId());
         return ResponseEntity.ok(favorites);
     }
@@ -55,10 +47,6 @@ public class FavoriteController {
     @DeleteMapping("/favorites/{id}")
     public ResponseEntity<List<FavoriteResponse>> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember,
                                                                @PathVariable("id") Long id) {
-        if(loginMember.isUnAuthorized()){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
-
         favoriteService.deleteFavorite(loginMember.getId(), id);
         return ResponseEntity.noContent().build();
     }
