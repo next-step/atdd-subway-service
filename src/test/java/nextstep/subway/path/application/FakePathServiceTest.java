@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
@@ -96,7 +97,7 @@ public class FakePathServiceTest {
         Long 강남역_ID = 1L;
         Long 남부터미널역_ID = 2L;
         // when
-        PathResponse 경로_조회_결과 = pathFinderService.getShortestPath(강남역_ID, 남부터미널역_ID);
+        PathResponse 경로_조회_결과 = pathFinderService.getShortestPath(강남역_ID, 남부터미널역_ID, LoginMember.GUEST);
 
         // then
         assertAll(
