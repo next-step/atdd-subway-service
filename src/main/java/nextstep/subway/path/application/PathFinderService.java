@@ -1,11 +1,12 @@
 package nextstep.subway.path.application;
 
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.auth.domain.UserType;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.domain.DijkstraShortestPathFinder;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.StationGraph;
-import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -22,12 +23,14 @@ public class PathFinderService {
         this.stationService = stationService;
     }
 
-    public PathResponse getShortestPath(Long sourceId, Long targetId) {
+    public PathResponse getShortestPath(Long sourceId, Long targetId, LoginMember loginMember) {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
         StationGraph stationGraph = new StationGraph(sectionRepository.findAll());
         PathFinder pathFinder = new DijkstraShortestPathFinder(stationGraph);
-        Path path = pathFinder.findPath(source, target);
-        return PathResponse.from(path);
+        if(loginMember.getType().equals(UserType.GUEST)){
+            return PathResponse.from(pathFinder.findPath(source, target));
+        }
+        return PathResponse.from(pathFinder.findPathByLoginMember(source, target, loginMember.getAge()));
     }
 }
