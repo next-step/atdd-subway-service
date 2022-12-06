@@ -20,7 +20,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Column(nullable = false)
-    private int surcharge = 0;
+    private int Fare = 0;
     @Embedded
     private final Sections sections = new Sections();
 
@@ -33,11 +33,11 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, int surcharge) {
+    public Line(String name, String color, int Fare) {
         validateLine(name, color);
         this.name = name;
         this.color = color;
-        setSurcharge(surcharge);
+        setFare(Fare);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
@@ -47,11 +47,11 @@ public class Line extends BaseEntity {
         addSection(upStation, downStation, distance);
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance, int surcharge) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int Fare) {
         validateLine(name, color);
         this.name = name;
         this.color = color;
-        setSurcharge(surcharge);
+        setFare(Fare);
 
         addSection(upStation, downStation, distance);
     }
@@ -73,11 +73,11 @@ public class Line extends BaseEntity {
         sections.remove(station);
     }
 
-    public void setSurcharge(int surcharge) {
-        if (surcharge < SURCHARGE_MIN_BOUNDARY.number()) {
+    public void setFare(int fare) {
+        if (fare < SURCHARGE_MIN_BOUNDARY.number()) {
             throw new IllegalArgumentException(CHARGE_IS_NOT_NEGATIVE.message());
         }
-        this.surcharge = surcharge;
+        this.Fare = fare;
     }
 
     public List<Station> getStations() {
@@ -96,8 +96,8 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public int getSurcharge() {
-        return surcharge;
+    public int getFare() {
+        return Fare;
     }
 
     @Override
