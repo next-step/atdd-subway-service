@@ -75,4 +75,10 @@ public class LineService {
         persistLine.removeLineStation(removeTarget);
     }
 
+    public List<Line> findLinesContainStation(Station station) {
+        List<Line> lines = lineRepository.findAll();
+        return lines.stream()
+                .filter(line -> line.getStations().contains(station))
+                .collect(Collectors.toList());
+    }
 }

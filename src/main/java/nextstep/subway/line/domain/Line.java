@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.path.domain.Graph;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -61,4 +62,12 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public List<Section> getSectionList() {
+        return sections.getSectionList();
+    }
+
+    public void setGraph(Graph graph) {
+        getStations().stream().forEach(station -> graph.addVertex(station));
+        getSectionList().stream().forEach(it -> graph.setEdgeWeight(it.getUpStation(), it.getDownStation(), it.getDistance().value()));
+    }
 }

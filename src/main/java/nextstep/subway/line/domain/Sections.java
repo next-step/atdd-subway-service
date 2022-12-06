@@ -144,4 +144,8 @@ public class Sections {
         return !sections.stream()
                 .anyMatch(it -> it.hasEqualDownStation(candidate));
     }
+
+    public List<Section> getSectionList() {
+        return sections;
+    }
 }
