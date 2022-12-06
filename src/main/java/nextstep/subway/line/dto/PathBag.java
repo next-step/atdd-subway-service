@@ -19,10 +19,11 @@ public class PathBag {
     public static PathBag from(List<SectionPath> sectionPaths) {
         return new PathBag(sectionPaths);
     }
+
     public static PathBag fromLines(List<Line> lines) {
         return new PathBag(lines.stream().map(Line::getSections)
                 .flatMap(List::stream)
-                .map(it -> SectionPath.of(it.getUpStation(),  it.getDownStation(), it.getDistanceInt()))
+                .map(SectionPath::of)
                 .collect(Collectors.toList()));
     }
 

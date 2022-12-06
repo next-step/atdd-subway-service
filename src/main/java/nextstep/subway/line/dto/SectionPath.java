@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
 public class SectionPath {
@@ -11,6 +12,10 @@ public class SectionPath {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static SectionPath of(Section section) {
+        return new SectionPath(section.getUpStation(), section.getDownStation(), section.getDistanceInt());
     }
 
     public static SectionPath of(Station upStation, Station downStation, int distance) {
