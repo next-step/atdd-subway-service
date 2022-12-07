@@ -3,7 +3,6 @@ package nextstep.subway.fare.domain;
 import nextstep.subway.line.domain.Line;
 
 public class FareCalculator {
-    private static final int BASE_FARE = 1250;
     private Line line;
     private DistanceFare distanceFare;
     private AgePolicy agePolicy;
@@ -15,7 +14,7 @@ public class FareCalculator {
     }
 
     public int getCalculcate() {
-        int fare = distanceFare.getFare(BASE_FARE + line.getFare());
+        int fare = distanceFare.getFare(line.getFare());
         return agePolicy.getFare(fare);
     }
 }
