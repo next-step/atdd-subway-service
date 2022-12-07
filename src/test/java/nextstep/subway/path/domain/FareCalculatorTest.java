@@ -8,6 +8,7 @@ import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.path.domain.policy.*;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -49,6 +50,11 @@ public class FareCalculatorTest extends JpaEntityTest {
     private Member 미취학아동;
     private Member 노인;
 
+    private DiscountPolicy discountPolicy;
+    private AdditionalFarePolicy additionalFarePolicy;
+    private ChargeFarePolicy chargeFarePolicy;
+    private FareCalculator fareCalculator;
+
     @Override
     @BeforeEach
     public void setUp() {
@@ -88,6 +94,11 @@ public class FareCalculatorTest extends JpaEntityTest {
         노인 = new Member("EMAIL", "PASSWORD", 65);
         memberRepository.saveAll(Lists.newArrayList(성인, 청소년, 어린이, 미취학아동, 노인));
         flushAndClear();
+
+        chargeFarePolicy = new ChargeFareByDistancePolicy();
+        additionalFarePolicy = new AdditionalFareByLinePolicy();
+        discountPolicy = new DiscountByAgePolicy();
+        fareCalculator = new FareCalculator(chargeFarePolicy, additionalFarePolicy, discountPolicy);
     }
 
     @DisplayName("10km 이내 거리별 요금 정책 테스트")
@@ -98,7 +109,7 @@ public class FareCalculatorTest extends JpaEntityTest {
         Path path = new PathFinder().find(sections, 신사역, 강남역); // 8
 
         // when
-        int fare = FareCalculator.calculateByDistance(path.getDistance());
+        int fare = chargeFarePolicy.charge(path.getDistance());
 
         // then
         assertThat(fare).isEqualTo(1_250);
@@ -112,7 +123,7 @@ public class FareCalculatorTest extends JpaEntityTest {
         Path path = new PathFinder().find(sections, 교대역, 남부터미널역); // 27
 
         // when
-        int fare = FareCalculator.calculateByDistance(path.getDistance());
+        int fare = chargeFarePolicy.charge(path.getDistance());
 
         // then
         assertThat(fare).isEqualTo(1_650);
@@ -126,7 +137,7 @@ public class FareCalculatorTest extends JpaEntityTest {
         Path path = new PathFinder().find(sections, 교대역, 역삼역); // 60
 
         // when
-        int fare = FareCalculator.calculateByDistance(path.getDistance());
+        int fare = chargeFarePolicy.charge(path.getDistance());
 
         // then
         assertThat(fare).isEqualTo(2_250);
@@ -140,7 +151,7 @@ public class FareCalculatorTest extends JpaEntityTest {
         Path path = new PathFinder().find(sections, 남부터미널역, 역삼역); // 62
 
         // when
-        int additionalFare = FareCalculator.calculateByAdditionalFareOfLine(sections, path.getStationPaths());
+        int additionalFare = additionalFarePolicy.addFare(sections, path.getStationPaths());
 
         // then
         assertThat(additionalFare).isEqualTo(900);
@@ -149,11 +160,8 @@ public class FareCalculatorTest extends JpaEntityTest {
     @DisplayName("성인 - 나이별 할인 정책 테스트")
     @Test
     void discountFareByAge_성인() {
-        // given
-        DiscountPolicy policy = new AgeDiscountPolicy(성인.getAge());
-
         // when
-        int fare = policy.discount(1_250);
+        int fare = discountPolicy.discount(1_250, 성인.getAge());
 
         // then
         assertThat(fare).isEqualTo(1_250);
@@ -162,11 +170,8 @@ public class FareCalculatorTest extends JpaEntityTest {
     @DisplayName("청소년 - 나이별 할인 정책 테스트")
     @Test
     void discountFareByAge_청소년() {
-        // given
-        DiscountPolicy policy = new AgeDiscountPolicy(청소년.getAge());
-
         // when
-        int fare = policy.discount(1_250);
+        int fare = discountPolicy.discount(1_250, 청소년.getAge());
 
         // then
         assertThat(fare).isEqualTo(720);
@@ -175,11 +180,8 @@ public class FareCalculatorTest extends JpaEntityTest {
     @DisplayName("어린이 - 나이별 할인 정책 테스트")
     @Test
     void discountFareByAge_어린이() {
-        // given
-        DiscountPolicy policy = new AgeDiscountPolicy(어린이.getAge());
-
         // when
-        int fare = policy.discount(1_250);
+        int fare = discountPolicy.discount(1_250, 어린이.getAge());
 
         // then
         assertThat(fare).isEqualTo(450);
@@ -188,11 +190,8 @@ public class FareCalculatorTest extends JpaEntityTest {
     @DisplayName("미취학아동 - 나이별 할인 정책 테스트")
     @Test
     void discountFareByAge_미취학아동() {
-        // given
-        DiscountPolicy policy = new AgeDiscountPolicy(미취학아동.getAge());
-
         // when
-        int fare = policy.discount(1_250);
+        int fare = discountPolicy.discount(1_250, 미취학아동.getAge());
 
         // then
         assertThat(fare).isEqualTo(0);
@@ -201,11 +200,8 @@ public class FareCalculatorTest extends JpaEntityTest {
     @DisplayName("노인 - 나이별 할인 정책 테스트")
     @Test
     void discountFareByAge_노인() {
-        // given
-        DiscountPolicy policy = new AgeDiscountPolicy(노인.getAge());
-
         // when
-        int fare = policy.discount(1_250);
+        int fare = discountPolicy.discount(1_250, 노인.getAge());
 
         // then
         assertThat(fare).isEqualTo(0);

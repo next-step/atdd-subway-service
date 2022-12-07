@@ -4,7 +4,9 @@ import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
-import nextstep.subway.path.domain.*;
+import nextstep.subway.path.domain.FareCalculator;
+import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -18,11 +20,13 @@ public class PathService {
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
     private final SectionRepository sectionRepository;
+    private final FareCalculator fareCalculator;
 
-    public PathService(MemberRepository memberRepository, StationRepository stationRepository, SectionRepository sectionRepository) {
+    public PathService(MemberRepository memberRepository, StationRepository stationRepository, SectionRepository sectionRepository, FareCalculator fareCalculator) {
         this.memberRepository = memberRepository;
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
+        this.fareCalculator = fareCalculator;
     }
 
 
@@ -35,8 +39,7 @@ public class PathService {
 
         Path path = new PathFinder().find(sections, sourceStation, targetStation);
 
-        DiscountPolicy discountPolicy = new AgeDiscountPolicy(member.getAge());
-        int fare = FareCalculator.calculate(sections, path, discountPolicy);
+        int fare = fareCalculator.calculate(sections, path, member);
 
         return PathResponse.of(path, fare);
     }
