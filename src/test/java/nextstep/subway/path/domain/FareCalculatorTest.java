@@ -55,7 +55,7 @@ class FareCalculatorTest {
         신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 10, 0);
         이호선 = createLine("이호선", "bg-red-600", 교대역, 강남역, 10, 0);
         삼호선 = createLine("삼호선", "bg-red-600", 교대역, 양재역, 10, 0);
-        사호선 = createLine("사호선", "bg-red-600", 명동역, 사당역, 30, 0);
+        사호선 = createLine("사호선", "bg-red-600", 명동역, 사당역, 60, 0);
         오호선 = createLine("오호선", "bg-red-600", 동대문역사공원역, 광화문역, 10, 1000);
         삼호선.addSection(createSection(교대역, 남부터미널역, 8));
     }
@@ -66,7 +66,7 @@ class FareCalculatorTest {
         List<Line> lines = Arrays.asList(신분당선, 이호선, 삼호선);
         PathFinder pathFinder = PathFinder.from(lines);
         PathResponse shortestPath = pathFinder.getShortestPath(강남역, 남부터미널역,
-                fare -> FareCalculator.applyDiscountFare(fare, new Age(10)));
+                fare -> FareCalculator.applyDiscountFare(fare, new Age(50)));
         List<Section> sections = getSections(lines);
         List<Station> stations = getStations(lines);
 
@@ -77,13 +77,13 @@ class FareCalculatorTest {
         assertThat(fare).isEqualTo(new Fare(1350));
     }
 
-    @DisplayName("50km 초과 경로 조회 시 8km마다 500원 추가된 요금 정보이 적용된다")
+    @DisplayName("50km 초과 경로 조회 시 8km마다 100원 추가된 요금 정보이 적용된다")
     @Test
     void getShortestPath_additionalFare_distance_level2() {
         List<Line> lines = Collections.singletonList(사호선);
         PathFinder pathFinder = PathFinder.from(lines);
         PathResponse shortestPath = pathFinder.getShortestPath(명동역, 사당역,
-                fare -> FareCalculator.applyDiscountFare(fare, new Age(10)));
+                fare -> FareCalculator.applyDiscountFare(fare, new Age(50)));
         List<Section> sections = getSections(lines);
         List<Station> stations = getStations(lines);
 
@@ -91,7 +91,7 @@ class FareCalculatorTest {
                 sections, new ArrayList<>(stations), new Distance(shortestPath.getDistance())
         );
 
-        assertThat(fare).isEqualTo(new Fare(1650));
+        assertThat(fare).isEqualTo(new Fare(1450));
     }
 
     private List<Section> getSections(final List<Line> lines) {
@@ -111,7 +111,7 @@ class FareCalculatorTest {
     void calculateAdditionalFare_line() {
         PathFinder pathFinder = PathFinder.from(Collections.singletonList(오호선));
         PathResponse shortestPath = pathFinder.getShortestPath(동대문역사공원역, 광화문역,
-                fare -> FareCalculator.applyDiscountFare(fare, new Age(10)));
+                fare -> FareCalculator.applyDiscountFare(fare, new Age(50)));
 
         Fare fare = FareCalculator.calculateAdditionalFare(
                 오호선.getSections(), new ArrayList<>(오호선.getStations()), new Distance(shortestPath.getDistance())

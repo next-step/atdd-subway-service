@@ -34,7 +34,7 @@ public class Distance {
         this.value -= distance.value;
     }
 
-    public boolean isBiggerThen(final int value) {
+    public boolean isBiggerThan(final int value) {
         return this.value > value;
     }
 

@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Distance;
 
 import java.util.Arrays;
+import java.util.Comparator;
 
 import static nextstep.subway.line.domain.Distance.DISTANCE_UNIT_LEVEL1;
 import static nextstep.subway.line.domain.Distance.DISTANCE_UNIT_LEVEL2;
@@ -23,8 +24,8 @@ enum DiscountPolicy {
 
     public static int calculateAdditionalFareOfDistance(final Distance distance) {
         DiscountPolicy discountPolicy = Arrays.stream(DiscountPolicy.values())
-                .filter(policy -> policy != DiscountPolicy.DEFAULT && distance.isBiggerThen(policy.distance))
-                .findFirst()
+                .filter(policy -> policy != DiscountPolicy.DEFAULT && distance.isBiggerThan(policy.distance))
+                .max(Comparator.comparing(policy -> policy.distance))
                 .orElse(DiscountPolicy.DEFAULT);
 
         if (discountPolicy == DiscountPolicy.DEFAULT) {
