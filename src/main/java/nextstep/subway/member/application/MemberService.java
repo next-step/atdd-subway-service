@@ -7,6 +7,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import nextstep.subway.member.exception.NoMemberException;
 
 @Service
 public class MemberService {
@@ -34,5 +35,9 @@ public class MemberService {
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id).orElseThrow(() -> new NoMemberException(id));
     }
 }

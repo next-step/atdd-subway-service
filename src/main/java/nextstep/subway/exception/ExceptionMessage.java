@@ -15,4 +15,8 @@ public class ExceptionMessage {
         return String.format("해당 역은 존재하지 않습니다. id:[%d]", id);
     }
 
+    public static String noMember(Long id) {
+        return String.format("해당 사용자는 존재하지 않습니다. id:[%d]", id);
+    }
+
 }

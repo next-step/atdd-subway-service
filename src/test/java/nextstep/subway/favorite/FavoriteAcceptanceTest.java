@@ -142,8 +142,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
+    /**
+     * 생성 시 location 의 세번째 값이 즐겨찾기 아이디!
+     * /favorites/1
+     * 0 / 1 / 2
+     */
     public static Long 즐겨찾기_아이디(ExtractableResponse<Response> createResponse) {
-        return Long.valueOf(createResponse.header("Location").split("/")[1]);
+        return Long.valueOf(createResponse.header("Location").split("/")[2]);
     }
 
 }
