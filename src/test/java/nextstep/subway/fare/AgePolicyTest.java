@@ -39,9 +39,9 @@ public class AgePolicyTest {
         assertThat(AgePolicy.valueOfAge(age).getFare(fare)).isEqualTo(fare);
     }
 
-    @DisplayName("성인,어린이,청소년에 해당하지 않는 나이대는 예외발생")
+    @DisplayName("나이가 음수인경우 예외발생")
     @ParameterizedTest
-    @CsvSource(value = {"1350:1", "2350:2", "3350:3", "4350:4", "5350:5"}, delimiter = ':')
+    @CsvSource(value = {"1350:-1", "2350:-2", "3350:-3", "4350:-4", "5350:-5"}, delimiter = ':')
     void findFareOther(int fare, int age) {
         assertThatThrownBy(() -> AgePolicy.valueOfAge(age).getFare(fare))
                 .isInstanceOf(AgeFareException.class)
