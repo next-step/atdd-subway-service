@@ -15,7 +15,7 @@ public class DistanceFareTest {
     @ValueSource(ints = {1000, 2000, 3000, 4000, 5000})
     void findMaxLine(int fare) {
         DistanceFare distanceFare = new DistanceFare(8);
-        assertThat(distanceFare.getFare(fare)).isEqualTo(fare);
+        assertThat(distanceFare.getFare(fare)).isEqualTo(fare + 1250);
     }
 
     @DisplayName("이용거리가 10km를 초과하고 50km이하면 5km마다 이용요금이 100원씩 추가된다")
@@ -23,7 +23,7 @@ public class DistanceFareTest {
     @ValueSource(ints = {1000, 2000, 3000, 4000, 5000})
     void findFareBetween10to50(int fare) {
         DistanceFare distanceFare = new DistanceFare(20);
-        assertThat(distanceFare.getFare(fare)).isEqualTo(fare + 200);
+        assertThat(distanceFare.getFare(fare)).isEqualTo(fare + 1450);
     }
 
     @DisplayName("이용거리가 50km초과시 8km마다 이용요금이 100원씩 추가된다")
@@ -31,7 +31,7 @@ public class DistanceFareTest {
     @ValueSource(ints = {1000, 2000, 3000, 4000, 5000})
     void findFareOver50(int fare) {
         DistanceFare distanceFare = new DistanceFare(130);
-        assertThat(distanceFare.getFare(fare)).isEqualTo(fare + 1000);
+        assertThat(distanceFare.getFare(fare)).isEqualTo(fare + 2250);
     }
 }
 
