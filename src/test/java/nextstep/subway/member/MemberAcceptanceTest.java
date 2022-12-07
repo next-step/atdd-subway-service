@@ -67,7 +67,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return Stream.of(
             dynamicTest("로그인 한다.", this::login),
             dynamicTest("내 정보를 조회한다.", this::view_my_info),
-            dynamicTest("내 정보를 수정한다", this::fix_my_info)
+            dynamicTest("내 정보를 수정한다", this::fix_my_info),
+            dynamicTest("내 정보를 삭제한다", this::delete_my_info)
         );
     }
 
@@ -95,6 +96,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         회원_정보_수정됨(response);
     }
+
+    private void delete_my_info() {
+        ExtractableResponse<Response> response = 내_정보_삭제_요청(accessToken);
+
+        회원_삭제됨(response);
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -159,6 +167,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .contentType(MediaType.APPLICATION_JSON_VALUE)
             .body(memberRequest)
             .when().put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/members/me")
             .then().log().all()
             .extract();
     }
