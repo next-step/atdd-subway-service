@@ -7,6 +7,7 @@ import java.util.Arrays;
 import static nextstep.subway.fare.exception.AgeFareExceptionCode.NONE_EXISTS_AGE;
 
 public enum AgePolicy {
+    KIDS(0,6,350,1),
     CHILD(6, 13, 350, 0.5),
     TEEN(13, 19, 350, 0.2),
     ADULT(19, Integer.MAX_VALUE, 0, 0);

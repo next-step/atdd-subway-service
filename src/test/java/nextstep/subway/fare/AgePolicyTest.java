@@ -11,19 +11,25 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class AgePolicyTest {
 
-    @DisplayName("청소년인경우 운임에서 350원을 공제한 금액의 20%g할인된금액을 반환")
+    @DisplayName("0~6세 미취학 아동인경우 운임료 0원반환")
     @ParameterizedTest
-    @CsvSource(value = {"1350:13", "2350:14", "3350:15", "4350:16", "5350:17"}, delimiter = ':')
-    void findFareTeen(int fare, int age) {
-        assertThat(AgePolicy.valueOfAge(age).getFare(fare)).isEqualTo((int) ((fare - 350) * 0.8));
+    @CsvSource(value = {"1350:0", "2350:1", "3350:2", "4350:3", "5350:4"}, delimiter = ':')
+    void findFareKids(int fare, int age) {
+        assertThat(AgePolicy.valueOfAge(age).getFare(fare)).isEqualTo(0);
     }
 
     @DisplayName("어린이인경우 운임에서 350원을 공제한 금액의 50%g할인된금액을 반환")
     @ParameterizedTest
     @CsvSource(value = {"1350:6", "2350:7", "3350:8", "4350:9", "5350:12"}, delimiter = ':')
-    void findFareChid(int fare, int age) {
+    void findFareChild(int fare, int age) {
         assertThat(AgePolicy.valueOfAge(age).getFare(fare)).isEqualTo((int) ((fare - 350) * 0.5));
+    }
 
+    @DisplayName("청소년인경우 운임에서 350원을 공제한 금액의 20%g할인된금액을 반환")
+    @ParameterizedTest
+    @CsvSource(value = {"1350:13", "2350:14", "3350:15", "4350:16", "5350:17"}, delimiter = ':')
+    void findFareTeen(int fare, int age) {
+        assertThat(AgePolicy.valueOfAge(age).getFare(fare)).isEqualTo((int) ((fare - 350) * 0.8));
     }
 
     @DisplayName("성인경우 원래금액 반환")
