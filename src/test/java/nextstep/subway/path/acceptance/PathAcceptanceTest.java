@@ -4,7 +4,9 @@ import static nextstep.subway.utils.LineAcceptanceUtils.*;
 import static nextstep.subway.utils.PathAcceptanceUtils.*;
 import static nextstep.subway.utils.SectionAcceptanceUtils.*;
 import static nextstep.subway.utils.StationAcceptanceUtils.*;
+import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Arrays;
 import java.util.stream.Stream;
 
 import org.junit.jupiter.api.BeforeEach;
@@ -64,6 +66,14 @@ class PathAcceptanceTest extends AcceptanceTest {
 	@Test
 	@DisplayName("최단 경로를 조회")
 	void findShortestPath() {
+		// when
+		ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 양재역.getId());
+
+		// then
+		assertAll(
+			() -> 최단_경로_조회됨(response),
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15)
+		);
 	}
 
 	/**
