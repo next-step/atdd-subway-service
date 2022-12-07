@@ -14,17 +14,21 @@ public class StationAcceptanceUtils {
 		throw new AssertionError("Utility class cannot be instantiated");
 	}
 
+	public static ExtractableResponse<Response> 지하철역_등록되어_있음(String name) {
+		return 지하철역_생성_요청(name);
+	}
+
 	public static ExtractableResponse<Response> 지하철역_생성_요청(final String name) {
 		Map<String, String> requestParam = new HashMap<>();
 		requestParam.put("name", name);
 		return RestAssuredUtils.post(STATION_URL, requestParam).extract();
 	}
 
-	 public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-		 return RestAssuredUtils.get(STATION_URL).extract();
-	 }
+	public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+		return RestAssuredUtils.get(STATION_URL).extract();
+	}
 
-	 public static ExtractableResponse<Response> 지하철역_삭제_요청(final String id) {
-		 return RestAssuredUtils.delete(STATION_URL + "/" + id).extract();
-	 }
+	public static ExtractableResponse<Response> 지하철역_삭제_요청(final String id) {
+		return RestAssuredUtils.delete(STATION_URL + "/" + id).extract();
+	}
 }

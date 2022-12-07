@@ -6,6 +6,7 @@ import static nextstep.subway.utils.StationAcceptanceUtils.*;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.line.dto.LineCreateRequest;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.LineUpdateRequest;
 
 public class LineAcceptanceUtils {
@@ -14,6 +15,10 @@ public class LineAcceptanceUtils {
 
 	private LineAcceptanceUtils() {
 		throw new AssertionError("Utility class cannot be instantiated");
+	}
+
+	public static LineResponse 지하철_노선_등록되어_있음(final LineCreateRequest request) {
+		return 지하철_노선_생성(request).as(LineResponse.class);
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선_생성_요청(final String name, final String color,
@@ -35,21 +40,26 @@ public class LineAcceptanceUtils {
 		return RestAssuredUtils.post(LINE_URL, lineCreateRequest).extract();
 	}
 
+	private static ExtractableResponse<Response> 지하철_노선_생성(LineCreateRequest request) {
+		LineCreateRequest lineCreateRequest = new LineCreateRequest(
+			request.getName(), request.getColor(), request.getUpStationId(), request.getDownStationId(), request.getDistance());
+		return RestAssuredUtils.post(LINE_URL, lineCreateRequest).extract();
+	}
 
 	public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
 		return RestAssuredUtils.get(LINE_URL).extract();
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선_조회_요청(Long id) {
-		return RestAssuredUtils.get(LINE_URL +"/" + id).extract();
+		return RestAssuredUtils.get(LINE_URL + "/" + id).extract();
 
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선_수정_요청(Long id, LineUpdateRequest updateRequest) {
-		return RestAssuredUtils.put(LINE_URL +"/" + id, updateRequest).extract();
+		return RestAssuredUtils.put(LINE_URL + "/" + id, updateRequest).extract();
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선_삭제_요청(Long id) {
-		return RestAssuredUtils.delete(LINE_URL +"/" + id).extract();
+		return RestAssuredUtils.delete(LINE_URL + "/" + id).extract();
 	}
 }
