@@ -19,6 +19,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.LineId;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -50,7 +51,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_ID_추출(지하철역_등록되어_있음("광교역"));
 
         Map<String, String> lineRequest = LineAcceptanceTest.지하철_노선_생성_요청_파라미터("신분당선", "bg-red-600", 강남역,
-            광교역, 10);
+            광교역, Distance.from(10));
         신분당선 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(lineRequest));
     }
 

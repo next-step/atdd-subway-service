@@ -205,7 +205,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             "bg-blue-600",
             start,
             end,
-            distance.value()
+            distance
         );
         return 지하철_노선_등록되어_있음(params).as(LineResponse.class);
     }
@@ -216,7 +216,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             "bg-green-600",
             왕십리,
             DDP,
-            20
+            Distance.from(20)
         );
         LineId LINE_2 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(params));
         지하철_노선에_지하철역_등록_요청(LINE_2, 왕십리, 신당, 10);
@@ -229,7 +229,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             "bg-pupple-600",
             왕십리,
             DDP,
-            30
+            Distance.from(30)
         );
         LineId LINE_5 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(params));
         지하철_노선에_지하철역_등록_요청(LINE_5, 왕십리, 행당, 10);
@@ -243,7 +243,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             "bg-red-600",
             start,
             end,
-            distance.value()
+            distance
         );
         return 지하철_노선_등록되어_있음(params).as(LineResponse.class);
     }

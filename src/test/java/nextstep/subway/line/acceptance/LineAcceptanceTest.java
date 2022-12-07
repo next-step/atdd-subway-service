@@ -19,6 +19,8 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.amount.domain.Amount;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.LineId;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.StationId;
@@ -108,11 +110,11 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     private Map<String, String> 지하철_노선_생성_요청_구신분당선() {
-        return 지하철_노선_생성_요청_파라미터("구신분당선", "bg-red-600", 강남역, 광교역, 15);
+        return 지하철_노선_생성_요청_파라미터("구신분당선", "bg-red-600", 강남역, 광교역, Distance.from(15));
     }
 
     private Map<String, String> 지하철_노선_생성_요청_신분당선() {
-        return 지하철_노선_생성_요청_파라미터("신분당선", "bg-red-600", 강남역, 광교역, 10);
+        return 지하철_노선_생성_요청_파라미터("신분당선", "bg-red-600", 강남역, 광교역, Distance.from(10));
     }
 
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(Map<String, String> params) {
@@ -120,13 +122,13 @@ public class LineAcceptanceTest extends AcceptanceTest {
     }
 
     public static Map<String, String> 지하철_노선_생성_요청_파라미터(String name, String color, StationId upStationId,
-        StationId downStationId, Integer distance) {
+        StationId downStationId, Distance distance) {
         Map<String, String> params = new HashMap<>();
         params.put("name", name);
         params.put("color", color);
         params.put("upStationId", upStationId.getString());
         params.put("downStationId", downStationId.getString());
-        params.put("distance", distance.toString());
+        params.put("distance", Integer.toString(distance.value()));
         return params;
     }
 

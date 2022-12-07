@@ -25,6 +25,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.domain.FavoriteId;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.station.domain.StationId;
 
 @DisplayName("즐겨찾기 관련 기능")
@@ -52,7 +53,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         광교역 = 지하철역_ID_추출(지하철역_등록되어_있음("광교역"));
 
         Map<String, String> lineRequest = LineAcceptanceTest.지하철_노선_생성_요청_파라미터("신분당선", "bg-red-600", 강남역,
-            광교역, 10);
+            광교역, Distance.from(10));
         지하철_노선_등록되어_있음(lineRequest);
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
