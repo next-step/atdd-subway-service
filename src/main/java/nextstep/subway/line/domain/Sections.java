@@ -2,8 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.ErrorMessage;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -49,7 +47,7 @@ public class Sections {
         return stations;
     }
 
-    private Station findUpStation() {
+    public Station findUpStation() {
         List<Station> upStations = sections.stream().map(Section::getUpStation).collect(Collectors.toList());
         List<Station> downStations = sections.stream().map(Section::getDownStation).collect(Collectors.toList());
         for (Station downStation : downStations) {
@@ -161,29 +159,10 @@ public class Sections {
                 .findFirst();
     }
 
-    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        Station nextStation = findUpStation();
-        boolean isLastSection = false;
-        while (!isLastSection) {
-            Station beforeStation = nextStation.copyOf();
-            Optional<Section> nextSection = sections.stream()
-                    .filter(section -> beforeStation.equals(section.getUpStation()))
-                    .findFirst();
-            isLastSection = !nextSection.isPresent();
-            drawGraph(graph, nextSection);
-            nextStation = nextSection.map(Section::getDownStation).orElse(null);
-        }
+    public Optional<Section> findNextLowerSection(Station beforeStation) {
+        return sections.stream()
+                .filter(section -> beforeStation.equals(section.getUpStation()))
+                .findFirst();
     }
 
-    private void drawGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph,
-                           Optional<Section> nextSection) {
-        if (!nextSection.isPresent()) {
-            return;
-        }
-        Section section = nextSection.get();
-        graph.addVertex(section.getUpStation());
-        graph.addVertex(section.getDownStation());
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
-                section.getDistance().getDistance());
-    }
 }

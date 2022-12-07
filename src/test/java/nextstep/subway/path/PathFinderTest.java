@@ -11,6 +11,8 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
@@ -58,17 +60,13 @@ public class PathFinderTest {
         신분당선.addSection(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         신분당선.addSection(new Section(신분당선, 양재역, 양재시민의숲역, new Distance(10)));
 
-        일호선.makeGraph(sectionDistanceGraph);
-        이호선.makeGraph(sectionDistanceGraph);
-        삼호선.makeGraph(sectionDistanceGraph);
-        신분당선.makeGraph(sectionDistanceGraph);
     }
 
     @Test
     @DisplayName("최단 거리 경로의 지하철역 순서목록과 거리를 구한다.")
     void findShortestPathStationListTest() {
         //given
-        PathFinder pathFinder = new PathFinder(역삼역, 남부터미널역, sectionDistanceGraph);
+        PathFinder pathFinder = new PathFinder(역삼역, 남부터미널역, Arrays.asList(일호선, 이호선, 삼호선, 신분당선));
         //when
         //then
         assertThat(pathFinder.getShortestPathStationList())
@@ -81,8 +79,8 @@ public class PathFinderTest {
     @DisplayName("시작지점과 끝지점을 거꾸로 했을 때 거리가 동일하고 역목록은 거꾸로 나오는지 테스트")
     void sourceTargetReverseEqualPathTest() {
         //given
-        PathFinder pathFinder1 = new PathFinder(역삼역, 남부터미널역, sectionDistanceGraph);
-        PathFinder pathFinder2 = new PathFinder(남부터미널역, 역삼역, sectionDistanceGraph);
+        PathFinder pathFinder1 = new PathFinder(역삼역, 남부터미널역, Arrays.asList(일호선, 이호선, 삼호선, 신분당선));
+        PathFinder pathFinder2 = new PathFinder(남부터미널역, 역삼역, Arrays.asList(일호선, 이호선, 삼호선, 신분당선));
         //when
         //then
         assertThat(pathFinder1.getShortestPathStationList())
@@ -97,7 +95,7 @@ public class PathFinderTest {
     @DisplayName("한 구간의 최단 거리와 경로 구하기 테스트")
     void findOneSectionShortestPathTest() {
         //given
-        PathFinder pathFinder = new PathFinder(역삼역, 강남역, sectionDistanceGraph);
+        PathFinder pathFinder = new PathFinder(역삼역, 강남역, Arrays.asList(일호선, 이호선, 삼호선, 신분당선));
         //when
         //then
         assertThat(pathFinder.getShortestPathStationList())
@@ -110,7 +108,7 @@ public class PathFinderTest {
     @DisplayName("한 노선에서의 최단 거리와 경로 구하기 테스트")
     void findOneLineShortestPathTest() {
         //given
-        PathFinder pathFinder = new PathFinder(인천역, 도원역, sectionDistanceGraph);
+        PathFinder pathFinder = new PathFinder(인천역, 도원역, Arrays.asList(일호선, 이호선, 삼호선, 신분당선));
         //when
         //then
         assertThat(pathFinder.getShortestPathStationList())
@@ -122,14 +120,14 @@ public class PathFinderTest {
     @Test
     @DisplayName("출발역과 도착역이 같은 경우")
     void sourceTargetEqualExceptionTest() {
-        assertThatThrownBy(() -> new PathFinder(인천역, 인천역, sectionDistanceGraph))
+        assertThatThrownBy(() -> new PathFinder(인천역, 인천역, Arrays.asList(일호선, 이호선, 삼호선, 신분당선)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @Test
     @DisplayName("출발역과 도착역이 연결되어 있지 않은 경우")
     void disconnectExceptionTest() {
-        assertThatThrownBy(() -> new PathFinder(인천역, 강남역, sectionDistanceGraph))
+        assertThatThrownBy(() -> new PathFinder(인천역, 강남역, Arrays.asList(일호선, 이호선, 삼호선, 신분당선)))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 

@@ -44,7 +44,7 @@ public class LineService {
                 .collect(Collectors.toList());
     }
 
-    private List<Line> findLines() {
+    public List<Line> findLines() {
         return lineRepository.findAll();
     }
 
@@ -79,9 +79,4 @@ public class LineService {
         findLineById(lineId).removeStation(stationService.findStationById(stationId));
     }
 
-    public WeightedMultigraph<Station, DefaultWeightedEdge> getSectionDistanceGraph() {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        findLines().stream().forEach(line -> line.makeGraph(graph));
-        return graph;
-    }
 }
