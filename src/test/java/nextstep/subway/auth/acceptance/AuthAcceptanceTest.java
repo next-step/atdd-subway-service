@@ -6,7 +6,6 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
-import nextstep.subway.member.dto.MemberRequest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -82,5 +81,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .when().post("/login/token")
                 .then().log().all()
                 .extract();
+    }
+
+    public static String 로그인_후_토큰_조회(String email, String password) {
+        return 로그인_요청(email, password).as(TokenResponse.class).getAccessToken();
     }
 }
