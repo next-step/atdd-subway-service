@@ -16,7 +16,7 @@ public class SubwayFareCalculator {
     private static int age;
 
     private static final int MIN_LINE_FARE = 0;
-    private static final int MIN_ADULT_AGE = 19;
+    public static final int MIN_ADULT_AGE = 19;
 
     public SubwayFareCalculator() {
         this.lineFare = MIN_LINE_FARE;

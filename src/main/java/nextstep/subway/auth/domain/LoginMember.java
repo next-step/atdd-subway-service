@@ -2,12 +2,12 @@ package nextstep.subway.auth.domain;
 
 import java.util.Objects;
 
-public class LoginMember {
+public class LoginMember implements AuthMember {
     private Long id;
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    protected LoginMember() {
     }
 
     public LoginMember(Long id, String email, Integer age) {
@@ -16,16 +16,24 @@ public class LoginMember {
         this.age = age;
     }
 
+    @Override
     public Long getId() {
         return id;
     }
 
+    @Override
     public String getEmail() {
         return email;
     }
 
+    @Override
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public boolean isLoginMember() {
+        return true;
     }
 
     @Override

@@ -47,6 +47,11 @@ import org.springframework.http.MediaType;
  *  And 로그인 되어있음
  * <p>
  * Scenario: 출발역과 도착역 사이의 최단 경로 조회
+ *  When 비회원의 지하철 경로 조회 요청
+ *  Then 비회원의 출발역과 도착역 사이의 최단 경로 조회됨.
+ *  And 비회원의 총 거리도 함께 응답함
+ *  And 비회원의 지하철 이용 요금도 함께 응답함
+ * <p>
  *  When 성인 회원의 지하철 경로 조회 요청
  *  Then 성인 회원의 출발역과 도착역 사이의 최단 경로 조회됨.
  *  And 성인 회원의 총 거리도 함께 응답함
@@ -187,6 +192,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /**
+     * When 비회원의 지하철 경로 조회 요청
+     * Then 비회원의 출발역과 도착역 사이의 최단 경로 조회됨.
+     * And 비회원의 총 거리도 함께 응답함
+     * And 비회원의 지하철 이용 요금도 함께 응답함
+     * <p>
      * When 성인 회원의 지하철 경로 조회 요청
      * Then 성인 회원의 출발역과 도착역 사이의 최단 경로 조회됨.
      * And 성인 회원의 총 거리도 함께 응답함
@@ -204,6 +214,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
      */
     @Test
     void 출발역과_도착역_사이의_최단_경로_조회() {
+        ExtractableResponse<Response> 비회원_경로조회_결과 = 비회원_지하철_경로_조회_요청(교대역.getId(), 양재역.getId());
+        지하철_최단_경로_총_거리_조회됨(비회원_경로조회_결과, 5);
+        지하철_이용_요금_조회됨(비회원_경로조회_결과, 1250);
+
         ExtractableResponse<Response> 성인_회원_경로조회_결과 = 지하철_경로_조회_요청(성인회원, 교대역.getId(), 양재역.getId());
         지하철_최단_경로_총_거리_조회됨(성인_회원_경로조회_결과, 5);
         지하철_이용_요금_조회됨(성인_회원_경로조회_결과, 1250);
@@ -259,6 +273,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    private ExtractableResponse<Response> 비회원_지하철_경로_조회_요청(Long startStationId, Long endStationId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("source", startStationId);
+        params.put("target", endStationId);
+        params.put("age", 19);
+
+        return RestAssured.given().log().all()
+                .queryParams(params)
+                .auth().oauth2("")
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
     private ExtractableResponse<Response> 지하철_경로_조회_요청(String accessToken, Long startStationId, Long endStationId) {
         Map<String, Object> params = new HashMap<>();
         params.put("source", startStationId);
