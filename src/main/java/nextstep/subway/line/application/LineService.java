@@ -53,6 +53,11 @@ public class LineService {
 	}
 
 	@Transactional(readOnly = true)
+	public List<Line> findAll() {
+		return lineRepository.findAll();
+	}
+
+	@Transactional(readOnly = true)
 	public LineResponse findLineResponseById(Long id) {
 		return LineResponse.from(findById(id));
 	}
