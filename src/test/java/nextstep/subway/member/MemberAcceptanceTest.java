@@ -31,7 +31,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int NEW_AGE = 21;
 
     ExtractableResponse<Response> createResponse;
-
+    String accessToken;
     @BeforeEach
     public void setUp() {
         super.setUp();
@@ -65,7 +65,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @TestFactory
     Stream<DynamicNode> manageMyInfo() {
         return Stream.of(
-            dynamicTest("로그인 한다.", this::login)
+            dynamicTest("로그인 한다.", this::login),
+            dynamicTest("내 정보를 조회한다.", this::view_my_info)
         );
     }
 
@@ -73,7 +74,15 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
         로그인_됨(response);
-        토큰_확인됨(response.as(TokenResponse.class));
+        TokenResponse tokenResponse = response.as(TokenResponse.class);
+        토큰_확인됨(tokenResponse);
+        accessToken = tokenResponse.getAccessToken();
+    }
+
+    private void view_my_info() {
+        ExtractableResponse<Response> response = 내_정보_조회_요청(accessToken);
+
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
