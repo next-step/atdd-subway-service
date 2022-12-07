@@ -10,6 +10,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
+import java.util.List;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
@@ -42,5 +44,15 @@ public class FavoriteRepositoryTest {
 
         assertThat(saveFavorite).isNotNull();
         assertThat(saveFavorite.getId()).isNotNull();
+    }
+
+    @DisplayName("계정의 즐겨찾기를 불러온다.")
+    @Test
+    void findByMember() {
+        Favorite saveFavorite = favoriteRepository.save(new Favorite(saveMember, source, target));
+
+        List<Favorite> favorites = favoriteRepository.findByMember(saveMember);
+
+        assertThat(favorites).contains(saveFavorite);
     }
 }
