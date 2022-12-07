@@ -120,7 +120,7 @@ public class FareCalculatorTest extends JpaEntityTest {
 
     @DisplayName("50km 초과 거리별 요금 정책 테스트")
     @Test
-    void LongExcessFareByDistanceTest() {
+    void longExcessFareByDistanceTest() {
         // given
         Sections sections = new Sections(sectionRepository.findAll());
         Path path = new PathFinder().find(sections, 교대역, 역삼역); // 60
@@ -132,4 +132,82 @@ public class FareCalculatorTest extends JpaEntityTest {
         assertThat(fare).isEqualTo(2_250);
     }
 
+    @DisplayName("노선 추가요금 부과 테스트")
+    @Test
+    void lineAdditionalFareTest() {
+        // given
+        Sections sections = new Sections(sectionRepository.findAll());
+        Path path = new PathFinder().find(sections, 남부터미널역, 역삼역); // 62
+
+        // when
+        int additionalFare = FareCalculator.calculateByAdditionalFareOfLine(sections, path.getStationPaths());
+
+        // then
+        assertThat(additionalFare).isEqualTo(900);
+    }
+
+    @DisplayName("성인 - 나이별 할인 정책 테스트")
+    @Test
+    void discountFareByAge_성인() {
+        // given
+        DiscountPolicy policy = new AgeDiscountPolicy(성인.getAge());
+
+        // when
+        int fare = policy.discount(1_250);
+
+        // then
+        assertThat(fare).isEqualTo(1_250);
+    }
+
+    @DisplayName("청소년 - 나이별 할인 정책 테스트")
+    @Test
+    void discountFareByAge_청소년() {
+        // given
+        DiscountPolicy policy = new AgeDiscountPolicy(청소년.getAge());
+
+        // when
+        int fare = policy.discount(1_250);
+
+        // then
+        assertThat(fare).isEqualTo(720);
+    }
+
+    @DisplayName("어린이 - 나이별 할인 정책 테스트")
+    @Test
+    void discountFareByAge_어린이() {
+        // given
+        DiscountPolicy policy = new AgeDiscountPolicy(어린이.getAge());
+
+        // when
+        int fare = policy.discount(1_250);
+
+        // then
+        assertThat(fare).isEqualTo(450);
+    }
+
+    @DisplayName("미취학아동 - 나이별 할인 정책 테스트")
+    @Test
+    void discountFareByAge_미취학아동() {
+        // given
+        DiscountPolicy policy = new AgeDiscountPolicy(미취학아동.getAge());
+
+        // when
+        int fare = policy.discount(1_250);
+
+        // then
+        assertThat(fare).isEqualTo(0);
+    }
+
+    @DisplayName("노인 - 나이별 할인 정책 테스트")
+    @Test
+    void discountFareByAge_노인() {
+        // given
+        DiscountPolicy policy = new AgeDiscountPolicy(노인.getAge());
+
+        // when
+        int fare = policy.discount(1_250);
+
+        // then
+        assertThat(fare).isEqualTo(0);
+    }
 }

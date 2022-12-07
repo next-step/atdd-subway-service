@@ -8,7 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.*;
 
 import static nextstep.subway.common.domain.BizExceptionMessages.*;
-import static nextstep.subway.common.domain.BizMagicNumber.*;
+import static nextstep.subway.common.domain.BizMagicNumber.SECTION_MIN_SIZE;
 
 @Embeddable
 public class Sections {
@@ -75,6 +75,14 @@ public class Sections {
 
     public boolean isEnroll(Station station) {
         return isPresentUpStation(station) || isPresentDownStation(station);
+    }
+
+    public Line getLineByStations(Station upStation, Station downStation) {
+        return sections.stream()
+                .filter(it -> it.isSame(upStation, downStation))
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(SECTION_IS_NOT_CONTAIN_STATION.message()))
+                .getLine();
     }
 
     private void connectNewSection(Section preSection, Section nextSection) {

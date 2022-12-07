@@ -149,10 +149,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         지하철_경로_조회됨(response);
         지하철_경로_이름_확인됨(response, Arrays.asList("교대역", "남부터미널역", "양재역"));
+
         // and 거리 확인
-        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(9);
+        지하철_경로_거리_확인됨(response, 9);
+        
         // and 요금 확인
-        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(1_250);
+        지하철_경로_요금_확인됨(response, 1_250);
+    }
+
+    private static void 지하철_경로_요금_확인됨(ExtractableResponse<Response> response, int expectedFare) {
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(expectedFare);
+    }
+
+    private static void 지하철_경로_거리_확인됨(ExtractableResponse<Response> response, int expectedDistance) {
+        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(expectedDistance);
     }
 
     public static ExtractableResponse<Response> 지하철_경로_조회(String accessToken, Long sourceId, Long targetId) {
