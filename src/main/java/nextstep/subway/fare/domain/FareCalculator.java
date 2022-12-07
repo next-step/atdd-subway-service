@@ -8,7 +8,6 @@ public class FareCalculator {
     private DistanceFare distanceFare;
     private AgePolicy agePolicy;
 
-
     public FareCalculator(Line line, DistanceFare distanceFare, AgePolicy agePolicy) {
         this.line = line;
         this.distanceFare = distanceFare;

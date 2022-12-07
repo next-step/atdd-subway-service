@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 public class ShortestPath {
 
-
     private static final String NONE_EXISTS_PATH = "경로가 존재해야 합니다";
     private GraphPath<Station, DefaultWeightedEdge> shortestPath;
 
@@ -34,5 +33,5 @@ public class ShortestPath {
     public int getDistance(){
         return (int) shortestPath.getWeight();
     }
-
 }
+
