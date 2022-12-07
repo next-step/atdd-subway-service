@@ -66,8 +66,4 @@ public class Line extends BaseEntity {
         return sections.getSectionList();
     }
 
-    public void setGraph(Graph graph) {
-        getStations().stream().forEach(station -> graph.addVertex(station));
-        getSectionList().stream().forEach(it -> graph.setEdgeWeight(it.getUpStation(), it.getDownStation(), it.getDistance().value()));
-    }
 }

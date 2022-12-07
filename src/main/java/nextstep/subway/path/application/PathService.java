@@ -2,13 +2,10 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Graph;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,8 +15,8 @@ import java.util.List;
 @Transactional
 public class PathService {
 
-    StationService stationService;
-    LineService lineService;
+    final StationService stationService;
+    final LineService lineService;
 
     public PathService(StationService stationService, LineService lineService) {
         this.stationService = stationService;
@@ -29,15 +26,9 @@ public class PathService {
     public PathResponse findBestPath(Long sourceId, Long targetId) {
         Station source = findStationById(sourceId);
         Station target = findStationById(targetId);
-        Graph graph = new Graph();
+        List<Line> lines = findAllLines();
 
-        findLinesContainStation(source).stream()
-                .forEach(line -> line.setGraph(graph));
-        findLinesContainStation(target).stream()
-                .forEach(line -> line.setGraph(graph));
-
-        Path path = new Path(graph, source, target);
-
+        Path path = new Path(lines, source, target);
         return new PathResponse(path.getBestPath(), path.getBestPathDistance());
     }
 
@@ -45,7 +36,7 @@ public class PathService {
         return stationService.findById(stationId);
     }
 
-    private List<Line> findLinesContainStation(Station station) {
-        return lineService.findLinesContainStation(station);
+    private List<Line> findAllLines() {
+        return lineService.findAllLines();
     }
 }
