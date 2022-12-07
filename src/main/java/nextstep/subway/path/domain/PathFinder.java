@@ -13,48 +13,52 @@ import java.util.List;
 import java.util.Objects;
 
 public class PathFinder {
-    private final WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
-
-    private PathFinder(List<Line> lines) {
-        lines.forEach(line -> {
-            addVertex(line);
-            addEdgeAndSetEdgeWeight(line);
-        });
-    }
-
-    private void addVertex(Line line) {
-        line.getStations().forEach(graph::addVertex);
-    }
-
-    private void addEdgeAndSetEdgeWeight(Line line) {
-        line.getSections().forEach(
-                section -> {
-                    graph.addEdge(section.getUpStation(), section.getDownStation(), section);
-                    graph.setEdgeWeight(section, section.getDistance().value());
-                });
-    }
-
-    public static PathFinder from(List<Line> lines) {
-        return new PathFinder(lines);
-    }
-
-    public Path findShortestPath(Station sourceStation, Station targetStation) {
+    public static Path findShortestPath(List<Line> lines, Station sourceStation, Station targetStation) {
+        validateLinesExists(lines);
         validateEqualStations(sourceStation, targetStation);
-        GraphPath<Station, Section> path = new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
+        GraphPath<Station, Section> path = new DijkstraShortestPath<>(getWeightedMultiGraph(lines))
+                .getPath(sourceStation, targetStation);
         validatePathExists(path);
 
         return Path.of(Distance.from((int) path.getWeight()), path.getVertexList());
     }
 
-    private void validateEqualStations(Station sourceStation, Station targetStation) {
+    private static WeightedMultigraph<Station, Section> getWeightedMultiGraph(List<Line> lines) {
+        WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
+        lines.forEach(line -> {
+            addVertex(graph, line);
+            addEdgeAndSetEdgeWeight(graph, line);
+        });
+        return graph;
+    }
+
+    private static void validateLinesExists(List<Line> lines) {
+        if (Objects.isNull(lines) || lines.isEmpty()) {
+            throw new IllegalArgumentException(ErrorMessage.NOT_FOUND.getMessage());
+        }
+    }
+
+    private static void validateEqualStations(Station sourceStation, Station targetStation) {
         if (Objects.equals(sourceStation, targetStation)) {
             throw new IllegalArgumentException(ErrorMessage.DUPLICATED_STATION.getMessage());
         }
     }
 
-    private void validatePathExists(GraphPath<Station, Section> shortestPath) {
-        if(shortestPath == null) {
+    private static void validatePathExists(GraphPath<Station, Section> shortestPath) {
+        if(Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException(ErrorMessage.NOT_FOUND_PATH.getMessage());
         }
+    }
+
+    private static void addVertex(WeightedMultigraph<Station, Section> graph, Line line) {
+        line.getStations().forEach(graph::addVertex);
+    }
+
+    private static void addEdgeAndSetEdgeWeight(WeightedMultigraph<Station, Section> graph, Line line) {
+        line.getSections().forEach(
+                section -> {
+                    graph.addEdge(section.getUpStation(), section.getDownStation(), section);
+                    graph.setEdgeWeight(section, section.getDistance().value());
+                });
     }
 }

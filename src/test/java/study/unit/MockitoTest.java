@@ -10,7 +10,6 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
@@ -28,9 +27,7 @@ public class MockitoTest {
         LineService lineService = new LineService(lineRepository, stationService);
 
         // when
-        List<LineResponse> responses = lineService.findLines().stream()
-                .map(LineResponse::from)
-                .collect(Collectors.toList());
+        List<LineResponse> responses = lineService.findLines();
 
         // then
         assertThat(responses).hasSize(1);

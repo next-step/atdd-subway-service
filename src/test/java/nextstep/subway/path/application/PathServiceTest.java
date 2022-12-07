@@ -1,7 +1,7 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -30,7 +30,7 @@ class PathServiceTest {
     private PathService pathService;
 
     @Mock
-    private LineService lineService;
+    private LineRepository lineRepository;
 
     @Mock
     private StationService stationService;
@@ -79,7 +79,7 @@ class PathServiceTest {
         Long target = 2L;
         when(stationService.findStationById(source)).thenReturn(교대역);
         when(stationService.findStationById(target)).thenReturn(양재역);
-        when(lineService.findLines()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
         PathResponse pathResponse = pathService.findShortestPath(source, target);
 
@@ -97,7 +97,7 @@ class PathServiceTest {
         Long target = 2L;
         when(stationService.findStationById(source)).thenReturn(교대역);
         when(stationService.findStationById(target)).thenReturn(null);
-        when(lineService.findLines()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -110,7 +110,7 @@ class PathServiceTest {
         Long target = 2L;
         when(stationService.findStationById(source)).thenReturn(교대역);
         when(stationService.findStationById(target)).thenReturn(남부터미널역);
-        when(lineService.findLines()).thenReturn(Collections.emptyList());
+        when(lineRepository.findAll()).thenReturn(Collections.emptyList());
 
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -123,7 +123,7 @@ class PathServiceTest {
         Long target = 1L;
         when(stationService.findStationById(source)).thenReturn(교대역);
         when(stationService.findStationById(target)).thenReturn(교대역);
-        when(lineService.findLines()).thenReturn(Arrays.asList(이호선, 삼호선));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(이호선, 삼호선));
 
         assertThatThrownBy(() -> pathService.findShortestPath(source, target))
                 .isInstanceOf(IllegalArgumentException.class);
