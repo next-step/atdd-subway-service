@@ -7,7 +7,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.line.exception.InvalidDataException;
+import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -83,26 +83,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발역과 도착역이 같은 경우의 최단 경로를 조회한다.")
     @Test
-    void 동일_역_간의_최단_거리_찾기_예외_테스트() {
-        assertThatThrownBy(
-                () -> 최단_경로_찾기(강남역, 강남역)
-        ).isInstanceOf(InvalidDataException.class);
+    void 동일역_간_최단_거리_찾기_테스트() {
+        ExtractableResponse<Response> response = 최단_경로_찾기(강남역, 강남역);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("출발역과 도착역이 연결되지 않은 경우의 최단 경로를 조회한다.")
     @Test
-    void 연결되지_않은_역의_최단_거리_찾기_예외_테스트() {
-        assertThatThrownBy(
-                () -> 최단_경로_찾기(강남역, 서울역)
-        ).isInstanceOf(InvalidDataException.class);
+    void 연결되지_않은_역의_최단_거리_찾기_테스트() {
+        ExtractableResponse<Response> response = 최단_경로_찾기(강남역, 서울역);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     @DisplayName("등록되지 않은 역으로 최단 경로를 조회한다.")
     @Test
-    void 등록되지_않은_역으로_최단_거리_찾기_예외_테스트() {
-        assertThatThrownBy(
-                () -> 최단_경로_찾기(강남역, 남영역)
-        ).isInstanceOf(InvalidDataException.class);
+    void 등록되지_않은_역_최단_거리_찾기_테스트() {
+        ExtractableResponse<Response> response = 최단_경로_찾기(강남역, 남영역);
+
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static ExtractableResponse<Response> 최단_경로_찾기(StationResponse source, StationResponse target) {
