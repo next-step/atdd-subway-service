@@ -15,6 +15,12 @@ public class StationFixture {
     private static final Station 시청역 = new Station("시청역");
     private static final Station 남영역 = new Station("남영역");
 
+    private static final Station 강남역 = new Station("강남역");
+    private static final Station 양재역 = new Station("양재역");
+    private static final Station 교대역 = new Station("교대역");
+    private static final Station 남부터미널역 = new Station("남부터미널역");
+    private static final Station 간이역 = new Station("간이역");
+
     public static Station 영등포구청역() {
         return 영등포구청역;
     }
@@ -51,4 +57,28 @@ public class StationFixture {
         ReflectionTestUtils.setField(남영역, "id", 3L);
         return 남영역;
     }
+
+    public static Station 교대역() {
+        ReflectionTestUtils.setField(교대역, "id", 1L);
+        return 교대역;
+    }
+    public static Station 강남역() {
+        ReflectionTestUtils.setField(강남역, "id", 2L);
+        return 강남역;
+    }
+    public static Station 양재역() {
+        ReflectionTestUtils.setField(양재역, "id", 3L);
+        return 양재역;
+    }
+    public static Station 남부터미널역() {
+        ReflectionTestUtils.setField(남부터미널역, "id", 4L);
+        return 남부터미널역;
+    }
+
+    public static Station 간이역() {
+        ReflectionTestUtils.setField(간이역, "id", 5L);
+        return 간이역;
+    }
+
+
 }
