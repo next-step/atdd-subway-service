@@ -13,22 +13,18 @@ import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND
 public class PathFinder {
 
     private final List<Station> stations;
-    private final double weight;
+    private final int distance;
 
     public PathFinder(List<Station> stations, double weight) {
         validCheckStationIsEmpty(stations);
         this.stations = stations;
-        this.weight = weight;
+        this.distance = Math.toIntExact(Math.round(weight));
     }
 
     private void validCheckStationIsEmpty(List<Station> stations) {
         if (stations.isEmpty()) {
             throw new NotFoundDataException(NOT_FOUND_SOURCE_AND_TARGET_STATION.getMessage());
         }
-    }
-
-    public static PathFinder of(PathStrategy strategy, Station sourceStation, Station targetStation, List<Line> lines) {
-        return strategy.getShortPath(sourceStation, targetStation, lines);
     }
 
     public static PathFinder from(GraphPath<Station, DefaultWeightedEdge> graph) {
@@ -39,7 +35,7 @@ public class PathFinder {
         return stations;
     }
 
-    public double getWeight() {
-        return weight;
+    public int getDistance() {
+        return distance;
     }
 }

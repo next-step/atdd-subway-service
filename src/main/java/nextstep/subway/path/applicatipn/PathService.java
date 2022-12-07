@@ -29,8 +29,8 @@ public class PathService {
     public PathResponse getPath(Long sourceId, Long targetId) {
         SourceAndTargetStationDto station = stationService.findStationById(sourceId, targetId);
         List<Line> lines = lineService.findAll();
-        PathStrategy strategy = new DijkstraShortestPathStrategy();
-        PathFinder pathFinder = PathFinder.of(strategy, station.getSourceStation(), station.getTargetStation(), lines);
+        PathStrategy strategy = new DijkstraShortestPathStrategy(lines);
+        PathFinder pathFinder = strategy.getShortPath(station.getSourceStation(), station.getTargetStation());
 
         return PathResponse.from(pathFinder);
     }

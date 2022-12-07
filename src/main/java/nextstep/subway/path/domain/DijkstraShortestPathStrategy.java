@@ -16,6 +16,13 @@ import static nextstep.subway.exception.type.ValidExceptionType.IS_TARGET_ANS_SO
 import static nextstep.subway.exception.type.ValidExceptionType.NOT_CONNECT_STATION;
 
 public class DijkstraShortestPathStrategy implements PathStrategy {
+
+    private final List<Line> lines;
+
+    public DijkstraShortestPathStrategy(List<Line> lines) {
+        this.lines = lines;
+    }
+
     private void initSetting(List<Line> lines, WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
         lines.forEach(line -> {
             addVertex(line, graph);
@@ -37,7 +44,7 @@ public class DijkstraShortestPathStrategy implements PathStrategy {
         line.getStations().forEach(graph::addVertex);
     }
 
-    public PathFinder getShortPath(Station source, Station target, List<Line> lines) {
+    public PathFinder getShortPath(Station source, Station target) {
         validCheckIsSameStation(source, target);
 
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
