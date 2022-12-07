@@ -5,8 +5,8 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.dto.PathRequest;
+import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -16,7 +16,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
-import java.util.Optional;
 
 import static java.util.stream.Collectors.toList;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -25,10 +24,13 @@ import static org.mockito.Mockito.when;
 @DisplayName("PathService 테스트")
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
+    private static final long SOURCE = 1L;
+    private static final long TARGET = 2L;
+
     @Mock
     private SectionRepository sectionRepository;
     @Mock
-    private StationRepository stationRepository;
+    private StationService stationService;
     @InjectMocks
     private PathService pathService;
 
@@ -44,14 +46,14 @@ class PathServiceTest {
 
     @Test
     void 출발역과_도착역으로_최단_거리를_검색() {
-        PathRequest pathRequest = new PathRequest(1L, 2L);
+        PathRequest pathRequest = new PathRequest(SOURCE, TARGET);
         Section 강남역_양재역 = new Section(신분당선, 강남역, 양재역, 거리_10);
         Section 교대역_강남역 = new Section(이호선, 교대역, 강남역, 거리_10);
         Section 교대역_남부터미널역 = new Section(삼호선, 교대역, 남부터미널역, 거리_5);
         Section 남부터미널역_양재역 = new Section(삼호선, 남부터미널역, 양재역, 거리_5);
 
-        when(stationRepository.findById(1L)).thenReturn(Optional.of(양재역));
-        when(stationRepository.findById(2L)).thenReturn(Optional.of(교대역));
+        when(stationService.stationById(SOURCE)).thenReturn(양재역);
+        when(stationService.stationById(TARGET)).thenReturn(교대역);
         when(sectionRepository.findAll()).thenReturn(Arrays.asList(
                 강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
 
