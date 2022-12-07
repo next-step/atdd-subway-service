@@ -14,7 +14,6 @@ public class FareCalculator {
     }
 
     public int getCalculcate() {
-        int fare = distanceFare.getFare(line.getFare());
-        return agePolicy.getFare(fare);
+        return agePolicy.getFare(distanceFare.getFare() + line.getFare());
     }
 }
