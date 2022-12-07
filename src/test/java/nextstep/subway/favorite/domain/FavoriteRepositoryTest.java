@@ -6,6 +6,7 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
@@ -20,6 +21,9 @@ public class FavoriteRepositoryTest {
     @Autowired
     StationRepository stationRepository;
 
+    @Autowired
+    FavoriteRepository favoriteRepository;
+
     Member saveMember;
     Station source;
     Station target;
@@ -32,6 +36,7 @@ public class FavoriteRepositoryTest {
     }
 
     @DisplayName("즐겨찾기를 생성한다")
+    @Test
     void save() {
         Favorite saveFavorite = favoriteRepository.save(new Favorite(saveMember, source, target));
 
