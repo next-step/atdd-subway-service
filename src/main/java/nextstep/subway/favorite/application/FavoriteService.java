@@ -38,4 +38,9 @@ public class FavoriteService {
             .map(FavoriteResponse::from)
             .collect(Collectors.toList());
     }
+
+    public void deleteByIdAndMember(Long id, Long loginMemberId) {
+        Member member = memberService.findById(loginMemberId);
+        favoriteRepository.deleteByIdAndMember(id, member);
+    }
 }
