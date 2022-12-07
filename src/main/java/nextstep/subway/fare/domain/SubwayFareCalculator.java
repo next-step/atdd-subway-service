@@ -3,14 +3,14 @@ package nextstep.subway.fare.domain;
 import nextstep.subway.common.exception.ErrorEnum;
 
 public class SubwayFareCalculator {
-    public static final int ZERO_DISTANCE = 0;
-    public static final int BASIC_FARE = 1_250;
-    public static final int SURCHARGE_FARE = 100;
-    public static final int UNIT_5_KM = 5;
-    public static final int UNIT_8_KM = 8;
-    public static final int MAX_DISTANCE_OF_BASIC_FARE = 10;
-    public static final int FIRST_SECTION_DISTANCE = 10;
-    public static final int SECOND_SECTION_DISTANCE = 50;
+    private static final int ZERO_DISTANCE = 0;
+    protected static final int BASIC_FARE = 1_250;
+    private static final int SURCHARGE_FARE = 100;
+    private static final int UNIT_5_KM = 5;
+    private static final int UNIT_8_KM = 8;
+    private static final int MAX_DISTANCE_OF_BASIC_FARE = 10;
+    private static final int FIRST_SECTION_DISTANCE = 10;
+    private static final int SECOND_SECTION_DISTANCE = 50;
 
     private static int lineFare;
     private static int age;
