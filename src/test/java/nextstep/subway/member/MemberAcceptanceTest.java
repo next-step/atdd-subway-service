@@ -18,6 +18,7 @@ import org.springframework.http.MediaType;
 import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_실패됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
@@ -68,7 +69,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             dynamicTest("로그인 한다.", this::login),
             dynamicTest("내 정보를 조회한다.", this::view_my_info),
             dynamicTest("내 정보를 수정한다", this::fix_my_info),
-            dynamicTest("내 정보를 삭제한다", this::delete_my_info)
+            dynamicTest("내 정보를 삭제한다", this::delete_my_info),
+            dynamicTest("탈퇴한 계정 정보로 로그인 한다", this::retry_login)
         );
     }
 
@@ -101,6 +103,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 내_정보_삭제_요청(accessToken);
 
         회원_삭제됨(response);
+    }
+
+    private void retry_login() {
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+
+        로그인_실패됨(response);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
