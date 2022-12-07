@@ -8,7 +8,6 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class PathFinder {
     private static final String NONE_EQUAL_STATION = "출발역과 도착역 다른 경우만 조회할 수 있습니다";
@@ -27,14 +26,6 @@ public class PathFinder {
             throw new NullPointerException(NULL_LINES);
         }
     }
-
-/*    public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = validateLinkGraph(sourceStation, targetStation);
-        return shortestPath
-                .getVertexList()
-                .stream()
-                .collect(Collectors.toList());
-    }*/
 
     public ShortestPath getShortestPath(Station sourceStation, Station targetStation) {
         return new ShortestPath(validateLinkGraph(sourceStation, targetStation));
@@ -64,10 +55,5 @@ public class PathFinder {
         if (!subwayGraph.containsVertex(sourceStation) || !subwayGraph.containsVertex(targetStation)) {
             throw new IllegalArgumentException(NONE_EXISTS_STATION);
         }
-    }
-
-    public int getShortestDistance(Station sourceStation, Station targetStation) {
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = validateLinkGraph(sourceStation, targetStation);
-        return (int) shortestPath.getWeight();
     }
 }
