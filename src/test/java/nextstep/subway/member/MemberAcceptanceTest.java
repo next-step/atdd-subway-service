@@ -21,6 +21,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
+    /**
+     *
+     * Feature: 로그인 기능
+     *
+     *   Scenario: 로그인을 시도한다.
+     *     Given 회원 등록되어 있음
+     *     When 로그인 요청
+     *     Then 로그인 됨
+     *
+     */
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
@@ -48,7 +58,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
-
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -92,6 +102,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         return RestAssured
                 .given().log().all()
                 .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/members/me")
                 .then().log().all()
                 .extract();
     }
