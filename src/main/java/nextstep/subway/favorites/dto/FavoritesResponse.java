@@ -1,4 +1,4 @@
-package nextstep.subway.favorite.dto;
+package nextstep.subway.favorites.dto;
 
 import nextstep.subway.station.dto.StationResponse;
 

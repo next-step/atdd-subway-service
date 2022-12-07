@@ -1,14 +1,13 @@
-package nextstep.subway.favorite;
+package nextstep.subway.favorites;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.favorite.dto.FavoritesRequest;
-import nextstep.subway.favorite.dto.FavoritesResponse;
+import nextstep.subway.favorites.dto.FavoritesRequest;
+import nextstep.subway.favorites.dto.FavoritesResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +25,7 @@ import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요�
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("즐겨찾기 관련 기능")
-public class FavoriteAcceptanceTest extends AcceptanceTest {
+public class FavoritesAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 판교역;
     private StationResponse 정자역;
