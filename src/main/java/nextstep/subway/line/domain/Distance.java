@@ -7,6 +7,8 @@ import java.util.Objects;
 @Embeddable
 public class Distance {
 
+    public static final int DISTANCE_UNIT_LEVEL1 = 5;
+    public static final int DISTANCE_UNIT_LEVEL2 = 8;
     private static final int ZERO = 0;
 
     @Column(name = "distance")

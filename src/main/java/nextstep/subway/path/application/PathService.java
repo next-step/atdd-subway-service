@@ -1,6 +1,8 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Age;
+import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.ui.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -22,9 +24,9 @@ public class PathService {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
         PathFinder pathFinder = PathFinder.from(lineRepository.findAll());
-        PathResponse pathResponse = pathFinder.getShortestPath(sourceStation, targetStation);
-        pathResponse.applyDiscountFare(age);
-        return pathResponse;
+
+        return pathFinder.getShortestPath(sourceStation, targetStation,
+                fare -> FareCalculator.applyDiscountFare(fare, new Age(age)));
     }
 
     private Station findStationById(final Long id) {

@@ -11,6 +11,7 @@ import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PathFinder {
@@ -28,7 +29,8 @@ public class PathFinder {
         return new PathFinder(lines);
     }
 
-    public PathResponse getShortestPath(final Station sourceStation, final Station targetStation) {
+    public PathResponse getShortestPath(final Station sourceStation, final Station targetStation,
+                                        final Consumer<Fare> discounter) {
         validate(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> shortestPath =
                 new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
@@ -39,9 +41,11 @@ public class PathFinder {
                 .collect(Collectors.toList());
 
         List<Station> stations = shortestPath.getVertexList();
-        int fare = FareCalculator.calculateAdditionalFare(
+        Fare fare = FareCalculator.calculateAdditionalFare(
                 sections, stations, new Distance((int) shortestPath.getWeight())
         );
+
+        discounter.accept(fare);
 
         return new PathResponse(responses, new Distance((int) shortestPath.getWeight()), fare);
     }
