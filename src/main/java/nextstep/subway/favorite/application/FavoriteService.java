@@ -24,11 +24,11 @@ public class FavoriteService {
         this.favoriteRepository = favoriteRepository;
     }
 
-    public Favorite save(Long loginMemberId, Long sourceId, Long targetId) {
+    public FavoriteResponse save(Long loginMemberId, Long sourceId, Long targetId) {
         Member member = memberService.findById(loginMemberId);
         Station source = stationService.findById(sourceId);
         Station target = stationService.findById(targetId);
-        return favoriteRepository.save(new Favorite(member, source, target));
+        return FavoriteResponse.from(favoriteRepository.save(new Favorite(member, source, target)));
     }
 
     public List<FavoriteResponse> findByMember(Long loginMemberId) {
