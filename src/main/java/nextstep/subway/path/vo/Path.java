@@ -14,10 +14,10 @@ public class Path {
         this.distance =  distance;
     }
 
-
-    public static Path from(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
+    public static Path from(List<Station> vertexList, int weight) {
+        return new Path(vertexList, weight);
     }
+
 
     public List<Station> getStations() {
         return stations;
