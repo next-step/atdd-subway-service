@@ -34,8 +34,7 @@ public class PathService {
         Station targetStation = stationRepository.findById(targetStationId).orElseThrow(NoResultException::new);
         Sections sections = new Sections(sectionRepository.findAll());
         Path path = new PathFinder().find(sections, sourceStation, targetStation);
-        // TODO : fare calculator 객체 설계... --> sections, path, member의 age(할인정책)
 
-        return PathResponse.of(path);
+        return PathResponse.of(path, 1_250);
     }
 }
