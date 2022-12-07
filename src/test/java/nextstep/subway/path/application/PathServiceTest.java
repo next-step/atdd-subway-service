@@ -70,5 +70,6 @@ class PathServiceTest {
         // then
         assertThat(response.getDistance()).isEqualTo(20);
         assertThat(response.getStations()).hasSize(3);
+        assertThat(response.getAmount()).isEqualTo(1450L);
     }
 }
