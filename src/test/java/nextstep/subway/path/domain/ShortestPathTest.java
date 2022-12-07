@@ -56,7 +56,7 @@ public class ShortestPathTest {
     void returnsStations() {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        ShortestPath shortestPath = pathFinder.getShortestPath(광산역, 양재역,13);
+        ShortestPath shortestPath = pathFinder.getShortestPath(광산역, 양재역);
 
         assertThat(shortestPath.getStations())
                 .containsExactly(광산역, 교대역, 남부터미널역, 양재역);
@@ -67,7 +67,7 @@ public class ShortestPathTest {
     void returnsDistance() {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        ShortestPath shortestPath = pathFinder.getShortestPath(광산역, 양재역,13);
+        ShortestPath shortestPath = pathFinder.getShortestPath(광산역, 양재역);
 
         assertThat(shortestPath.getDistance()).isEqualTo(10);
     }
