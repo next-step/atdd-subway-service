@@ -46,9 +46,7 @@ public class LineAcceptanceTest extends AcceptanceTest {
      * Scenario1: 지하철 노선 관리
      * When 지하철 노선 생성 요청
      * Then 지하철 노선 생성
-     * When 기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성 요청
-     * Then 지하철 노선 생성 실패됨
-     * When 기존에 존재하지 않는 지하철 노선 이름으로 지하철 노선 생성 요청
+     * When 지하철 노선 생성 요청
      * Then 지하철 노선 생성
      * When 지하철 노선 목록 조회 요청
      * Then 지하철 노선 목록 응답됨
@@ -68,12 +66,6 @@ public class LineAcceptanceTest extends AcceptanceTest {
 
         // then
         지하철_노선_생성됨(지하철_노선_생성_응답_신분당선);
-
-        // when
-        ExtractableResponse<Response> 지하철_노선_생성_응답_실패 = 지하철_노선_생성_요청(지하철_노선_생성_요청_신분당선());
-
-        // then
-        지하철_노선_생성_실패됨(지하철_노선_생성_응답_실패);
 
         // when
         ExtractableResponse<Response> 지하철_노선_생성_응답_구신분당선 = 지하철_노선_생성_요청(지하철_노선_생성_요청_구신분당선());
@@ -109,6 +101,58 @@ public class LineAcceptanceTest extends AcceptanceTest {
         지하철_노선_삭제됨(지하철_노선_제거_응답);
     }
 
+    /**
+     * 지하철 노선 관리 실패
+     * When 지하철 노선 생성 요청
+     * Then 지하철 노선 생성
+     * When 기존에 존재하는 지하철 노선 이름으로 지하철 노선을 생성 요청
+     * Then 지하철 노선 생성 실패됨
+     */
+    @Test
+    void manageLine_failed() {
+        // when
+        ExtractableResponse<Response> 지하철_노선_생성_응답_신분당선 = 지하철_노선_생성_요청(지하철_노선_생성_요청_신분당선());
+
+        // then
+        지하철_노선_생성됨(지하철_노선_생성_응답_신분당선);
+
+        // when
+        ExtractableResponse<Response> 지하철_노선_생성_응답_실패 = 지하철_노선_생성_요청(지하철_노선_생성_요청_신분당선());
+
+        // then
+        지하철_노선_생성_실패됨(지하철_노선_생성_응답_실패);
+    }
+
+    /**
+     * 지하철 노선 관리 실패
+     * When 추가요금이 있는 지하철 노선 생성 요청
+     * Then 지하철 노선 생성 성공
+     * When 지하철 노선 조회
+     * Then 지하철 노선 조회 성공
+     * And 지하철 요금 확인 성공
+     */
+    @Test
+    void additionalAmountLine() {
+        // when
+        Amount 추가요금 = Amount.from(200L);
+        ExtractableResponse<Response> 추가요금_지하철_노선_생성_응답 = 지하철_노선_생성_요청(지하철_노선_생성_요청_추가요금(추가요금));
+        // then
+        지하철_노선_생성됨(추가요금_지하철_노선_생성_응답);
+        // when
+        LineId 추가요금_노선 = 지하철_노선_ID_추출(추가요금_지하철_노선_생성_응답);
+        ExtractableResponse<Response> 지하처_노선_조회 = 지하철_노선_조회_요청(추가요금_노선);
+        // and
+        추가요금_확인됨(지하처_노선_조회, 추가요금);
+    }
+
+    private void 추가요금_확인됨(ExtractableResponse<Response> response, Amount amount) {
+        assertThat(response.jsonPath().getLong("amount")).isEqualTo(amount.value());
+    }
+
+    private Map<String, String> 지하철_노선_생성_요청_추가요금(Amount amount) {
+        return 추가요금이_있는_지하철_노선_생성_요청_파라미터("구신분당선", "bg-red-600", 강남역, 광교역, Distance.from(15), amount);
+    }
+
     private Map<String, String> 지하철_노선_생성_요청_구신분당선() {
         return 지하철_노선_생성_요청_파라미터("구신분당선", "bg-red-600", 강남역, 광교역, Distance.from(15));
     }
@@ -129,6 +173,18 @@ public class LineAcceptanceTest extends AcceptanceTest {
         params.put("upStationId", upStationId.getString());
         params.put("downStationId", downStationId.getString());
         params.put("distance", Integer.toString(distance.value()));
+        return params;
+    }
+
+    public static Map<String, String> 추가요금이_있는_지하철_노선_생성_요청_파라미터(String name, String color, StationId upStationId,
+        StationId downStationId, Distance distance, Amount amount) {
+        Map<String, String> params = new HashMap<>();
+        params.put("name", name);
+        params.put("color", color);
+        params.put("upStationId", upStationId.getString());
+        params.put("downStationId", downStationId.getString());
+        params.put("distance", Integer.toString(distance.value()));
+        params.put("amount", Long.toString(amount.value()));
         return params;
     }
 

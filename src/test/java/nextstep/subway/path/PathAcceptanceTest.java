@@ -39,8 +39,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     /**
      * Background
      * Given 지하철 역과 노선 구역이 등록되어 있음
-     * 2호선: 왕십리 - 신당 - DDP
-     * 5호선: 왕십리 - 행당 - 청구 - DDP
+     * 2호선: 왕십리 - 신당 - DDP (추가요금 100원)
+     * 5호선: 왕십리 - 행당 - 청구 - DDP (추가요금 200원)
      */
     @BeforeEach
     void setup() {
@@ -144,7 +144,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 환승역 아닌 역간 최단 경로 조회
      * Then 최단 경로 조회 성공
      * And 지하철 이용 요금 함께 응답
-     * Given 지름길 호선 개통
+     * Given 지름길 호선 개통 (추가요금 500원)
      * When 지름길 호선 연결 역간 최단 경로 조회
      * Then 최단 경로 조회 성공(거리, 요금)
      */
@@ -155,13 +155,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 환승역간_최단_경로_조회 = 최단_경로_조회_요청(왕십리, DDP);
 
         // then
-        최단_경로_조회_성공(환승역간_최단_경로_조회, Distance.from(20), Amount.from(1450));
+        최단_경로_조회_성공(환승역간_최단_경로_조회, Distance.from(20), Amount.from(1550));
 
         // when
         ExtractableResponse<Response> 비환승역간_최단_경로_조회 = 최단_경로_조회_요청(청구, 신당);
 
         // then
-        최단_경로_조회_성공(비환승역간_최단_경로_조회, Distance.from(20), Amount.from(1450));
+        최단_경로_조회_성공(비환승역간_최단_경로_조회, Distance.from(20), Amount.from(1650));
 
         // Given
         지름길_노선_개통(왕십리, DDP, Distance.from(1));
@@ -170,7 +170,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 지름길_노선_최단_경로_조회 = 최단_경로_조회_요청(왕십리, DDP);
 
         // then
-        최단_경로_조회_성공(지름길_노선_최단_경로_조회, Distance.from(1), Amount.from(1250));
+        최단_경로_조회_성공(지름길_노선_최단_경로_조회, Distance.from(1), Amount.from(1750));
     }
 
     private void 최단_경로_조회_성공(ExtractableResponse<Response> response, Distance expectedDistance, Amount expectedAmount) {
@@ -211,12 +211,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private LineId 지하철_노선과_구역_등록되어_있음_2호선() {
-        Map<String, String> params = 지하철_노선_생성_요청_파라미터(
+        Map<String, String> params = 추가요금이_있는_지하철_노선_생성_요청_파라미터(
             "2호선",
             "bg-green-600",
             왕십리,
             DDP,
-            Distance.from(20)
+            Distance.from(20),
+            Amount.from(100)
         );
         LineId LINE_2 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(params));
         지하철_노선에_지하철역_등록_요청(LINE_2, 왕십리, 신당, 10);
@@ -224,12 +225,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private LineId 지하철_노선과_구역_등록되어_있음_5호선() {
-        Map<String, String> params = 지하철_노선_생성_요청_파라미터(
+        Map<String, String> params = 추가요금이_있는_지하철_노선_생성_요청_파라미터(
             "5호선",
             "bg-pupple-600",
             왕십리,
             DDP,
-            Distance.from(30)
+            Distance.from(30),
+            Amount.from(200)
         );
         LineId LINE_5 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(params));
         지하철_노선에_지하철역_등록_요청(LINE_5, 왕십리, 행당, 10);
@@ -238,12 +240,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private LineResponse 지름길_노선_개통(StationId start, StationId end, Distance distance) {
-        Map<String, String> params = 지하철_노선_생성_요청_파라미터(
+        Map<String, String> params = 추가요금이_있는_지하철_노선_생성_요청_파라미터(
             "지름길노선",
             "bg-red-600",
             start,
             end,
-            distance
+            distance,
+            Amount.from(500L)
         );
         return 지하철_노선_등록되어_있음(params).as(LineResponse.class);
     }
