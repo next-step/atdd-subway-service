@@ -10,7 +10,7 @@ public class DistanceFare {
         this.policy = DistancePolicy.valueOfRange(distance);
     }
 
-    public int getFare(int fare){
-        return fare + policy.getFare(distance) + BASE_FARE;
+    public int getFare(){
+        return policy.getFare(distance) + BASE_FARE;
     }
 }
