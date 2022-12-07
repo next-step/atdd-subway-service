@@ -3,11 +3,6 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Lines;
 
 public class Fare {
-    public static final int MIDDLE_DISTANCE = 10;
-    public static final int HIGH_DISTANCE = 50;
-    public static final int ADDITIONAL_FARE = 100;
-    public static final int MIDDLE_SECTOR_CHARGE_DISTANCE = 5;
-    public static final int HIGH_SECTOR_CHARGE_DISTANCE = 8;
     private static final int BASIC_FARE = 1_250;
 
     private final int fare;
@@ -20,7 +15,7 @@ public class Fare {
         return new Fare(calFare(distance, lines, ageDiscountPolicy));
     }
 
-    public int getFare() {
+    public int value() {
         return fare;
     }
 

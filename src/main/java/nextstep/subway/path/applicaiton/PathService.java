@@ -33,7 +33,7 @@ public class PathService {
         PathFinder pathFinder = PathFinder.of(stationRepository.findAll(), sections.getSections());
         Path path = pathFinder.findPath(new DijkstraPathFindStrategy(), findStationById(sourceId),
                 findStationById(targetId));
-        Lines lines = Lines.From(sections.getStationMatchedLines(path.getStations()));
+        Lines lines = Lines.from(sections.getStationMatchedLines(path.getStations()));
         AgeDiscountPolicy ageDiscountPolicy = FareAge.from(loginMember.getAge()).getAgeDiscountPolicy();
 
         return PathResponse.from(path, Fare.of(path.getDistance(), lines, ageDiscountPolicy));

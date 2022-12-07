@@ -26,7 +26,7 @@ public class PathResponse {
                 .stream()
                 .map(StationResponse::from)
                 .collect(Collectors.toList());
-        return new PathResponse(stationResponses, path.getDistance(), fare.getFare());
+        return new PathResponse(stationResponses, path.getDistance(), fare.value());
     }
 
     public List<StationResponse> getStations() {

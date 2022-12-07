@@ -21,9 +21,9 @@ class FareTest {
     @CsvSource(value = {"0:1250", "10:1250", "15:1350", "20:1450", "40:1850", "50:2050", "58:2150", "122:2950"},
             delimiter = ':')
     void distance_fare(int distance, int expect) {
-        Fare actual = Fare.of(distance, Lines.From(new ArrayList<>()), i->i);
+        Fare actual = Fare.of(distance, Lines.from(new ArrayList<>()), i->i);
 
-        assertThat(actual.getFare()).isEqualTo(expect);
+        assertThat(actual.value()).isEqualTo(expect);
     }
 
     @DisplayName("노선별 추가 요금을 계산할 수 있다.")
@@ -31,9 +31,9 @@ class FareTest {
     @MethodSource("lineList")
     void line_fare(Line line, int expect) {
         //when
-        Fare actual = Fare.of(0, Lines.From(Collections.singletonList(line)), i->i);
+        Fare actual = Fare.of(0, Lines.from(Collections.singletonList(line)), i->i);
         //then
-        assertThat(actual.getFare()).isEqualTo(expect);
+        assertThat(actual.value()).isEqualTo(expect);
     }
 
     private static Stream<Arguments> lineList() {
