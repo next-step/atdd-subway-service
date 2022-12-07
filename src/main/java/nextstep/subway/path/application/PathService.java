@@ -18,16 +18,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(readOnly = true)
 public class PathService {
     private final LineRepository lineRepository;
-    private final StationRepository stationRepository;
     private final StationService stationService;
 
     public PathService(
             LineRepository lineRepository,
-            StationRepository stationRepository,
             StationService stationService
     ) {
         this.lineRepository = lineRepository;
-        this.stationRepository = stationRepository;
         this.stationService = stationService;
     }
 
@@ -37,7 +34,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
         Path path = pathFinder.findPath(source, target);
-        Fare fare = new Fare(path, member.getAge());
+        Fare fare = Fare.calculateFare(path, member.getAge());
         List<StationResponse> stations = stationService.findAllByIdIsIn(path.getStationIds());
         return PathResponse.from(stations, path.getDistance(), fare.getFare());
     }

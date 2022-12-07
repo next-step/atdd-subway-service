@@ -16,21 +16,21 @@ class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5, 10})
     void 비회원_기본_요금_생성(int distance) {
-        Fare fare = new Fare(distance, 0, NON_MEMBER_AGE);
+        Fare fare = Fare.calculateFare(distance, 0, NON_MEMBER_AGE);
         assertThat(fare.getFare()).isEqualTo(BASIC_FARE);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5, 10})
     void 회원_성인_기본_요금_생성(int distance) {
-        Fare fare = new Fare(distance, 0, 30);
+        Fare fare = Fare.calculateFare(distance, 0, 30);
         assertThat(fare.getFare()).isEqualTo(BASIC_FARE);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5, 10})
     void 회원_청소년_기본_요금_생성(int distance) {
-        Fare fare = new Fare(distance, 0, 청소년_나이);
+        Fare fare = Fare.calculateFare(distance, 0, 청소년_나이);
         int 요금 = (int) Math.ceil((BASIC_FARE - 350) * 0.8);
         assertThat(fare.getFare()).isEqualTo(요금);
     }
@@ -38,21 +38,21 @@ class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {1, 3, 5, 10})
     void 회원_어린이_기본_요금_생성(int distance) {
-        Fare fare = new Fare(distance, 0, 7);
+        Fare fare = Fare.calculateFare(distance, 0, 7);
         int 요금 = (int) Math.ceil((BASIC_FARE - 350) * 0.5);
         assertThat(fare.getFare()).isEqualTo(요금);
     }
 
     @Test
     void 비회원_기본_요금과_노선_추가_요금_생성() {
-        Fare fare = new Fare(10, 노선_추가_요금, NON_MEMBER_AGE);
+        Fare fare = Fare.calculateFare(10, 노선_추가_요금, NON_MEMBER_AGE);
         assertThat(fare.getFare()).isEqualTo(BASIC_FARE + 노선_추가_요금);
     }
 
     @ParameterizedTest
     @ValueSource(ints = {11, 13, 15, 20, 30})
     void 비회원_기본_요금과_10km_초과_거리_추가_요금_생성(int distance) {
-        Fare fare = new Fare(distance, 0, NON_MEMBER_AGE);
+        Fare fare = Fare.calculateFare(distance, 0, NON_MEMBER_AGE);
         int 초과_거리_추가_요금 = (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
         assertThat(fare.getFare()).isEqualTo(BASIC_FARE + 초과_거리_추가_요금);
     }
@@ -60,7 +60,7 @@ class FareTest {
     @ParameterizedTest
     @ValueSource(ints = {51, 55, 60, 70, 80})
     void 비회원_기본_요금과_50km_초과_거리_추가_요금_생성(int distance) {
-        Fare fare = new Fare(distance, 0, NON_MEMBER_AGE);
+        Fare fare = Fare.calculateFare(distance, 0, NON_MEMBER_AGE);
         int 초과_거리_추가_요금 = (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
         assertThat(fare.getFare()).isEqualTo(BASIC_FARE + 초과_거리_추가_요금);
     }

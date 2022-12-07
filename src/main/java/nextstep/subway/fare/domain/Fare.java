@@ -7,12 +7,16 @@ public class Fare {
 
     private int fare;
 
-    public Fare(int distance, int additionalFare, int age){
+    private Fare(int distance, int additionalFare, int age) {
         fare = calculate(distance, additionalFare, age);
     }
 
-    public Fare(Path path, int age) {
-        fare = calculate(path.getDistance(), path.getAdditionalFareByLine(), age);
+    public static Fare calculateFare(int distance, int additionalFare, int age) {
+        return new Fare(distance, additionalFare, age);
+    }
+
+    public static Fare calculateFare(Path path, int age) {
+        return new Fare(path.getDistance(), path.getAdditionalFareByLine(), age);
     }
 
     private int calculate(int distance, int additionalFare, int age){
