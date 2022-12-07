@@ -66,7 +66,8 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     Stream<DynamicNode> manageMyInfo() {
         return Stream.of(
             dynamicTest("로그인 한다.", this::login),
-            dynamicTest("내 정보를 조회한다.", this::view_my_info)
+            dynamicTest("내 정보를 조회한다.", this::view_my_info),
+            dynamicTest("내 정보를 수정한다", this::fix_my_info)
         );
     }
 
@@ -83,6 +84,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 내_정보_조회_요청(accessToken);
 
         회원_정보_조회됨(response, EMAIL, AGE);
+    }
+
+    private void fix_my_info() {
+        String email = "change@nextstep.com";
+        String password = "changePassword";
+        int age = 21;
+
+        ExtractableResponse<Response> response = 내_정보_수정_요청(accessToken, email, password, age);
+
+        회원_정보_수정됨(response);
     }
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
@@ -135,6 +146,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
             .auth().oauth2(accessToken)
             .accept(MediaType.APPLICATION_JSON_VALUE)
             .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().put("/members/me")
             .then().log().all()
             .extract();
     }
