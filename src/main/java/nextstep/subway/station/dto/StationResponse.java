@@ -5,10 +5,12 @@ import nextstep.subway.station.domain.Station;
 import java.time.LocalDateTime;
 
 public class StationResponse {
-    private final Long id;
-    private final String name;
-    private final LocalDateTime createdDate;
-    private final LocalDateTime modifiedDate;
+    private Long id;
+    private String name;
+    private LocalDateTime createdDate;
+    private LocalDateTime modifiedDate;
+
+    private StationResponse() {}
 
     private StationResponse(Long id, String name, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
