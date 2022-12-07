@@ -1,9 +1,7 @@
 package nextstep.subway.auth.infrastructure;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-import nextstep.subway.auth.application.AuthorizationException;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,15 +36,14 @@ class JwtTokenProviderTest {
         assertThat(email).isEqualTo(actual);
     }
 
-    @DisplayName("비정상 토큰일 경우 AuthorizationException 이 발생한다.")
+    @DisplayName("비정상 토큰일 경우 validate 결과 값은 false 이다.")
     @Test
     void validateToken() {
         //given
         String token = "temp_token_string";
 
         //when
-        assertThatThrownBy(() -> jwtTokenProvider.validateToken(token))
-                .isInstanceOf(AuthorizationException.class);
+        assertThat(jwtTokenProvider.validateToken(token)).isFalse();
 
     }
 }

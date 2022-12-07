@@ -29,7 +29,13 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        jwtTokenProvider.validateToken(credentials);
+        if (credentials == null) {
+            return LoginMember.NONE();
+        }
+
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            throw new AuthorizationException();
+        }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(AuthorizationException::new);
