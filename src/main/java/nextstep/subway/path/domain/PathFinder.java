@@ -28,26 +28,30 @@ public class PathFinder {
         }
     }
 
-    public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
+/*    public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> shortestPath = validateLinkGraph(sourceStation, targetStation);
         return shortestPath
                 .getVertexList()
                 .stream()
                 .collect(Collectors.toList());
+    }*/
+
+    public ShortestPath getShortestPath(Station sourceStation, Station targetStation) {
+        return new ShortestPath(validateLinkGraph(sourceStation, targetStation));
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> vlidateStation(Station sourceStation, Station targetStation) {
+    private void vlidateStation(Station sourceStation, Station targetStation) {
         validateEqualStation(sourceStation, targetStation);
         validateExistsStation(sourceStation, targetStation);
+    }
+
+    private GraphPath<Station, DefaultWeightedEdge> validateLinkGraph(Station sourceStation, Station targetStation) {
+        vlidateStation(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation);
         if (Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException(NONE_LINK_PATH);
         }
         return shortestPath;
-    }
-
-    private GraphPath<Station, DefaultWeightedEdge> validateLinkGraph(Station sourceStation, Station targetStation) {
-        return vlidateStation(sourceStation, targetStation);
     }
 
     private void validateEqualStation(Station sourceStation, Station targetStation) {
