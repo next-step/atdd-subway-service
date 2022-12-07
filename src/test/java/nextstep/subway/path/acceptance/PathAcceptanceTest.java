@@ -40,11 +40,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private Member 어린이회원 = new Member("kids@test.com", "test123", 7);
-    private String 어린이회원토큰;
+    private String 어린이회원토큰 = "";
     private Member 청소년회원 = new Member("teen@test.com", "test124", 18);
-    private String 청소년회원토큰;
+    private String 청소년회원토큰 = "";
     private Member 성인회원 = new Member("adult@test.com", "test324", 25);
-    private String 성인회원토큰;
+    private String 성인회원토큰 = "";
 
     @BeforeEach
     public void setUp() {
@@ -52,7 +52,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_역_등록();
         지하철_노선_등록();
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
-        나이별_회원_로그인();
     }
 
 
@@ -84,30 +83,49 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단경로_목록_조회_실패(response);
     }
 
-    @DisplayName("최단경로 조회에서 출발역과 도착역이 연결된상태로 존재하면 최단경로 조회")
+    @DisplayName("출발역과 도착역이 연결된 상태에서 비회원의 최단경로 조회")
     @Test
-    void returnsShortestPath() {
-        성인_최단_경로조회_성공();
-        청소년_최단_경로조회_성공();
-        어린이_최단_경로조회_성공();
-    }
+    void returnsShortestPathAtNoLogin() {
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(강남역.getId(), 남부터미널역.getId());
 
-    private void 성인_최단_경로조회_성공() {
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(성인회원토큰, 강남역.getId(), 남부터미널역.getId());
         최단경로_목록_조회_성공(response);
         최단경로_거리_조회_성공(response,12);
         최단경로_요금_조회_성공(response,1350);
     }
 
-    private void 청소년_최단_경로조회_성공() {
+    @DisplayName("출발역과 도착역이 연결된 상태에서 성인 회원의 최단경로 조회")
+    @Test
+    void returnsShortestPathAtAdult() {
+        성인_회원_로그인();
+
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(성인회원토큰, 강남역.getId(), 남부터미널역.getId());
+
+        최단경로_목록_조회_성공(response);
+        최단경로_거리_조회_성공(response,12);
+        최단경로_요금_조회_성공(response,1350);
+    }
+
+
+    @DisplayName("출발역과 도착역이 연결된 상태에서 청소년 회원의 최단경로 조회")
+    @Test
+    void returnsShortestPathAtTeen() {
+        청소년_회원_로그인();
+
         ExtractableResponse<Response> response = 최단_경로_조회_요청(청소년회원토큰, 강남역.getId(), 남부터미널역.getId());
+
         최단경로_목록_조회_성공(response);
         최단경로_거리_조회_성공(response,12);
         최단경로_요금_조회_성공(response,800);
     }
 
-    private void 어린이_최단_경로조회_성공() {
+
+    @DisplayName("출발역과 도착역이 연결된 상태에서 어린이 회원의 최단경로 조회")
+    @Test
+    void returnsShortestPathAtChild() {
+        어린이_회원_로그인();
+
         ExtractableResponse<Response> response = 최단_경로_조회_요청(어린이회원토큰, 강남역.getId(), 남부터미널역.getId());
+
         최단경로_목록_조회_성공(response);
         최단경로_거리_조회_성공(response,12);
         최단경로_요금_조회_성공(response,500);
@@ -130,12 +148,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         칠호선 = 지하철_노선_등록되어_있음(new LineRequest("칠호선", "bg-red-600", 학동역.getId(), 강남구청역.getId(), 30)).as(LineResponse.class);
     }
 
-    private void 나이별_회원_로그인() {
-        어린이_회원_로그인();
-        청소년_회원_로그인();
-        성인_회원_로그인();
-    }
-
     private void 어린이_회원_로그인() {
         회원_생성을_요청(어린이회원.getEmail(), 어린이회원.getPassword(), 어린이회원.getAge());
         ExtractableResponse<Response> loginResponse = 로그인_요청(new TokenRequest(어린이회원.getEmail(), 어린이회원.getPassword()));
@@ -155,6 +167,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> loginResponse = 로그인_요청(new TokenRequest(성인회원.getEmail(), 성인회원.getPassword()));
         로그인_성공(loginResponse);
         성인회원토큰 = loginResponse.as(TokenResponse.class).getAccessToken();
+    }
+
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(long sourceId, long targetId) {
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .param("sourceId", sourceId)
+                .param("targetId", targetId)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
     }
 
     public static ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, long sourceId, long targetId) {
