@@ -26,7 +26,7 @@ public class LineResponse {
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
         this.stations = stations.stream()
-            .map(StationResponse::of)
+            .map(StationResponse::from)
             .collect(Collectors.toList());
     }
 
