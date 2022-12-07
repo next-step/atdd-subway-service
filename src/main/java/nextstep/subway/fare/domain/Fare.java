@@ -20,9 +20,10 @@ public class Fare {
     }
 
     private int calculate(int distance, int additionalFare, int age){
-        int fare = subtractionByAge(age);
+        int fare = BASIC_FARE;
         fare += additionByDistance(distance);
         fare += additionByLine(additionalFare);
+        fare -= subtractionByAge(age, fare);
         return fare;
     }
 
@@ -34,8 +35,8 @@ public class Fare {
         return FareTypeByDistance.calculate(distance);
     }
 
-    private int subtractionByAge(int age){
-        return FareTypeByAge.calculate(age, BASIC_FARE);
+    private int subtractionByAge(int age, int fare){
+        return FareTypeByAge.calculate(age, fare);
     }
 
     public int getFare() {
