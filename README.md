@@ -86,6 +86,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 노선별 추가 요금 정책 추가
   - [X] 인수 테스트 수정
   - [X] 도메인 영역 수정 
-- [ ] 연령별 할인 정책 추가
+- [X] 연령별 할인 정책 추가
   - [X] 인수 테스트 추가
-  - [ ] 도메인 영역 수정
+  - [X] 도메인 영역 수정

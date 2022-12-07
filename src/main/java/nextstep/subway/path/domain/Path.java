@@ -2,7 +2,11 @@ package nextstep.subway.path.domain;
 
 import java.util.Objects;
 
+import nextstep.subway.amount.domain.Amount;
+import nextstep.subway.amount.domain.AmountPolicy;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Stations;
 
 public class Path {
@@ -16,6 +20,14 @@ public class Path {
 
     public static Path of(Stations stations, Distance distance) {
         return new Path(stations, distance);
+    }
+
+    public Amount getAmount(Lines lines, LoginMember loginMember) {
+        Amount amount = AmountPolicy.valueOf(distance).calculateAmount(distance);
+        Amount additionalAmount = lines.findPathLines(stations).maxAmount();
+        amount = amount.sum(additionalAmount);
+        amount = DiscountPolicy.valueOf(loginMember.getAge()).calculateDiscount(amount);
+        return amount;
     }
 
     public Stations getStations() {

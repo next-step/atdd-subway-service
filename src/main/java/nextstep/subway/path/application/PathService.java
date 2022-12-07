@@ -4,7 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.amount.domain.Amount;
-import nextstep.subway.amount.domain.AmountPolicy;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Lines;
@@ -26,7 +26,7 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         Lines lines = lineService.findAllLines();
         Station sourceStation = stationService.findStationById(source);
         Station targetStation = stationService.findStationById(target);
@@ -35,10 +35,7 @@ public class PathService {
 
         Stations stations = path.getStations();
         Distance distance = path.getDistance();
-
-        Lines pathLines = lines.findPathLines(stations);
-        Amount defaultAmount = AmountPolicy.valueOf(distance).calculateAmount(distance);
-        Amount amount = defaultAmount.sum(pathLines.maxAmount());
+        Amount amount = path.getAmount(lines, loginMember);
 
         return PathResponse.of(stations, distance, amount);
     }
