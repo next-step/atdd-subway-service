@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.ui.PathResponse;
@@ -15,7 +16,6 @@ import java.util.stream.Collectors;
 public class PathFinder {
     private final SubwayGraph graph;
     private final List<Section> sections;
-
 
     private PathFinder(List<Line> lines) {
         this.sections = lines.stream()
@@ -39,9 +39,11 @@ public class PathFinder {
                 .collect(Collectors.toList());
 
         List<Station> stations = shortestPath.getVertexList();
-        int fare = FareCalculator.calculateAdditionalFare(sections, stations, shortestPath.getWeight());
+        int fare = FareCalculator.calculateAdditionalFare(
+                sections, stations, new Distance((int) shortestPath.getWeight())
+        );
 
-        return new PathResponse(responses, (int) shortestPath.getWeight(), fare);
+        return new PathResponse(responses, new Distance((int) shortestPath.getWeight()), fare);
     }
 
     private void validate(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {

@@ -1,5 +1,6 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.domain.FareCalculator;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -11,9 +12,9 @@ public class PathResponse {
     private int distance;
     private int fare;
 
-    public PathResponse(final List<StationResponse> stations, final int distance, final int fare) {
+    public PathResponse(final List<StationResponse> stations, final Distance distance, final int fare) {
         this.stations = stations;
-        this.distance = distance;
+        this.distance = distance.value();
         this.fare = fare;
     }
 

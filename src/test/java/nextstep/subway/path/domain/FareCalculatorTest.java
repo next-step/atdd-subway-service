@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.ui.PathResponse;
@@ -68,7 +69,9 @@ class FareCalculatorTest {
         List<Section> sections = getSections(lines);
         List<Station> stations = getStations(lines);
 
-        int fare = FareCalculator.calculateAdditionalFare(sections, new ArrayList<>(stations), shortestPath.getDistance());
+        int fare = FareCalculator.calculateAdditionalFare(
+                sections, new ArrayList<>(stations), new Distance(shortestPath.getDistance())
+        );
 
         assertThat(fare).isEqualTo(1350);
     }
@@ -82,7 +85,9 @@ class FareCalculatorTest {
         List<Section> sections = getSections(lines);
         List<Station> stations = getStations(lines);
 
-        int fare = FareCalculator.calculateAdditionalFare(sections, new ArrayList<>(stations), shortestPath.getDistance());
+        int fare = FareCalculator.calculateAdditionalFare(
+                sections, new ArrayList<>(stations), new Distance(shortestPath.getDistance())
+        );
 
         assertThat(fare).isEqualTo(1650);
     }
@@ -106,7 +111,7 @@ class FareCalculatorTest {
         PathResponse shortestPath = pathFinder.getShortestPath(동대문역사공원역, 광화문역);
 
         int fare = FareCalculator.calculateAdditionalFare(
-                오호선.getSections(), new ArrayList<>(오호선.getStations()), shortestPath.getDistance()
+                오호선.getSections(), new ArrayList<>(오호선.getStations()), new Distance(shortestPath.getDistance())
         );
 
         assertThat(fare).isEqualTo(2250);

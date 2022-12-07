@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 
@@ -20,7 +21,7 @@ public class FareCalculator {
     public static final int DISTANCE_UNIT_LEVEL1 = 5;
     public static final int DISTANCE_UNIT_LEVEL2 = 8;
 
-    public static int calculateAdditionalFare(List<Section> sections, List<Station> stations, double distance) {
+    public static int calculateAdditionalFare(List<Section> sections, List<Station> stations, Distance distance) {
         int additionalFareOfLine = checkAdditionalFareOfLine(sections, stations);
         return BASIC_FARE + additionalFareOfLine + calculateAdditionalFareOfDistance(distance);
     }
@@ -33,13 +34,13 @@ public class FareCalculator {
                 .orElse(0);
     }
 
-    private static int calculateAdditionalFareOfDistance(final double weight) {
-        if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL2) {
-            return calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL2, DISTANCE_UNIT_LEVEL2);
+    private static int calculateAdditionalFareOfDistance(final Distance distance) {
+        if (distance.isBiggerThen(ADDITIONAL_FARE_DISTANCE_LEVEL2)) {
+            return calculateOverFare(distance.minus(ADDITIONAL_FARE_DISTANCE_LEVEL2), DISTANCE_UNIT_LEVEL2);
         }
 
-        if (weight > ADDITIONAL_FARE_DISTANCE_LEVEL1) {
-            return calculateOverFare(weight - ADDITIONAL_FARE_DISTANCE_LEVEL1, DISTANCE_UNIT_LEVEL1);
+        if (distance.isBiggerThen(ADDITIONAL_FARE_DISTANCE_LEVEL1)) {
+            return calculateOverFare(distance.minus(ADDITIONAL_FARE_DISTANCE_LEVEL1), DISTANCE_UNIT_LEVEL1);
         }
 
         return 0;

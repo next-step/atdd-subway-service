@@ -20,7 +20,7 @@ public class Distance {
         this.value = value;
     }
 
-    int value() {
+    public int value() {
         return this.value;
     }
 
@@ -30,6 +30,14 @@ public class Distance {
 
     public void minus(final Distance distance) {
         this.value -= distance.value;
+    }
+
+    public boolean isBiggerThen(final int value) {
+        return this.value > value;
+    }
+
+    public double minus(final int value) {
+        return this.value - value;
     }
 
     @Override
