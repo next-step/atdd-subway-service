@@ -27,10 +27,15 @@ public class Member extends BaseEntity {
     @Embedded
     private Favorites favorites = new Favorites();
 
-    public Member() {
+    protected Member() {
     }
 
     public Member(String email, String password, Integer age) {
+        this(null, email, password, age);
+    }
+
+    public Member(Long id, String email, String password, Integer age) {
+        this.id = id;
         this.email = email;
         this.password = password;
         this.age = age;
