@@ -4,14 +4,23 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicNode;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.stream.Stream;
+
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String EMAIL = "email@email.com";
@@ -21,14 +30,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
 
+    ExtractableResponse<Response> createResponse;
+
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+        // when
+        createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성됨(createResponse);
+    }
+
+
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
-        // when
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        // then
-        회원_생성됨(createResponse);
-
         // when
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
         // then
@@ -46,11 +62,19 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("나의 정보를 관리한다.")
-    @Test
-    void manageMyInfo() {
-
+    @TestFactory
+    Stream<DynamicNode> manageMyInfo() {
+        return Stream.of(
+            dynamicTest("로그인 한다.", this::login)
+        );
     }
 
+    private void login() {
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
+
+        로그인_됨(response);
+        토큰_확인됨(response.as(TokenResponse.class));
+    }
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
@@ -96,6 +120,16 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 내_정보_조회_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
@@ -113,5 +147,9 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public void 토큰_확인됨(TokenResponse response) {
+        assertThat(response.getAccessToken()).isNotBlank();
     }
 }

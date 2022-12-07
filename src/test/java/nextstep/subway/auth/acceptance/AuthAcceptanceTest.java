@@ -54,7 +54,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         내_정보_조회_실패됨(response);
     }
 
-    private ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest request = new TokenRequest(email, password);
         return RestAssured
             .given().log().all()
@@ -76,7 +76,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private void 로그인_됨(ExtractableResponse<Response> response) {
+    public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
