@@ -60,8 +60,26 @@ npm run dev
 
 * [ ] 토큰 발급 기능 (로그인) 인수 테스트 만들기
 * [ ] 인증 - 내 정보 조회 기능 완성하기
+  * 내 정보 조회 시나리오
+    ```markdown
+      인수테스트 시나리오
+        Feature: 내 정보 관련 기능
+          Background
+            Given 계정을 등록한다.
+          Scenario: 내정보를 관리
+            When 로그인 한다.
+            Then 토큰 확인됨.
+            When 내 정보를 조회한다.
+            Then 정보 조회됨.
+            When 내 정보를 수정한다.
+            Then 정보 수정됨.
+            When 내 계정을 탈퇴한다.
+            Then 계정 탈퇴됨.
+            When 탈퇴한 계정 정보로 로그인 한다.
+            Then 로그인 실패함.
+    ```
 * [ ] 인증 - 즐겨 찾기 기능 완성하기
-* 
+
 ## ✏️ Code Review Process
 
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
