@@ -62,30 +62,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void getLines() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(tokenResponse, 강남역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> responseOfMember =
+                최단_경로_조회_요청(tokenResponse.getAccessToken(), 강남역.getId(), 남부터미널역.getId());
+        ExtractableResponse<Response> responseOfGuest =
+                최단_경로_조회_요청(null, 강남역.getId(), 남부터미널역.getId());
 
         // then
-        최단경로_목록_응답됨(response);
+        최단경로_목록_응답됨(responseOfMember);
+        최단경로_목록_응답됨(responseOfGuest);
     }
 
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 같으면 예외를 반환한다.")
     @Test
     void getLinesWithException() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(tokenResponse, 강남역.getId(), 강남역.getId());
-
+        ExtractableResponse<Response> responseOfMember =
+                최단_경로_조회_요청(tokenResponse.getAccessToken(), 강남역.getId(), 강남역.getId());
+        ExtractableResponse<Response> responseOfGuest =
+                최단_경로_조회_요청(null, 강남역.getId(), 강남역.getId());
         // then
-        최단경로_목록_조회_실패(response);
+        최단경로_목록_조회_실패(responseOfMember);
+        최단경로_목록_조회_실패(responseOfGuest);
     }
 
     @DisplayName("최단 경로를 조회 시, 출발역과 도착역이 연결이 되어 있지 않은 경우 예외를 반환한다.")
     @Test
     void getLinesWithException2() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(tokenResponse, 강남역.getId(), 사당역.getId());
+        ExtractableResponse<Response> responseOfMember =
+                최단_경로_조회_요청(tokenResponse.getAccessToken(), 강남역.getId(), 사당역.getId());
+        ExtractableResponse<Response> responseOfGuest =
+                최단_경로_조회_요청(null, 강남역.getId(), 사당역.getId());
 
         // then
-        최단경로_목록_조회_실패(response);
+        최단경로_목록_조회_실패(responseOfMember);
+        최단경로_목록_조회_실패(responseOfGuest);
     }
 
     @DisplayName("최단 경로를 조회 시, 존재하지 않은 출발역이나 도착역을 조회 할 경우 예외를 반환한다.")
@@ -95,9 +106,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         long 없는역_ID = 100L;
 
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(tokenResponse, 강남역.getId(), 없는역_ID);
-
+        ExtractableResponse<Response> responseOfMember =
+                최단_경로_조회_요청(tokenResponse.getAccessToken(), 강남역.getId(), 없는역_ID);
+        ExtractableResponse<Response> responseOfGuest =
+                최단_경로_조회_요청(tokenResponse.getAccessToken(), 강남역.getId(), 없는역_ID);
         // then
-        최단경로_목록_조회_실패(response);
+        최단경로_목록_조회_실패(responseOfMember);
+        최단경로_목록_조회_실패(responseOfGuest);
     }
 }

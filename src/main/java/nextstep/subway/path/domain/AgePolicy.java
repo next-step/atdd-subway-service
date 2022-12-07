@@ -24,7 +24,7 @@ enum AgePolicy {
     }
 
     public boolean isDiscountable(final Age age) {
-        if (ageChecker == null) return false;
+        if (age == null || ageChecker == null) return false;
         return ageChecker.apply(age);
     }
 }

@@ -20,10 +20,15 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(final Long sourceId, final Long targetId, final int age) {
+    public PathResponse findShortestPath(final Long sourceId, final Long targetId, final Integer age) {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
         PathFinder pathFinder = PathFinder.from(lineRepository.findAll());
+
+        if (age == null) {
+            return pathFinder.getShortestPath(sourceStation, targetStation,
+                    fare -> FareCalculator.applyDiscountFare(fare, null));
+        }
 
         return pathFinder.getShortestPath(sourceStation, targetStation,
                 fare -> FareCalculator.applyDiscountFare(fare, new Age(age)));
