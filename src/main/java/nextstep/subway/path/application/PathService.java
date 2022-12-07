@@ -10,8 +10,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class PathService {
 
-    private StationService stationService;
-    private LineService lineService;
+    private final StationService stationService;
+    private final LineService lineService;
 
     public PathService(StationService stationService, LineService lineService) {
         this.stationService = stationService;
