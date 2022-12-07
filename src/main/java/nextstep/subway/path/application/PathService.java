@@ -7,6 +7,7 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -30,10 +31,9 @@ public class PathService {
         Station targetStation = findStationById(targetId);
         List<Line> lines = lineRepository.findAll();
         PathFinder pathFinder = new PathFinder(lines);
-        List<Station> stations = pathFinder.getShortestPath(sourceStation, targetStation);
-        int distance = pathFinder.getShortestDistance(sourceStation, targetStation);
-        Line line = findLine(Lines.of(lines), stations);
-        return new PathResponse(stations, distance, findFare(line, distance, age));
+        ShortestPath shortestPath = pathFinder.getShortestPath(sourceStation, targetStation);
+        Line line = findLine(Lines.of(lines), shortestPath.getStations());
+        return new PathResponse(shortestPath.getStations(), shortestPath.getDistance(), findFare(line, shortestPath.getDistance(), age));
     }
 
     private Station findStationById(Long id) {
