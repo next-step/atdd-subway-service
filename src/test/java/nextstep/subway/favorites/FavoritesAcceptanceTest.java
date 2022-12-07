@@ -1,6 +1,7 @@
 package nextstep.subway.favorites;
 
 import io.restassured.RestAssured;
+import io.restassured.mapper.TypeRef;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -16,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.util.List;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_후_토큰_조회;
@@ -42,10 +44,10 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        판교역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        판교역 = StationAcceptanceTest.지하철역_등록되어_있음("판교역").as(StationResponse.class);
         정자역 = StationAcceptanceTest.지하철역_등록되어_있음("정자역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분선", "bg-red-600",
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600",
                 강남역.getId(), 정자역.getId(), 10))
                 .as(LineResponse.class);
 
@@ -78,7 +80,7 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     void manageFavorite() {
         //given
         Long favoritesRegisterId1 = 강남역.getId();
-        Long favoritesRegisterId2 = 강남역.getId();
+        Long favoritesRegisterId2 = 정자역.getId();
 
         // when
         ExtractableResponse<Response> createResponse = 즐겨찾기_생성을_요청(favoritesRegisterId1, favoritesRegisterId2);
@@ -86,12 +88,12 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
         즐겨찾기_생성됨(createResponse);
 
         // when
-        ExtractableResponse<Response> findResponse = 즐겨찾기_목록_조회_요청();
+        ExtractableResponse<Response> findListResponse = 즐겨찾기_목록_조회_요청();
         // then
-        즐겨찾기_목록_조회됨(findResponse, favoritesRegisterId1, favoritesRegisterId2);
+        즐겨찾기_목록_조회됨(findListResponse, favoritesRegisterId1, favoritesRegisterId2);
 
         // when
-        Long deleteId = findResponse.as(FavoritesResponse.class).getId();
+        Long deleteId = 즐겨찾기_목록_추출(findListResponse).get(0).getId();
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(deleteId);
         // then
         즐겨찾기_삭제됨(deleteResponse);
@@ -134,11 +136,16 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, Long stationId1, Long stationId2) {
-        FavoritesResponse favoritesResponse = response.as(FavoritesResponse.class);
-        assertThat(favoritesResponse.getId()).isNotNull();
-        assertThat(favoritesResponse.getStations().stream()
+        List<FavoritesResponse> favoritesResponses = 즐겨찾기_목록_추출(response);
+        assertThat(favoritesResponses.size()).isEqualTo(1);
+        assertThat(favoritesResponses.get(0).getId()).isNotNull();
+        assertThat(favoritesResponses.get(0).getStations().stream()
                 .map(StationResponse::getId).collect(Collectors.toList()))
                 .contains(stationId1, stationId2);
+    }
+
+    private List<FavoritesResponse> 즐겨찾기_목록_추출(ExtractableResponse<Response> response) {
+        return response.as(new TypeRef<List<FavoritesResponse>>() {}.getType());
     }
 
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
