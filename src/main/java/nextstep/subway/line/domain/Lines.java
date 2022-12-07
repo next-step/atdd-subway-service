@@ -10,7 +10,7 @@ public class Lines {
         this.lines.addAll(lines);
     }
 
-    public static Lines From(List<Line> lines) {
+    public static Lines from(List<Line> lines) {
         return new Lines(lines);
     }
 
