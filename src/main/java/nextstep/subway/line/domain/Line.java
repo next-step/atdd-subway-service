@@ -19,7 +19,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
-    Sections sections = new Sections();
+    private Sections sections = new Sections();
     private int additionalFare;
 
     public Line() {
