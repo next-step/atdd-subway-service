@@ -3,6 +3,7 @@ package nextstep.subway.fare.domain;
 import nextstep.subway.fare.exception.AgeFareException;
 
 import java.util.Arrays;
+import java.util.function.IntFunction;
 
 import static nextstep.subway.fare.exception.AgeFareExceptionCode.NONE_EXISTS_AGE;
 
@@ -24,7 +25,10 @@ public enum AgePolicy {
         this.discountRate = discountRate;
     }
 
-    public static AgePolicy valueOfAge(int age) {
+    public static AgePolicy valueOfAge(Integer age) {
+        if(age == null){
+            return ADULT;
+        }
         return Arrays.stream(AgePolicy.values())
                 .filter(it -> it.isRange(age))
                 .findAny()

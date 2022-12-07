@@ -26,7 +26,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId, int age) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, Integer age) {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
         List<Line> lines = lineRepository.findAll();
