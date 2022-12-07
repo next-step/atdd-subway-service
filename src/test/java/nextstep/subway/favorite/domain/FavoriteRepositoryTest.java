@@ -30,18 +30,20 @@ public class FavoriteRepositoryTest {
     Station source;
     Station target;
 
+    Favorite saveFavorite;
+
     @BeforeEach
     void setUp() {
         saveMember = memberRepository.save(new Member("test@email.com","1234", 1));
         source = stationRepository.save(new Station("강남역"));
         target = stationRepository.save(new Station("삼성역"));
+
+        saveFavorite = favoriteRepository.save(new Favorite(saveMember, source, target));
     }
 
     @DisplayName("즐겨찾기를 생성한다")
     @Test
     void save() {
-        Favorite saveFavorite = favoriteRepository.save(new Favorite(saveMember, source, target));
-
         assertThat(saveFavorite).isNotNull();
         assertThat(saveFavorite.getId()).isNotNull();
     }
@@ -49,8 +51,6 @@ public class FavoriteRepositoryTest {
     @DisplayName("계정의 즐겨찾기를 불러온다.")
     @Test
     void findByMember() {
-        Favorite saveFavorite = favoriteRepository.save(new Favorite(saveMember, source, target));
-
         List<Favorite> favorites = favoriteRepository.findByMember(saveMember);
 
         assertThat(favorites).contains(saveFavorite);
