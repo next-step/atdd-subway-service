@@ -1,5 +1,6 @@
 package nextstep.subway.favorite;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -12,12 +13,21 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicNode;
+import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.TestFactory;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성됨;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("즐겨찾기 관련 기능")
 public class FavoriteAcceptanceTest extends AcceptanceTest {
@@ -43,5 +53,36 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(email, password, 12);
         ExtractableResponse<Response> response = 로그인_요청(email, password);
         accessToken = response.as(TokenResponse.class).getAccessToken();
+    }
+
+    @DisplayName("나의 즐겨찾기를 관리한다.")
+    @TestFactory
+    Stream<DynamicNode> manageMyFavorite() {
+        return Stream.of(
+            dynamicTest("즐겨찾기 생성을 요청",this::create_favorite)
+        );
+    }
+
+    private void create_favorite() {
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
+
+        즐겨찾기_생성됨(response);
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse sourceStation,
+        StationResponse targetStation) {
+        FavoriteRequest request = new FavoriteRequest(sourceStation.getId(), targetStation.getId());
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .body(request)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/favorites")
+            .then().log().all()
+            .extract();
+    }
+
+    private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 }
