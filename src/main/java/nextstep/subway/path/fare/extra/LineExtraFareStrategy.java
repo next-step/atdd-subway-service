@@ -1,10 +1,10 @@
-package nextstep.subway.path.fare.policy.extra;
+package nextstep.subway.path.fare.extra;
 
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
 
-public class LineExtraFarePolicyStrategy implements ExtraFarePolicyStrategy {
+public class LineExtraFareStrategy implements ExtraFareStrategy {
 
     @Override
     public Fare calculate(Path path) {

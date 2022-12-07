@@ -1,10 +1,10 @@
-package nextstep.subway.path.fare.policy.extra;
+package nextstep.subway.path.fare.extra;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
 
-public class AboveFiftyKiloExtraFarePolicyStrategy implements ExtraFarePolicyStrategy {
+public class AboveFiftyKiloExtraFareStrategy implements ExtraFareStrategy {
 
     private static final Distance MIN_DISTANCE = Distance.valueOf(50);
     private static final Fare EXTRA_FARE = Fare.valueOf(100);

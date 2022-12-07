@@ -1,11 +1,11 @@
-package nextstep.subway.path.fare.policy;
+package nextstep.subway.path.fare;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
-import nextstep.subway.path.fare.policy.extra.BasicExtraFarePolicyStrategy;
+import nextstep.subway.path.fare.extra.BasicExtraFareStrategy;
+import nextstep.subway.path.fare.extra.ExtraFare;
 import org.assertj.core.util.Lists;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
@@ -14,23 +14,16 @@ import java.util.Collections;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class FarePolicyServiceTest {
-
-    FarePolicyService farePolicyService;
-
-    @BeforeEach
-    void setup() {
-        farePolicyService = new FarePolicyService();
-    }
+class ExtraFareTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1,2,9,10})
     void testCalculateBasicFare(int distance) {
         Path path = new Path(Lists.emptyList(), Collections.emptyList(), Distance.valueOf(distance));
 
-        Fare fare = farePolicyService.calculate(path);
+        Fare fare = ExtraFare.calculateExtraFare(path);
 
-        assertThat(fare).isEqualTo(BasicExtraFarePolicyStrategy.BASIC_FARE);
+        assertThat(fare).isEqualTo(BasicExtraFareStrategy.BASIC_FARE);
     }
 
     @ParameterizedTest
@@ -38,7 +31,7 @@ class FarePolicyServiceTest {
     void testUntilFiftyKiloFarePolicy(int distance, int fareAmount) {
         Path path = new Path(Lists.emptyList(), Collections.emptyList(), Distance.valueOf(distance));
 
-        Fare fare = farePolicyService.calculate(path);
+        Fare fare = ExtraFare.calculateExtraFare(path);
 
         assertThat(fare).isEqualTo(Fare.valueOf(fareAmount));
     }
@@ -48,7 +41,7 @@ class FarePolicyServiceTest {
     void testAboveFiftyKiloFarePolicy(int distance, int fareAmount) {
         Path path = new Path(Lists.emptyList(), Collections.emptyList(), Distance.valueOf(distance));
 
-        Fare fare = farePolicyService.calculate(path);
+        Fare fare = ExtraFare.calculateExtraFare(path);
 
         assertThat(fare).isEqualTo(Fare.valueOf(fareAmount));
     }

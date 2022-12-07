@@ -1,10 +1,10 @@
-package nextstep.subway.path.fare.policy.extra;
+package nextstep.subway.path.fare.extra;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.fare.Fare;
 
-public class UntilFiftyKiloExtraFarePolicyStrategy implements ExtraFarePolicyStrategy {
+public class UntilFiftyKiloExtraFareStrategy implements ExtraFareStrategy {
 
     private static final Distance MIN_DISTANCE = Distance.valueOf(10);
     private static final Fare EXTRA_FARE = Fare.valueOf(100);
@@ -28,9 +28,9 @@ public class UntilFiftyKiloExtraFarePolicyStrategy implements ExtraFarePolicyStr
     }
 
     private Distance getExtraDistance(Distance distance) {
-        if (distance.isLessThanOrEqualTo(BasicExtraFarePolicyStrategy.MAX_DISTANCE)) {
+        if (distance.isLessThanOrEqualTo(BasicExtraFareStrategy.MAX_DISTANCE)) {
             return Distance.ZERO;
         }
-        return distance.minus(BasicExtraFarePolicyStrategy.MAX_DISTANCE);
+        return distance.minus(BasicExtraFareStrategy.MAX_DISTANCE);
     }
 }
