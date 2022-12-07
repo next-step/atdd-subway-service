@@ -55,4 +55,14 @@ public class FavoriteRepositoryTest {
 
         assertThat(favorites).contains(saveFavorite);
     }
+
+    @DisplayName("계정의 즐겨찾기를 삭제한다.")
+    @Test
+    void deleteFavoriteById() {
+        favoriteRepository.deleteByIdAndMember(saveFavorite.getId(), saveFavorite);
+
+        List<Favorite> favorites = favoriteRepository.findByMember(saveMember);
+
+        assertThat(favorites.size()).isEqualTo(0);
+    }
 }
