@@ -33,9 +33,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationId 청구;
     private StationId DDP;
 
-    private LineId LINE_2;
-    private LineId LINE_5;
-
     /**
      * Background
      * Given 지하철 역과 노선 구역이 등록되어 있음
@@ -53,8 +50,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         청구 = 지하철역_ID_추출(지하철역_등록되어_있음("청구"));
         DDP = 지하철역_ID_추출(지하철역_등록되어_있음("DDP"));
 
-        LINE_2 = 지하철_노선과_구역_등록되어_있음_2호선();
-        LINE_5 = 지하철_노선과_구역_등록되어_있음_5호선();
+        지하철_노선과_구역_등록되어_있음_2호선();
+        지하철_노선과_구역_등록되어_있음_5호선();
     }
 
     /**
@@ -210,7 +207,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_등록되어_있음(params).as(LineResponse.class);
     }
 
-    private LineId 지하철_노선과_구역_등록되어_있음_2호선() {
+    private void 지하철_노선과_구역_등록되어_있음_2호선() {
         Map<String, String> params = 추가요금이_있는_지하철_노선_생성_요청_파라미터(
             "2호선",
             "bg-green-600",
@@ -221,10 +218,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
         LineId LINE_2 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(params));
         지하철_노선에_지하철역_등록_요청(LINE_2, 왕십리, 신당, 10);
-        return LINE_2;
     }
 
-    private LineId 지하철_노선과_구역_등록되어_있음_5호선() {
+    private void 지하철_노선과_구역_등록되어_있음_5호선() {
         Map<String, String> params = 추가요금이_있는_지하철_노선_생성_요청_파라미터(
             "5호선",
             "bg-pupple-600",
@@ -236,7 +232,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineId LINE_5 = 지하철_노선_ID_추출(지하철_노선_등록되어_있음(params));
         지하철_노선에_지하철역_등록_요청(LINE_5, 왕십리, 행당, 10);
         지하철_노선에_지하철역_등록_요청(LINE_5, 행당, 청구, 10);
-        return LINE_5;
     }
 
     private LineResponse 지름길_노선_개통(StationId start, StationId end, Distance distance) {
