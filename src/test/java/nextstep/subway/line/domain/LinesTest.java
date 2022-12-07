@@ -43,9 +43,9 @@ public class LinesTest {
         Lines lines = Lines.of(Arrays.asList(칠호선, 오호선, 구호선));
         List<Station> stations = Arrays.asList(강동구청역, 천호역, 강동역, 둔촌역, 올림픽공원역);
 
-        Line line = lines.findMaxFareLineByStations(stations);
+        int fare = lines.findMaxFareLineByStations(stations);
 
-        assertThat(line).isEqualTo(오호선);
+        assertThat(fare).isEqualTo(4000);
     }
 
 }

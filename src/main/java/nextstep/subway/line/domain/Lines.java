@@ -27,9 +27,10 @@ public class Lines {
                 .collect(Collectors.toList());
     }
 
-    public Line findMaxFareLineByStations(List<Station> stations) {
+    public int findMaxFareLineByStations(List<Station> stations) {
         return findLinesByStations(stations)
                 .stream().max(Comparator.comparingInt(Line::getFare))
-                .orElse(new Line());
+                .map(line -> line.getFare())
+                .orElse(0);
     }
 }
