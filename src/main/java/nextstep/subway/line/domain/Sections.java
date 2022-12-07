@@ -25,7 +25,7 @@ public class Sections {
 	private static final String SAME_UP_DOWN_STATION_ERROR_MESSAGE = "이미 등록된 구간입니다.";
 	private static final String INVALID_MINIMUM_SECTION_COUNT_MESSAGE = "구간이 하나인 노선에서는 제거할 수 없습니다.";
 	private static final int MINIMUM_SECTION_COUNT = 1;
-
+	private static final String SECTION_NOT_FOUND_ERROR_MESSAGE = "구간 정보가 존재하지 않습니다.";
 
 	@OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
@@ -143,13 +143,16 @@ public class Sections {
 	}
 
 	public void remove(Section sectionByUpStation, Section sectionByDownStation) {
-		validateRemoveSection();
+		validateRemoveSection(sectionByUpStation, sectionByDownStation);
 		removeSection(sectionByUpStation, sectionByDownStation);
 	}
 
-	private void validateRemoveSection() {
+	private void validateRemoveSection(Section sectionByUpStation, Section sectionByDownStation) {
 		if (invalidSectionMinimumSize()) {
 			throw new InvalidDataException(INVALID_MINIMUM_SECTION_COUNT_MESSAGE);
+		}
+		if (sectionByUpStation == null && sectionByDownStation == null) {
+			throw new NotFoundException(SECTION_NOT_FOUND_ERROR_MESSAGE);
 		}
 	}
 

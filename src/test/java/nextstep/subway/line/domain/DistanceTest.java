@@ -50,7 +50,7 @@ class DistanceTest {
 	@ValueSource(ints = {1, 2, 3, 4, 5, 6, 7, 8, 9, 10})
 	@DisplayName("거리 뺀 값이 음수일 경우 예외")
 	void subtractDistanceFailTest(int value) {
-		Distance distance1 = Distance.from(0);
+		Distance distance1 = Distance.from(1);
 		Distance distance2 = Distance.from(value);
 
 		assertThatIllegalArgumentException()

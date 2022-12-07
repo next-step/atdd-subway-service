@@ -7,6 +7,8 @@ import static nextstep.subway.utils.SectionAcceptanceUtils.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.List;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -101,7 +103,8 @@ class SectionRemoveAcceptanceTest extends AcceptanceTest {
 
 		// then
 		// FIXME 삭제 로직 확인
-		assertThat(findResponse.jsonPath().getList("stations.id", Long.class)).containsExactly(강남역, 선릉역);
+		List<Long> list = findResponse.jsonPath().getList("stations.id", Long.class);
+		assertThat(list).containsExactly(강남역, 선릉역);
 	}
 
 	/**

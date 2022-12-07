@@ -90,7 +90,7 @@ public class Line extends BaseEntity {
         sections.connect(section, sectionsToUpdate);
     }
 
-    public void removeSection(Section sectionByUpStation, Section SectionByDownStation) {
-        this.sections.remove(sectionByUpStation, SectionByDownStation);
+    public void removeSection(Section sectionByUpStation, Section sectionByDownStation) {
+        this.sections.remove(sectionByUpStation, sectionByDownStation);
     }
 }
