@@ -189,7 +189,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 내_정보_조회_실패(ExtractableResponse<Response> response, String expectedErrorMessage) {
-        String errorMessage = response.body().path("errorMessage").toString();
+        String errorMessage = response.body().path("message").toString();
         assertAll(
                 () -> assertThat(errorMessage).isEqualTo(expectedErrorMessage),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())

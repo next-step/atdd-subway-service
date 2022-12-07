@@ -111,7 +111,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     private void 로그인_실패(ExtractableResponse<Response> response, String expectedErrorMessage) {
-        String errorMessage = response.body().path("errorMessage").toString();
+        String errorMessage = response.body().path("message").toString();
         assertAll(
                 () -> assertThat(errorMessage).isEqualTo(expectedErrorMessage),
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value())

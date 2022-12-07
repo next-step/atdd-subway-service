@@ -118,7 +118,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     private void 즐겨찾기_조회되지_않음(ExtractableResponse<Response> response, String expectedErrorMessage) {
-        String errorMessage = response.body().path("errorMessage").toString();
+        String errorMessage = response.body().path("message").toString();
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
