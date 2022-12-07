@@ -4,7 +4,6 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -16,10 +15,10 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
-    @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
-    private List<Section> sections = new ArrayList<>();
+    @Embedded
+    private Sections sections = new Sections();
 
-    public Line() {
+    protected Line() {
     }
 
     public Line(String name, String color) {
@@ -50,7 +49,27 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public List<Section> getSections() {
-        return sections;
+    public List<Station> getStations() {
+        return sections.getStations();
+    }
+
+    public void addSection(Section section) {
+        validation(section);
+        sections.add(section);
+    }
+
+    private void validation(Section section) {
+        if (section.isExistsSections(getStations())) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!section.checkAnyIncludeStation(getStations())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+
+    }
+
+    public void removeStation(Station station) {
+        sections.removeStation(station);
     }
 }
