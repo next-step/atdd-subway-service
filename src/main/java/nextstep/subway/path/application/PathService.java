@@ -31,7 +31,9 @@ public class PathService {
         Station targetStation = findStationById(targetId);
         List<Line> lines = lineRepository.findAll();
         ShortestPath shortestPath = new PathFinder(lines).getShortestPath(sourceStation, targetStation);
-        FareCalculator fareCalculator = new FareCalculator(Lines.of(lines),shortestPath,AgePolicy.valueOfAge(age));
+        int lineFare = Lines.of(lines).getMaxFareByStations(shortestPath.getStations());
+        int distanceFare = new DistanceFare(shortestPath.getDistance()).getFare();
+        FareCalculator fareCalculator = new FareCalculator(lineFare,distanceFare,AgePolicy.valueOfAge(age));
         return new PathResponse(shortestPath,fareCalculator);
     }
 
