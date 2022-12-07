@@ -2,6 +2,7 @@ package nextstep.subway.favorite.ui;
 
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.favorite.application.FavoriteService;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import org.springframework.http.ResponseEntity;
