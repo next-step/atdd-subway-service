@@ -7,6 +7,7 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Optional;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
@@ -79,7 +80,7 @@ class PathServiceTest {
         given(sectionRepository.findAll()).willReturn(Arrays.asList(강남_교대, 교대_강남, 교대_남부, 남부_양재));
 
         //when
-        PathResponse paths = pathService.findPaths(1L, 2L);
+        PathResponse paths = pathService.findPaths(1L, 2L, new LoginMember());
 
         //then
         assertAll(
@@ -95,7 +96,7 @@ class PathServiceTest {
     @Test
     void same_source_target() {
         //when & then
-        assertThatThrownBy(() -> pathService.findPaths(1L, 1L))
+        assertThatThrownBy(() -> pathService.findPaths(1L, 1L, new LoginMember()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -113,7 +114,7 @@ class PathServiceTest {
         given(sectionRepository.findAll()).willReturn(Arrays.asList(강남_교대, 교대_강남, 교대_남부, 남부_양재, 인터_동춘));
 
         //when & then
-        assertThatThrownBy(() -> pathService.findPaths(1L, 2L))
+        assertThatThrownBy(() -> pathService.findPaths(1L, 2L, new LoginMember()))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -121,7 +122,7 @@ class PathServiceTest {
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 IllegalArgumentException 이 발생한다.")
     @Test
     void none_station() {
-        assertThatThrownBy(() -> pathService.findPaths(1L, 2L))
+        assertThatThrownBy(() -> pathService.findPaths(1L, 2L, new LoginMember()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }
