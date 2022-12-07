@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.ErrorMessage;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -21,7 +22,8 @@ public class MemberService {
     }
 
     public Member findMember(Long id) {
-        return memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.DO_NOT_EXIST_MEMBER_ID.getMessage()));
     }
 
     public MemberResponse findMemberResponse(Long id) {
@@ -29,8 +31,7 @@ public class MemberService {
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
-        member.update(param.toMember());
+        findMember(id).update(param.toMember());
     }
 
     public void deleteMember(Long id) {
