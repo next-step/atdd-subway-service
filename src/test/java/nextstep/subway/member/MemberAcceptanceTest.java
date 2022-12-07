@@ -7,6 +7,7 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -23,6 +24,12 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+
+    @Override
+    @BeforeEach
+    public void setUp() {
+        super.setUp();
+    }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -63,13 +70,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         //회원정보 수정
         //when
         ExtractableResponse<Response> updateMyInformationResponse =
-                내_정보_수정_요청(retrieveMyInformationResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE, token);
+                내_정보_수정_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE, token);
         //then
         내_정보_수정됨(updateMyInformationResponse);
 
         //회원정보 삭제
         //when
-        ExtractableResponse<Response> deleteMyInformationResponse = 내_정보_삭제_요청(updateMyInformationResponse, token);
+        ExtractableResponse<Response> deleteMyInformationResponse = 내_정보_삭제_요청(token);
         //then
         내_정보_삭제됨(deleteMyInformationResponse);
     }
@@ -149,8 +156,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private ExtractableResponse<Response> 내_정보_수정_요청(ExtractableResponse<Response> response,
-                                                     String email, String password, int age, String token) {
+    private ExtractableResponse<Response> 내_정보_수정_요청(String email, String password, int age, String token) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
@@ -163,7 +169,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 내_정보_삭제_요청(ExtractableResponse<Response> response, String token) {
+    private static ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
