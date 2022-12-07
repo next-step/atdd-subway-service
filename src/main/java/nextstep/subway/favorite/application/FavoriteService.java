@@ -10,6 +10,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.favorite.exception.NoFavoriteException;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
@@ -43,5 +44,13 @@ public class FavoriteService {
             .getFavoritePairs().stream()
             .map(FavoriteResponse::of)
             .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void removeFavorite(Long favoriteId, Long memberId) {
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+            .orElseThrow(() -> new NoFavoriteException(favoriteId));
+        Member member = memberService.findMemberById(memberId);
+        member.removeFavorite(favorite);
     }
 }

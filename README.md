@@ -67,4 +67,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     - [x] `@AuthenticationPrincipal` 과 `AuthenticationPrincipalArgumentResolver` 활용하기
 - [ ] 인증 - 즐겨찾기 기능 완성하기
   - [x] 즐겨찾기 생성/목록조회/삭제 인수테스트
-  - [ ] 즐겨찾기 생성/목록조회/삭제 기능구현
+  - [x] 즐겨찾기 생성/목록조회/삭제 기능구현
+  - [ ] `Favorites`, `Member` 도메인 테스트 코드

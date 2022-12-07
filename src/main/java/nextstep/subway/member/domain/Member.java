@@ -12,6 +12,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.Favorites;
+import nextstep.subway.member.exception.NotOwnerException;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -72,4 +73,16 @@ public class Member extends BaseEntity {
         this.favorites.add(favorite);
         return favorite;
     }
+
+    public void removeFavorite(Favorite favorite) {
+        if (isNotOwnerOfFavorite(favorite)) {
+            throw new NotOwnerException();
+        }
+        this.favorites.delete(favorite);
+    }
+
+    private boolean isNotOwnerOfFavorite(Favorite favorite) {
+        return !this.id.equals(favorite.getMember().getId());
+    }
+
 }

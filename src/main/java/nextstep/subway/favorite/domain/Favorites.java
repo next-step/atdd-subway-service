@@ -26,4 +26,8 @@ public class Favorites {
             .map(FavoritePair::of)
             .collect(toList());
     }
+
+    public void delete(Favorite favorite) {
+        this.favorites.remove(favorite);
+    }
 }
