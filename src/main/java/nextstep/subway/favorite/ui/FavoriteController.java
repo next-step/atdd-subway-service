@@ -33,6 +33,6 @@ public class FavoriteController {
 
     @GetMapping("/favorites")
     public ResponseEntity<List<FavoriteResponse>> findFavorites(@AuthenticationPrincipal LoginMember loginMember) {
-        return ResponseEntity.ok(favoriteService.findAllByMemberId(loginMember.getId()));
+        return ResponseEntity.ok(favoriteService.findByMember(loginMember.getId()));
     }
 }
