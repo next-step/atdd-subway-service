@@ -1,10 +1,10 @@
 package nextstep.subway.path.domain;
 
-import static nextstep.subway.path.domain.Fare.ADDITIONAL_FARE;
-import static nextstep.subway.path.domain.Fare.MIDDLE_SECTOR_CHARGE_DISTANCE;
-import static nextstep.subway.path.domain.Fare.MIDDLE_DISTANCE;
-import static nextstep.subway.path.domain.Fare.HIGH_SECTOR_CHARGE_DISTANCE;
-import static nextstep.subway.path.domain.Fare.HIGH_DISTANCE;
+import static nextstep.subway.path.domain.FareDistance.fareConstant.ADDITIONAL_FARE;
+import static nextstep.subway.path.domain.FareDistance.fareConstant.HIGH_DISTANCE;
+import static nextstep.subway.path.domain.FareDistance.fareConstant.HIGH_SECTOR_CHARGE_DISTANCE;
+import static nextstep.subway.path.domain.FareDistance.fareConstant.MIDDLE_DISTANCE;
+import static nextstep.subway.path.domain.FareDistance.fareConstant.MIDDLE_SECTOR_CHARGE_DISTANCE;
 
 import java.util.Arrays;
 import java.util.function.Function;
@@ -37,5 +37,12 @@ public enum FareDistance {
         return (int) ((Math.ceil(((int)distance - 1) / chargingDistance) + 1) * ADDITIONAL_FARE);
     }
 
+    public static class fareConstant {
+        public static final int MIDDLE_DISTANCE = 10;
+        public static final int HIGH_DISTANCE = 50;
+        public static final int ADDITIONAL_FARE = 100;
+        public static final int MIDDLE_SECTOR_CHARGE_DISTANCE = 5;
+        public static final int HIGH_SECTOR_CHARGE_DISTANCE = 8;
+    }
 
 }
