@@ -5,6 +5,8 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 class FavoriteTest {
 
     @DisplayName("즐겨찾기를 생성한다.")
