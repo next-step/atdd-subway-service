@@ -1,6 +1,8 @@
 package nextstep.subway.auth.domain;
 
-public class NonLoginMember extends LoginMember {
+import nextstep.subway.member.domain.Member;
+
+public class NonLoginMember extends Member {
     private final Long id;
     private final String email;
     private final Integer age;
