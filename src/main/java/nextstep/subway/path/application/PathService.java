@@ -3,8 +3,12 @@ package nextstep.subway.path.application;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.amount.domain.Amount;
+import nextstep.subway.amount.domain.AmountPolicy;
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Stations;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -29,6 +33,13 @@ public class PathService {
 
         Path path = new PathFinder(lines.getStations(), lines.getSections()).findPath(sourceStation, targetStation);
 
-        return PathResponse.from(path);
+        Stations stations = path.getStations();
+        Distance distance = path.getDistance();
+
+        Lines pathLines = lines.findPathLines(stations);
+        Amount defaultAmount = AmountPolicy.valueOf(distance).calculateAmount(distance);
+        Amount amount = defaultAmount.sum(pathLines.maxAmount());
+
+        return PathResponse.of(stations, distance, amount);
     }
 }

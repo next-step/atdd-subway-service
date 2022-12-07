@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import java.util.Objects;
 
-import nextstep.subway.amount.domain.AmountPolicy;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Stations;
 
@@ -23,12 +22,8 @@ public class Path {
         return stations;
     }
 
-    public int getDistanceValue() {
-        return distance.value();
-    }
-
-    public long getAmountValue() {
-        return AmountPolicy.valueOf(distance).calculateAmount(distance).value();
+    public Distance getDistance() {
+        return distance;
     }
 
     @Override

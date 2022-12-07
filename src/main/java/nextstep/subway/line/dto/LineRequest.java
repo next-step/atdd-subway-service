@@ -9,16 +9,18 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
+    private long amount;
 
     public LineRequest() {
     }
 
-    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance) {
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance, long amount) {
         this.name = name;
         this.color = color;
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+        this.amount = amount;
     }
 
     public String getName() {
@@ -41,13 +43,18 @@ public class LineRequest {
         return distance;
     }
 
+    public long getAmount() {
+        return amount;
+    }
+
     public Line toLine(Station upStation, Station downStation) {
         return new Line(
             name,
             color,
             upStation,
             downStation,
-            distance
+            distance,
+            amount
         );
     }
 }

@@ -2,8 +2,14 @@ package nextstep.subway.amount.domain;
 
 import java.util.Objects;
 
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Amount {
-    private final long amount;
+    private long amount;
+
+    protected Amount() {
+    }
 
     private Amount(long amount) {
         this.amount = amount;
@@ -11,6 +17,14 @@ public class Amount {
 
     public static Amount from(long amount) {
         return new Amount(amount);
+    }
+
+    public static Amount empty() {
+        return new Amount(0L);
+    }
+
+    public Amount sum(Amount other) {
+        return new Amount(this.amount + other.amount);
     }
 
     public long value() {

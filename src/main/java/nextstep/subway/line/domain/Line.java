@@ -7,10 +7,8 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
 import nextstep.subway.BaseEntity;
+import nextstep.subway.amount.domain.Amount;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -21,6 +19,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    @Embedded
+    private Amount amount = Amount.empty();
 
     @Embedded
     private final Sections sections = new Sections();
@@ -34,9 +34,13 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
-        this.name = name;
-        this.color = color;
+        this(name, color);
         sections.add(Section.of(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, long amount) {
+        this(name, color, upStation, downStation, distance);
+        this.amount = Amount.from(amount);
     }
 
     public void update(String name, String color) {
@@ -51,6 +55,10 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         sections.removeStation(station);
+    }
+
+    public boolean isPathLine(Stations pathStations) {
+        return getSections().isPathSections(pathStations);
     }
 
     public Long getId() {
@@ -71,5 +79,9 @@ public class Line extends BaseEntity {
 
     public Stations getStations() {
         return this.sections.toStations();
+    }
+
+    public Amount getAmount() {
+        return this.amount;
     }
 }

@@ -197,4 +197,27 @@ class SectionsTest {
         assertThatThrownBy(() -> sections.removeStation(왕십리))
             .isInstanceOf(IllegalStateException.class);
     }
+
+    @DisplayName("경로 포함 구간 여부 - 포함")
+    @Test
+    void isPathSections() {
+        // given
+        Stations pathStations = Stations.from(Arrays.asList(왕십리, 신당));
+
+        // when
+        // then
+        assertThat(sections.isPathSections(pathStations)).isTrue();
+    }
+
+    @DisplayName("경로 포함 구간 여부 - 미포함")
+    @Test
+    void isPathSections_failed() {
+        // given
+        Station 청량리 = Station.of(5L, "청량리");
+        Stations pathStations = Stations.from(Arrays.asList(왕십리, 청량리));
+
+        // when
+        // then
+        assertThat(sections.isPathSections(pathStations)).isFalse();
+    }
 }

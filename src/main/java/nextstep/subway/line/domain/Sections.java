@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -154,5 +155,11 @@ public class Sections {
 
     public List<Section> getList() {
         return Collections.unmodifiableList(this.sections);
+    }
+
+    public boolean isPathSections(Stations pathStations) {
+        return sections.stream()
+            .map(section -> Arrays.asList(section.getUpStation(), section.getDownStation()))
+            .anyMatch(pathStations::containsAll);
     }
 }

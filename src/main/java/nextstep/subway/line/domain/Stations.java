@@ -32,6 +32,10 @@ public class Stations {
         return stations.contains(station);
     }
 
+    public boolean containsAll(List<Station> stations) {
+        return this.stations.containsAll(stations);
+    }
+
     public boolean isEmpty() {
         return stations.isEmpty();
     }
