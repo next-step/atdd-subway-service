@@ -55,7 +55,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @TestFactory
     Stream<DynamicNode> manageMyFavorite() {
         return Stream.of(
-            dynamicTest("즐겨찾기 생성을 요청",this::create_favorite)
+            dynamicTest("즐겨찾기 생성을 요청",this::create_favorite),
+            dynamicTest("즐겨찾기 목록 조회 요청", this::view_favorite)
         );
     }
 
@@ -63,6 +64,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(accessToken, 강남역, 양재역);
 
         즐겨찾기_생성됨(response);
+    }
+
+
+    private void view_favorite() {
+        ExtractableResponse<Response> response = 즐겨찾기_조회_요청(accessToken);
+
+        즐겨찾기_조회됨(response, 강남역, 양재역);
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse sourceStation,
@@ -80,5 +88,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_조회_요청(String accessToken) {
+        return RestAssured
+            .given().log().all()
+            .auth().oauth2(accessToken)
+            .when().get("/favorites")
+            .then().log().all()
+            .extract();
+    }
+
+    private void 즐겨찾기_조회됨(ExtractableResponse<Response> response,
+        StationResponse source, StationResponse target) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+
+        List<FavoriteResponse> favoriteResponses = response.jsonPath().getList(".", FavoriteResponse.class);
+        assertThat(favoriteResponses.size()).isEqualTo(1);
+
+        FavoriteResponse favoriteResponse = favoriteResponses.get(0);
+        assertThat(favoriteResponse.getId()).isNotNull();
+        assertThat(favoriteResponse.getSource().getName()).isEqualTo(source.getName());
+        assertThat(favoriteResponse.getTarget().getName()).isEqualTo(target.getName());
     }
 }
