@@ -30,24 +30,13 @@ public class PathService {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
         List<Line> lines = lineRepository.findAll();
-        PathFinder pathFinder = new PathFinder(lines);
-        ShortestPath shortestPath = pathFinder.getShortestPath(sourceStation, targetStation);
-        Line line = findLine(Lines.of(lines), shortestPath.getStations());
-        return new PathResponse(shortestPath.getStations(), shortestPath.getDistance(), findFare(line, shortestPath.getDistance(), age));
+        ShortestPath shortestPath = new PathFinder(lines).getShortestPath(sourceStation, targetStation);
+        FareCalculator fareCalculator = new FareCalculator(Lines.of(lines),shortestPath,AgePolicy.valueOfAge(age));
+        return new PathResponse(shortestPath,fareCalculator);
     }
 
     private Station findStationById(Long id) {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(NONE_EXISTS_STATION));
     }
-
-    private Line findLine(Lines lines, List<Station> stations) {
-        return lines.findMaxFareLineByStations(stations);
-    }
-
-    private int findFare(Line line, int distance, int age) {
-        FareCalculator fareCalculator = new FareCalculator(line, new DistanceFare(distance), AgePolicy.valueOfAge(age));
-        return fareCalculator.getCalculcate();
-    }
-
 }

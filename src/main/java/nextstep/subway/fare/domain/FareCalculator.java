@@ -1,19 +1,23 @@
 package nextstep.subway.fare.domain;
 
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.ShortestPath;
 
 public class FareCalculator {
-    private Line line;
-    private DistanceFare distanceFare;
+    private Lines lines;
+    private ShortestPath shortestPath;
     private AgePolicy agePolicy;
 
-    public FareCalculator(Line line, DistanceFare distanceFare, AgePolicy agePolicy) {
-        this.line = line;
-        this.distanceFare = distanceFare;
+    public FareCalculator(Lines lines, ShortestPath shortestPath, AgePolicy agePolicy) {
+        this.lines = lines;
+        this.shortestPath = shortestPath;
         this.agePolicy = agePolicy;
     }
 
     public int getCalculcate() {
-        return agePolicy.getFare(distanceFare.getFare() + line.getFare());
+        int lineFare = lines.getMaxFareByStations(shortestPath.getStations());
+        int distanceFare = new DistanceFare(shortestPath.getDistance()).getFare();
+        return agePolicy.getFare(lineFare + distanceFare);
     }
 }
+
