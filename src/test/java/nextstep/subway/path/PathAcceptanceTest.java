@@ -19,6 +19,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.amount.domain.Amount;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.LineId;
 import nextstep.subway.line.dto.LineResponse;
@@ -106,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 미연결_역간_최단_경로_조회_응답 = 최단_경로_조회_요청(서대구, 동대구);
 
         // then
-        최단_경로_조회_성공(미연결_역간_최단_경로_조회_응답, distance);
+        최단_경로_조회_성공(미연결_역간_최단_경로_조회_응답, distance, Amount.from(1250));
     }
 
     /**
@@ -142,9 +143,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Then 최단 경로 조회 성공
      * When 환승역 아닌 역간 최단 경로 조회
      * Then 최단 경로 조회 성공
+     * And 지하철 이용 요금 함께 응답
      * Given 지름길 호선 개통
      * When 지름길 호선 연결 역간 최단 경로 조회
-     * Then 최단 경로 조회 성공
+     * Then 최단 경로 조회 성공(거리, 요금)
      */
     @DisplayName("최단 경로가 존재하는 경우 최단 경로 조회 성공")
     @Test
@@ -153,13 +155,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 환승역간_최단_경로_조회 = 최단_경로_조회_요청(왕십리, DDP);
 
         // then
-        최단_경로_조회_성공(환승역간_최단_경로_조회, Distance.from(20));
+        최단_경로_조회_성공(환승역간_최단_경로_조회, Distance.from(20), Amount.from(1450));
 
         // when
         ExtractableResponse<Response> 비환승역간_최단_경로_조회 = 최단_경로_조회_요청(청구, 신당);
 
         // then
-        최단_경로_조회_성공(비환승역간_최단_경로_조회, Distance.from(20));
+        최단_경로_조회_성공(비환승역간_최단_경로_조회, Distance.from(20), Amount.from(1450));
 
         // Given
         지름길_노선_개통(왕십리, DDP, Distance.from(1));
@@ -168,14 +170,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> 지름길_노선_최단_경로_조회 = 최단_경로_조회_요청(왕십리, DDP);
 
         // then
-        최단_경로_조회_성공(지름길_노선_최단_경로_조회, Distance.from(1));
-
+        최단_경로_조회_성공(지름길_노선_최단_경로_조회, Distance.from(1), Amount.from(1250));
     }
 
-    private void 최단_경로_조회_성공(ExtractableResponse<Response> response, Distance expectedDistance) {
+    private void 최단_경로_조회_성공(ExtractableResponse<Response> response, Distance expectedDistance, Amount expectedAmount) {
         assertAll(
             () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(expectedDistance.value())
+            () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(expectedDistance.value()),
+            () -> assertThat(response.jsonPath().getInt("amount")).isEqualTo(expectedAmount.value())
         );
     }
 
