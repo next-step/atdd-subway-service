@@ -54,14 +54,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         MemberRequest updateMember = new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
-        ExtractableResponse<Response> membersMeResponse = 나의_정보_조회_요청(토큰_발급(EMAIL, PASSWORD));
+        ExtractableResponse<Response> membersMeResponse = 나의_정보_조회_요청(로그인_정상_토큰_발급(EMAIL, PASSWORD));
         회원_정보_조회됨(membersMeResponse, EMAIL, AGE);
 
-        ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(토큰_발급(EMAIL, PASSWORD), updateMember);
+        ExtractableResponse<Response> updateResponse = 나의_정보_수정_요청(로그인_정상_토큰_발급(EMAIL, PASSWORD), updateMember);
         회원_정보_수정됨(updateResponse);
         수정된_정보로_로그인_정상적으로됨(updateMember);
 
-        ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(토큰_발급(NEW_EMAIL, NEW_PASSWORD));
+        ExtractableResponse<Response> deleteResponse = 나의_정보_삭제_요청(로그인_정상_토큰_발급(NEW_EMAIL, NEW_PASSWORD));
         회원_삭제됨(deleteResponse);
     }
 
@@ -149,6 +149,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+        assertThat(response.header("Location")).isNotBlank();
     }
 
     public static void 회원_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
@@ -166,7 +167,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    private String 토큰_발급(String email, String password) {
+    public static String 로그인_정상_토큰_발급(String email, String password) {
         return 로그인_요청(email, password).as(TokenResponse.class).getAccessToken();
     }
 }

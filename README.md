@@ -66,4 +66,5 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] `/members/me` 요청 시 토큰을 확인하여 로그인 정보를 받아올 수 있도록 하기
     - [x] `@AuthenticationPrincipal` 과 `AuthenticationPrincipalArgumentResolver` 활용하기
 - [ ] 인증 - 즐겨찾기 기능 완성하기
-  - [ ] 즐겨찾기 생성/목록조회/삭제 인수 테스트 및 기능 구현
+  - [x] 즐겨찾기 생성/목록조회/삭제 인수테스트
+  - [ ] 즐겨찾기 생성/목록조회/삭제 기능구현
