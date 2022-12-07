@@ -12,16 +12,13 @@ public class Fare {
     }
 
     public static Fare of(double distance, Lines lines, AgeDiscountPolicy ageDiscountPolicy) {
-        return new Fare(calFare(distance, lines, ageDiscountPolicy));
+        int calculatedFare = ageDiscountPolicy.discount(
+                BASIC_FARE + FareDistance.calAdditionalFare(distance) + lines.getMaxAdditionalFare());
+        return new Fare(calculatedFare);
     }
 
     public int value() {
         return fare;
     }
 
-    private static int calFare(double distance, Lines lines, AgeDiscountPolicy ageDiscountPolicy) {
-
-        return ageDiscountPolicy.discount(
-                BASIC_FARE + FareDistance.calAdditionalFare(distance) + lines.getMaxAdditionalFare());
-    }
 }
