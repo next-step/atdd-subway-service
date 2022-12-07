@@ -27,7 +27,7 @@ public class Lines {
                 .collect(Collectors.toList());
     }
 
-    public int findMaxFareLineByStations(List<Station> stations) {
+    public int getMaxFareByStations(List<Station> stations) {
         return findLinesByStations(stations)
                 .stream().max(Comparator.comparingInt(Line::getFare))
                 .map(line -> line.getFare())

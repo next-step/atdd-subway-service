@@ -43,7 +43,7 @@ public class LinesTest {
         Lines lines = Lines.of(Arrays.asList(칠호선, 오호선, 구호선));
         List<Station> stations = Arrays.asList(강동구청역, 천호역, 강동역, 둔촌역, 올림픽공원역);
 
-        int fare = lines.findMaxFareLineByStations(stations);
+        int fare = lines.getMaxFareByStations(stations);
 
         assertThat(fare).isEqualTo(4000);
     }
