@@ -49,7 +49,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        로그인_성공됨(response);
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
@@ -59,16 +59,17 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_요청(EMAIL, WRONG_PASSWORD);
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        로그인_실패됨(response);
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
         //when
-        로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+        로그인_요청(EMAIL, PASSWORD);
+
         //then
-        assertThat(내_정보_조회_요청(WRONG_TOKEN).statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        토큰_오류_발생됨();
     }
 
     public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
@@ -85,5 +86,18 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static String 로그인_후_토큰_조회(String email, String password) {
         return 로그인_요청(email, password).as(TokenResponse.class).getAccessToken();
+    }
+
+    private void 로그인_성공됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    private void 로그인_실패됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    private void 토큰_오류_발생됨() {
+        assertThat(내_정보_조회_요청(WRONG_TOKEN).statusCode())
+                .isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 }
