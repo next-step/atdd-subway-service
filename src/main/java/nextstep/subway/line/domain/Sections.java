@@ -28,6 +28,10 @@ public class Sections {
         return new Sections(new ArrayList<>());
     }
 
+    public static Sections from(List<Section> sections) {
+        return new Sections(sections);
+    }
+
     public List<Section> getSections() { return Collections.unmodifiableList(sections); }
 
     public void add(Section section) {
@@ -145,6 +149,14 @@ public class Sections {
             int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
             this.add(new Section(upLineStation.get().getLine(), newUpStation, newDownStation, newDistance));
         }
+    }
+
+    public Lines findLinesFrom(List<Station> stations) {
+        return Lines.of(sections.stream()
+                .filter(it -> stations.contains(it.getUpStation()) && stations.contains(it.getDownStation()))
+                .map(Section::getLine)
+                .distinct()
+                .collect(Collectors.toList()));
     }
 
     private void validSectionSize() {
