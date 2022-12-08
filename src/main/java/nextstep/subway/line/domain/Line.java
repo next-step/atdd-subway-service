@@ -23,6 +23,8 @@ public class Line extends BaseEntity {
     @Embedded
     private SectionLineUp sectionLineUp = new SectionLineUp();
 
+    private Integer extraCharge;
+
     public Line() {
     }
 
@@ -35,6 +37,11 @@ public class Line extends BaseEntity {
         this.name = name;
         this.color = color;
         sectionLineUp.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, int extraCharge) {
+        this(name, color, upStation, downStation, distance);
+        this.extraCharge = extraCharge;
     }
 
     public void update(String name, String color) {
