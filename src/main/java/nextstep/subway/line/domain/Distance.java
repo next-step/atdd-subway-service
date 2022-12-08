@@ -23,6 +23,10 @@ public class Distance {
 		return new Distance(value);
 	}
 
+	public static Distance from(double value) {
+		return new Distance((int) value);
+	}
+
 	public int value() {
 		return value;
 	}
