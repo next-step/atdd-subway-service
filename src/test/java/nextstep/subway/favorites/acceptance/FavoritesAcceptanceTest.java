@@ -188,4 +188,5 @@ public class FavoritesAcceptanceTest extends AcceptanceTest {
     private void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
+
 }

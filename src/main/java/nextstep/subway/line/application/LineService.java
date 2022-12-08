@@ -17,7 +17,7 @@ import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class LineService {
     private final LineRepository lineRepository;
     private final StationService stationService;
@@ -27,6 +27,7 @@ public class LineService {
         this.stationService = stationService;
     }
 
+    @Transactional
     public LineResponse saveLine(LineRequest request) {
         Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(),
                 stationService.findStationById(request.getUpStationId()),
@@ -56,14 +57,17 @@ public class LineService {
         return LineResponse.of(persistLine);
     }
 
+    @Transactional
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         findLineById(id).update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
         lineRepository.deleteById(id);
     }
 
+    @Transactional
     public void addLineStation(Long lineId, SectionRequest request) {
         Line line = findLineById(lineId);
         line.addSection(new Section(line,
@@ -72,6 +76,7 @@ public class LineService {
                 new Distance(request.getDistance())));
     }
 
+    @Transactional
     public void removeLineStation(Long lineId, Long stationId) {
         findLineById(lineId).removeStation(stationService.findStationById(stationId));
     }

@@ -15,7 +15,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional
+@Transactional(readOnly = true)
 public class FavoritesService {
 
     private final FavoritesRepository favoritesRepository;
@@ -28,6 +28,7 @@ public class FavoritesService {
         this.memberService = memberService;
     }
 
+    @Transactional
     public FavoritesResponse createFavorites(Long memberId, FavoritesRequest param) {
         Favorites favorites = favoritesRepository.save(new Favorites(stationService.findStationById(param.getSourceStationId()),
                 stationService.findStationById(param.getTargetStationId()),
@@ -36,18 +37,23 @@ public class FavoritesService {
     }
 
     public List<FavoritesResponse> retrieveFavoritesList(Long memberId) {
-        return favoritesRepository.findByMember(memberService.findMember(memberId))
-                .orElse(Arrays.asList())
-                .stream().map(FavoritesResponse::of)
+        List<Favorites> favorites = favoritesRepository.findByMember(memberService.findMember(memberId))
+                .orElse(Arrays.asList());
+        return favorites.stream().map(FavoritesResponse::of)
                 .collect(Collectors.toList());
     }
 
+    @Transactional
     public void deleteMember(Long memberId, Long favoritesId) {
         List<Favorites> favoritesList = favoritesRepository.findByMember(memberService.findMember(memberId))
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.DO_NOT_EXIST_FAVORITES_LIST.getMessage()));
-        if(favoritesList.stream().map(Favorites::getId).noneMatch(favoritesId::equals)) {
+        if(isNotFavorites(favoritesList, favoritesId)) {
             throw new IllegalArgumentException(ErrorMessage.DO_NOT_EXIST_FAVORITES_ID.getMessage());
         }
         favoritesRepository.deleteById(favoritesId);
+    }
+
+    private boolean isNotFavorites(List<Favorites> favoritesList, Long favoritesId) {
+        return favoritesList.stream().map(Favorites::getId).noneMatch(favoritesId::equals);
     }
 }
