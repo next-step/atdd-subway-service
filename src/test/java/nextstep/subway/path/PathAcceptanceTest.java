@@ -112,6 +112,29 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(path.getDistance()).isEqualTo(20);
     }
 
+    /**
+     * given: 지하철역/노선/구간 정보가 등록되어 있고,
+     * when: 지하철 구간 최단경로를 조회하면
+     * then: 구간 정보와 함께 요금도 조회된다.
+     */
+    @Test
+    @DisplayName("역과 역 간 최단경로 조회 - 요금포함")
+    void shortPathWithChargeTest(){
+        // given - beforeEach
+
+        // when
+        ExtractableResponse<Response> 경로_요청_결과 = 경로_요청(광교역, 잠실역);
+
+        // then
+        PathResponse path = 경로_요청_결과.as(PathResponse.class);
+        List<String> stationNames = 경로_지하철_역_이름(path);
+        assertThat(stationNames).containsExactly(
+                "광교역", "수지구청역", "미금역", "정자역", "판교역", "강남역", "역삼역", "종합운동장역", "잠실새내역", "잠실역"
+        );
+        assertThat(path.getDistance()).isEqualTo(60);
+        assertThat(path.getCharge()).isEqualTo(2250);
+    }
+
     private ExtractableResponse<Response> 경로_요청(StationResponse source, StationResponse target) {
         return RestAssured.given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
