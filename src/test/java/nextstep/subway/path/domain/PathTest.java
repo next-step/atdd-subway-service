@@ -12,6 +12,8 @@ import org.junit.jupiter.api.Test;
 
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.station.domain.Stations;
 
 @DisplayName("경로")
 class PathTest {
@@ -21,20 +23,20 @@ class PathTest {
 	void createSectionTest() {
 		assertThatNoException()
 			.isThrownBy(() -> Path.of(
-				Arrays.asList(
-					station(Name.from("강남역")),
-					station(Name.from("양재역"))),
+				Stations.from(
+					Arrays.asList(station(Name.from("강남역")), station(Name.from("양재역")))
+				),
 				Distance.from(5),
-				Collections.singletonList(
-					section("강남역", "양재역", 10)
-				)));
+				Sections.from(
+					Collections.singletonList(section("강남역", "양재역", 10)))
+			));
 	}
 
 	@DisplayName("지하철 역 경로가 없을 시 예외 발생")
 	@Test
 	void createSectionFailTest() {
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> Path.of(null, Distance.from(5), Collections.emptyList()));
+			.isThrownBy(() -> Path.of(null, Distance.from(5), Sections.from(Collections.emptyList())));
 	}
 
 	@DisplayName("거리가 없을 시 예외 발생")
@@ -42,13 +44,12 @@ class PathTest {
 	void createSectionFailTest2() {
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> Path.of(
-				Arrays.asList(
-					station(Name.from("강남역")),
-					station(Name.from("양재역"))),
+				Stations.from(
+					Arrays.asList(station(Name.from("강남역")), station(Name.from("양재역")))
+				),
 				null,
-				Collections.singletonList(
-					section("강남역", "양재역", 10)
-				)));
+				Sections.from(
+					Collections.singletonList(section("강남역", "양재역", 10)))));
 	}
 
 }

@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -16,6 +17,7 @@ import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Embeddable
 public class Sections {
@@ -47,7 +49,11 @@ public class Sections {
 		return new Sections(sections);
 	}
 
-	public List<Section> getList() {
+	public static Sections empty() {
+		return new Sections(Collections.emptyList());
+	}
+
+	public List<Section> list() {
 		return sections;
 	}
 
@@ -79,7 +85,7 @@ public class Sections {
 			.collect(Collectors.toCollection(LinkedList::new));
 	}
 
-	public List<Station> sortedStations() {
+	public Stations sortedStations() {
 		List<Station> stations = new LinkedList<>();
 		stations.add(firstUpStation());
 
@@ -87,7 +93,7 @@ public class Sections {
 			Station nextStation = sectionByUpStation(stations.get(i)).getDownStation();
 			stations.add(nextStation);
 		}
-		return stations;
+		return Stations.from(stations);
 	}
 
 	private Section sectionByUpStation(Station station) {
@@ -131,11 +137,11 @@ public class Sections {
 	}
 
 	private boolean notIncludeDownStation(Section section) {
-		return !sortedStations().contains(section.getUpStation());
+		return sortedStations().notContains(section.getUpStation());
 	}
 
 	private boolean notIncludeUpStation(Section section) {
-		return !sortedStations().contains(section.getDownStation());
+		return sortedStations().notContains(section.getDownStation());
 	}
 
 	public void add(Section newSection) {
@@ -170,5 +176,28 @@ public class Sections {
 
 	public List<Section> getSections() {
 		return this.sections;
+	}
+
+	public Sections merge(List<Section> sections) {
+		List<Section> mergedSections = new ArrayList<>(this.sections);
+		mergedSections.addAll(sections);
+		return from(mergedSections);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Sections sections1 = (Sections)o;
+		return Objects.equals(sections, sections1.sections);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(sections);
 	}
 }

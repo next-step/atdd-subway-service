@@ -12,6 +12,7 @@ import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineCreateRequest;
@@ -53,8 +54,8 @@ public class LineService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Line> findAll() {
-		return lineRepository.findAll();
+	public Lines findAll() {
+		return Lines.from(lineRepository.findAll());
 	}
 
 	@Transactional(readOnly = true)

@@ -2,14 +2,13 @@ package nextstep.subway.path.dto;
 
 import java.time.LocalDateTime;
 
+import nextstep.subway.station.domain.Station;
+
 public class PathStationResponse {
 
-	private Long id;
-	private String name;
-	private LocalDateTime createdAt;
-
-	private PathStationResponse() {
-	}
+	private final Long id;
+	private final String name;
+	private final LocalDateTime createdAt;
 
 	private PathStationResponse(Long id, String name, LocalDateTime createdAt) {
 		this.id = id;
@@ -21,6 +20,13 @@ public class PathStationResponse {
 		return new PathStationResponse(id, name, createdAt);
 	}
 
+	public static PathStationResponse from(Station station) {
+		return new PathStationResponse(
+			station.getId(),
+			station.name().toString(),
+			station.getCreatedDate());
+	}
+
 	public Long getId() {
 		return id;
 	}
@@ -29,7 +35,4 @@ public class PathStationResponse {
 		return name;
 	}
 
-	public LocalDateTime getCreatedAt() {
-		return createdAt;
-	}
 }

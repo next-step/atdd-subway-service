@@ -17,8 +17,11 @@ import org.junit.jupiter.api.Test;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @DisplayName("경로 탐색")
 class PathNavigatorTest {
@@ -26,6 +29,7 @@ class PathNavigatorTest {
 	private Station 교대역;
 	private Station 남부터미널역;
 	private Station 양재역;
+	private PathNavigator navigator;
 
 	@BeforeEach
 	void setup() {
@@ -33,6 +37,7 @@ class PathNavigatorTest {
 		남부터미널역 = station(Name.from("남부터미널역"));
 		양재역 = station(Name.from("양재역"));
 
+		navigator = PathNavigator.from(Lines.from(Arrays.asList(신분당선(), 이호선(), 삼호선())));
 	}
 
 	/**
@@ -48,45 +53,37 @@ class PathNavigatorTest {
 	@Test
 	void findPathTest() {
 		assertThatNoException()
-			.isThrownBy(() -> PathNavigator.from(Collections.singletonList(신분당선())));
+			.isThrownBy(() -> PathNavigator.from(Lines.from(Collections.singletonList(신분당선()))));
 	}
 
 	@DisplayName("최단 경로를 조회할 노선이 없으면 예외 발생")
 	@Test
 	void findPathFailTest() {
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> PathNavigator.from(Collections.emptyList()));
+			.isThrownBy(() -> PathNavigator.from(Lines.from(Collections.emptyList())));
 	}
 
 	@DisplayName("최단 경로 조회")
 	@Test
 	void findShortestPathTest() {
-		// given
-		PathNavigator navigator = PathNavigator.from(Arrays.asList(신분당선(), 이호선(), 삼호선()));
-
 		// when
 		Path path = navigator.path(교대역, 양재역);
 
 		// then
 		assertAll(
-			() -> assertThat(path.getDistance().value()).isEqualTo(15),
-			() -> assertThat(path.getStations()).containsExactly(
-				교대역,
-				남부터미널역,
-				양재역),
-			() -> assertThat(path.getSections()).containsExactly(
-				section("교대역", "남부터미널역", 5),
-				section("남부터미널역", "양재역", 10)
-			)
+			() -> assertThat(path.distance().value()).isEqualTo(15),
+			() -> assertThat(path.stations()).isEqualTo(
+				Stations.from(Arrays.asList(교대역, 남부터미널역, 양재역))),
+			() -> assertThat(path.sections()).isEqualTo(
+				Sections.from(Arrays.asList(
+					section("교대역", "남부터미널역", 5),
+					section("남부터미널역", "양재역", 10))))
 		);
 	}
 
 	@DisplayName("출발역과 도착역이 같은 경우 예외")
 	@Test
 	void findShortestPathWithSameUpDownStationTest() {
-		// given
-		PathNavigator navigator = PathNavigator.from(Arrays.asList(신분당선(), 이호선(), 삼호선()));
-
 		// when
 		assertThatExceptionOfType(InvalidDataException.class)
 			.isThrownBy(() -> navigator.path(교대역, 교대역))
@@ -97,7 +94,6 @@ class PathNavigatorTest {
 	@Test
 	void findShortestPathWithNotConnectedStationTest() {
 		// given
-		PathNavigator navigator = PathNavigator.from(Arrays.asList(신분당선(), 이호선(), 삼호선()));
 		Station 판교역 = station(Name.from("판교역"));
 
 		// when
@@ -109,9 +105,6 @@ class PathNavigatorTest {
 	@DisplayName("출발역 혹은 도착역이 존재하지 않는 경우 예외")
 	@Test
 	void findShortestPathWithNotExistedStationTest() {
-		// given
-		PathNavigator navigator = PathNavigator.from(Arrays.asList(신분당선(), 이호선(), 삼호선()));
-
 		// when
 		assertThatIllegalArgumentException()
 			.isThrownBy(() -> navigator.path(null, 양재역));

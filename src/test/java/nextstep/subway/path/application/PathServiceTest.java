@@ -18,6 +18,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.PathStationResponse;
@@ -42,7 +43,7 @@ class PathServiceTest {
 		// given
 		Long 출발지 = 1L;
 		Long 도착지 = 2L;
-		when(lineService.findAll()).thenReturn(Collections.singletonList(삼호선()));
+		when(lineService.findAll()).thenReturn(Lines.from(Collections.singletonList(삼호선())));
 		when(stationService.findById(출발지)).thenReturn(station(Name.from("교대역")));
 		when(stationService.findById(도착지)).thenReturn(station(Name.from("양재역")));
 

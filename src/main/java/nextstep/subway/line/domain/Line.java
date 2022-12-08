@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 
 import nextstep.subway.common.domain.BaseEntity;
 import nextstep.subway.common.domain.Name;
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Line extends BaseEntity {
@@ -79,10 +79,10 @@ public class Line extends BaseEntity {
     }
 
     public List<Section> getSections() {
-        return sections.getList();
+        return sections.list();
     }
 
-	public List<Station> allStations() {
+	public Stations allStations() {
         return sections.sortedStations();
 	}
 

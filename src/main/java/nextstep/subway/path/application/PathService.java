@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import org.springframework.stereotype.Service;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathNavigator;
 import nextstep.subway.path.dto.PathRequest;
@@ -35,7 +36,8 @@ public class PathService {
 	}
 
 	private PathNavigator pathNavigator() {
-		return PathNavigator.from(lineService.findAll());
+		Lines lines = lineService.findAll();
+		return PathNavigator.from(lines);
 	}
 
 	private Station station(long request) {

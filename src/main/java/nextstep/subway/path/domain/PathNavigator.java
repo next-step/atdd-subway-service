@@ -12,27 +12,30 @@ import org.springframework.util.Assert;
 
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 public class PathNavigator {
 
 	private final ShortestPathAlgorithm<Station, SectionWeightEdge> shortestPath;
 
-	private PathNavigator(List<Line> lines) {
+	private PathNavigator(Lines lines) {
 		validateLines(lines);
 		shortestPath = shortestPathAlgorithm(lines);
 	}
 
-	public static PathNavigator from(List<Line> lines) {
+	public static PathNavigator from(Lines lines) {
 		return new PathNavigator(lines);
 	}
 
 	public Path path(Station source, Station target) {
 		validateStations(source, target);
 		GraphPath<Station, SectionWeightEdge> graphPath = graphPath(source, target);
-		return Path.of(graphPath.getVertexList(), Distance.from(graphPath.getWeight()),
+		return Path.of(
+			Stations.from(graphPath.getVertexList()),
+			Distance.from(graphPath.getWeight()),
 			sections(graphPath.getEdgeList()));
 	}
 
@@ -52,26 +55,30 @@ public class PathNavigator {
 		}
 	}
 
-	private List<Section> sections(List<SectionWeightEdge> edges) {
-		return edges.stream().map(SectionWeightEdge::section).collect(Collectors.toList());
+	private Sections sections(List<SectionWeightEdge> edges) {
+		return Sections.from(
+			edges.stream()
+				.map(SectionWeightEdge::section)
+				.collect(Collectors.toList())
+		);
 	}
 
-	private Graph<Station, SectionWeightEdge> stationGraph(List<Line> lines) {
+	private Graph<Station, SectionWeightEdge> stationGraph(Lines lines) {
 		WeightedMultigraph<Station, SectionWeightEdge> graph = new WeightedMultigraph<>(SectionWeightEdge.class);
-		lines.forEach(line -> line.allStations().forEach(graph::addVertex));
-		lines.forEach(line -> line.getSections().forEach(section -> {
+		lines.stationList().forEach(graph::addVertex);
+		lines.sectionList().forEach(section -> {
 			SectionWeightEdge edge = SectionWeightEdge.from(section);
 			graph.addEdge(section.getUpStation(), section.getDownStation(), edge);
 			graph.setEdgeWeight(edge, section.getDistance());
-		}));
+		});
 		return graph;
 	}
 
-	private ShortestPathAlgorithm<Station, SectionWeightEdge> shortestPathAlgorithm(List<Line> lines) {
+	private ShortestPathAlgorithm<Station, SectionWeightEdge> shortestPathAlgorithm(Lines lines) {
 		return new DijkstraShortestPath<>(stationGraph(lines));
 	}
 
-	private void validateLines(List<Line> lines) {
+	private void validateLines(Lines lines) {
 		if (lines == null || lines.isEmpty()) {
 			throw new IllegalArgumentException("노선이 존재하지 않습니다.");
 		}

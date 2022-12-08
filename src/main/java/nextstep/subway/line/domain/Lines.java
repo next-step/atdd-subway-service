@@ -4,6 +4,7 @@ import java.util.List;
 
 import io.jsonwebtoken.lang.Assert;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 public class Lines {
 
@@ -23,10 +24,18 @@ public class Lines {
 	}
 
 	public List<Station> stationList() {
-		List<Station> stations = null;
+		Stations stations = Stations.empty();
 		for (Line line : lines) {
-			stations.addAll(line.allStations());
+			stations = stations.merge(line.allStations());
 		}
-		return stations;
+		return stations.list();
+	}
+
+	public List<Section> sectionList() {
+		Sections sections = Sections.empty();
+		for (Line line : lines) {
+			sections = sections.merge(line.getSections());
+		}
+		return sections.list();
 	}
 }
