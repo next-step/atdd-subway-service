@@ -110,10 +110,6 @@ public class Section {
         return this.distance.equals(distance);
     }
 
-    public void addEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.value());
-    }
-
     public Long getId() {
         return id;
     }

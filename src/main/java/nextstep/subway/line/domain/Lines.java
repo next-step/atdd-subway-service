@@ -1,12 +1,11 @@
 package nextstep.subway.line.domain;
 
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
+import java.util.stream.Collectors;
 
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-
-import nextstep.subway.station.domain.Station;
+import nextstep.subway.amount.domain.Amount;
 
 public class Lines {
     private final List<Line> lines;
@@ -19,8 +18,33 @@ public class Lines {
         return new Lines(lines);
     }
 
-    public void addVertexAndEdge(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        lines.forEach(line -> line.addVertexAndEdge(graph));
+    public Stations getStations() {
+        return lines.stream()
+            .map(Line::getStations)
+            .reduce(Stations::mergeDistinct)
+            .orElse(Stations.empty());
+    }
+
+    public Sections getSections() {
+        return lines.stream()
+            .map(Line::getSections)
+            .reduce(Sections::merge)
+            .orElse(Sections.empty());
+    }
+
+    public Amount maxAmount() {
+        return lines.stream()
+            .map(Line::getAmount)
+            .max(Comparator.comparing(Amount::value))
+            .orElse(Amount.empty());
+    }
+
+    public Lines findPathLines(Stations pathStations) {
+        return Lines.from(
+            this.lines.stream()
+                .filter(line -> line.isPathLine(pathStations))
+                .collect(Collectors.toList())
+        );
     }
 
     public List<Line> getList() {

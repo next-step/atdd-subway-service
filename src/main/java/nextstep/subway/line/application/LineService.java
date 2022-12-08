@@ -75,7 +75,7 @@ public class LineService {
         line.removeStation(station);
     }
 
-    public Line findById(Long id) {
+    private Line findById(Long id) {
         return lineRepository.findById(id)
             .orElseThrow(() -> new IllegalArgumentException("해당 노선을 찾을 수 없습니다. id: " + id));
     }

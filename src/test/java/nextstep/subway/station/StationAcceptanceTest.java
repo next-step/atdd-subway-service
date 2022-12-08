@@ -1,21 +1,23 @@
 package nextstep.subway.station;
 
-import io.restassured.RestAssured;
-import io.restassured.response.ExtractableResponse;
-import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
-import nextstep.subway.station.dto.StationRequest;
-import nextstep.subway.station.dto.StationResponse;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
+import static org.assertj.core.api.Assertions.*;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static org.assertj.core.api.Assertions.assertThat;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+
+import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
+import nextstep.subway.AcceptanceTest;
+import nextstep.subway.station.domain.StationId;
+import nextstep.subway.station.dto.StationRequest;
+import nextstep.subway.station.dto.StationResponse;
 
 @DisplayName("지하철역 관련 기능")
 public class StationAcceptanceTest extends AcceptanceTest {
@@ -77,66 +79,67 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return 지하철역_생성_요청(name);
     }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
+    private static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
         StationRequest stationRequest = new StationRequest(name);
 
         return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .body(stationRequest)
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .when().post("/stations")
+            .then().log().all()
+            .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
+    private ExtractableResponse<Response> 지하철역_목록_조회_요청() {
         return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .when().get("/stations")
+            .then().log().all()
+            .extract();
     }
 
-    public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
+    private ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
         String uri = response.header("Location");
 
         return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
+            .given().log().all()
+            .when().delete(uri)
+            .then().log().all()
+            .extract();
     }
 
-    public static void 지하철역_생성됨(ExtractableResponse response) {
+    private void 지하철역_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
         assertThat(response.header("Location")).isNotBlank();
     }
 
-    public static void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
+    private void 지하철역_생성_실패됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
+    private void 지하철역_목록_응답됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 
-    public static void 지하철역_삭제됨(ExtractableResponse<Response> response) {
+    private void 지하철역_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 지하철역_목록_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
+    private void 지하철역_목록_포함됨(ExtractableResponse<Response> response,
+        List<ExtractableResponse<Response>> createdResponses) {
         List<Long> expectedLineIds = createdResponses.stream()
-                .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
-                .collect(Collectors.toList());
+            .map(it -> Long.parseLong(it.header("Location").split("/")[2]))
+            .collect(Collectors.toList());
 
         List<Long> resultLineIds = response.jsonPath().getList(".", StationResponse.class).stream()
-                .map(StationResponse::getId)
-                .collect(Collectors.toList());
+            .map(StationResponse::getId)
+            .collect(Collectors.toList());
 
         assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 
-    public static Long 지하철역_ID_추출(ExtractableResponse<Response> response) {
-        return response.jsonPath().getLong("id");
+    public static StationId 지하철역_ID_추출(ExtractableResponse<Response> response) {
+        return StationId.from(response.jsonPath().getLong("id"));
     }
 }

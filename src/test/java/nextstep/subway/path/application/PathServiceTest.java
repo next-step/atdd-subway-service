@@ -12,6 +12,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
@@ -59,16 +60,18 @@ class PathServiceTest {
         // given
         Long source = 1L;
         Long target = 5L;
+        LoginMember loginMember = new LoginMember();
 
         given(lineService.findAllLines()).willReturn(lines);
         given(stationService.findStationById(source)).willReturn(왕십리);
         given(stationService.findStationById(target)).willReturn(DDP);
 
         // when
-        PathResponse response = pathService.findPath(source, target);
+        PathResponse response = pathService.findPath(loginMember, source, target);
 
         // then
         assertThat(response.getDistance()).isEqualTo(20);
         assertThat(response.getStations()).hasSize(3);
+        assertThat(response.getAmount()).isEqualTo(1450L);
     }
 }

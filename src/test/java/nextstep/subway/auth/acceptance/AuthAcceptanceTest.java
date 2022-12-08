@@ -116,6 +116,5 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     private void 토큰_발급_실패(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
-
     }
 }
