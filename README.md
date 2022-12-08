@@ -37,6 +37,8 @@ npm run dev
 ./gradlew bootRun
 ```
 
+## 1단계 - 인수 테스트 기반 리팩터링
+
 ### 요구사항
 
 - LineService 비즈니스 로직 도메인으로 옮기기
@@ -56,8 +58,6 @@ npm run dev
 - LineSectionAcceptanceTest 리팩터링
   - [X] 시나리오, 흐름을 검증하는 테스트로 리팩터링 하기
     - dynamicTest 활용하여 시나리오 검증
-- [ ] 커스텀 예외 제거
-- 
 
 ```
 Feature: 지하철 구간 관련 기능
@@ -78,6 +78,29 @@ Feature: 지하철 구간 관련 기능
     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
 ```
 
+## 2단계 - 경로 조회 기능
+
+### 요구사항
+
+- [X] 최단 경로 조회 인수 테스트 만들기
+  - PathAcceptanceTest 생성
+- [X] 최단 경로 조회 기능 구현하기
+  - Path 도메인 관련 기능 구현하기
+
+```
+Feature: 지하철 경로 조회
+  Background
+    Given 지하철역 등록되어 있음
+    And 지하철 노선 등록되어 있음
+    And 지하철 노선에 지하철역 등록되어 있음
+  Scenario: 출발역과 도착역 사이 최단 경로 조회
+    When 지하철 경로 조회 요청
+    Then 최단 경로 조회됨
+    When 출발역과 도착역이 연결 안된 경우
+    Then 경로 조회 실패됨
+    When 출발역과 도착역이 같은 경우
+    Then 경로 조회 실패됨
+```
 
 <br>
 

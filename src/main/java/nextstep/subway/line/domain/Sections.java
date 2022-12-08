@@ -72,7 +72,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
+                    .filter(section -> section.getUpStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
@@ -89,7 +89,7 @@ public class Sections {
         while (downStation != null) {
             Station finalDownStation = downStation;
             Optional<Section> nextLineStation = this.sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
+                    .filter(section -> section.getDownStation().equals(finalDownStation))
                     .findFirst();
             if (!nextLineStation.isPresent()) {
                 break;
