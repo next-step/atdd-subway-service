@@ -74,7 +74,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("역과 역 간 최단경로 조회 - 환승포함")
     void shortPathTest(){
-
         // given - beforeEach
 
         // when
@@ -97,7 +96,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("역과 역 간 최단경로 조회 - 환승 미 포함")
     void shortPathTest2(){
-
         // given - beforeEach
 
         // when
@@ -132,7 +130,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 "광교역", "수지구청역", "미금역", "정자역", "판교역", "강남역", "역삼역", "종합운동장역", "잠실새내역", "잠실역"
         );
         assertThat(path.getDistance()).isEqualTo(60);
-        assertThat(path.getCharge()).isEqualTo(2250);
+        assertThat(path.getCharge()).isEqualTo(2750);
     }
 
     private ExtractableResponse<Response> 경로_요청(StationResponse source, StationResponse target) {

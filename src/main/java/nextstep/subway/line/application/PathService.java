@@ -1,11 +1,6 @@
 package nextstep.subway.line.application;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import nextstep.subway.line.domain.Charge;
 import nextstep.subway.line.domain.PathGraph;
-import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -27,9 +22,7 @@ public class PathService {
     }
 
     public PathResponse path(Long sourceId, Long targetId) {
-        PathResponse pathResponse = pathGraph.findPath(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
-        Charge charge = new Charge(pathResponse.getDistance());
-        return new PathResponse(pathResponse.getStations(), pathResponse.getDistance(), charge.value());
+        return pathGraph.findPath(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
     }
 
     private Station getStation(Long sourceId) {

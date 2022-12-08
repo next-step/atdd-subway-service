@@ -63,7 +63,7 @@ public class PathServiceTest{
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertThat(path.getDistance()).isEqualTo(12);
-        assertThat(path.getCharge()).isEqualTo(1350);
+        assertThat(path.getCharge()).isEqualTo(1850);
         assertThat(stationNames).containsExactly(
                 "영등포구청역","여의도역","마포역","공덕역"
         );
