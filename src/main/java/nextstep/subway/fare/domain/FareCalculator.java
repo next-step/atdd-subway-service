@@ -1,4 +1,4 @@
-package nextstep.subway.domain;
+package nextstep.subway.fare.domain;
 
 
 public class FareCalculator implements FareCalculatorImpl {

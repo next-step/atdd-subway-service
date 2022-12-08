@@ -1,13 +1,12 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.domain.FareCalculator;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.*;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.path.dto.domain.PathFinder;
 import nextstep.subway.path.vo.Path;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -37,7 +36,7 @@ public class PathService {
 
         int fare = findFare(sections, path.getStations(), path.getDistance(), age);
 
-        return PathResponse.of(path.getStations(), path.getDistance());
+        return PathResponse.of(path.getStations(), path.getDistance(), fare);
     }
 
     private Sections findAllSections() {
@@ -53,7 +52,8 @@ public class PathService {
         Lines lines = sections.findLinesFrom(stations);
         LineFare lineFare = lines.findMaxLineFare();
 
-        return 0;
+        FareCalculator fareCalculator = FareCalculator.of(lineFare.getFare(), age);
+        return fareCalculator.calculate(distance);
     }
 
     private Station findStationById(Long stationId) {
