@@ -44,7 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         잠실역 = 지하철역_생성_요청("잠실역").as(StationResponse.class);
 
         // 노선 등록
-        LineResponse 이호선 = 지하철_노선_생성_요청(new LineRequest("2호선", "green", 강남역.getId(), 역삼역.getId(), 10)).as(LineResponse.class);
+        LineResponse 이호선 = 지하철_노선_생성_요청(new LineRequest("2호선", "green", 강남역.getId(), 역삼역.getId(), 10, 1000)).as(LineResponse.class);
 
         // 구간 등록
         지하철_노선에_지하철역_등록_요청(이호선, 역삼역, 삼성역, 15);

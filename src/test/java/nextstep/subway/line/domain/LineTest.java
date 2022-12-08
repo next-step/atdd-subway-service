@@ -17,7 +17,7 @@ public class LineTest {
     void beforeEach(){
         station1 = new Station("강남역");
         station2 = new Station("잠실역");
-        line = new Line("2호선", "green", station1, station2, 20);
+        line = new Line("2호선", "green", station1, station2, 20, 1000);
     }
 
     @Test

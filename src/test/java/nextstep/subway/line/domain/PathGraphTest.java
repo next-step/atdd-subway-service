@@ -27,7 +27,7 @@ public class PathGraphTest {
         Station station1 = stationRepository.save(new Station("암사역"));
         Station station2 = stationRepository.save(new Station("천호역"));
         Station station3 = stationRepository.save(new Station("몽촌토성역"));
-        Line line = new Line("8호선", "bg-color-555", station1, station2, 10);
+        Line line = new Line("8호선", "bg-color-555", station1, station2, 10, 800);
         line.addSection(station2, station3, 10);
 
         // when

@@ -53,8 +53,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         잠실새내역 = 지하철역_등록되어_있음("잠실새내역").as(StationResponse.class);
         잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 30)).as(LineResponse.class);
-        _2호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "bg-green-600", 강남역.getId(), 잠실역.getId(), 30)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 30, 500)).as(LineResponse.class);
+        _2호선 = 지하철_노선_등록되어_있음(new LineRequest("2호선", "bg-green-600", 강남역.getId(), 잠실역.getId(), 30, 200)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 판교역, 5);
         지하철_노선에_지하철역_등록_요청(신분당선, 판교역, 정자역, 2);

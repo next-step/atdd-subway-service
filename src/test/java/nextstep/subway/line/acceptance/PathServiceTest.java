@@ -44,7 +44,7 @@ public class PathServiceTest{
         Station station2 = new Station(20L,"여의도역");
         Station station3 = new Station(30L,"마포역");
         Station station4 = new Station(40L,"공덕역");
-        Line line = new Line("5호선", "red", station1, station2, 2);
+        Line line = new Line("5호선", "red", station1, station2, 2, 500);
 
         when(stationRepository.findById(10L)).thenReturn(Optional.of(station1));
         when(stationRepository.findById(40L)).thenReturn(Optional.of(station4));
@@ -63,7 +63,7 @@ public class PathServiceTest{
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertThat(path.getDistance()).isEqualTo(12);
-        assertThat(path.getCharge()).isEqualTo(1250);
+        assertThat(path.getCharge()).isEqualTo(1350);
         assertThat(stationNames).containsExactly(
                 "영등포구청역","여의도역","마포역","공덕역"
         );
