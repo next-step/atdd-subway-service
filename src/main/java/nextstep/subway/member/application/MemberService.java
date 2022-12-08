@@ -33,4 +33,10 @@ public class MemberService {
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
     }
+
+    @Transactional(readOnly = true)
+    public Member findById(Long id) {
+        return memberRepository.findById(id)
+            .orElseThrow(() -> new IllegalArgumentException(String.format("멤버를 찾을 수 없습니다. id = %d", id)));
+    }
 }

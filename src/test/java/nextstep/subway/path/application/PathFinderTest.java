@@ -73,12 +73,21 @@ class PathFinderTest {
             .hasMessageContaining("출발지와 목적지가 같을 수 없습니다.");
     }
 
-    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 최단 경로를 조회한다.")
+    @DisplayName("출발역과 도착역이 노선에 포함 되어 있지 않은 최단 경로를 조회한다.")
     @Test
-    void find_shortest_path_no_connect_station() {
+    void find_shortest_path_no_exist_station() {
         assertThatThrownBy(() ->
             pathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선, 팔호선), 강남역, 부산역)
         ).isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("출발역과 도착역이 노선에 포함되어 있지 않습니다.");
+    }
+
+    @DisplayName("출발역과 도착역이 연결 되어 있지 않은 최단 경로를 조회한다.")
+    @Test
+    void find_shortest_path_no_connect_station() {
+        assertThatThrownBy(() ->
+            pathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선, 팔호선), 강남역, 서울대역)
+        ).isInstanceOf(IllegalStateException.class)
             .hasMessageContaining("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
 }

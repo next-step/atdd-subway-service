@@ -17,9 +17,16 @@ public class PathFinder {
         validateSameStation(source, target);
         try {
             GraphPath path = createShortestPath(lines).getPath(source, target);
+            checkNotNull(path);
             return new Path(path.getVertexList(), (int) path.getWeight());
         } catch (IllegalArgumentException e) {
-            throw new IllegalArgumentException("출발역과 도착역이 연결이 되어 있지 않습니다.");
+            throw new IllegalArgumentException("출발역과 도착역이 노선에 포함되어 있지 않습니다.");
+        }
+    }
+
+    private void checkNotNull(GraphPath path) {
+        if (path == null) {
+            throw new IllegalStateException("출발역과 도착역이 연결이 되어 있지 않습니다.");
         }
     }
 
