@@ -14,12 +14,11 @@ import static nextstep.subway.Fixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class PathFinderTest {
+public class ShortestPathTest {
 
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
-    private Line 칠호선;
     private Station 강남역;
     private Station 광산역;
     private Station 양재역;
@@ -42,53 +41,35 @@ public class PathFinderTest {
         삼호선.addSection(new Section(삼호선, 광산역, 교대역, 5));
         학동역 = createStation("강남역", 10l);
         강남구청역 = createStation("강남역", 11l);
-        칠호선 = createLine("칠호선", "bg-green-600", 학동역, 강남구청역, 10);
     }
 
-    @DisplayName("존재하지 않는 노선을 입력하면 예외발생 ")
+    @DisplayName("경로값이 없으면 예외발생")
     @Test
-    void returnsExceptionWithNullLines() {
-        assertThatThrownBy(() -> new PathFinder(null))
+    void returnsExceptionWithNullPath() {
+        assertThatThrownBy(() -> new ShortestPath(null))
                 .isInstanceOf(NullPointerException.class)
-                .hasMessageContaining("노선이 존재해야합니다");
+                .hasMessageContaining("경로가 존재해야 합니다");
     }
 
-    @DisplayName("출발역과 도착역이 같으면 예외발생")
+    @DisplayName("최단경로에 해당하는 역들을 조회")
     @Test
-    void returnsExceptionWithSameStations() {
+    void returnsStations() {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        assertThatThrownBy(() -> pathFinder.getShortestPath(강남역, 강남역))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출발역과 도착역 다른 경우만 조회할 수 있습니다");
+        ShortestPath shortestPath = pathFinder.getShortestPath(광산역, 양재역);
+
+        assertThat(shortestPath.getStations())
+                .containsExactly(광산역, 교대역, 남부터미널역, 양재역);
     }
 
-    @DisplayName("노선에 존재하지 않는 역을 조회하면 예외발생")
+    @DisplayName("최단경로에 해당하는 역들의 거리 조회")
     @Test
-    void returnsExceptionWithNoneExistsStartStation() {
+    void returnsDistance() {
         PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        assertThatThrownBy(() -> pathFinder.getShortestPath(createStation("마포역", 3l), 강남역))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출발역과 도착역이 노선에 존재해야합니다");
-    }
+        ShortestPath shortestPath = pathFinder.getShortestPath(광산역, 양재역);
 
-    @DisplayName("출발역과 도착역이 연결되지않으면 예외발생")
-    @Test
-    void returnsExceptionWithNoneLinkStation() {
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선));
-
-        assertThatThrownBy(() -> pathFinder.getShortestPath(학동역, 강남역))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessageContaining("출발역과 도착역이 연결되있어야 합니다");
-    }
-
-    @DisplayName("출발역과 도착역이 연결된상태로 존재하면 최단거리 반환")
-    @Test
-    void returnsShortestPath() {
-        PathFinder pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
-
-        assertThat(pathFinder.getShortestPath(광산역, 양재역)).isNotNull();
+        assertThat(shortestPath.getDistance()).isEqualTo(10);
     }
 }
 

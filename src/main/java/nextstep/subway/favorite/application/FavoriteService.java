@@ -5,6 +5,7 @@ import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.favorite.exception.FavoriteException;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
@@ -23,7 +24,6 @@ public class FavoriteService {
     private final MemberRepository memberRepository;
     private final StationRepository stationRepository;
     private final FavoriteRepository favoriteRepository;
-
 
     public FavoriteService(MemberRepository memberRepository, StationRepository stationRepository, FavoriteRepository favoriteRepository) {
         this.memberRepository = memberRepository;
@@ -44,10 +44,6 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findAllFavoriteByMember(Long memberId) {
         Member member = memberRepository.findById(memberId).orElseThrow(() -> new FavoriteException(NONE_EXISTS_MEMBER));
-        List<FavoriteResponse>favoriteResponses = favoriteRepository.findAllByMember(member)
-                .stream()
-                .map(favorite -> FavoriteResponse.of(favorite))
-                .collect(Collectors.toList());
         return favoriteRepository.findAllByMember(member)
                 .stream()
                 .map(favorite -> FavoriteResponse.of(favorite))

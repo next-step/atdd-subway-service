@@ -4,12 +4,10 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultDirectedGraph;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.stream.Collectors;
 
 public class PathFinder {
     private static final String NONE_EQUAL_STATION = "출발역과 도착역 다른 경우만 조회할 수 있습니다";
@@ -29,14 +27,8 @@ public class PathFinder {
         }
     }
 
-    public List<Station> getShortestPath(Station sourceStation, Station targetStation) {
-        vlidateStation(sourceStation, targetStation);
-        GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation);
-        validateLinkGraph(shortestPath);
-        return shortestPath
-                .getVertexList()
-                .stream()
-                .collect(Collectors.toList());
+    public ShortestPath getShortestPath(Station sourceStation, Station targetStation) {
+        return new ShortestPath(validateLinkGraph(sourceStation, targetStation));
     }
 
     private void vlidateStation(Station sourceStation, Station targetStation) {
@@ -44,10 +36,13 @@ public class PathFinder {
         validateExistsStation(sourceStation, targetStation);
     }
 
-    private void validateLinkGraph(GraphPath<Station, DefaultWeightedEdge> graphPath) {
-        if (Objects.isNull(graphPath)) {
+    private GraphPath<Station, DefaultWeightedEdge> validateLinkGraph(Station sourceStation, Station targetStation) {
+        vlidateStation(sourceStation, targetStation);
+        GraphPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(subwayGraph).getPath(sourceStation, targetStation);
+        if (Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException(NONE_LINK_PATH);
         }
+        return shortestPath;
     }
 
     private void validateEqualStation(Station sourceStation, Station targetStation) {
@@ -61,6 +56,4 @@ public class PathFinder {
             throw new IllegalArgumentException(NONE_EXISTS_STATION);
         }
     }
-
-
 }

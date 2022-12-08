@@ -1,15 +1,19 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.fare.domain.AgePolicy;
+import nextstep.subway.fare.domain.DistanceFare;
+import nextstep.subway.fare.domain.FareCalculator;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import nextstep.subway.station.dto.StationResponse;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 public class PathService {
@@ -22,12 +26,15 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findShortestPath(Long sourceId, Long targetId) {
+    public PathResponse findShortestPath(Long sourceId, Long targetId, Integer age) {
         Station sourceStation = findStationById(sourceId);
         Station targetStation = findStationById(targetId);
-        List<Station> stations = new PathFinder(lineRepository.findAll())
-                .getShortestPath(sourceStation, targetStation);
-        return new PathResponse(stations.stream().map(StationResponse::of).collect(Collectors.toList()));
+        List<Line> lines = lineRepository.findAll();
+        ShortestPath shortestPath = new PathFinder(lines).getShortestPath(sourceStation, targetStation);
+        int lineFare = Lines.of(lines).getMaxFareByStations(shortestPath.getStations());
+        int distanceFare = new DistanceFare(shortestPath.getDistance()).getFare();
+        FareCalculator fareCalculator = new FareCalculator(lineFare,distanceFare,AgePolicy.valueOfAge(age));
+        return new PathResponse(shortestPath,fareCalculator);
     }
 
     private Station findStationById(Long id) {

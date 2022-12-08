@@ -22,6 +22,7 @@ import static nextstep.subway.Fixture.createLine;
 import static nextstep.subway.Fixture.createStation;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.junit.jupiter.api.Assertions.assertAll;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -47,6 +48,7 @@ public class PathServiceTest {
     private Station 남부터미널역;
     private Station 학동역;
     private Station 강남구청역;
+    private int age = 20;
 
     @BeforeEach
     public void setUp() {
@@ -71,7 +73,7 @@ public class PathServiceTest {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId(), age))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역 다른 경우만 조회할 수 있습니다");
     }
@@ -81,7 +83,7 @@ public class PathServiceTest {
     void returnsExceptionWithNoneExistsStartStation() {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 양재역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 양재역.getId(), age))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("역이 존재하지 않습니다");
     }
@@ -93,7 +95,7 @@ public class PathServiceTest {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선, 칠호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(학동역.getId(), 강남역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(학동역.getId(), 강남역.getId(), age))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 연결되있어야 합니다");
     }
@@ -105,8 +107,9 @@ public class PathServiceTest {
         when(stationRepository.findById(양재역.getId())).thenReturn(Optional.of(양재역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        PathResponse pathResponse = pathService.findShortestPath(광산역.getId(), 양재역.getId());
-        assertThat(pathResponse.getStations().stream().map(StationResponse::getId))
-                .containsExactly(광산역.getId(), 교대역.getId(), 남부터미널역.getId(), 양재역.getId());
+        PathResponse pathResponse = pathService.findShortestPath(광산역.getId(), 양재역.getId(), age);
+        assertAll(
+                () -> assertThat(pathResponse.getStations().stream().map(StationResponse::getId)).containsExactly(광산역.getId(), 교대역.getId(), 남부터미널역.getId(), 양재역.getId()),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(10));
     }
 }
