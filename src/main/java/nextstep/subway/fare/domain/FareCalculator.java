@@ -39,7 +39,7 @@ public class FareCalculator {
         int fare = calculateWithDistance(distance);
         fare += minLineFare;
 
-//        AgeFarePolicy policy = AgeFarePolicy.findByAge(age);
+        AgeFarePolicy policy = AgeFarePolicy.findByAge(age);
         return fare;
     }
 

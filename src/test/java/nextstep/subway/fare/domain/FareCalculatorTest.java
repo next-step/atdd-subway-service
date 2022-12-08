@@ -78,5 +78,17 @@ class FareCalculatorTest {
     }
 
 
+    @DisplayName("연령별 요금정책을 적용해서 운임요금을 계산한다.")
+    @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
+    @CsvSource(value = {"6:500", "13:800", "19:1350"}, delimiter = ':')
+    void calculateWithAgeDiscount(int input, int expected) {
+        FareCalculator fareCalculator = FareCalculator.of(0, input);
+
+        int result = fareCalculator.calculate(15);
+
+        Assertions.assertThat(result).isEqualTo(expected);
+    }
+
+
 
 }

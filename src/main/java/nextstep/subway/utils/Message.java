@@ -22,6 +22,8 @@ public class Message {
     public static final String INVALID_OVER_FARE = "노선의 추가요금은 0 이상이어야 합니다.";
     public static final String INVALID_OVER_DISTANCE = "거리는 0 이상이어야 합니다.";
     public static final String OVER_FARE_POLICY_NOT_EXIST = "추가요금 정책이 존재하지 않습니다.";
+    public static final String AGE_FARE_POLICY_NOT_EXIST = "연령요금 정책이 존재하지 않습니다.";
+    public static final String FARE_LESS_THAN_DEDUCTION_FARE = "지하철 운임요금이 공제금액보다 작습니다.";
 
 
 }
