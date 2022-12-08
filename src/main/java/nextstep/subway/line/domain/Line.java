@@ -24,6 +24,9 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = Sections.initSections();
 
+    @Embedded
+    private LineFare fare;
+
     public Line() {
     }
 
@@ -53,6 +56,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color.getColor();
+    }
+
+    public LineFare getFare() {
+        return fare;
     }
 
     public List<Station> getStations() {
