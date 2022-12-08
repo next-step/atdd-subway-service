@@ -34,7 +34,7 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder();
         Path path = pathFinder.findFastPaths(lines, sourceStation, targetStation);
-        path.calculatorPrice(loginMember.getAge());
+        path.calculatePrice(loginMember.getAge());
 
         return PathResponse.of(path);
     }

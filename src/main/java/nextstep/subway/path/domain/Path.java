@@ -15,12 +15,12 @@ public class Path {
     public Path(List<Station> stations, Distance distance, List<SectionEdge> sections) {
         this.stations = stations;
         this.distance = distance;
-        this.price = new Price();
         this.sections = sections;
     }
 
-    public void calculatorPrice(int age) {
-        price.calculatorPrice(distance.value(), sections, age);
+    public void calculatePrice(int age) {
+        this.price = new Price();
+        price.calculatePrice(distance.value(), sections, age);
     }
 
     public List<Station> getStations() {

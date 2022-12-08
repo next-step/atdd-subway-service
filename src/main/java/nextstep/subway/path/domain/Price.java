@@ -5,17 +5,12 @@ import nextstep.subway.line.domain.Section;
 
 import java.util.List;
 
+import static nextstep.subway.path.domain.PricePolicy.BASIC_DISTANCE;
+import static nextstep.subway.path.domain.PricePolicy.BASIC_PRICE;
+
 public class Price {
 
-    private final int BASIC_PRICE = 1250;
-
-    private final int BASIC_DISTANCE = 10;
-    private final int EXCESS_DISTANCE = 50;
-
-    private final int CHILDREN_START_AGE = 6;
-    private final int CHILDREN_END_AGE = 13;
-    private final int TEENAGER_START_AGE = 13;
-    private final int TEENAGER_END_AGE = 19;
+    private PricePolicy pricePolicy = new PricePolicy();
 
     private int price;
 
@@ -23,49 +18,33 @@ public class Price {
         return price;
     }
 
-    public void calculatorPrice(int distance, List<SectionEdge> sections, Integer age) {
+    public void calculatePrice(int distance, List<SectionEdge> sections, Integer age) {
         this.price = getStandardPriceByAge(age);
         this.price += calculatorPriceByDistance(distance);
-        this.price += calculatorPriceBySections(sections);
+        this.price += getMaxPriceBySectionStations(sections);
     }
 
     private int getStandardPriceByAge(int age) {
-        if (isChildren(age)) {
+        if (pricePolicy.isChildren(age)) {
             return (int) ((BASIC_PRICE - 350) * 0.5);
         }
-        if (isTeenager(age)) {
+        if (pricePolicy.isTeenager(age)) {
             return (int) ((BASIC_PRICE - 350) * 0.8);
         }
         return BASIC_PRICE;
     }
 
-    private boolean isChildren(int age) {
-        return age >= CHILDREN_START_AGE && age < CHILDREN_END_AGE;
-    }
-
-    private boolean isTeenager(int age) {
-        return age >= TEENAGER_START_AGE && age < TEENAGER_END_AGE;
-    }
-
     private int calculatorPriceByDistance(int distance) {
-        if (isLessBasicDistance(distance)) {
+        if (pricePolicy.isLessBasicDistance(distance)) {
             return 0;
         }
-        if (isGatherExcessDistance(distance)) {
+        if (pricePolicy.isGatherExcessDistance(distance)) {
             return calculateOverFare(8, distance - BASIC_DISTANCE);
         }
         return calculateOverFare(5, distance - BASIC_DISTANCE);
     }
 
-    private boolean isGatherExcessDistance(int distance) {
-        return distance > EXCESS_DISTANCE;
-    }
-
-    private boolean isLessBasicDistance(int distance) {
-        return distance <= BASIC_DISTANCE;
-    }
-
-    private int calculatorPriceBySections(List<SectionEdge> sections) {
+    private int getMaxPriceBySectionStations(List<SectionEdge> sections) {
         return sections.stream()
                 .map(SectionEdge::getSection)
                 .map(Section::getLine)
