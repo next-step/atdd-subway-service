@@ -29,8 +29,11 @@ public class FareCalculator implements FareCalculatorImpl {
 
     @Override
     public int calculate(int distance) {
-//        checkDistanceNotNegative(distance);
+        checkDistanceNotNegative(distance);
         return 0;
+    }
+
+    private void checkDistanceNotNegative(int distance) {
     }
 
 }

@@ -29,6 +29,10 @@ public class PathResponse {
         return distance;
     }
 
+    public int getFare() {
+        return fare;
+    }
+
     public static PathResponse of(List<Station> stations, int distance, int fare) {
         return new PathResponse(
                 stations.stream()

@@ -92,19 +92,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath() {
         ExtractableResponse<Response> 성인_회원_경로조회_결과 = 최단_경로_조회_요청(성인회원, 양재역.getId(), 서현역.getId());
-        지하철_최단_경로_조회됨(성인_회원_경로조회_결과);
-        지하철_최단_경로_총_거리_조회됨(성인_회원_경로조회_결과, 10);
-        지하철_이용_요금_조회됨(성인_회원_경로조회_결과, 1450);
+        지하철_최단_경로_조회됨(성인_회원_경로조회_결과, 10, 1450);
 
-        ExtractableResponse<Response> 청소년_회원_경로조회_결과 = 최단_경로_조회_요청(청소년회원, 양재역.getId(), 서현역.getId());
-        지하철_최단_경로_조회됨(청소년_회원_경로조회_결과);
-        지하철_최단_경로_총_거리_조회됨(청소년_회원_경로조회_결과, 10);
-        지하철_이용_요금_조회됨(청소년_회원_경로조회_결과, 880);
-
-        ExtractableResponse<Response> 어린이_회원_경로조회_결과 = 최단_경로_조회_요청(어린이회원, 양재역.getId(), 서현역.getId());
-        지하철_최단_경로_조회됨(어린이_회원_경로조회_결과);
-        지하철_최단_경로_총_거리_조회됨(어린이_회원_경로조회_결과, 10);
-        지하철_이용_요금_조회됨(어린이_회원_경로조회_결과, 550);
 
     }
 
@@ -118,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPathNotConnectedException() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(수서역.getId(), 잠실역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(성인회원, 수서역.getId(), 잠실역.getId());
 
         //then
         지하철_최단_경로_조회_실패됨(response);
@@ -133,7 +122,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPathInvalidSameStationsException() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(수서역.getId(), 수서역.getId());
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(성인회원, 수서역.getId(), 수서역.getId());
 
         //then
         지하철_최단_경로_조회_실패됨(response);
@@ -148,7 +137,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPathNotExistsException() {
         // when
-        ExtractableResponse<Response> response = 최단_경로_조회_요청(수서역.getId(), 0L);
+        ExtractableResponse<Response> response = 최단_경로_조회_요청(성인회원, 수서역.getId(), 0L);
 
         //then
         지하철_최단_경로_조회_실패됨(response);
@@ -169,7 +158,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance) {
+
+    private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance, int fare) {
         List<String> stationNames = response.as(PathResponse.class).getStations().stream()
                 .map(it -> it.getName())
                 .collect(Collectors.toList());
@@ -177,6 +167,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(distance),
+                () -> assertThat(response.as(PathResponse.class).getFare()).isEqualTo(fare),
                 () -> assertThat(stationNames).containsExactly("양재역", "수서역", "서현역")
         );
     }
