@@ -3,7 +3,7 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Distance;
 
 public class FareCalculator {
-    private static final Integer DEFAULT_FARE = 1250;
+    private static final int DEFAULT_FARE = 1250;
     private static final int MIDDLE_SURCHARGE_CONDITION = 5;
     private static final int LONG_SURCHARGE_CONDITION = 8;
     private static final int SURCHARGE = 100;
@@ -12,7 +12,7 @@ public class FareCalculator {
 
     }
 
-    public static Integer calculateFare(Distance distance) {
+    public static int calculateFare(Distance distance) {
         if (distance.isDefaultDistance()) {
             return calculateDefaultFare();
         }
@@ -25,11 +25,11 @@ public class FareCalculator {
         return 0;
     }
 
-    private static Integer calculateDefaultFare() {
+    private static int calculateDefaultFare() {
         return DEFAULT_FARE;
     }
 
-    private static Integer calculateMiddleFare(int distance) {
+    private static int calculateMiddleFare(int distance) {
         int fare = DEFAULT_FARE;
         int middleDistance = distance - Distance.SURCHARGE_DISTANCE_STEP1;
         fare += ((int) ((Math.ceil((middleDistance - 1) / MIDDLE_SURCHARGE_CONDITION) + 1) * SURCHARGE));
@@ -37,7 +37,7 @@ public class FareCalculator {
         return fare;
     }
 
-    private static Integer calculateLongFare(int distance) {
+    private static int calculateLongFare(int distance) {
         int fare = 0;
         int longDistance = distance - Distance.SURCHARGE_DISTANCE_STEP2;
         fare += calculateMiddleFare(Distance.SURCHARGE_DISTANCE_STEP2);

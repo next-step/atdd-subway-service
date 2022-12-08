@@ -12,7 +12,7 @@ import java.util.List;
 public class Path {
     private final List<Station> stations;
     private final Distance distance;
-    private Integer fare;
+    private int fare;
 
     public Path(List<Station> stations, Distance distance) {
         this.stations = stations;
@@ -21,7 +21,7 @@ public class Path {
     }
 
     public void calculateFare(LoginMember loginMember, List<Line> lines) {
-        Integer totalFare = fare + lines.stream()
+        int totalFare = fare + lines.stream()
                 .mapToInt(Line::getSurcharge)
                 .max()
                 .orElse(0);
@@ -36,7 +36,7 @@ public class Path {
         return distance;
     }
 
-    public Integer getFare() {
+    public int getFare() {
         return fare;
     }
 }
