@@ -102,7 +102,7 @@ class PathServiceTest {
         when(stationService.findStationById(2L)).thenReturn(서현역);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
 
-        PathResponse response = pathService.findShortestPath(1L, 2L);
+        PathResponse response = pathService.findShortestPath(1L, 2L, 20);
 
         List<String> stationNames = response.getStations().stream()
                 .map(it -> it.getName())
@@ -123,7 +123,7 @@ class PathServiceTest {
         when(stationService.findStationById(2L)).thenReturn(잠실역);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L, 20))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(INVALID_CONNECTED_STATIONS);
     }
@@ -136,7 +136,7 @@ class PathServiceTest {
         when(stationService.findStationById(1L)).thenReturn(수서역);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L, 20))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(INVALID_SAME_STATIONS);
 
@@ -148,7 +148,7 @@ class PathServiceTest {
         when(stationService.findStationById(1L)).thenReturn(수서역);
         when(stationService.findStationById(2L)).thenReturn(null);
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L, 20))
                 .isInstanceOf(StationNotFoundException.class)
                 .hasMessageStartingWith(NOT_EXISTS_STATION);
     }

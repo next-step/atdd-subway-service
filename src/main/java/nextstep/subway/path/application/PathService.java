@@ -27,7 +27,7 @@ public class PathService {
     }
 
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long source, Long target, int age) {
         Station sourceStation = findStationById(source);
         Station targetStation = findStationById(target);
         List<Section> sections = findAllSections();
