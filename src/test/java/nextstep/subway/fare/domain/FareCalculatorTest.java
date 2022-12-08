@@ -1,7 +1,7 @@
 package nextstep.subway.fare.domain;
 
+import nextstep.subway.exception.FareValidException;
 import org.assertj.core.api.Assertions;
-import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -10,6 +10,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static nextstep.subway.utils.Constant.BASIC_FARE;
+import static nextstep.subway.utils.Message.INVALID_OVER_DISTANCE;
 
 
 /**
@@ -55,6 +56,25 @@ class FareCalculatorTest {
         int fare = fareCalculator.calculate(input);
 
         Assertions.assertThat(fare).isEqualTo(expected);
+    }
+
+    @DisplayName("거리가 0 미만일 때 예외를 발생한다.")
+    @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
+    @ValueSource(ints = {-1, -10})
+    void exception(int input) {
+        Assertions.assertThatThrownBy(() -> fareCalculator.calculate(input))
+                .isInstanceOf(FareValidException.class)
+                .hasMessageStartingWith(INVALID_OVER_DISTANCE);
+    }
+
+    @DisplayName("지하철 노선 추가요금이 있는 경우 노선요금도 더해서 계산한다.")
+    @Test
+    void calculateWithLineFare() {
+        FareCalculator fareCalculator = FareCalculator.from(100);
+
+        int result = fareCalculator.calculate(10);
+
+        Assertions.assertThat(result).isEqualTo(1350);
     }
 
 
