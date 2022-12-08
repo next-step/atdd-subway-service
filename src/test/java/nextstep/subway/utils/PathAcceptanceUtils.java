@@ -6,6 +6,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -22,6 +23,7 @@ public class PathAcceptanceUtils {
 		return RestAssured.given().log().all()
 			.param("source", sourceId)
 			.param("target", targetId)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
 			.when()
 			.get(PATHS_URL)
 			.then().log().all()

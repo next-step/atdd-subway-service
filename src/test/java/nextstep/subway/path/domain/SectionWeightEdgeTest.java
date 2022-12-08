@@ -25,8 +25,7 @@ class SectionWeightEdgeTest {
 	@Test
 	void createSectionWeightEdgeFailTest() {
 		assertThatIllegalArgumentException()
-			.isThrownBy(() -> assertThrows(IllegalArgumentException.class, () ->
-				SectionWeightEdge.from(null)));
+			.isThrownBy(() -> SectionWeightEdge.from(null));
 	}
 
 	@DisplayName("구간 간선 조회")

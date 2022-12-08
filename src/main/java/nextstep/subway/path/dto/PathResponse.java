@@ -1,6 +1,10 @@
 package nextstep.subway.path.dto;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.stream.Collectors;
+
+import nextstep.subway.path.domain.Path;
 
 public class PathResponse {
 
@@ -17,6 +21,17 @@ public class PathResponse {
 
 	public static PathResponse of(List<PathStationResponse> stations, int distance) {
 		return new PathResponse(stations, distance);
+	}
+
+	public static PathResponse from(Path path) {
+		return new PathResponse(
+			path.getStations()
+				.stream()
+				.map(it -> PathStationResponse.of(it.getId(), it.name().toString(), LocalDateTime.now()))
+				.collect(
+					Collectors.toList()),
+			path.getDistance().value());
+
 	}
 
 	public List<PathStationResponse> getStations() {

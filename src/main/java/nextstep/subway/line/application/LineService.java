@@ -80,7 +80,7 @@ public class LineService {
 
 		Station upStation = station(request.getUpStationId());
 		Station downStation = station(request.getDownStationId());
-		List<Section> sectionsToUpdate = sectionService.findSectionsToUpdate(upStation, downStation);
+		List<Section> sectionsToUpdate = sectionService.findSectionsToUpdate(upStation, downStation, line);
 
 		Section section = Section.of(line, upStation, downStation, Distance.from(request.getDistance()));
 		line.connectSection(section, sectionsToUpdate);

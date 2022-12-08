@@ -208,7 +208,7 @@ class LineServiceTest {
 		검색된_지하철역(선릉역_번호, 선릉역);
 
 		// when
-		when(sectionService.findSectionsToUpdate(강남역, 선릉역)).thenReturn(Collections.emptyList());
+		when(sectionService.findSectionsToUpdate(강남역, 선릉역, 이호선)).thenReturn(Collections.emptyList());
 		lineService.addLineStation(1L, new SectionRequest(강남역_번호, 선릉역_번호, 10));
 
 		// then

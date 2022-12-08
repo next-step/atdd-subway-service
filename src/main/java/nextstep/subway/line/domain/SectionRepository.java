@@ -12,9 +12,13 @@ import nextstep.subway.station.domain.Station;
 public interface SectionRepository extends JpaRepository<Section, Long> {
 
 	@Query("SELECT s FROM Section s "
-		+ "WHERE (s.upStation = :upStation OR s.downStation = :downStation) "
-		+ "OR (s.upStation = :downStation OR s.downStation = :upStation)")
-	List<Section> findAllByStations(@Param("upStation") Station upStation, @Param("downStation") Station downStation);
+		+ "WHERE ((s.upStation = :upStation OR s.downStation = :downStation) "
+		+ "OR (s.upStation = :downStation OR s.downStation = :upStation))"
+	    + "AND s.line = :line")
+	List<Section> findAllByStations(
+		@Param("upStation") Station upStation,
+		@Param("downStation") Station downStation,
+		@Param("line") Line line);
 
 	Optional<Section> findByUpStationId(Long stationId);
 

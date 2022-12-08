@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.station.domain.Station;
@@ -19,8 +20,8 @@ public class SectionService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<Section> findSectionsToUpdate(Station upStation, Station downStation) {
-		return sectionRepository.findAllByStations(upStation, downStation);
+	public List<Section> findSectionsToUpdate(Station upStation, Station downStation, Line line) {
+		return sectionRepository.findAllByStations(upStation, downStation, line);
 	}
 
 	@Transactional(readOnly = true)

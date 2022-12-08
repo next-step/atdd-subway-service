@@ -82,7 +82,6 @@ class SectionsTest {
 		Section 새로운_구간 = Section.of(이호선, 역삼역, 선릉역, Distance.from(10));
 
 		Sections sections = Sections.from(구간);
-		// sections.add(새로운_구간);
 		sections.connect(새로운_구간, Collections.singletonList(구간));
 
 		// when
