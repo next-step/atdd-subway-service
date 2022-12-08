@@ -5,13 +5,18 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.List;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청을_한다;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.토큰을_얻는다;
@@ -32,6 +37,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private String TOKEN;
 
+    @BeforeEach
     @Override
     public void setUp() {
         super.setUp();
@@ -53,12 +59,27 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         상태코드가_기대값과_일치하는지_검증한다(response, HttpStatus.CREATED);
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse 강남역, StationResponse 역삼역) {
+    @Test
+    @DisplayName("즐겨 찾기를 조회한다")
+    void getFavorite() {
+        // given
+        즐겨찾기_생성_요청(TOKEN, 강남역, 역삼역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(TOKEN);
+
+        // then
+        상태코드가_기대값과_일치하는지_검증한다(response, HttpStatus.OK);
+        즐겨찾기한_데이터를_검증한다(response, 강남역, 역삼역);
+    }
+
+
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new FavoriteRequest(강남역.getId(), 역삼역.getId()))
+                .body(new FavoriteRequest(source.getId(), target.getId()))
                 .when().post("/favorites")
                 .then().log().all()
                 .extract();
@@ -66,5 +87,22 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private static void 상태코드가_기대값과_일치하는지_검증한다(ExtractableResponse<Response> response, HttpStatus status) {
         assertThat(response.statusCode()).isEqualTo(status.value());
+    }
+
+    private void 즐겨찾기한_데이터를_검증한다(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
+        List<FavoriteResponse> favorite = response.jsonPath().getList(".", FavoriteResponse.class);
+
+        assertThat(favorite.get(0).getSource().getName()).isEqualTo(source.getName());
+        assertThat(favorite.get(0).getTarget().getName()).isEqualTo(target.getName());
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
     }
 }
