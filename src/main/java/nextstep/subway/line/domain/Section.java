@@ -66,8 +66,4 @@ public class Section extends DefaultWeightedEdge {
         return distance;
     }
 
-    public void setLine(Line line) {
-        this.line = line;
-    }
-
 }

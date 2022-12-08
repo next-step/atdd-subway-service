@@ -52,17 +52,19 @@ public class PathFinder {
         }
     }
 
-    private void drawGraph(WeightedMultigraph<Station, Section> graph,
-                           Optional<Section> nextSection) {
+    private void drawGraph(WeightedMultigraph<Station, Section> graph, Optional<Section> nextSection) {
         if (!nextSection.isPresent()) {
             return;
         }
+
         Section section = nextSection.get();
-        graph.addVertex(section.getUpStation());
-        graph.addVertex(section.getDownStation());
-        Section graphSection = graph.addEdge(section.getUpStation(), section.getDownStation());
-        graphSection.setLine(section.getLine());
-        graph.setEdgeWeight(graphSection, section.getDistance().getDistance());
+        Station upStation = section.getUpStation();
+        Station downStation = section.getDownStation();
+
+        graph.addVertex(upStation);
+        graph.addVertex(downStation);
+        graph.addEdge(upStation, downStation, section);
+        graph.setEdgeWeight(graph.getEdge(upStation, downStation), section.getDistance().getValue());
     }
 
     public List<Station> getShortestPathStationList() {
@@ -75,13 +77,13 @@ public class PathFinder {
 
     public ExtraFare getExtraFare() {
         ExtraFare maxExtraFare = new ExtraFare(0);
-        for(Section section : objEdgeToSectionEdge()) {
+        for(Section section : objectEdgeToSectionEdge()) {
             maxExtraFare = maxExtraFare.max(section.getLine().getExtraFare());
         }
         return maxExtraFare;
     }
 
-    private List<Section> objEdgeToSectionEdge() {
+    private List<Section> objectEdgeToSectionEdge() {
         return (List<Section>) sourceTargetGraphPath.getEdgeList()
                 .stream()
                 .map(obj -> ((Section) obj))
