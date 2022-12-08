@@ -76,8 +76,7 @@ class FareCalculatorTest {
 
         Assertions.assertThat(result).isEqualTo(1350);
     }
-
-
+    
     @DisplayName("연령별 요금정책을 적용해서 운임요금을 계산한다.")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
     @CsvSource(value = {"6:500", "13:800", "19:1350"}, delimiter = ':')
