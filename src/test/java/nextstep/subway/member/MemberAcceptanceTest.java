@@ -47,7 +47,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then
         회원_삭제됨(deleteResponse);
     }
-    
+
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
