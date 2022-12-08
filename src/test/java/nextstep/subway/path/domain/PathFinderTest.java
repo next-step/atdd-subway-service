@@ -74,6 +74,7 @@ class PathFinderTest {
     @DisplayName("출발역과 도착역 사이의 최단 경로를 조회한다.")
     @Test
     void findShortestPath() {
+        PathFinder pathFinder = PathFinder.from(sections);
         List<Station> stations = pathFinder.findAllStationsByStations(양재역, 서현역).getStations();
         int distance = pathFinder.findAllStationsByStations(양재역, 서현역).getDistance();
 
@@ -86,6 +87,8 @@ class PathFinderTest {
     @DisplayName("연결되지 않은 역의 최단 거리를 조회할 때 예외가 발생한다.")
     @Test
     void findShortestPathNotConnectedException() {
+        PathFinder pathFinder = PathFinder.from(sections);
+
         Assertions.assertThatThrownBy(() -> pathFinder.findAllStationsByStations(수서역, 잠실역))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(INVALID_CONNECTED_STATIONS);
@@ -94,6 +97,8 @@ class PathFinderTest {
     @DisplayName("출발역과 같은 도착역을 입력하면 예외가 발생한다.")
     @Test
     void findShortestPathInvalidSameStationsException() {
+        PathFinder pathFinder = PathFinder.from(sections);
+
         Assertions.assertThatThrownBy(() -> pathFinder.findAllStationsByStations(수서역, 수서역))
                 .isInstanceOf(PathNotFoundException.class)
                 .hasMessageStartingWith(INVALID_SAME_STATIONS);
