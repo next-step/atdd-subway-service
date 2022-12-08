@@ -24,15 +24,15 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     }
 
     @Override
-    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
-        AuthenticationPrincipal authenticationPrincipal = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
+    public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer,
+                                  NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
+        AuthenticationPrincipal authenticationPrincipal = parameter.getParameterAnnotation(
+                AuthenticationPrincipal.class);
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
 
-        if (credentials == null) {
-            assert authenticationPrincipal != null;
-            if (!authenticationPrincipal.required()) {
-                return LoginMember.none();
-            }
+        assert authenticationPrincipal != null;
+        if (credentials == null && !authenticationPrincipal.required()) {
+            return LoginMember.none();
         }
         return authService.findMemberByToken(credentials);
     }
