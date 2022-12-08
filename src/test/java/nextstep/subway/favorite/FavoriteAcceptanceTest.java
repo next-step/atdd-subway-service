@@ -9,7 +9,6 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -56,7 +55,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TOKEN, 강남역, 역삼역);
 
         // then
-        상태코드가_기대값과_일치하는지_검증한다(response, HttpStatus.CREATED);
+        상태코드가_기대값과_일치하는지_검증(response, HttpStatus.CREATED);
     }
 
     @Test
@@ -69,8 +68,40 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(TOKEN);
 
         // then
-        상태코드가_기대값과_일치하는지_검증한다(response, HttpStatus.OK);
+        상태코드가_기대값과_일치하는지_검증(response, HttpStatus.OK);
         즐겨찾기한_데이터를_검증한다(response, 강남역, 역삼역);
+    }
+
+    @Test
+    @DisplayName("즐겨 찾기를 삭제한다")
+    void deleteFavorite() {
+        // given
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(TOKEN, 강남역, 역삼역);
+
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_삭제_요청(TOKEN, createResponse);
+
+        // then
+        상태코드가_기대값과_일치하는지_검증(response, HttpStatus.NO_CONTENT);
+        즐겨찾기한_데이터_삭제_검증(TOKEN);
+    }
+
+    private void 즐겨찾기한_데이터_삭제_검증(String token) {
+        ExtractableResponse<Response> response = 즐겨찾기_목록_조회_요청(token);
+        List<FavoriteResponse> favorite = response.jsonPath().getList(".", FavoriteResponse.class);
+
+        assertThat(favorite).hasSize(0);
+    }
+
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, ExtractableResponse<Response> response) {
+        String uri = response.header("Location");
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
     }
 
 
@@ -85,13 +116,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static void 상태코드가_기대값과_일치하는지_검증한다(ExtractableResponse<Response> response, HttpStatus status) {
+    private static void 상태코드가_기대값과_일치하는지_검증(ExtractableResponse<Response> response, HttpStatus status) {
         assertThat(response.statusCode()).isEqualTo(status.value());
     }
 
     private void 즐겨찾기한_데이터를_검증한다(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
         List<FavoriteResponse> favorite = response.jsonPath().getList(".", FavoriteResponse.class);
-
         assertThat(favorite.get(0).getSource().getName()).isEqualTo(source.getName());
         assertThat(favorite.get(0).getTarget().getName()).isEqualTo(target.getName());
     }

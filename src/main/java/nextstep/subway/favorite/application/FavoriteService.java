@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.exception.NotFoundDataException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -14,7 +15,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
+
+import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_FAVORITE;
+import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_MEMBER;
 
 @Service
 @Transactional
@@ -47,5 +52,12 @@ public class FavoriteService {
         return favorite.stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId())
+                .orElseThrow(() -> new NotFoundDataException(NOT_FOUND_FAVORITE.getMessage()));
+
+        favoriteRepository.delete(favorite);
     }
 }
