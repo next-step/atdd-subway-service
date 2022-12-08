@@ -2,12 +2,8 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
@@ -22,7 +18,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
     @Embedded
-    private ExtraFee extraFee = new ExtraFee();
+    private ExtraFare extraFare = new ExtraFare();
 
     public Line() {
     }
@@ -32,10 +28,10 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, ExtraFee extraFee) {
+    public Line(String name, String color, ExtraFare extraFare) {
         this.name = name;
         this.color = color;
-        this.extraFee = extraFee;
+        this.extraFare = extraFare;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
@@ -44,11 +40,11 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public Line(String name, String color, Sections sections, ExtraFee extraFee) {
+    public Line(String name, String color, Sections sections, ExtraFare extraFare) {
         this.name = name;
         this.color = color;
         this.sections = sections;
-        this.extraFee = extraFee;
+        this.extraFare = extraFare;
     }
 
     public void addSection(Section section) {
@@ -88,7 +84,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public ExtraFee getExtraFee() {
-        return extraFee;
+    public ExtraFare getExtraFare() {
+        return extraFare;
     }
 }

@@ -5,29 +5,28 @@ import nextstep.subway.ErrorMessage;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class ExtraFee {
+public class ExtraFare {
 
     private static int MINIMUM_FEE = 0;
 
     private int extraFee;
 
-    public ExtraFee() {
+    public ExtraFare() {
         this.extraFee = 0;
     }
 
-    public ExtraFee(int extraFee) {
+    public ExtraFare(int extraFee) {
         if(extraFee < MINIMUM_FEE) {
             throw new IllegalArgumentException(ErrorMessage.INVALID_EXTRA_FEE.getMessage());
         }
         this.extraFee = extraFee;
     }
 
-    public ExtraFee add(ExtraFee addedExtraFee) {
-        this.extraFee += addedExtraFee.getExtraFee();
-        return this;
+    public ExtraFare max(ExtraFare other) {
+        return extraFee < other.getValue() ? other : this;
     }
 
-    public int getExtraFee() {
+    public int getValue() {
         return extraFee;
     }
 

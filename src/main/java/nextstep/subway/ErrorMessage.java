@@ -23,11 +23,15 @@ public enum ErrorMessage {
     //즐겨찾기 오류 메시지
     DO_NOT_EXIST_FAVORITES_LIST("삭제할 수 있는 즐겨찾기 항목이 없습니다."),
 
+    //금액 오류 메시지
+    INVALID_EXTRA_FEE("추가요금 값은 0이상이여야 합니다."),
+    NO_RULE_YOUNG_AGE("고객님에게 요금조회 서비스를 제공할 수 없습니다. 최소 나이 제한 : "),
+
     DO_NOT_EXIST_STATION_ID("존재하지 않는 역 아이디입니다."),
     DO_NOT_EXIST_LINE_ID("존재하지 않는 노선 아이디 입니다."),
     DO_NOT_EXIST_MEMBER_ID("존재하지 않는 회원 아이디입니다."),
-    DO_NOT_EXIST_FAVORITES_ID("존재하지 않는 즐겨찾기 아이디입니다."),
-    INVALID_EXTRA_FEE("추가요금 값은 0이상이여야 합니다.");
+    DO_NOT_EXIST_FAVORITES_ID("존재하지 않는 즐겨찾기 아이디입니다.");
+
 
 
     private String message;

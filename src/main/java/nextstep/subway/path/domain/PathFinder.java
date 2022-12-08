@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.ErrorMessage;
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -71,7 +72,7 @@ public class PathFinder {
         return (int) sourceTargetGraphPath.getWeight();
     }
 
-    public int getFee() {
-        return 1250;
+    public ExtraFare getExtraFare() {
+        return new ExtraFare(0);
     }
 }

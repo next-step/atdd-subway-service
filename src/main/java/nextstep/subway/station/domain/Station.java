@@ -20,11 +20,10 @@ public class Station extends BaseEntity {
         this.name = name;
     }
 
-    private Station(Long id, String name) {
+    public Station(Long id, String name) {
         this.id = id;
         this.name = name;
     }
-
 
     public Station copyOf() {
         return new Station(this.id, this.name);
@@ -51,5 +50,4 @@ public class Station extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id, name);
     }
-    
 }

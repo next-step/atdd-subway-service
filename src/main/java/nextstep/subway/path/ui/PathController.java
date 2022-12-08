@@ -14,11 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class PathController {
 
     private final PathService pathService;
-    private final MemberService memberService;
 
-    public PathController(PathService pathService, MemberService memberService) {
+    public PathController(PathService pathService) {
         this.pathService = pathService;
-        this.memberService = memberService;
     }
 
     @GetMapping("")

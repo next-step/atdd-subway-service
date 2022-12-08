@@ -83,7 +83,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         //and 총 거리도 함께 응답함
         assertThat(pathResponse.getDistance()).isEqualTo(5);
         //and 이용 요금도 함께 응답함
-        assertThat(pathResponse.getFee()).isEqualTo(1250);
+        assertThat(pathResponse.getFare()).isEqualTo(1250);
     }
 
     @Test

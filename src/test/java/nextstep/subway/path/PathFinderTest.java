@@ -1,24 +1,17 @@
 package nextstep.subway.path;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.ExtraFee;
+import nextstep.subway.line.domain.ExtraFare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.springframework.test.context.event.annotation.BeforeTestClass;
 
 import java.util.Arrays;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -45,8 +38,8 @@ public class PathFinderTest {
     final static Line 일호선 = new Line ("일호선", "bg-blue-600");
     final static Line 이호선 = new Line ("이호선", "bg-green-600");
     final static Line 삼호선 = new Line ("이호선", "bg-yellow-600");
-    final static Line 신분당선 = new Line("신분당선", "bg-red-600", new ExtraFee(100));
-    final static Line 경강선 = new Line("경강선", "bg-blue-400", new ExtraFee(200));
+    final static Line 신분당선 = new Line("신분당선", "bg-red-600", new ExtraFare(100));
+    final static Line 경강선 = new Line("경강선", "bg-blue-400", new ExtraFare(200));
 
     final static Member 어린이 = new Member("test@test.com","1234", 10);
     final static Member 청소년 = new Member("test2@test.com","1234", 15);
@@ -159,85 +152,6 @@ public class PathFinderTest {
     void disconnectExceptionTest() {
         assertThatThrownBy(() -> new PathFinder(인천역, 강남역, Arrays.asList(일호선, 이호선, 삼호선, 신분당선)))
                 .isInstanceOf(IllegalArgumentException.class);
-    }
-
-    static Stream<Arguments> lineExtraFeeTest() {
-        return Stream.of(
-                Arguments.of(양재역, 1350),
-                Arguments.of(양재시민의숲역, 1550),
-                Arguments.of(판교역, 2250),
-                Arguments.of(정자역, 2550),
-                Arguments.of(경기광주역, 2650)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("노선 추가요금 테스트")
-    @MethodSource
-    void lineExtraFeeTest(Station station, int expectedFee) {
-        //when
-        PathFinder pathFinder = new PathFinder(강남역, station, Arrays.asList(일호선, 이호선, 삼호선, 신분당선, 경강선));
-        assertThat(pathFinder.getFee()).isEqualTo(expectedFee);
-    }
-
-    static Stream<Arguments> noLoginFeeTest() {
-        return Stream.of(
-                Arguments.of(동인천역, 1250),
-                Arguments.of(도원역, 1350),
-                Arguments.of(부평역, 1550),
-                Arguments.of(신도림역, 2150),
-                Arguments.of(서울역, 2250),
-                Arguments.of(동두천역, 2750)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("비회원 요금 테스트")
-    @MethodSource
-    void noLoginFeeTest(Station station, int expectedFee) {
-        //when
-        PathFinder pathFinder = new PathFinder(인천역, station, Arrays.asList(일호선, 이호선, 삼호선, 신분당선));
-        assertThat(pathFinder.getFee()).isEqualTo(expectedFee);
-    }
-
-    static Stream<Arguments> kidLoginFeeTest() {
-        return Stream.of(
-                Arguments.of(동인천역, 450),
-                Arguments.of(도원역, 500),
-                Arguments.of(부평역, 600),
-                Arguments.of(신도림역, 900),
-                Arguments.of(서울역, 950),
-                Arguments.of(동두천역, 1200)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("어린이 요금 테스트")
-    @MethodSource
-    void kidLoginFeeTest(Station station, int expectedFee) {
-        //when
-        PathFinder pathFinder = new PathFinder(인천역, station, Arrays.asList(일호선, 이호선, 삼호선, 신분당선));
-        assertThat(pathFinder.getFee()).isEqualTo(expectedFee);
-    }
-
-    static Stream<Arguments> teenagerLoginFeeTest() {
-        return Stream.of(
-                Arguments.of(동인천역, 720),
-                Arguments.of(도원역, 800),
-                Arguments.of(부평역, 960),
-                Arguments.of(신도림역, 1440),
-                Arguments.of(서울역, 1520),
-                Arguments.of(동두천역, 1920)
-        );
-    }
-
-    @ParameterizedTest
-    @DisplayName("청소년 요금 테스트")
-    @MethodSource
-    void teenagerLoginFeeTest(Station station, int expectedFee) {
-        //when
-        PathFinder pathFinder = new PathFinder(인천역, station, Arrays.asList(일호선, 이호선, 삼호선, 신분당선));
-        assertThat(pathFinder.getFee()).isEqualTo(expectedFee);
     }
 
 }
