@@ -32,11 +32,8 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
 
         Path path = new PathFinder(lines.getStations(), lines.getSections()).findPath(sourceStation, targetStation);
-
-        Stations stations = path.getStations();
-        Distance distance = path.getDistance();
         Amount amount = path.getAmount(lines, loginMember);
 
-        return PathResponse.of(stations, distance, amount);
+        return PathResponse.of(path.getStations(), path.getDistance(), amount);
     }
 }

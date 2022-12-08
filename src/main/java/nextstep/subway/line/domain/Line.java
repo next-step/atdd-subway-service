@@ -58,7 +58,7 @@ public class Line extends BaseEntity {
     }
 
     public boolean isPathLine(Stations pathStations) {
-        return getSections().isPathSections(pathStations);
+        return this.sections.isPathSections(pathStations);
     }
 
     public Long getId() {
