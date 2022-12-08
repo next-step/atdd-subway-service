@@ -6,7 +6,7 @@ public class Fare {
     public static final int DEFAULT_DISTANCE = 10;
     private final int distance;
 
-    protected Fare(int distance) {
+    public Fare(int distance) {
         this.distance = distance;
     }
 

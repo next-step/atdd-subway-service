@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -30,6 +31,7 @@ public class PathService {
         Station target = stationRepository.findById(targetId).orElseThrow(EntityNotFoundException::new);
 
         PathFinder pathFinder = new PathFinder(lines);
-        return new PathResponse(pathFinder.findStations(source, target), pathFinder.findDistance(source, target));
+        int distance = pathFinder.findDistance(source, target);
+        return new PathResponse(pathFinder.findStations(source, target), distance, new Fare(distance).calculate());
     }
 }

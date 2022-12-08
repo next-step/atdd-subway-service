@@ -103,6 +103,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
 
         Then 최단 거리 경로를 응답
+        And 지하철 이용 요금도 함께 응답함
     */
     @Test
     void findPath_success() {
@@ -110,7 +111,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationA, stationD, stationC),
-                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(2)
+                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(2),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250)
         );
 
     }
