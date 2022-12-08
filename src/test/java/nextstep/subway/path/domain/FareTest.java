@@ -25,4 +25,12 @@ class FareTest {
         Fare fare = new Fare(distance);
         assertThat(fare.calculate()).isEqualTo(result);
     }
+
+    @DisplayName("요금을 계산한다. / 50km 초과 ∼ 50km 까지(8km 마다 100원)")
+    @ParameterizedTest
+    @CsvSource(value = {"51:2150", "58:2150", "59:2250", "67:2350"}, delimiter = ':')
+    void calculate_50km(int distance, int result) {
+        Fare fare = new Fare(distance);
+        assertThat(fare.calculate()).isEqualTo(result);
+    }
 }

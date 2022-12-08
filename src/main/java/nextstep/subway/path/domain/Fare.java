@@ -17,7 +17,7 @@ public class Fare {
         if (10 < this.distance && this.distance <= 50) {
             return DEFAULT_FARE + calculateOverFareByFiveKm(this.distance - DEFAULT_DISTANCE);
         }
-        return DEFAULT_FARE + calculateOverFareByEightKm(this.distance - DEFAULT_DISTANCE);
+        return DEFAULT_FARE + calculateOverFareByFiveKm(50 - DEFAULT_DISTANCE) + calculateOverFareByEightKm(this.distance - 50);
     }
 
     private int calculateOverFareByFiveKm(int distance) {
@@ -25,6 +25,6 @@ public class Fare {
     }
 
     private int calculateOverFareByEightKm(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
+        return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
     }
 }
