@@ -18,6 +18,7 @@ public enum ErrorMessage {
 
     //회원관리 오류 메시지
     DO_NOT_FIND_EMAIL("입력하신 email에 해당하는 아이디가 없습니다."),
+    INVALID_TOKEN("유효하지 않은 토큰 값 입니다."),
 
     //즐겨찾기 오류 메시지
     DO_NOT_EXIST_FAVORITES_LIST("삭제할 수 있는 즐겨찾기 항목이 없습니다."),
@@ -25,7 +26,8 @@ public enum ErrorMessage {
     DO_NOT_EXIST_STATION_ID("존재하지 않는 역 아이디입니다."),
     DO_NOT_EXIST_LINE_ID("존재하지 않는 노선 아이디 입니다."),
     DO_NOT_EXIST_MEMBER_ID("존재하지 않는 회원 아이디입니다."),
-    DO_NOT_EXIST_FAVORITES_ID("존재하지 않는 즐겨찾기 아이디입니다.");
+    DO_NOT_EXIST_FAVORITES_ID("존재하지 않는 즐겨찾기 아이디입니다."),
+    INVALID_EXTRA_FEE("추가요금 값은 0이상이여야 합니다.");
 
 
     private String message;
