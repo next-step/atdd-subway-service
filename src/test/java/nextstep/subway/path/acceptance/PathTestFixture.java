@@ -5,9 +5,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.station.dto.StationResponse;
-import org.assertj.core.api.Assertions;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
@@ -17,9 +16,22 @@ public class PathTestFixture {
         return 출발역에서_도착역_경로_조회_요청(source.getId(), target.getId());
     }
 
+    public static ExtractableResponse<Response> 회원_출발역에서_도착역_경로_조회됨(StationResponse source, StationResponse target, TokenResponse token) {
+        return 회원_출발역에서_도착역_경로_조회_요청(source.getId(), target.getId(), token);
+    }
+
     public static ExtractableResponse<Response> 출발역에서_도착역_경로_조회_요청(Long sourceId, Long targetId) {
         return RestAssured
                 .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
+                .then().log().all()
+                .extract();
+    }
+    public static ExtractableResponse<Response> 회원_출발역에서_도착역_경로_조회_요청(Long sourceId, Long targetId, TokenResponse token) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token.getAccessToken())
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
                 .then().log().all()
@@ -36,6 +48,10 @@ public class PathTestFixture {
 
     public static void 지하철_이용_요금이_응답됩(ExtractableResponse<Response> response) {
         assertThat(response.jsonPath().getString("fare")).isNotNull();
+    }
+
+    public static void 지하철_이용_요금에_할인_적용_응답됩(ExtractableResponse<Response> response, int fare) {
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(fare);
     }
 
     public static void 총_거리가_응답됨(ExtractableResponse<Response> response) {

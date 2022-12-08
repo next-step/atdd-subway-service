@@ -1,17 +1,25 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.acceptance.AuthTestFixture.로그인을_요청;
+import static nextstep.subway.auth.application.AuthServiceTest.AGE;
+import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
+import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
 import static nextstep.subway.line.acceptance.LineSectionTestFixture.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineTestFixture.지하철_노선_등록되어_있음;
+import static nextstep.subway.member.MemberTestFixture.회원_생성을_요청;
 import static nextstep.subway.path.acceptance.PathTestFixture.경로_조회_요청_성공됨;
 import static nextstep.subway.path.acceptance.PathTestFixture.경로_조회_요청_실패됨;
+import static nextstep.subway.path.acceptance.PathTestFixture.지하철_이용_요금에_할인_적용_응답됩;
 import static nextstep.subway.path.acceptance.PathTestFixture.지하철_이용_요금이_응답됩;
 import static nextstep.subway.path.acceptance.PathTestFixture.총_거리가_응답됨;
 import static nextstep.subway.path.acceptance.PathTestFixture.최단_거리_경로가_응답됨;
 import static nextstep.subway.path.acceptance.PathTestFixture.출발역에서_도착역_경로_조회됨;
+import static nextstep.subway.path.acceptance.PathTestFixture.회원_출발역에서_도착역_경로_조회됨;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -56,7 +64,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     @DisplayName("출발역과 도착역의 최단거리를 조회된다.")
     @Test
-    void find_path() {
+    void find_path_none() {
         //when
         ExtractableResponse<Response> response = 출발역에서_도착역_경로_조회됨(교대역, 강남역);
 
@@ -65,6 +73,24 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_거리_경로가_응답됨(response);
         총_거리가_응답됨(response);
         지하철_이용_요금이_응답됩(response);
+    }
+
+
+    @DisplayName("회원이 출발역과 도착역의 최단거리를 조회하면 회원 유형별 할인 정책이 적용된다.")
+    @Test
+    void find_path_member() {
+        //given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        TokenResponse token = 로그인을_요청(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        //when
+        ExtractableResponse<Response> response = 회원_출발역에서_도착역_경로_조회됨(교대역, 강남역, token);
+
+        //then
+        경로_조회_요청_성공됨(response);
+        최단_거리_경로가_응답됨(response);
+        총_거리가_응답됨(response);
+        지하철_이용_요금에_할인_적용_응답됩(response, 450);
     }
 
     @DisplayName("출발역과 도착역이 다른 경우를 조회환다.")
