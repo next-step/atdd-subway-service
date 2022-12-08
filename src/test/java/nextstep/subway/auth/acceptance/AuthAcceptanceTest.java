@@ -58,7 +58,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 토큰을_이용하여_회원_정보_조회를_한다("INVALID");
 
         // then
-        상태코드가_기대값과_일치하는지_검증한다(response, HttpStatus.INTERNAL_SERVER_ERROR);
+        상태코드가_기대값과_일치하는지_검증한다(response, HttpStatus.UNAUTHORIZED);
     }
 
     public static ExtractableResponse<Response> 로그인_요청을_한다(String email, String password) {
