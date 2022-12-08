@@ -40,7 +40,7 @@ public class FareCalculator {
         fare += minLineFare;
 
         AgeFarePolicy policy = AgeFarePolicy.findByAge(age);
-        return fare;
+        return policy.discount(fare);
     }
 
 
