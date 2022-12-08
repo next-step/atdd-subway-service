@@ -1,6 +1,8 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.ui.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
@@ -8,14 +10,18 @@ import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
 public class PathFinder {
     private final SubwayGraph graph;
+    private final List<Section> sections;
 
     private PathFinder(List<Line> lines) {
+        this.sections = lines.stream()
+                .flatMap(line -> line.getSections().stream())
+                .collect(Collectors.toList());
         this.graph = new SubwayGraph(DefaultWeightedEdge.class, lines);
     }
 
@@ -23,7 +29,8 @@ public class PathFinder {
         return new PathFinder(lines);
     }
 
-    public PathResponse getShortestPath(final Station sourceStation, final Station targetStation) {
+    public PathResponse getShortestPath(final Station sourceStation, final Station targetStation,
+                                        final Consumer<Fare> discounter) {
         validate(sourceStation, targetStation);
         GraphPath<Station, DefaultWeightedEdge> shortestPath =
                 new DijkstraShortestPath<>(graph).getPath(sourceStation, targetStation);
@@ -33,7 +40,14 @@ public class PathFinder {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        return new PathResponse(responses, (int) shortestPath.getWeight());
+        List<Station> stations = shortestPath.getVertexList();
+        Fare fare = FareCalculator.calculateAdditionalFare(
+                sections, stations, new Distance((int) shortestPath.getWeight())
+        );
+
+        discounter.accept(fare);
+
+        return new PathResponse(responses, new Distance((int) shortestPath.getWeight()), fare);
     }
 
     private void validate(final GraphPath<Station, DefaultWeightedEdge> shortestPath) {

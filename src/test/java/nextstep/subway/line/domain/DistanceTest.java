@@ -27,4 +27,11 @@ class DistanceTest {
 
         assertThat(distance.value()).isEqualTo(1);
     }
+
+    @Test
+    void isBiggerThan() {
+        Distance distance = new Distance(3);
+
+        assertThat(distance.isBiggerThan(1)).isTrue();
+    }
 }

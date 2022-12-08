@@ -62,10 +62,10 @@ public class PathServiceTest {
         남부터미널역 = createStation("남부터미널역", 4L);
         명동역 = createStation("명동역", 5L);
         사당역 = createStation("사당역", 6L);
-        신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = createLine("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = createLine("삼호선", "bg-red-600", 교대역, 양재역, 5);
-        사호선 = createLine("사호선", "bg-red-600", 명동역, 사당역, 30);
+        신분당선 = createLine("신분당선", "bg-red-600", 강남역, 양재역, 10, 100);
+        이호선 = createLine("이호선", "bg-red-600", 교대역, 강남역, 10, 100);
+        삼호선 = createLine("삼호선", "bg-red-600", 교대역, 양재역, 5, 100);
+        사호선 = createLine("사호선", "bg-red-600", 명동역, 사당역, 30, 100);
         삼호선.addSection(createSection(교대역, 남부터미널역, 3));
     }
 
@@ -77,7 +77,7 @@ public class PathServiceTest {
         when(stationRepository.findById(남부터미널역.getId())).thenReturn(Optional.of(남부터미널역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        PathResponse shortestPath = pathService.findShortestPath(강남역.getId(), 남부터미널역.getId());
+        PathResponse shortestPath = pathService.findShortestPath(강남역.getId(), 남부터미널역.getId(), 30);
 
         assertThat(shortestPath.getStations().stream().map(StationResponse::getId))
                 .containsExactly(강남역.getId(), 양재역.getId(), 남부터미널역.getId());
@@ -90,7 +90,7 @@ public class PathServiceTest {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 강남역.getId(), 30))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 " + 강남역.getName() + "으로 동일합니다.");
     }
@@ -102,7 +102,7 @@ public class PathServiceTest {
         when(stationRepository.findById(사당역.getId())).thenReturn(Optional.of(사당역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선, 사호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 사당역.getId()))
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 사당역.getId(), 30))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("출발역과 도착역이 연결이 되어 있지 않습니다.");
     }
@@ -114,7 +114,7 @@ public class PathServiceTest {
         when(stationRepository.findById(강남역.getId())).thenReturn(Optional.of(강남역));
         when(stationRepository.findById(없는역_ID)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 없는역_ID))
+        assertThatThrownBy(() -> pathService.findShortestPath(강남역.getId(), 없는역_ID, 30))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining("%d", 없는역_ID)
                 .hasMessageContaining("에 해당하는 Station을 찾을 수 없습니다.");

@@ -16,7 +16,7 @@ class LineTest {
         Station 서울역 = createStation("서울역", 1L);
         Station 종각역 = createStation("종각역", 2L);
 
-        Line line = createLine("1호선", "blue", 종각역, 서울역, 10);
+        Line line = createLine("1호선", "blue", 종각역, 서울역, 10, 100);
 
         assertThat(line.getStations()).containsExactly(종각역, 서울역);
     }
@@ -27,7 +27,7 @@ class LineTest {
         Station 서울역 = createStation("서울역", 1L);
         Station 종각역 = createStation("종각역", 2L);
         Station 시청역 = createStation("시청역", 3L);
-        Line line = createLine("1호선", "blue", 종각역, 서울역, 10);
+        Line line = createLine("1호선", "blue", 종각역, 서울역, 10, 100);
 
         line.addSection(createSection(종각역, 시청역, 5));
 
@@ -40,7 +40,7 @@ class LineTest {
         Station 서울역 = createStation("서울역", 1L);
         Station 종각역 = createStation("종각역", 2L);
         Station 시청역 = createStation("시청역", 3L);
-        Line line = createLine("1호선", "blue", 종각역, 서울역, 10);
+        Line line = createLine("1호선", "blue", 종각역, 서울역, 10, 100);
 
         assertThatThrownBy(() -> line.addSection(createSection(종각역, 시청역, 15)))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -52,7 +52,7 @@ class LineTest {
     void addSectionWithException2() {
         Station 서울역 = createStation("서울역", 1L);
         Station 종각역 = createStation("종각역", 2L);
-        Line line = createLine("1호선", "blue", 종각역, 서울역, 10);
+        Line line = createLine("1호선", "blue", 종각역, 서울역, 10, 100);
 
         assertThatThrownBy(() -> line.addSection(createSection(종각역, 서울역, 15)))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -66,7 +66,7 @@ class LineTest {
         Station 종각역 = createStation("종각역", 2L);
         Station 신설동역 = createStation("신설동역", 3L);
         Station 용산역 = createStation("용산역", 4L);
-        Line line = createLine("1호선", "blue", 종각역, 서울역, 10);
+        Line line = createLine("1호선", "blue", 종각역, 서울역, 10, 100);
 
         assertThatThrownBy(() -> line.addSection(createSection(신설동역, 용산역, 5)))
                 .isInstanceOf(IllegalArgumentException.class)
@@ -80,7 +80,7 @@ class LineTest {
         Station 종각역 = createStation("종각역", 2L);
         Station 신설동역 = createStation("신설동역", 3L);
         Section section = createSection(종각역, 신설동역, 5);
-        Line line = createLine("1호선", "blue", 서울역, 종각역, 10);
+        Line line = createLine("1호선", "blue", 서울역, 종각역, 10, 100);
         line.addSection(section);
 
         line.deleteStationById(3L);
