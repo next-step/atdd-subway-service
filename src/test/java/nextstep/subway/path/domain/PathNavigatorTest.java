@@ -10,15 +10,30 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import nextstep.subway.common.domain.Name;
+import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.station.domain.Station;
 
 @DisplayName("경로 탐색")
 class PathNavigatorTest {
+
+	private Station 교대역;
+	private Station 남부터미널역;
+	private Station 양재역;
+
+	@BeforeEach
+	void setup() {
+		교대역 = station(Name.from("교대역"));
+		남부터미널역 = station(Name.from("남부터미널역"));
+		양재역 = station(Name.from("양재역"));
+
+	}
 
 	/**
 	 * 교대역    --- *2호선* (10)---      강남역
@@ -50,15 +65,15 @@ class PathNavigatorTest {
 		PathNavigator navigator = PathNavigator.from(Arrays.asList(신분당선(), 이호선(), 삼호선()));
 
 		// when
-		Path path = navigator.path(station(Name.from("교대역")), station(Name.from("양재역")));
+		Path path = navigator.path(교대역, 양재역);
 
 		// then
 		assertAll(
 			() -> assertThat(path.getDistance().value()).isEqualTo(15),
 			() -> assertThat(path.getStations()).containsExactly(
-				station(Name.from("교대역")),
-				station(Name.from("남부터미널역")),
-				station(Name.from("양재역"))),
+				교대역,
+				남부터미널역,
+				양재역),
 			() -> assertThat(path.getSections()).containsExactly(
 				section("교대역", "남부터미널역", 5),
 				section("남부터미널역", "양재역", 10)
@@ -66,7 +81,44 @@ class PathNavigatorTest {
 		);
 	}
 
+	@DisplayName("출발역과 도착역이 같은 경우 예외")
+	@Test
+	void findShortestPathWithSameUpDownStationTest() {
+		// given
+		PathNavigator navigator = PathNavigator.from(Arrays.asList(신분당선(), 이호선(), 삼호선()));
+
+		// when
+		assertThatExceptionOfType(InvalidDataException.class)
+			.isThrownBy(() -> navigator.path(교대역, 교대역))
+			.withMessageContaining("동일할 경우 조회가 불가");
+	}
+
+	@DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 예외")
+	@Test
+	void findShortestPathWithNotConnectedStationTest() {
+		// given
+		PathNavigator navigator = PathNavigator.from(Arrays.asList(신분당선(), 이호선(), 삼호선()));
+		Station 판교역 = station(Name.from("판교역"));
+
+		// when
+		assertThatExceptionOfType(InvalidDataException.class)
+			.isThrownBy(() -> navigator.path(교대역, 판교역))
+			.withMessageContaining("연결 정보를 찾을 수 없습니다");
+	}
+
+	@DisplayName("출발역 혹은 도착역이 존재하지 않는 경우 예외")
+	@Test
+	void findShortestPathWithNotExistedStationTest() {
+		// given
+		PathNavigator navigator = PathNavigator.from(Arrays.asList(신분당선(), 이호선(), 삼호선()));
+
+		// when
+		assertThatIllegalArgumentException()
+			.isThrownBy(() -> navigator.path(null, 양재역));
+	}
+
 	private Line 신분당선() {
+
 		return line("신분당선", "red", "강남역", "양재역", 10);
 	}
 
