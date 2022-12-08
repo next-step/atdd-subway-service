@@ -5,6 +5,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
+import nextstep.subway.auth.dto.TokenResponse;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -14,6 +15,7 @@ import org.springframework.http.MediaType;
 
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("인증 관련 인수 테스트")
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -59,7 +61,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         상태코드가_기대값과_일치하는지_검증한다(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
-    private static ExtractableResponse<Response> 로그인_요청을_한다(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청을_한다(String email, String password) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -70,15 +72,20 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private void 상태코드가_기대값과_일치하는지_검증한다(ExtractableResponse<Response> response, HttpStatus status) {
+    private static void 상태코드가_기대값과_일치하는지_검증한다(ExtractableResponse<Response> response, HttpStatus status) {
         assertThat(response.statusCode()).isEqualTo(status.value());
     }
 
-    private String 토큰을_얻는다(ExtractableResponse<Response> response) {
-        return response.jsonPath().getString("accessToken");
+    private static String 토큰을_얻는다(ExtractableResponse<Response> response) {
+        return response.as(TokenResponse.class).getAccessToken();
     }
 
     private void 토큰이_존재하는지_확인한다(String 인증토큰) {
         assertThat(인증토큰).isNotEmpty();
+    }
+
+    public static void 로그인_됨(ExtractableResponse<Response> response) {
+        토큰을_얻는다(response);
+        상태코드가_기대값과_일치하는지_검증한다(response, HttpStatus.OK);
     }
 }
