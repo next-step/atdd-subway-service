@@ -4,9 +4,9 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.station.dto.StationResponse;
 
 public class FavoriteResponse {
-    Long id;
-    StationResponse source;
-    StationResponse target;
+    private final Long id;
+    private final StationResponse source;
+    private final StationResponse target;
 
     public FavoriteResponse(Long id, StationResponse source, StationResponse target) {
         this.id = id;
