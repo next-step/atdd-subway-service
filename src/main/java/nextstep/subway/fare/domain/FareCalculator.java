@@ -12,16 +12,16 @@ public class FareCalculator {
     private static final int MIN_LINE_FARE = 0;
     private static final int MIN_ADULT_AGE = 19;
 
-    private int lineFare;
+    private int minLineFare;
     private int age;
 
     public FareCalculator() {
-        this.lineFare = MIN_LINE_FARE;
+        this.minLineFare = MIN_LINE_FARE;
         this.age = MIN_ADULT_AGE;
     }
 
     private FareCalculator(int lineFare, int age) {
-        this.lineFare = lineFare;
+        this.minLineFare = lineFare;
         this.age = age;
     }
 
@@ -37,7 +37,10 @@ public class FareCalculator {
         checkDistanceNotNegative(distance);
 
         int fare = calculateWithDistance(distance);
-        return 0;
+        fare += minLineFare;
+
+//        AgeFarePolicy policy = AgeFarePolicy.findByAge(age);
+        return fare;
     }
 
 
