@@ -4,7 +4,7 @@ public class TeenagerDiscountPolicy extends DiscountPolicy {
 
     private static final double DISCOUNT_RATE = 0.2;
 
-    private final Money discountAmount = new Money(350);
+    private final Money discountAmount = Money.from(350);
 
     @Override
     public Money getCharge() {

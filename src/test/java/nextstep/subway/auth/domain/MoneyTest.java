@@ -13,7 +13,7 @@ class MoneyTest {
     @Test
     void create_money_success() {
         final double source = 100;
-        final Money money = new Money(source);
+        final Money money = Money.from(source);
         assertThat(money.getAmount()).isEqualTo(source);
     }
 
@@ -22,9 +22,9 @@ class MoneyTest {
     void plus_money_success() {
         final double source = 100;
         final double target = 300;
-        final Money sourceMoney = new Money(source);
-        final Money targetMoney = new Money(target);
-        assertThat(sourceMoney.plus(targetMoney)).isEqualTo(new Money(source + target));
+        final Money sourceMoney = Money.from(source);
+        final Money targetMoney = Money.from(target);
+        assertThat(sourceMoney.plus(targetMoney)).isEqualTo(Money.from(source + target));
     }
 
     @DisplayName("요금 뺄셈")
@@ -32,9 +32,9 @@ class MoneyTest {
     void minus_money_success() {
         final double source = 300;
         final double target = 100;
-        final Money sourceMoney = new Money(source);
-        final Money targetMoney = new Money(target);
-        assertThat(sourceMoney.minus(targetMoney)).isEqualTo(new Money(source - target));
+        final Money sourceMoney = Money.from(source);
+        final Money targetMoney = Money.from(target);
+        assertThat(sourceMoney.minus(targetMoney)).isEqualTo(Money.from(source - target));
     }
 
     @DisplayName("요금 뺄셈 - 차감하고자 하는 요금이 더 큰경우")
@@ -42,8 +42,8 @@ class MoneyTest {
     void minus_money_IllegalArgumentException() {
         final double source = 100;
         final double target = 300;
-        final Money sourceMoney = new Money(source);
-        final Money targetMoney = new Money(target);
+        final Money sourceMoney = Money.from(source);
+        final Money targetMoney = Money.from(target);
         assertThatIllegalArgumentException().isThrownBy(() -> sourceMoney.minus(targetMoney));
     }
 
@@ -53,7 +53,7 @@ class MoneyTest {
         final double source = 100;
         final double rate = 0.5;
         final double expected = 50;
-        final Money sourceMoney = new Money(source);
-        assertThat(sourceMoney.divideByDecimalPoint(rate)).isEqualTo(new Money(expected));
+        final Money sourceMoney = Money.from(source);
+        assertThat(sourceMoney.divideByDecimalPoint(rate)).isEqualTo(Money.from(expected));
     }
 }

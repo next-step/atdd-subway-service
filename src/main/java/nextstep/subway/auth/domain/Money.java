@@ -6,8 +6,12 @@ public class Money {
 
     private final double amount;
 
-    public Money(double amount) {
+    private Money(double amount) {
         this.amount = amount;
+    }
+
+    public static Money from(double amount) {
+        return new Money(amount);
     }
 
     public double getAmount() {
@@ -15,7 +19,7 @@ public class Money {
     }
 
     public Money plus(Money targetMoney) {
-        return new Money(this.amount + targetMoney.amount);
+        return Money.from(this.amount + targetMoney.amount);
     }
 
     public Money minus(Money targetMoney) {
@@ -23,11 +27,11 @@ public class Money {
             throw new IllegalArgumentException(
                     "기존 요금은 차감하고자 하는 요금보다 커야합니다. 기존요금 " + this.amount + " 차감요금:" + targetMoney.amount);
         }
-        return new Money(this.amount - targetMoney.amount);
+        return Money.from(this.amount - targetMoney.amount);
     }
 
     public Money divideByDecimalPoint(double rate) {
-        return new Money(this.amount - (this.amount * rate));
+        return Money.from(this.amount - (this.amount * rate));
     }
 
     @Override

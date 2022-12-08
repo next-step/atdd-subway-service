@@ -4,7 +4,7 @@ import nextstep.subway.member.domain.Age;
 
 public abstract class DiscountPolicy {
 
-    protected Money defaultCharge = new Money(1250);
+    protected Money defaultCharge = Money.from(1250);
 
     protected abstract Money getCharge();
 
