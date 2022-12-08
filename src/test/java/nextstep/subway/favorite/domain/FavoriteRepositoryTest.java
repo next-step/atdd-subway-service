@@ -44,8 +44,13 @@ public class FavoriteRepositoryTest {
     @DisplayName("즐겨찾기를 생성한다")
     @Test
     void save() {
-        assertThat(saveFavorite).isNotNull();
-        assertThat(saveFavorite.getId()).isNotNull();
+        Station 역삼역 = stationRepository.save(new Station("역삼역"));
+        Station 잠실역 = stationRepository.save(new Station("잠실역"));
+
+        Favorite actual = favoriteRepository.save(new Favorite(saveMember, 역삼역, 잠실역));
+
+        assertThat(actual).isNotNull();
+        assertThat(actual.getId()).isNotNull();
     }
 
     @DisplayName("계정의 즐겨찾기를 불러온다.")
