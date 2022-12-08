@@ -7,10 +7,14 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.SourceAndTargetStationDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -34,5 +38,14 @@ public class FavoriteService {
         );
 
         return FavoriteResponse.from(result);
+    }
+
+    public List<FavoriteResponse> getFavorite(LoginMember loginMember) {
+        MemberResponse member = memberService.findMember(loginMember.getId());
+        List<Favorite> favorite = favoriteRepository.findAllByMemberId(member.getId());
+
+        return favorite.stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 }
