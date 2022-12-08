@@ -129,7 +129,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static void 상태코드가_기대값과_일치하는지_검증(ExtractableResponse<Response> response, HttpStatus status) {
         assertThat(response.statusCode()).isEqualTo(status.value());
     }
-    
+
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
