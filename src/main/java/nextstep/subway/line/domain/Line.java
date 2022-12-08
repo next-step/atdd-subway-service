@@ -65,7 +65,11 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public void makeGraph(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.makeGraph(graph);
+    public Station findUpStation() {
+        return sections.findUpStation();
+    }
+
+    public Optional<Section> findNextLowerSection(Station beforeStation) {
+        return sections.findNextLowerSection(beforeStation);
     }
 }
