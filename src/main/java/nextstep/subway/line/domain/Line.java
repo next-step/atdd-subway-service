@@ -101,6 +101,10 @@ public class Line extends BaseEntity {
         return fare;
     }
 
+    public int getFareValue() {
+        return fare.getFare();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {

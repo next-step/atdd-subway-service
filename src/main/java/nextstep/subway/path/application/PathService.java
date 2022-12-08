@@ -3,11 +3,9 @@ package nextstep.subway.path.application;
 import java.util.List;
 import java.util.stream.Collectors;
 import nextstep.subway.common.exception.ErrorEnum;
-import nextstep.subway.fare.domain.SubwayFareCalculator;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineFare;
 import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
@@ -43,11 +41,7 @@ public class PathService {
     }
 
     private int findFare(Sections sections, Path path, int age) {
-        Lines lines = sections.findLinesFrom(path.getStations());
-        LineFare lineFare = lines.findMaxLineFare();
-
-        SubwayFareCalculator fareCalculator = SubwayFareCalculator.of(lineFare.getFare(), age);
-        return fareCalculator.calculate(path.getDistance());
+        return FareCalculator.distanceWithAgeCalculate(path.getDistance(), age);
     }
 
     private Station findStationById(Long stationId) {

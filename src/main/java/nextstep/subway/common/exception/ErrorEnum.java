@@ -19,7 +19,8 @@ public enum ErrorEnum {
     DISTANCE_GREATER_ZERO("거리는 0 이상이어야 합니다."),
     LINE_FARE_GREATER_ZERO("노선 요금은 0 이상이어야 합니다."),
     NOT_EXIST_AGE_FARE_POLICY("연령별 요금 정책이 존재하지 않습니다."),
-    FARE_LESS_THAN_DEDUCTION_FARE("지하철 운임요금이 공제금액보다 작습니다.");
+    FARE_LESS_THAN_DEDUCTION_FARE("지하철 운임요금이 공제금액보다 작습니다."),
+    NOT_EXISTS_DISTANCE_AND_FARE_POLICY("거리와 나이에 해당하는 요금계산 정책이 없습니다."),;
 
     private final String message;
 

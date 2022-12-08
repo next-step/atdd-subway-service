@@ -1,6 +1,6 @@
 package nextstep.subway.auth.domain;
 
-import nextstep.subway.fare.domain.SubwayFareCalculator;
+import nextstep.subway.fare.domain.FareCalculator;
 
 public class AnonymousMember implements AuthMember{
     @Override
@@ -15,7 +15,7 @@ public class AnonymousMember implements AuthMember{
 
     @Override
     public Integer getAge() {
-        return SubwayFareCalculator.MIN_ADULT_AGE;
+        return FareCalculator.MIN_ADULT_AGE;
     }
 
     @Override
