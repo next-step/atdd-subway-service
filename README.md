@@ -531,6 +531,7 @@ fun RequestSpecification.즐겨찾기_생성_요청(
 
 </details>
 
+---
 
 ## 🚀 4단계 - 요금 조회
 <details>
