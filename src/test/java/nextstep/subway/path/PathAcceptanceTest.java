@@ -92,6 +92,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findShortestPath() {
         ExtractableResponse<Response> 성인_회원_경로조회_결과 = 최단_경로_조회_요청(성인회원, 양재역.getId(), 서현역.getId());
+
+        PathResponse temp = 성인_회원_경로조회_결과.as(PathResponse.class);
+        
+
+
         지하철_최단_경로_조회됨(성인_회원_경로조회_결과, 10, 1450);
 
 
@@ -189,16 +194,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     private void 노선_여러개_등록() {
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-                        new LineRequest("신분당선", "red", 양재역.getId(), 정자역.getId(), 10))
+                        new LineRequest("신분당선", "red", 양재역.getId(), 정자역.getId(), 10, 100))
                 .as(LineResponse.class);
         분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-                        new LineRequest("분당선", "yellow", 수서역.getId(), 정자역.getId(), 10))
+                        new LineRequest("분당선", "yellow", 수서역.getId(), 정자역.getId(), 10, 200))
                 .as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-                        new LineRequest("삼호선", "orange", 양재역.getId(), 수서역.getId(), 5))
+                        new LineRequest("삼호선", "orange", 양재역.getId(), 수서역.getId(), 5, 100))
                 .as(LineResponse.class);
         팔호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
-                        new LineRequest("팔호선", "pink", 잠실역.getId(), 복정역.getId(), 20))
+                        new LineRequest("팔호선", "pink", 잠실역.getId(), 복정역.getId(), 20, 150))
                 .as(LineResponse.class);
     }
 
