@@ -48,5 +48,15 @@ class FareCalculatorTest {
     }
 
 
+    @DisplayName("거리가 50km 초과일 때 요금을 계산한다.")
+    @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
+    @CsvSource(value = {"51:2150", "74:2350", "80:2450"}, delimiter = ':')
+    void overFiftyFare(int input, int expected) {
+        int fare = fareCalculator.calculate(input);
+
+        Assertions.assertThat(fare).isEqualTo(expected);
+    }
+
+
 
 }
