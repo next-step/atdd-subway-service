@@ -29,7 +29,7 @@ public class PathService {
         Station targetStation = stationRepository.findById(targetStationId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        List<Line> lines = lineRepository.findAllWithSections();
+        List<Line> lines = lineRepository.findAll();
         LinePathGraph linePathGraph = new LinePathGraph(lines);
         LinePath path = linePathGraph.getShortestPath(sourceStation, targetStation);
         return PathResponse.of(path);

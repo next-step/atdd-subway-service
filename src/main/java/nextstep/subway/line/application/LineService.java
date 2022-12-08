@@ -37,7 +37,7 @@ public class LineService {
     }
 
     public List<LineResponse> findLines() {
-        return LineResponse.list(lineRepository.findAllWithSections());
+        return LineResponse.list(lineRepository.findAll());
     }
 
     public LineResponse findLineResponseById(Long id) {
@@ -71,7 +71,7 @@ public class LineService {
     }
 
     private Line findLineById(Long id) {
-        return lineRepository.findByIdWithSections(id)
+        return lineRepository.findById(id)
                 .orElseThrow(RuntimeException::new);
     }
 }

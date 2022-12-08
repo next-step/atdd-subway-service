@@ -90,13 +90,13 @@ class LineServiceTest {
     @Test
     void find_all_lines_test() {
         // given
-        given(lineRepository.findAllWithSections()).willReturn(Arrays.asList(이호선));
+        given(lineRepository.findAll()).willReturn(Arrays.asList(이호선));
 
         // when
         List<LineResponse> responses = lineService.findLines();
 
         // then
-        then(lineRepository).should(times(1)).findAllWithSections();
+        then(lineRepository).should(times(1)).findAll();
         지하철_노선_목록_응답_검증(responses, 이호선);
     }
 
@@ -110,14 +110,14 @@ class LineServiceTest {
     void update_line_test() {
         // given
         Line line = new Line("구분당선", "color");
-        given(lineRepository.findByIdWithSections(any())).willReturn(Optional.of(line));
+        given(lineRepository.findById(any())).willReturn(Optional.of(line));
         LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("신분당선", "changeColor");
 
         // when
         lineService.updateLine(1L, lineUpdateRequest);
 
         // then
-        then(lineRepository).should(times(1)).findByIdWithSections(any());
+        then(lineRepository).should(times(1)).findById(any());
         assertThat(line).isEqualTo(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
     }
 
@@ -152,7 +152,7 @@ class LineServiceTest {
         long downStationId = 2L;
         SectionCreateRequest sectionCreateRequest = new SectionCreateRequest(upStationId, downStationId, 5);
 
-        given(lineRepository.findByIdWithSections(any())).willReturn(Optional.of(이호선));
+        given(lineRepository.findById(any())).willReturn(Optional.of(이호선));
         given(stationService.findStationById(upStationId)).willReturn(삼성역);
         given(stationService.findStationById(downStationId)).willReturn(선릉역);
 
@@ -174,7 +174,7 @@ class LineServiceTest {
     void remove_line_station_test() {
         // given
         long stationId = 1L;
-        given(lineRepository.findByIdWithSections(any())).willReturn(Optional.of(이호선));
+        given(lineRepository.findById(any())).willReturn(Optional.of(이호선));
         given(stationService.findStationById(stationId)).willReturn(삼성역);
 
         // when

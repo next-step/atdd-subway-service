@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.line.message.SectionMessage;
 import nextstep.subway.path.application.LinePathGraph;
 import nextstep.subway.station.domain.Station;
+import org.hibernate.annotations.BatchSize;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
@@ -15,6 +16,7 @@ public class Sections {
 
     private static final int MINIMUM_NUMBER_OF_SECTION = 1;
 
+    @BatchSize(size = 200)
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private final List<Section> sectionItems;
 
