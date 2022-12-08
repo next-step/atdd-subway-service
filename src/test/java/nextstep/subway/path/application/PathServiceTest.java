@@ -1,25 +1,17 @@
 package nextstep.subway.path.application;
 
-import com.google.common.collect.ImmutableMap;
-import jdk.internal.net.http.common.Log;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.*;
-import nextstep.subway.member.domain.Member;
-import nextstep.subway.path.domain.Fare;
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.CsvSource;
-import org.junit.jupiter.params.provider.MethodSource;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -27,7 +19,6 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
-import java.util.stream.Stream;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -103,8 +94,8 @@ public class PathServiceTest {
         이호선.addSection(new Section(이호선, 역삼역, 강남역, new Distance(10)));
         이호선.addSection(new Section(이호선, 강남역, 교대역, new Distance(5)));
 
-        삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, new Distance(5)));
-        삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, new Distance(5)));
+        삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, new Distance(3)));
+        삼호선.addSection(new Section(삼호선, 남부터미널역, 양재역, new Distance(2)));
 
         신분당선.addSection(new Section(신분당선, 강남역, 양재역, new Distance(10)));
         신분당선.addSection(new Section(신분당선, 양재역, 양재시민의숲역, new Distance(10)));
