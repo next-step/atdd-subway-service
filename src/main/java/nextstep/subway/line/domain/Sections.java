@@ -8,7 +8,7 @@ import javax.persistence.OneToMany;
 import java.util.*;
 
 import static nextstep.subway.common.domain.BizExceptionMessages.*;
-import static nextstep.subway.common.domain.BizMagicNumber.*;
+import static nextstep.subway.common.domain.BizMagicNumber.SECTION_MIN_SIZE;
 
 @Embeddable
 public class Sections {

@@ -56,6 +56,11 @@ public class Section {
         return distance;
     }
 
+    public boolean isSame(Station upStation, Station downStation) {
+        return (this.upStation.equals(upStation) &&this.downStation.equals(downStation)) ||
+                (this.upStation.equals(downStation) &&this.downStation.equals(upStation));
+    }
+
     public boolean isSameWithUpStation(Station station) {
         return this.upStation.equals(station);
     }

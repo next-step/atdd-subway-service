@@ -5,19 +5,22 @@ import nextstep.subway.station.domain.Station;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
 
 import static nextstep.subway.common.domain.BizExceptionMessages.*;
+import static nextstep.subway.common.domain.BizMagicNumber.ADDITIONAL_FARE_MIN_BOUNDARY;
 
 @Entity
 public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String name;
     private String color;
-
+    @Column(nullable = false)
+    private int additionalFare = 0;
     @Embedded
     private final Sections sections = new Sections();
 
@@ -30,10 +33,26 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, int additionalFare) {
+        validateLine(name, color);
+        this.name = name;
+        this.color = color;
+        setAdditionalFare(additionalFare);
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         validateLine(name, color);
         this.name = name;
         this.color = color;
+        addSection(upStation, downStation, distance);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int additionalFare) {
+        validateLine(name, color);
+        this.name = name;
+        this.color = color;
+        setAdditionalFare(additionalFare);
+
         addSection(upStation, downStation, distance);
     }
 
@@ -54,6 +73,13 @@ public class Line extends BaseEntity {
         sections.remove(station);
     }
 
+    public void setAdditionalFare(int additionalFare) {
+        if (additionalFare < ADDITIONAL_FARE_MIN_BOUNDARY.number()) {
+            throw new IllegalArgumentException(FARE_IS_NOT_NEGATIVE.message());
+        }
+        this.additionalFare = additionalFare;
+    }
+
     public List<Station> getStations() {
         return sections.getStations();
     }
@@ -68,6 +94,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public int getAdditionalFare() {
+        return additionalFare;
     }
 
     @Override

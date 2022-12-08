@@ -44,8 +44,7 @@ class FavoriteTest extends JpaEntityTest {
     @Test
     void createFavorite() {
         // when
-        Favorite 즐겨찾기 = new Favorite(강남역, 양재역);
-        즐겨찾기.setMember(멤버);
+        Favorite 즐겨찾기 = new Favorite(멤버, 강남역, 양재역);
         Favorite favorite = favoriteRepository.save(즐겨찾기);
         flushAndClear();
 
@@ -60,14 +59,12 @@ class FavoriteTest extends JpaEntityTest {
     @Test
     void createFavoriteUKException() {
         // when
-        Favorite 즐겨찾기 = new Favorite(강남역, 양재역);
-        즐겨찾기.setMember(멤버);
+        Favorite 즐겨찾기 = new Favorite(멤버, 강남역, 양재역);
         favoriteRepository.save(즐겨찾기);
         flushAndClear();
 
         // then
-        Favorite 즐겨찾기2 = new Favorite(강남역, 양재역);
-        assertThatThrownBy(() -> 즐겨찾기2.setMember(멤버))
+        assertThatThrownBy(() -> new Favorite(멤버, 강남역, 양재역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -75,8 +72,7 @@ class FavoriteTest extends JpaEntityTest {
     @Test
     void deleteFavorte() {
         // given
-        Favorite 즐겨찾기 = new Favorite(강남역, 양재역);
-        즐겨찾기.setMember(멤버);
+        Favorite 즐겨찾기 = new Favorite(멤버, 강남역, 양재역);
         favoriteRepository.save(즐겨찾기);
         flushAndClear();
 
@@ -96,8 +92,7 @@ class FavoriteTest extends JpaEntityTest {
     @Test
     void deleteFavoriteIsNotOwnerException() {
         // given
-        Favorite 즐겨찾기 = new Favorite(강남역, 양재역);
-        즐겨찾기.setMember(멤버);
+        Favorite 즐겨찾기 = new Favorite(멤버, 강남역, 양재역);
         favoriteRepository.save(즐겨찾기);
         flushAndClear();
 
