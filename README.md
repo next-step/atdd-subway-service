@@ -447,3 +447,98 @@ fun RequestSpecification.즐겨찾기_생성_요청(
 }
 
 ```
+
+# 4단계 - 요금 조회
+
+## 요구사항
+
+* 경로 조회 시 거리 기준 요금 정보 포함하기
+* 노선별 추가 요금 정책 추가
+* 연령별 할인 정책 추가
+
+### 거리별 요금 정책
+
+* 기본 운임(10km 이내) : 1250원
+* 10km 초과 ~ 50km 이하 : 기본료 + (5km마다 100원)
+* 50km 초과 : 기본료 + (8km마다 100원)
+
+### 수정된 인수 조건
+
+``` 
+Feature: 지하철 경로 검색
+
+  Scenario: 두 역의 최단 거리 경로를 조회
+    Given 지하철역이 등록되어있음
+    And 지하철 노선이 등록되어있음
+    And 지하철 노선에 지하철역이 등록되어있음
+    When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+    Then 최단 거리 경로를 응답
+    And 총 거리도 함께 응답함
+    And ** 지하철 이용 요금도 함께 응답함 **
+```
+
+### 노선별 추가 요금 정책
+
+* 노선에 `추가 요금` 필드를 추가
+* 추가 요금이 있는 노선을 이용할 경우 측정된 요금에 추가
+    * 900원의 추가요금이 있는 노선 8km 이용 시
+        * 1250(기본료) + 900(추가요금) + 0(10km 이내) : 2150원
+    * 900원의 추가 요금이 있는 노선 12km 이용 시
+        * 1250(기본료) + 900(추가요금) + 100(10km 초과 ~ 50km 이하 - 5km 마다 100원) : 2250원
+* 경로 중 추가요금이 있는 노선을 환승하여 이용할 경우 가장 높은 금액의 추가 요금만 적용
+    * ex) 500원, 900원의 추가요금이 있는 노선을 경유하여 8km 이용시 = 1250(기본료) + 900(가장 높은 추가요금이 있는 노선의 추가요금) + 0(10km 이내)
+
+### 로그인 사용자의 경우 연령별 요금 할인 적용
+
+* 어린이 : 운임에서 350원을 공제한 금액의 50% 할인
+    * 대상 : 6세 ~ 12세
+    * 예시
+        * 900원의 추가 요금이 있는 노선 8km 이용 시
+            * 450((1250 - 350) * 0.5 ) + 900 + 0(10km 이내) : 1350원
+        * 900원의 추가 요금이 있는 노선 12km 이용 시
+            * 450((1250 - 350) * 0.5 ) + 900 + 100(10km 초과 ~ 50km 이하 - 5km 마다 100원) : 1450원
+* 청소년 : 운임에서 350원을 공제한 금액의 20% 할인
+    * 대상 : 13세 ~ 18세
+    * 예시
+        * 900원의 추가 요금이 있는 노선 8km 이용 시
+            * 720((1250 - 350) * 0.8) + 900 + 0(10km 이내) : 1620원
+        * 900원의 추가 요금이 있는 노선 12km 이용 시
+            * 720((1250 - 350) * 0.8 ) + 900 + 100(10km 초과 ~ 50km 이하 - 5km 마다 100원) : 1720원
+
+### 힌트
+
+### /paths 요청시 LoginMember 객체 처리
+
+* 로그인 시 LoginMember 객체를 활용하여 연령별 요금 할인 정책을 적용할 수 있음
+* 비 로그인 시 LoginMember는 비어있는 객체가 넘어가므로 별도의 처리가 필요함
+* 필요시 아래 구문에서 null Object를 리턴해 주는 부분을 예외로 던지도록 수정해도 무방함
+
+``` 
+    public LoginMember findMemberByToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            return new LoginMember(); // <--- 이 부분 변경 가능
+        }
+
+        String email = jwtTokenProvider.getPayload(credentials);
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+    }
+
+```
+
+### 5km 마다 100원 추가 로직
+
+``` 
+public int calculateOverFare(int distance) {
+  return (int) ((Math.ceil((distance -1) /5 ) + 1 ) * 100);
+}
+```
+
+* ExtraChargePolicy
+    * UnderTenChargePolicy
+    * BetweenTenAndFiftyChargePolicy
+    * OverFiftyChargePolicy
+* DiscountPolicy
+    * DefaultDiscountPolicy
+    * ChildDiscountPolicy
+    * TeenagerDiscountPolicy
