@@ -30,9 +30,14 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+    public LoginMember findMemberByToken(String credentials, boolean isRequired) {
+        boolean isValidToken = jwtTokenProvider.validateToken(credentials);
+
+        if (isRequired && !isValidToken) {
             throw new AuthorizationException(AUTHORIZATION_WRONG_ACCESS_TOKEN.message());
+        }
+        if (!isRequired && !isValidToken) {
+            return LoginMember.guest();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

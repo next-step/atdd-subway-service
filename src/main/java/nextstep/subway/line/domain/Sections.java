@@ -77,14 +77,6 @@ public class Sections {
         return isPresentUpStation(station) || isPresentDownStation(station);
     }
 
-    public Line getLineByStations(Station upStation, Station downStation) {
-        return sections.stream()
-                .filter(it -> it.isSame(upStation, downStation))
-                .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(SECTION_IS_NOT_CONTAIN_STATION.message()))
-                .getLine();
-    }
-
     private void connectNewSection(Section preSection, Section nextSection) {
         Line line = preSection.getLine();
         Station newUpStation = nextSection.getUpStation();

@@ -81,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPaths() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(교대역.getId(), 양재역.getId());
 
         // then
         지하철_경로_조회됨(response);
@@ -96,7 +96,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsSameSourceTargetException() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 교대역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(교대역.getId(), 교대역.getId());
 
         // then
         지하철_경로_실패됨(response);
@@ -110,7 +110,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsUnconnectedException() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 사당역.getId(), 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(사당역.getId(), 교대역.getId());
 
         // then
         지하철_경로_실패됨(response);
@@ -124,7 +124,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathsUnenrolledException() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 1000L, 교대역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(1000L, 교대역.getId());
 
         // then
         지하철_경로_실패됨(response);
@@ -144,7 +144,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPathIntegration() {
         // when
-        ExtractableResponse<Response> response = 지하철_경로_조회(accessToken, 교대역.getId(), 양재역.getId());
+        ExtractableResponse<Response> response = 지하철_경로_조회(교대역.getId(), 양재역.getId());
 
         // then
         지하철_경로_조회됨(response);
@@ -152,9 +152,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // and 거리 확인
         지하철_경로_거리_확인됨(response, 9);
-        
+
         // and 요금 확인
         지하철_경로_요금_확인됨(response, 1_250);
+    }
+
+    /**
+     * Scenario: 두 역의 최단 거리 경로를 조회
+     * Given 지하철역이 등록되어있음
+     * And 지하철 노선이 등록되어있음
+     * And 지하철 노선에 지하철역이 등록되어있음
+     * When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+     * Then 최단 거리 경로를 응답
+     * And 총 거리도 함께 응답함
+     * And ** 지하철 이용 요금도 함께 응답함 - 청소년 할인**
+     */
+    @DisplayName("지하철 경로 검색 시 총 거리와 이용 요금도 함께 응답")
+    @Test
+    void findPathIntegrationWithAccessToken() {
+        // when
+        ExtractableResponse<Response> response = 지하철_경로_조회_with_accessToken(accessToken, 교대역.getId(), 양재역.getId());
+
+        // then
+        지하철_경로_조회됨(response);
+        지하철_경로_이름_확인됨(response, Arrays.asList("교대역", "남부터미널역", "양재역"));
+
+        // and 거리 확인
+        지하철_경로_거리_확인됨(response, 9);
+
+        // and 요금 확인
+        지하철_경로_요금_확인됨(response, 720);
     }
 
     private static void 지하철_경로_요금_확인됨(ExtractableResponse<Response> response, int expectedFare) {
@@ -165,7 +192,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(expectedDistance);
     }
 
-    public static ExtractableResponse<Response> 지하철_경로_조회(String accessToken, Long sourceId, Long targetId) {
+    public static ExtractableResponse<Response> 지하철_경로_조회(Long sourceId, Long targetId) {
+        return RestAssured.given().log().all()
+                .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_경로_조회_with_accessToken(String accessToken, Long sourceId, Long targetId) {
         return RestAssured.given().log().all()
                 .auth().oauth2(accessToken)
                 .when().get("/paths?source={sourceId}&target={targetId}", sourceId, targetId)

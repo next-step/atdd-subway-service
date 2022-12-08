@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.line.domain.Sections;
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.domain.policy.AdditionalFarePolicy;
 import nextstep.subway.path.domain.policy.ChargeFarePolicy;
 import nextstep.subway.path.domain.policy.DiscountPolicy;
@@ -19,9 +18,9 @@ public class FareCalculator {
         this.discountPolicy = discountPolicy;
     }
 
-    public int calculate(Sections sections, Path path, Member member) {
+    public int calculate(Path path, LoginMember member) {
         int fare = chargeFarePolicy.charge(path.getDistance());
-        fare += additionalFarePolicy.addFare(sections, path.getStationPaths());
+        fare += additionalFarePolicy.addFare(path.getSectionEdges());
         fare = discountPolicy.discount(fare, member.getAge());
 
         return fare;

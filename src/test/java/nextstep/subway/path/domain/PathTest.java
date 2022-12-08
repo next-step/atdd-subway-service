@@ -15,6 +15,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
 import java.util.Arrays;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -38,7 +40,16 @@ public class PathTest extends JpaEntityTest {
     private Station 양재역;
     private Station 남부터미널역;
 
+    // 미금 - 정자 구간 확인용도
+    private Station 오리역;
+    private Station 수내역;
+    private Station 동천역;
+    private Station 미금역;
+    private Station 정자역;
+    private Station 판교역;
+
     private Line 신분당선;
+    private Line 분당선;
     private Line 이호선;
     private Line 삼호선;
 
@@ -49,7 +60,7 @@ public class PathTest extends JpaEntityTest {
         사당역 = new Station("사당역");
         stationRepository.save(사당역);
 
-        // 신분당
+        // 신분당선
         신사역 = new Station("신사역");
         양재역 = new Station("양재역");
 
@@ -133,4 +144,50 @@ public class PathTest extends JpaEntityTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
+    /**
+     * Given : 동일한 상하행을 가진 구간이 각각 다른 노선에 포함되어 있는 경우
+     * When : 최단경로 조회 시
+     * Then : 어떤 노선이 최단경로에 포함되는 지 확인
+     */
+    @DisplayName("미금 - 정자 구간 테스트(동일구간 다른 노선의 경우)")
+    @Test
+    void sameSectionPathTest() {
+        // 새로운 노선 / 구간이 필요함
+        super.setUp();
+
+        // given
+        미금_정자_구간_생성();
+
+        // when
+        Path path = new PathFinder().find(new Sections(sectionRepository.findAll()), 오리역, 수내역);
+
+        // then : 분당선만 타야함
+        Set<Line> lines = path.getSectionEdges().stream()
+                .map(it -> it.getLine())
+                .collect(Collectors.toSet());
+        assertThat(lines).containsExactly(분당선);
+    }
+
+    private void 미금_정자_구간_생성() {
+        // 신분당선
+        동천역 = new Station("동천역");
+        미금역 = new Station("미금역");
+        정자역 = new Station("정자역");
+        판교역 = new Station("판교역");
+
+        // 분당선
+        오리역 = new Station("오리역");
+        수내역 = new Station("수내역");
+
+        신분당선 = new Line("신분당선", "빨간색", 미금역, 정자역, 10, 900);
+        분당선 = new Line("분당선", "노란색", 미금역, 정자역, 9, 500);
+
+        신분당선.addSection(동천역, 미금역, 2);
+        신분당선.addSection(정자역, 판교역, 2);
+
+        분당선.addSection(오리역, 미금역, 2);
+        분당선.addSection(정자역, 수내역, 2);
+        lineRepository.saveAll(Lists.newArrayList(신분당선, 분당선));
+        flushAndClear();
+    }
 }

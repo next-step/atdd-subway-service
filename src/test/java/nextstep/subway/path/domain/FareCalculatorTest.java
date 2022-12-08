@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import com.google.common.collect.Lists;
 import nextstep.subway.JpaEntityTest;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.SectionRepository;
@@ -151,10 +152,20 @@ public class FareCalculatorTest extends JpaEntityTest {
         Path path = new PathFinder().find(sections, 남부터미널역, 역삼역); // 62
 
         // when
-        int additionalFare = additionalFarePolicy.addFare(sections, path.getStationPaths());
+        int additionalFare = additionalFarePolicy.addFare(path.getSectionEdges());
 
         // then
         assertThat(additionalFare).isEqualTo(900);
+    }
+
+    @DisplayName("게스트 - 나이별 할인 정책 테스트")
+    @Test
+    void discountFareByAge_게스트() {
+        // when
+        int fare = discountPolicy.discount(1_250, LoginMember.guest().getAge());
+
+        // then
+        assertThat(fare).isEqualTo(1_250);
     }
 
     @DisplayName("성인 - 나이별 할인 정책 테스트")

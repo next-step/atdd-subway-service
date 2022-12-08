@@ -20,8 +20,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPaths(@AuthenticationPrincipal LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(pathService.findPaths(loginMember.getId(), source, target));
+    public ResponseEntity<PathResponse> findPaths(@AuthenticationPrincipal(required = false) LoginMember loginMember, @RequestParam Long source, @RequestParam Long target) {
+        return ResponseEntity.ok(pathService.findPaths(loginMember, source, target));
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class, NoResultException.class, IllegalStateException.class, IllegalArgumentException.class})
