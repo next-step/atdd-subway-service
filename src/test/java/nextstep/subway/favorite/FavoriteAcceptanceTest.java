@@ -15,6 +15,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청을_한다;
@@ -59,6 +60,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
+    @DisplayName("즐겨찾기를 생성할때 역이 존재하지 않으면 예외가 발생한다")
+    void creatFavoriteException() {
+        // when
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(TOKEN, new StationResponse(10L, "test", LocalDateTime.now(), LocalDateTime.now()), 역삼역);
+
+        // then
+        상태코드가_기대값과_일치하는지_검증(response, HttpStatus.BAD_REQUEST);
+    }
+
+    @Test
     @DisplayName("즐겨 찾기를 조회한다")
     void getFavorite() {
         // given
@@ -69,7 +80,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
         // then
         상태코드가_기대값과_일치하는지_검증(response, HttpStatus.OK);
-        즐겨찾기한_데이터를_검증한다(response, 강남역, 역삼역);
     }
 
     @Test
@@ -119,13 +129,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private static void 상태코드가_기대값과_일치하는지_검증(ExtractableResponse<Response> response, HttpStatus status) {
         assertThat(response.statusCode()).isEqualTo(status.value());
     }
-
-    private void 즐겨찾기한_데이터를_검증한다(ExtractableResponse<Response> response, StationResponse source, StationResponse target) {
-        List<FavoriteResponse> favorite = response.jsonPath().getList(".", FavoriteResponse.class);
-        assertThat(favorite.get(0).getSource().getName()).isEqualTo(source.getName());
-        assertThat(favorite.get(0).getTarget().getName()).isEqualTo(target.getName());
-    }
-
+    
     public static ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
         return RestAssured
                 .given().log().all()

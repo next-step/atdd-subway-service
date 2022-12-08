@@ -1,8 +1,11 @@
 package nextstep.subway.favorite.dto;
 
 public class FavoriteRequest {
-    private final long sourceId;
-    private final long targetId;
+    private long sourceId;
+    private long targetId;
+
+    public FavoriteRequest() {
+    }
 
     public FavoriteRequest(long sourceId, long targetId) {
         this.sourceId = sourceId;

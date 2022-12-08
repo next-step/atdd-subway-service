@@ -108,7 +108,7 @@ class FavoriteServiceTest {
     void deleteFavoriteException() {
         when(favoriteRepository.findByIdAndMemberId(any(), any())).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember,1L))
+        assertThatThrownBy(() -> favoriteService.deleteFavorite(loginMember, 1L))
                 .isInstanceOf(NotFoundDataException.class)
                 .hasMessageStartingWith(NOT_FOUND_FAVORITE.getMessage());
     }
