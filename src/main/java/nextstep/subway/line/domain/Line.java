@@ -21,6 +21,8 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private Sections sections = new Sections();
+    @Embedded
+    private ExtraFee extraFee = new ExtraFee();
 
     public Line() {
     }
@@ -30,10 +32,23 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, ExtraFee extraFee) {
+        this.name = name;
+        this.color = color;
+        this.extraFee = extraFee;
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Sections sections, ExtraFee extraFee) {
+        this.name = name;
+        this.color = color;
+        this.sections = sections;
+        this.extraFee = extraFee;
     }
 
     public void addSection(Section section) {
@@ -44,13 +59,21 @@ public class Line extends BaseEntity {
         sections.removeSectionByStation(station);
     }
 
-    public List<Station> getStations() {
-        return sections.getStations();
+    public Station findUpStation() {
+        return sections.findUpStation();
+    }
+
+    public Optional<Section> findNextLowerSection(Station beforeStation) {
+        return sections.findNextLowerSection(beforeStation);
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
     }
 
     public Long getId() {
@@ -65,11 +88,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Station findUpStation() {
-        return sections.findUpStation();
-    }
-
-    public Optional<Section> findNextLowerSection(Station beforeStation) {
-        return sections.findNextLowerSection(beforeStation);
+    public ExtraFee getExtraFee() {
+        return extraFee;
     }
 }

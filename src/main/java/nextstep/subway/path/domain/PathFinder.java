@@ -71,4 +71,7 @@ public class PathFinder {
         return (int) sourceTargetGraphPath.getWeight();
     }
 
+    public int getFee() {
+        return 1250;
+    }
 }

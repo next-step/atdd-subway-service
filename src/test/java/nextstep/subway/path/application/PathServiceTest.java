@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -64,11 +65,13 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
         //when
-        PathResponse pathResponse = pathService.findShortestRoute(1L, 5L);
+        PathResponse pathResponse = pathService.findShortestRoute(1L, 5L,
+                new LoginMember(1L, "test@test.com", 40));
 
         //then
         assertThat(pathResponse.getStations().stream().map(station -> station.getName()).collect(Collectors.toList()))
                 .containsExactly("교대역","남부터미널역","양재역");
         assertThat(pathResponse.getDistance()).isEqualTo(5);
+        assertThat(pathResponse.getFee()).isEqualTo(1250);
     }
 }
