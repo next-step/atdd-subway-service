@@ -1,10 +1,8 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionRepository;
-import nextstep.subway.line.domain.Sections;
+import nextstep.subway.line.domain.*;
+import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.StationGraph;
 import nextstep.subway.path.dto.PathRequest;
@@ -20,10 +18,12 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class PathService {
     private final StationService stationService;
+    private final LineRepository lineRepository;
     private final SectionRepository sectionRepository;
 
-    public PathService(StationService stationService, SectionRepository sectionRepository) {
+    public PathService(StationService stationService, LineRepository lineRepository, SectionRepository sectionRepository) {
         this.stationService = stationService;
+        this.lineRepository = lineRepository;
         this.sectionRepository = sectionRepository;
     }
 
@@ -31,11 +31,10 @@ public class PathService {
     public PathResponse getShortestPath(LoginMember loginMember, PathRequest pathRequest) {
         Station source = stationService.stationById(pathRequest.getSource());
         Station target = stationService.stationById(pathRequest.getTarget());
-        List<Section> sections = sectionRepository.findAll();
+        List<Line> lines = lineRepository.findAll();
 
-        Path path = new StationGraph(sections).findShortestPath(source, target);
-        List<Line> lines = Sections.of(sections).findLinesContainedStations(path.getStations());
-        path.calculateFare(loginMember, lines);
+        Path path = new StationGraph(lines).findShortestPath(source, target);
+        path.calculateFare(loginMember);
 
         return PathResponse.of(path);
     }

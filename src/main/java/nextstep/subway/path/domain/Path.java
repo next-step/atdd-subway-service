@@ -14,18 +14,14 @@ public class Path {
     private final Distance distance;
     private int fare;
 
-    public Path(List<Station> stations, Distance distance) {
+    public Path(List<Station> stations, Distance distance, int maxLineFare) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = FareCalculator.calculateFare(distance);
+        this.fare = FareCalculator.calculateFare(distance) + maxLineFare;
     }
 
-    public void calculateFare(LoginMember loginMember, List<Line> lines) {
-        int totalFare = fare + lines.stream()
-                .mapToInt(Line::getSurcharge)
-                .max()
-                .orElse(0);
-        fare = DiscountCalculator.getFare(loginMember, totalFare);
+    public void calculateFare(LoginMember loginMember) {
+        fare = DiscountCalculator.getFare(loginMember, fare);
     }
 
     public List<Station> getStations() {

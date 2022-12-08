@@ -1,12 +1,16 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.StationNotIncludedException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.*;
+import java.util.Comparator;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-public class Section {
+public class Section extends DefaultWeightedEdge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -34,6 +38,18 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public static Section findShortestDistanceSection(Set<Section> sections) {
+        Comparator<Section> comparatorByDistance = Comparator.comparingInt(Section::distanceValue);
+
+        return sections.stream()
+                .min(comparatorByDistance)
+                .orElseThrow(() -> new StationNotIncludedException());
+    }
+
+    public int distanceValue() {
+        return distance.getDistance();
     }
 
     public Long getId() {

@@ -252,6 +252,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
         LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10, 0));
         LineResponse 삼호선 = LineAcceptanceTest.지하철_노선_생성_요청(new LineRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 5, surcharge)).as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        StationResponse 수서역 = StationAcceptanceTest.지하철역_등록되어_있음("수서역").as(StationResponse.class);
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 양재역, 수서역, 10);
     }
 
     private String 회원_생성과_로그인_후_토큰_조회(int age) {

@@ -24,7 +24,7 @@ class PathTest {
         강남역 = new Station("강남역");
         역삼역 = new Station("역삼역");
         선릉역 = new Station("선릉역");
-        path = new Path(Arrays.asList(강남역, 역삼역, 선릉역), new Distance(20));
+        path = new Path(Arrays.asList(강남역, 역삼역, 선릉역), new Distance(20), 0);
     }
 
     @Test
@@ -37,30 +37,30 @@ class PathTest {
     @DisplayName("어린이 요금을 계산한다")
     void 어린이_요금_계산() {
         LoginMember member = new LoginMember(0L, "email@email.com", 9);
-        path.calculateFare(member, Arrays.asList(new Line("2호선", "bg-green", 100)));
-        assertThat(path.getFare()).isEqualTo(600);
+        path.calculateFare(member);
+        assertThat(path.getFare()).isEqualTo(550);
     }
 
     @Test
     @DisplayName("청소년 요금을 계산한다")
     void 청소년_요금_계산() {
         LoginMember member = new LoginMember(0L, "email@email.com", 16);
-        path.calculateFare(member, Arrays.asList(new Line("2호선", "bg-green", 100)));
-        assertThat(path.getFare()).isEqualTo(960);
+        path.calculateFare(member);
+        assertThat(path.getFare()).isEqualTo(880);
     }
 
     @Test
     @DisplayName("성인 요금을 계산한다")
     void 성인_요금_계산() {
         LoginMember member = new LoginMember(0L, "email@email.com", 20);
-        path.calculateFare(member, Arrays.asList(new Line("2호선", "bg-green", 100)));
-        assertThat(path.getFare()).isEqualTo(1550);
+        path.calculateFare(member);
+        assertThat(path.getFare()).isEqualTo(1450);
     }
 
     @Test
     @DisplayName("비회원 요금을 계산한다")
     void 비회원_요금_계산() {
-        path.calculateFare(null, Arrays.asList(new Line("2호선", "bg-green", 100)));
-        assertThat(path.getFare()).isEqualTo(1550);
+        path.calculateFare(null);
+        assertThat(path.getFare()).isEqualTo(1450);
     }
 }
