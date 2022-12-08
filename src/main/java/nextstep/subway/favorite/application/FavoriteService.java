@@ -49,7 +49,7 @@ public class FavoriteService {
     @Transactional
     public void removeFavorite(Long favoriteId, Long memberId) {
         Favorite favorite = favoriteRepository.findById(favoriteId)
-            .orElseThrow(() -> new NoFavoriteException(favoriteId));
+            .orElseThrow(NoFavoriteException::new);
         Member member = memberService.findMemberById(memberId);
         member.removeFavorite(favorite);
     }

@@ -2,6 +2,7 @@ package nextstep.subway.path;
 
 import static java.time.LocalDateTime.*;
 import static java.util.stream.Collectors.*;
+import static nextstep.subway.exception.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
@@ -17,7 +18,6 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.exception.ExceptionMessage;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
@@ -77,7 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             new StationResponse(99L, "강남역", now(), now()));
 
         // then
-        assertThat(pathsResponse.jsonPath().getString("message")).isEqualTo(ExceptionMessage.noStation(98L));
+        assertThat(pathsResponse.jsonPath().getString("message")).isEqualTo(NO_STATION);
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {

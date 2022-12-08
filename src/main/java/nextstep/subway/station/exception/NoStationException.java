@@ -5,7 +5,7 @@ import static nextstep.subway.exception.ExceptionMessage.*;
 import nextstep.subway.exception.BadRequestException;
 
 public class NoStationException extends BadRequestException {
-    public NoStationException(Long id) {
-        super(noStation(id));
+    public NoStationException() {
+        super(NO_STATION);
     }
 }

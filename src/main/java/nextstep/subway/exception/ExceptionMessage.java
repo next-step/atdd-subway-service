@@ -11,16 +11,7 @@ public class ExceptionMessage {
     public static final String PATH_NOT_CONNECTED = "연결되어 있지 않은 역은 경로를 구할 수 없습니다.";
     public static final String PATH_MUST_CONTAIN_GRAPH = "전체 구간에 존재하는 역만 경로 조회할 수 있습니다.";
     public static final String NOT_OWNER_FAVORITE = "사용자 자신의 즐겨찾기가 아닙니다.";
+    public static final String NO_STATION = "해당 역은 존재하지 않습니다.";
+    public static final String NO_MEMBER = "해당 사용자는 존재하지 않습니다.";
 
-    public static String noStation(Long id) {
-        return String.format("해당 역은 존재하지 않습니다. id:[%d]", id);
-    }
-
-    public static String noMember(Long id) {
-        return String.format("해당 사용자는 존재하지 않습니다. id:[%d]", id);
-    }
-
-    public static String noFavorite(Long id) {
-        return String.format("해당 즐겨찾기는 존재하지 않습니다. id:[%d]", id);
-    }
 }

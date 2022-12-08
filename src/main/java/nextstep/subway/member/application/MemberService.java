@@ -38,6 +38,6 @@ public class MemberService {
     }
 
     public Member findMemberById(Long id) {
-        return memberRepository.findById(id).orElseThrow(() -> new NoMemberException(id));
+        return memberRepository.findById(id).orElseThrow(NoMemberException::new);
     }
 }
