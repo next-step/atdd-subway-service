@@ -1,7 +1,14 @@
 package nextstep.subway.path.applicaiton;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.domain.AgeDiscountPolicy;
 import nextstep.subway.path.domain.DijkstraPathFindStrategy;
+import nextstep.subway.path.domain.Fare;
+import nextstep.subway.path.domain.FareAge;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -21,10 +28,15 @@ public class PathService {
         this.sectionRepository = sectionRepository;
     }
 
-    public PathResponse findPaths(Long sourceId, Long targetId) {
-        PathFinder pathFinder = PathFinder.of(stationRepository.findAll(), sectionRepository.findAll());
-        return PathResponse.from(pathFinder.findPath(new DijkstraPathFindStrategy(), findStationById(sourceId),
-                findStationById(targetId)));
+    public PathResponse findPaths(Long sourceId, Long targetId, LoginMember loginMember) {
+        Sections sections = Sections.from(sectionRepository.findAll());
+        PathFinder pathFinder = PathFinder.of(stationRepository.findAll(), sections.getSections());
+        Path path = pathFinder.findPath(new DijkstraPathFindStrategy(), findStationById(sourceId),
+                findStationById(targetId));
+        Lines lines = Lines.from(sections.getStationMatchedLines(path.getStations()));
+        AgeDiscountPolicy ageDiscountPolicy = FareAge.from(loginMember.getAge()).getAgeDiscountPolicy();
+
+        return PathResponse.from(path, Fare.of(path.getDistance(), lines, ageDiscountPolicy));
     }
 
 

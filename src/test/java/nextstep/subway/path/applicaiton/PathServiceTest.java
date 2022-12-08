@@ -7,6 +7,8 @@ import static org.mockito.BDDMockito.given;
 
 import java.util.Arrays;
 import java.util.Optional;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.dto.PathResponse;
@@ -58,10 +60,14 @@ class PathServiceTest {
         양재역 = new Station("양재역");
         남부터미널역 = new Station("남부터미널역");
 
-        강남_교대 = new Section(null, 강남역, 양재역, 10);
-        교대_강남 = new Section(null, 교대역, 강남역, 10);
-        교대_남부 = new Section(null, 교대역, 남부터미널역, 2);
-        남부_양재 = new Section(null, 남부터미널역, 양재역, 3);
+        Line 이호선 = new Line("이호선", "green");
+        Line 삼호선 = new Line("삼호선", "orange");
+        Line 신분당선 = new Line("신분당선", "red");
+
+        강남_교대 = new Section(신분당선, 강남역, 양재역, 10);
+        교대_강남 = new Section(이호선, 교대역, 강남역, 10);
+        교대_남부 = new Section(삼호선, 교대역, 남부터미널역, 2);
+        남부_양재 = new Section(삼호선, 남부터미널역, 양재역, 3);
     }
 
     @DisplayName("출발역과 도착역으로 최단거리를 조회할 수 있다.")
@@ -74,7 +80,7 @@ class PathServiceTest {
         given(sectionRepository.findAll()).willReturn(Arrays.asList(강남_교대, 교대_강남, 교대_남부, 남부_양재));
 
         //when
-        PathResponse paths = pathService.findPaths(1L, 2L);
+        PathResponse paths = pathService.findPaths(1L, 2L, new LoginMember());
 
         //then
         assertAll(
@@ -90,7 +96,7 @@ class PathServiceTest {
     @Test
     void same_source_target() {
         //when & then
-        assertThatThrownBy(() -> pathService.findPaths(1L, 1L))
+        assertThatThrownBy(() -> pathService.findPaths(1L, 1L, new LoginMember()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -108,7 +114,7 @@ class PathServiceTest {
         given(sectionRepository.findAll()).willReturn(Arrays.asList(강남_교대, 교대_강남, 교대_남부, 남부_양재, 인터_동춘));
 
         //when & then
-        assertThatThrownBy(() -> pathService.findPaths(1L, 2L))
+        assertThatThrownBy(() -> pathService.findPaths(1L, 2L, new LoginMember()))
                 .isInstanceOf(IllegalArgumentException.class);
 
     }
@@ -116,7 +122,7 @@ class PathServiceTest {
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회 할 경우 IllegalArgumentException 이 발생한다.")
     @Test
     void none_station() {
-        assertThatThrownBy(() -> pathService.findPaths(1L, 2L))
+        assertThatThrownBy(() -> pathService.findPaths(1L, 2L, new LoginMember()))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

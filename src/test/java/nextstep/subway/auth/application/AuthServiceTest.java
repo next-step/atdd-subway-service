@@ -3,7 +3,6 @@ package nextstep.subway.auth.application;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.doNothing;
 
 import java.util.Optional;
 import nextstep.subway.auth.domain.LoginMember;
@@ -53,7 +52,7 @@ public class AuthServiceTest {
     void findMemberByToken() {
         //given
         String token = "temp_token_string";
-        doNothing().when(jwtTokenProvider).validateToken(token);
+        given(jwtTokenProvider.validateToken(token)).willReturn(true);
         given(jwtTokenProvider.getPayload(anyString())).willReturn(EMAIL);
         given(memberRepository.findByEmail(anyString())).willReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
 

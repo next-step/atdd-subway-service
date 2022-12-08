@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
@@ -14,6 +15,17 @@ public class Sections {
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
+
+    protected Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections.addAll(sections);
+    }
+
+    public static Sections from(List<Section> all) {
+        return new Sections(all);
+    }
 
     public List<Station> extractStations() {
         if (sections.isEmpty()) {
@@ -34,6 +46,10 @@ public class Sections {
             stations.add(downStation);
         }
         return stations;
+    }
+
+    public List<Section> getSections() {
+        return Collections.unmodifiableList(sections);
     }
 
     public void addLineStation(Line line, Station upStation, Station downStation, int distance) {
@@ -72,6 +88,14 @@ public class Sections {
 
         upLineStation.ifPresent(it -> sections.remove(it));
         downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    public List<Line> getStationMatchedLines(List<Station> stations) {
+        return sections.stream()
+                .filter(i -> i.hasMatchedStation(stations))
+                .map(Section::getLine)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private Station findUpStation() {

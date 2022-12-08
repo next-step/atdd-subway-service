@@ -3,8 +3,10 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
+import java.util.Arrays;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -97,4 +99,18 @@ class SectionsTest {
         assertThat(sections.extractStations()).containsExactly(강남역, 광교역);
     }
 
+    @DisplayName("역에 매핑되어 있는 라인을 찾을 수 있다.")
+    @Test
+    void get_station_matched_lines() {
+        Line 이호선 = new Line("이호선", "red");
+        Line 신분당선 = new Line("신분당선", "red");
+        Station 교대역 = new Station("교대역");
+        Section section1 = new Section(신분당선, 강남역, 광교역, 10);
+        Section section2 = new Section(이호선, 교대역, 광교역, 10);
+        Sections sections = Sections.from(Arrays.asList(section1, section2));
+
+        List<Line> stationMatchedLines = sections.getStationMatchedLines(Arrays.asList(강남역, 광교역, 교대역));
+
+        Assertions.assertThat(stationMatchedLines).containsExactlyInAnyOrder(신분당선, 이호선);
+    }
 }

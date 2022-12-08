@@ -29,7 +29,9 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials) {
-        jwtTokenProvider.validateToken(credentials);
+        if (!jwtTokenProvider.validateToken(credentials)) {
+            throw new AuthorizationException();
+        }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(AuthorizationException::new);
