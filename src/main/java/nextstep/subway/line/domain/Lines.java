@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.Comparator;
 import java.util.List;
 
 public class Lines {
@@ -13,4 +14,10 @@ public class Lines {
         return new Lines(lines);
     }
 
+    public LineFare findMaxLineFare() {
+        return lines.stream()
+                .map(Line::getFare)
+                .max(Comparator.comparing(it -> it))
+                .orElse(LineFare.zero());
+    }
 }

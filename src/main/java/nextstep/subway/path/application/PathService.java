@@ -51,6 +51,7 @@ public class PathService {
 
     private int findFare(Sections sections, List<Station> stations, int distance, int age) {
         Lines lines = sections.findLinesFrom(stations);
+        LineFare lineFare = lines.findMaxLineFare();
 
         return 0;
     }
