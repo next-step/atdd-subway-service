@@ -20,6 +20,7 @@ public class Message {
     public static final String FAVORITE_NOT_EXIST = "즐겨찾기가 존재하지 않습니다.";
 
     public static final String INVALID_OVER_FARE = "노선의 추가요금은 0 이상이어야 합니다.";
+    public static final String INVALID_OVER_DISTANCE = "거리는 0 이상이어야 합니다.";
 
 
 }

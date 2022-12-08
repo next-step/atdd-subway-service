@@ -1,7 +1,12 @@
 package nextstep.subway.fare.domain;
 
 
-public class FareCalculator implements FareCalculatorImpl {
+import nextstep.subway.exception.FareValidException;
+
+import static nextstep.subway.utils.Constant.MIN_DISTANCE_OF_BASIC_FARE_SECTION;
+import static nextstep.subway.utils.Message.INVALID_OVER_DISTANCE;
+
+public class FareCalculator {
 
     private static final int MIN_LINE_FARE = 0;
     private static final int MIN_ADULT_AGE = 19;
@@ -27,13 +32,15 @@ public class FareCalculator implements FareCalculatorImpl {
         return new FareCalculator(lineFare, age);
     }
 
-    @Override
     public int calculate(int distance) {
         checkDistanceNotNegative(distance);
         return 0;
     }
 
     private void checkDistanceNotNegative(int distance) {
+        if (distance < MIN_DISTANCE_OF_BASIC_FARE_SECTION) {
+            throw new FareValidException(INVALID_OVER_DISTANCE);
+        }
     }
 
 }
