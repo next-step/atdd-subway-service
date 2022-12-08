@@ -38,5 +38,15 @@ class FareCalculatorTest {
         Assertions.assertThat(fare).isEqualTo(BASIC_FARE);
     }
 
+    @DisplayName("거리가 10km 초과 50km 이하일 때 요금을 계산한다.")
+    @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
+    @CsvSource(value = {"11:1350", "15:1350", "23:1550", "50:2050"}, delimiter = ':')
+    void tenToFiftyFare(int input, int expected) {
+        int fare = fareCalculator.calculate(input);
+
+        Assertions.assertThat(fare).isEqualTo(expected);
+    }
+
+
 
 }
