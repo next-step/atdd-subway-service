@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.line.exception.InvalidAddSectionException;
 import nextstep.subway.line.exception.InvalidRemoveSectionException;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.fare.Fare;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -12,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.line.exception.InvalidAddSectionException.EXISTS_SECTION;
 import static nextstep.subway.line.exception.InvalidAddSectionException.NOT_EXIST_STATIONS;
@@ -24,6 +26,13 @@ public class Sections {
 
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
+
+    protected Sections() {
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
 
     public List<Section> getSections() {
         return sections;
@@ -176,6 +185,17 @@ public class Sections {
     }
 
     public void addPath(PathFinder pathFinder) {
-        sections.forEach(section -> section.addPath(pathFinder));
+        sections.forEach(pathFinder::addPath);
+    }
+
+    public List<Fare> getAllLineFare() {
+        return sections.stream()
+                .map(Section::getLine)
+                .map(Line::getFare)
+                .collect(Collectors.toList());
+    }
+
+    public boolean isEmpty() {
+        return sections.isEmpty();
     }
 }

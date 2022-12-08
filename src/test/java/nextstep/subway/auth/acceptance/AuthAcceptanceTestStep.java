@@ -51,11 +51,15 @@ public class AuthAcceptanceTestStep {
         assertThat(로그인_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    static void 로그인_됨(ExtractableResponse<Response> tokenResponse) {
+    public static TokenResponse 로그인_됨(ExtractableResponse<Response> tokenResponse) {
         assertThat(tokenResponse.statusCode()).isEqualTo(HttpStatus.OK.value());
-        assertThat(tokenResponse.body().as(TokenResponse.class))
+
+        TokenResponse token = tokenResponse.body().as(TokenResponse.class);
+        assertThat(token)
                 .extracting(TokenResponse::getAccessToken)
                 .isNotNull();
+
+        return token;
 
     }
 }

@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -86,19 +85,15 @@ public class Section {
 
     public void updateUpStation(Section section) {
         this.upStation = section.downStation;
-        this.distance = distance.subtract(section.distance);
+        this.distance = distance.minus(section.distance);
     }
 
     public void updateDownStation(Section section) {
         this.downStation = section.upStation;
-        this.distance = distance.subtract(section.distance);
+        this.distance = distance.minus(section.distance);
     }
 
     public Distance addDistance(Section other) {
         return distance.add(other.distance);
-    }
-
-    public void addPath(PathFinder pathFinder) {
-        pathFinder.addPath(upStation, downStation, distance);
     }
 }
