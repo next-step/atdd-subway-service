@@ -47,8 +47,7 @@ public class FavoriteService {
 
     @Transactional(readOnly = true)
     public List<FavoriteResponse> getFavorite(LoginMember loginMember) {
-        MemberResponse member = memberService.findMember(loginMember.getId());
-        List<Favorite> favorite = favoriteRepository.findAllByMemberId(member.getId());
+        List<Favorite> favorite = favoriteRepository.findAllByMemberId(loginMember.getId());
 
         return favorite.stream()
                 .map(FavoriteResponse::from)
