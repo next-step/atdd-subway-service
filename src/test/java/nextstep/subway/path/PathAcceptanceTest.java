@@ -81,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         성인_회원_로그인_됨();
     }
-    
+
 
     /**
      * Scenario: 최단 구간을 조회
@@ -155,12 +155,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(Long sourceStationId, Long targetStationId) {
+    private ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, Long sourceStationId, Long targetStationId) {
         Map<String, Long> params = new HashMap<>();
         params.put("source", sourceStationId);
         params.put("target", targetStationId);
 
         return RestAssured.given().log().all()
+                .auth().oauth2(accessToken)
                 .queryParams(params)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get("/paths")
