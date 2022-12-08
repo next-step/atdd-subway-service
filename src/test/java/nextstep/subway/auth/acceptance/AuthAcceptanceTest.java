@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,8 +16,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.member.MemberAcceptanceTest.내_정보_조회;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_정보_조회_실패;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.내_정보_조회;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.회원_정보_조회_실패;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
@@ -29,7 +30,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     void before() {
         super.setUp();
-        사용자 = memberRepository.save(new Member("test@test.com", "password", 29));
+        사용자 = memberRepository.save(new Member("test@test.com", "password", Age. from(29)));
     }
 
     @DisplayName("Bearer Auth")
@@ -45,7 +46,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBadBearerAuthEmail() {
         // given
-        Member 존재하지_않는_유저 = new Member("notExist@notExist.com", "password", 29);
+        Member 존재하지_않는_유저 = new Member("notExist@notExist.com", "password", Age.from(29));
         // when
         ExtractableResponse<Response> response = 인증_요청(
                 new TokenRequest(존재하지_않는_유저.getEmail(), 존재하지_않는_유저.getPassword()));

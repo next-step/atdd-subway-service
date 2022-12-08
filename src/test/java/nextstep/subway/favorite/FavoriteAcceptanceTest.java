@@ -11,6 +11,7 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
@@ -21,7 +22,7 @@ import org.springframework.http.MediaType;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.인증_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.acceptance.StationAcceptanceTest.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -64,8 +65,8 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(신분당선, 종합운동장역, 잠실새내역, 10);
         지하철_노선에_지하철역_등록_요청(신분당선, 잠실새내역, 석촌고분역, 10);
         // 회원 등록되어 있음
-        Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
-        회원_생성을_요청(사용자.getEmail(), 사용자.getPassword(), 사용자.getAge());
+        Member 사용자 = new Member(EMAIL, PASSWORD, Age.from(AGE));
+        회원_생성을_요청(사용자.getEmail(), 사용자.getPassword(), 사용자.getAgeIntValue());
         // 로그인 되어있음
         인증_토큰 = 인증_요청(new TokenRequest(사용자.getEmail(), 사용자.getPassword())).as(TokenResponse.class).getAccessToken();
     }
