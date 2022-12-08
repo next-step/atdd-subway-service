@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.line.message.SectionMessage;
+import nextstep.subway.path.application.LinePathGraph;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -125,5 +126,10 @@ public class Sections {
         if(!stations.contains(section.getDownStation())) {
             stations.add(section.getDownStation());
         }
+    }
+
+    public void addPathGraph(LinePathGraph graph) {
+        getStations().forEach(graph::addGraphVertex);
+        this.sectionItems.forEach(section -> section.addGraphEdge(graph));
     }
 }
