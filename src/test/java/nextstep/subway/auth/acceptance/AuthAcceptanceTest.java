@@ -76,7 +76,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(status.value());
     }
 
-    private static String 토큰을_얻는다(ExtractableResponse<Response> response) {
+    public static String 토큰을_얻는다(ExtractableResponse<Response> response) {
         return response.as(TokenResponse.class).getAccessToken();
     }
 
