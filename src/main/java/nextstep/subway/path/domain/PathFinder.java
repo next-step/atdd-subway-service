@@ -17,7 +17,7 @@ public class PathFinder {
     private final DijkstraShortestPath dijkstraShortestPath;
 
     public PathFinder(List<Line> lines) {
-        Graph graph= new Graph(lines);
+        Graph graph = new Graph(lines);
         dijkstraShortestPath = new DijkstraShortestPath<>(graph.getGraph());
     }
 
