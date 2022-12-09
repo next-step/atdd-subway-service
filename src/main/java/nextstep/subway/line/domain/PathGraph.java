@@ -9,7 +9,6 @@ import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
@@ -30,6 +29,31 @@ public class PathGraph {
         Charge charge = new Charge(distance, lines);
 
         return new PathResponse(createStations(path), (int)path.getWeight(), charge.value());
+    }
+
+    public PathResult findPath2(Station source, Station target, List<Section> sections){
+        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
+        DijkstraShortestPath stationGraph = getStationGraph(graph, sections);
+        GraphPath path = stationGraph.getPath(source, target);
+
+        int distance = (int)path.getWeight();
+        List<SectionEdge> edgeList = path.getEdgeList();
+        Set<Line> lines = new HashSet<>();
+        for (SectionEdge edge : edgeList) {
+            lines.add(edge.getLine());
+        }
+        Charge charge = new Charge(distance, lines);
+
+        return new PathResult(path.getVertexList(), (int)path.getWeight(), getContainLines(path));
+    }
+
+    private Set<Line> getContainLines(GraphPath path) {
+        List<SectionEdge> edgeList = path.getEdgeList();
+        Set<Line> lines = new HashSet<>();
+        for (SectionEdge edge : edgeList) {
+            lines.add(edge.getLine());
+        }
+        return lines;
     }
 
     private DijkstraShortestPath getStationGraph(WeightedMultigraph<Station, SectionEdge> graph, List<Section> sections) {

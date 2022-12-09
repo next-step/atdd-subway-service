@@ -1,16 +1,22 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.*;
+import static nextstep.subway.auth.infrastructure.AuthorizationExtractor.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.*;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.*;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.PathResponse;
@@ -131,6 +137,80 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
         assertThat(path.getDistance()).isEqualTo(60);
         assertThat(path.getCharge()).isEqualTo(2750);
+    }
+
+    /**
+     * Feature: 청소년 사용자의 경로 조회
+     *  Background:
+     *      given: 지하철역/노선/구간 정보가 등록되어 있다.
+     *
+     *  Scenario: 청소년 사용자(나이 13세 이상 19세 미만) 가 경로를 조회한다.
+     *      given: 청소년 사용자가 회원가입과 로그인을 하고,
+     *      when: 지하철 구간 최단경로를 조회하면
+     *      then: 구간 정보와 함께 요금도 조회된다.
+     */
+    @Test
+    @DisplayName("역과 역 간 최단경로 조회 - 청소년 사용자 요금포함")
+    void shortPathWithChargeAndTeenTest(){
+        // given - beforeEach
+        // 13~19세 사용자 회원가입 및 로그인
+        회원_생성을_요청("teenager@people.com", "test123", 18);
+        ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청("teenager@people.com", "test123");
+
+        // when
+        ExtractableResponse<Response> 경로_요청_결과 = 경로_요청_로그인한사용자(광교역, 잠실역, 로그인_요청_결과);
+
+        // then
+        PathResponse path = 경로_요청_결과.as(PathResponse.class);
+        List<String> stationNames = 경로_지하철_역_이름(path);
+        assertThat(stationNames).containsExactly(
+                "광교역", "수지구청역", "미금역", "정자역", "판교역", "강남역", "역삼역", "종합운동장역", "잠실새내역", "잠실역"
+        );
+        assertThat(path.getDistance()).isEqualTo(60);
+        assertThat(path.getCharge()).isEqualTo(1920); // (2750 - 350) * 0.8
+    }
+
+    /**
+     * Feature: 유소년 사용자의 경로 조회
+     *  Background:
+     *      given: 지하철역/노선/구간 정보가 등록되어 있다.
+     *
+     *  Scenario: 유소년 사용자(나이 6세 이상 13세 미만) 가 경로를 조회한다.
+     *      given: 유소년 사용자가 회원가입과 로그인을 하고,
+     *      when: 지하철 구간 최단경로를 조회하면
+     *      then: 구간 정보와 함께 요금도 조회된다.
+     */
+    @Test
+    @DisplayName("역과 역 간 최단경로 조회 - 유소년 사용 요금포함")
+    void shortPathWithChargeAndLittleTest(){
+        // given - beforeEach
+        // 13~19세 사용자 회원가입 및 로그인
+        회원_생성을_요청("little@people.com", "test123", 12);
+        ExtractableResponse<Response> 로그인_요청_결과 = 로그인_요청("little@people.com", "test123");
+
+        // when
+        ExtractableResponse<Response> 경로_요청_결과 = 경로_요청_로그인한사용자(광교역, 잠실역, 로그인_요청_결과);
+
+        // then
+        PathResponse path = 경로_요청_결과.as(PathResponse.class);
+        List<String> stationNames = 경로_지하철_역_이름(path);
+        assertThat(stationNames).containsExactly(
+                "광교역", "수지구청역", "미금역", "정자역", "판교역", "강남역", "역삼역", "종합운동장역", "잠실새내역", "잠실역"
+        );
+        assertThat(path.getDistance()).isEqualTo(60);
+        assertThat(path.getCharge()).isEqualTo(1200); // (2750 - 350) * 0.5
+    }
+
+    private ExtractableResponse<Response> 경로_요청_로그인한사용자(StationResponse source, StationResponse target, ExtractableResponse<Response> loginResponse) {
+        TokenResponse tokenResponse = loginResponse.as(TokenResponse.class);
+        Map<String, String> headers = new HashMap<>();
+        headers.put(AUTHORIZATION, BEARER_TYPE + " " + tokenResponse.getAccessToken());
+        return RestAssured.given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .headers(headers)
+                .when().get("/paths?source={source}&target={target}", source.getId(), target.getId())
+                .then().log().all()
+                .extract();
     }
 
     private ExtractableResponse<Response> 경로_요청(StationResponse source, StationResponse target) {

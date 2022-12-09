@@ -21,10 +21,10 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity getPath(@AuthenticationPrincipal LoginMember loginMember,
+    public ResponseEntity getPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
                                   @RequestParam("source") Long sourceId,
                                   @RequestParam("target") Long targetId){
-        PathResponse path = pathService.path(sourceId, targetId);
+        PathResponse path = pathService.path(sourceId, targetId, loginMember);
 
         return ResponseEntity.ok(path);
     }
