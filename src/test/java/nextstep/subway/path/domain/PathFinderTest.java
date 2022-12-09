@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.Money;
 import nextstep.subway.line.dto.PathBag;
 import nextstep.subway.line.dto.SectionPath;
 import nextstep.subway.station.domain.Station;
@@ -32,9 +33,9 @@ class PathFinderTest {
         Station 석촌고분역 = Station.from("석촌고분역");
         final int 거리 = 10;
         PathBag pathBag = PathBag.from(Arrays.asList(
-                SectionPath.of(삼전역, 종합운동장역, 거리),
-                SectionPath.of(종합운동장역, 잠실새내역, 거리),
-                SectionPath.of(잠실새내역, 석촌고분역, 거리)));
+                SectionPath.of(삼전역, 종합운동장역, 거리, Money.zero()),
+                SectionPath.of(종합운동장역, 잠실새내역, 거리, Money.zero()),
+                SectionPath.of(잠실새내역, 석촌고분역, 거리, Money.zero())));
 
         //when:
         PathResult result = pathFinder.findShortestPath(pathBag, 삼전역, 석촌고분역);
@@ -56,9 +57,9 @@ class PathFinderTest {
         Station 석촌역 = Station.from("석촌역");
         final int 거리 = 10;
         PathBag pathBag = PathBag.from(Arrays.asList(
-                SectionPath.of(삼전역, 종합운동장역, 거리),
-                SectionPath.of(종합운동장역, 잠실새내역, 거리),
-                SectionPath.of(석촌고분역, 석촌역, 거리)));
+                SectionPath.of(삼전역, 종합운동장역, 거리, Money.zero()),
+                SectionPath.of(종합운동장역, 잠실새내역, 거리, Money.zero()),
+                SectionPath.of(석촌고분역, 석촌역, 거리, Money.zero())));
         //when, then:
         assertThatIllegalArgumentException().isThrownBy(() -> pathFinder.findShortestPath(pathBag, 삼전역, 석촌고분역));
     }
