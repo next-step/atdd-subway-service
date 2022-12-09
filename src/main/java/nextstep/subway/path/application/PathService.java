@@ -19,11 +19,11 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse findShortestPath(Long sourceStationId, Long targetStationId) {
+    public PathResponse findShortestPath(Integer age, Long sourceStationId, Long targetStationId) {
         Station source = stationService.findById(sourceStationId);
         Station target = stationService.findById(targetStationId);
         PathFinder pathFinder = new PathFinder();
         Path shortestPath = pathFinder.findShortestPath(lineService.findAllLines(), source, target);
-        return PathResponse.from(shortestPath, shortestPath.getCalculateFare());
+        return PathResponse.from(shortestPath, shortestPath.getCalculateFare(age));
     }
 }
