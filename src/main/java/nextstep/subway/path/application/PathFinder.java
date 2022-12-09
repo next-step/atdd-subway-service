@@ -15,22 +15,20 @@ import java.util.Objects;
 public class PathFinder {
 
     public static final String MESSAGE_STATIONS_NOT_ABLE_TO_REACHED = "출발역과 도작역이 연결되어 있지 않습니다";
-    private final List<Section> allSections;
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
     private PathFinder(List<Section> allSections) {
-        this.allSections = allSections;
-        this.graph = makeGraph();
+        this.graph = makeGraph(allSections);
     }
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph() {
+    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph(final List<Section> allSections) {
         WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
-        this.allSections.forEach(
-                section -> {
-                    graph.addVertex(section.getUpStation());
-                    graph.addVertex(section.getDownStation());
-                    graph.setEdgeWeight(graph.addEdge(section.getUpStation(),section.getDownStation()),section.getDistance());
-                }
+        allSections.forEach(
+            section -> {
+                graph.addVertex(section.getUpStation());
+                graph.addVertex(section.getDownStation());
+                graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+            }
         );
         return graph;
     }
