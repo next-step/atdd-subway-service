@@ -9,14 +9,23 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
     @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Section> sections = new ArrayList<>();
+    private List<Section> sections = new ArrayList<>();
 
     protected Sections() {
 
+    }
+
+    public Sections(List<Section> sections) {
+        this.sections = sections;
+    }
+
+    public static Sections of(List<Section> sections) {
+        return new Sections(sections);
     }
 
     public void addSection(Line line, Station upStation, Station downStation, Distance distance) {
@@ -43,6 +52,14 @@ public class Sections {
         if (!sections.isEmpty() && !hasUpStation && !hasDownStation) {
             throw new InvalidSectionException();
         }
+    }
+
+    public List<Line> findLinesContainedStations(List<Station> stations) {
+        return sections.stream()
+                .map(Section::getLine)
+                .filter(line -> stations.containsAll(line.getStations()))
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     public List<Section> getSections() {

@@ -8,6 +8,9 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
+    public static final int SURCHARGE_DISTANCE_STEP1 = 10;
+    public static final int SURCHARGE_DISTANCE_STEP2 = 50;
+
     @Column(name = "distance")
     private int value;
 
@@ -31,6 +34,18 @@ public class Distance {
             throw new InvalidDistanceException("거리의 차이는 0보다 작을 수 없습니다.");
         }
         return new Distance(this.value - other.value);
+    }
+
+    public boolean isDefaultDistance() {
+        return value <= SURCHARGE_DISTANCE_STEP1;
+    }
+
+    public boolean isMiddleDistance() {
+        return value > SURCHARGE_DISTANCE_STEP1 && value <= SURCHARGE_DISTANCE_STEP2;
+    }
+
+    public boolean isLongDistance() {
+        return value > SURCHARGE_DISTANCE_STEP2;
     }
 
     public int getDistance() {

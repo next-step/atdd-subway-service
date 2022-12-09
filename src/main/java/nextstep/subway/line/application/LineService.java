@@ -30,7 +30,7 @@ public class LineService {
         Station upStation = stationService.stationById(request.getUpStationId());
         Station downStation = stationService.stationById(request.getDownStationId());
         Distance distance = new Distance(request.getDistance());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, distance));
+        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, distance, request.getSurcharge()));
         return LineResponse.of(persistLine);
     }
 
@@ -53,7 +53,7 @@ public class LineService {
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
         Line persistLine = lineRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("노선이 존재하지 않습니다.", id));
-        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor()));
+        persistLine.update(new Line(lineUpdateRequest.getName(), lineUpdateRequest.getColor(), lineUpdateRequest.getSurcharge()));
     }
 
     public void deleteLineById(Long id) {

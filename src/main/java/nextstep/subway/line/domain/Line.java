@@ -4,10 +4,7 @@ import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -20,6 +17,8 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private final Sections sections = new Sections();
+    @Column(nullable = false)
+    private int surcharge;
 
     protected Line() {
     }
@@ -27,12 +26,20 @@ public class Line extends BaseEntity {
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.surcharge = 0;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
+    public Line(String name, String color, int surcharge) {
+        this.name = name;
+        this.color = color;
+        this.surcharge = surcharge;
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, int surcharge) {
         this.name = name;
         this.color = color;
         addSection(upStation, downStation, distance);
+        this.surcharge = surcharge;
     }
 
     public List<Station> getStations() {
@@ -66,5 +73,9 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public int getSurcharge() {
+        return surcharge;
     }
 }

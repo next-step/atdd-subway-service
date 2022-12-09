@@ -1,12 +1,16 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.exception.StationNotIncludedException;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.graph.DefaultWeightedEdge;
 
 import javax.persistence.*;
+import java.util.Comparator;
 import java.util.Objects;
+import java.util.Set;
 
 @Entity
-public class Section {
+public class Section extends DefaultWeightedEdge {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
