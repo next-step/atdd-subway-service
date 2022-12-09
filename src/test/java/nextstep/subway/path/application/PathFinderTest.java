@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class PathFinderTest {
 
@@ -23,9 +23,9 @@ class PathFinderTest {
     @BeforeEach
     void setUp() {
         sections = Arrays.asList(
-                new Section(null, 삼전역, 종합운동장역, 5),
-                new Section(null, 종합운동장역, 잠실새내역, 5),
-                new Section(null, 삼전역, 잠실새내역, 2)
+            new Section(null, 삼전역, 종합운동장역, 5),
+            new Section(null, 종합운동장역, 잠실새내역, 5),
+            new Section(null, 삼전역, 잠실새내역, 2)
         );
     }
 
@@ -34,7 +34,7 @@ class PathFinderTest {
     void findByDijkstra() {
         List<Station> byDijkstra = PathFinder.of(sections).findByDijkstra(삼전역, 잠실새내역);
 
-        assertThat(byDijkstra).containsSequence(삼전역,잠실새내역);
+        assertThat(byDijkstra).containsSequence(삼전역, 잠실새내역);
     }
 
     @Test
@@ -42,6 +42,20 @@ class PathFinderTest {
     void findByKShortest() {
         List<Station> byKShortest = PathFinder.of(sections).findByKShortest(삼전역, 잠실새내역);
 
-        assertThat(byKShortest).containsSequence(삼전역,잠실새내역);
+        assertThat(byKShortest).containsSequence(삼전역, 잠실새내역);
+    }
+
+    @Test
+    @DisplayName("경로를 찾을 수 없는 경우")
+    void findByDijkstra2() {
+        Station 동대문역 = new Station("동대문역");
+        Station 충무로역 = new Station("충무로역");
+        List<Section> notConnectedSections = Arrays.asList(
+            new Section(null, 삼전역, 종합운동장역, 5),
+            new Section(null, 동대문역, 충무로역, 5)
+        );
+
+        assertThatThrownBy(() -> PathFinder.of(notConnectedSections).findByDijkstra(삼전역, 충무로역))
+            .isInstanceOf(IllegalArgumentException.class);
     }
 }
