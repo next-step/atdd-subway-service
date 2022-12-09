@@ -1,9 +1,11 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.discount.AgeDiscount;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -23,7 +25,7 @@ public class PathService {
         this.lineRepository = lineRepository;
     }
 
-    public PathResponse findPath(Long sourceId, Long targetId) {
+    public PathResponse findPath(LoginMember member, Long sourceId, Long targetId) {
 
         List<Line> findLines = lineRepository.findAll();
 
@@ -31,7 +33,8 @@ public class PathService {
         Station target = stationRepository.findById(targetId).orElseThrow(EntityNotFoundException::new);
 
         PathFinder pathFinder = new PathFinder(source, target, findLines);
-
-        return new PathResponse(pathFinder, new Fare(pathFinder.findDistance()).calculate());
+        int fare = new Fare(pathFinder.findDistance()).calculate() + pathFinder.findLineFare();
+        return new PathResponse(pathFinder, AgeDiscount.create(fare, member.getAge()).discount());
     }
+
 }

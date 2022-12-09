@@ -15,12 +15,11 @@ import static nextstep.subway.member.MemberSteps.회원_생성_되어_있음;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AcceptanceTest {
 
+    public static String children;
+    public static String teenager;
+    public static String memberA;
     @LocalServerPort
     int port;
-
-    String children;
-    String teenager;
-    public static String memberA;
     @Autowired
     private DatabaseCleanup databaseCleanup;
 

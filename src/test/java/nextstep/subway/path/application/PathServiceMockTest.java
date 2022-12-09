@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -19,6 +20,8 @@ import javax.persistence.EntityNotFoundException;
 import java.util.Arrays;
 import java.util.Optional;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.AGE;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.EMAIL;
 import static nextstep.subway.path.domain.PathFinder.SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -83,6 +86,8 @@ class PathServiceMockTest {
     @Test
     void findPath() {
 
+        LoginMember member = new LoginMember(1L, EMAIL, AGE);
+
         Long sourceId = 1L;
         Long targetId = 2L;
 
@@ -90,7 +95,7 @@ class PathServiceMockTest {
         when(stationRepository.findById(targetId)).thenReturn(Optional.of(stationC));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
 
-        PathResponse pathResponse = pathService.findPath(sourceId, targetId);
+        PathResponse pathResponse = pathService.findPath(member, sourceId, targetId);
 
         assertThat(pathResponse.getStations()).hasSize(3);
         assertThat(pathResponse.getDistance()).isEqualTo(2);
@@ -100,6 +105,8 @@ class PathServiceMockTest {
     @Test
     void findPath_fail_sameStation() {
 
+        LoginMember member = new LoginMember(1L, EMAIL, AGE);
+
         Long sourceId = 1L;
         Long targetId = 2L;
 
@@ -107,7 +114,7 @@ class PathServiceMockTest {
         when(stationRepository.findById(targetId)).thenReturn(Optional.of(stationA));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
 
-        assertThatThrownBy(() -> pathService.findPath(sourceId, targetId))
+        assertThatThrownBy(() -> pathService.findPath(member, sourceId, targetId))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE);
     }
@@ -115,6 +122,9 @@ class PathServiceMockTest {
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 조회할 수 없다.")
     @Test
     void findPath_fail_notConnect() {
+
+        LoginMember member = new LoginMember(1L, EMAIL, AGE);
+
         Long sourceId = 1L;
         Long targetId = 2L;
 
@@ -122,7 +132,7 @@ class PathServiceMockTest {
         when(stationRepository.findById(targetId)).thenReturn(Optional.of(stationF));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
 
-        assertThatThrownBy(() -> pathService.findPath(sourceId, targetId))
+        assertThatThrownBy(() -> pathService.findPath(member, sourceId, targetId))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -130,13 +140,15 @@ class PathServiceMockTest {
     @Test
     void findPath_fail_notExist() {
 
+        LoginMember member = new LoginMember(1L, EMAIL, AGE);
+
         Long sourceId = 1L;
         Long targetId = 2L;
 
         when(stationRepository.findById(sourceId)).thenThrow(EntityNotFoundException.class);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
 
-        assertThatThrownBy(() -> pathService.findPath(sourceId, targetId))
+        assertThatThrownBy(() -> pathService.findPath(member, sourceId, targetId))
                 .isInstanceOf(EntityNotFoundException.class);
     }
 }

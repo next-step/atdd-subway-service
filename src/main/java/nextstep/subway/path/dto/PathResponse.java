@@ -22,7 +22,7 @@ public class PathResponse {
     public PathResponse(PathFinder pathFinder, int fare) {
         this.stations = toStationResponse(pathFinder.findStations());
         this.distance = pathFinder.findDistance();
-        this.fare = fare + pathFinder.findLineFare();
+        this.fare = fare;
     }
 
     private static List<StationResponse> toStationResponse(List<Station> stations) {

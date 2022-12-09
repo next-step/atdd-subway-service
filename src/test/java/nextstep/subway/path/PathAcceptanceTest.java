@@ -147,6 +147,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+    @DisplayName("900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원 -> 청소년 할인 (2150 - 350) * 0.8 -> 1440원")
+    @Test
+    void findPath_addFare_discount_teenager() {
+
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(teenager, stationA, stationB);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationA, stationB),
+                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(5),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(1440)
+        );
+    }
+
     private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId, int distance, int fare) {
         Map<String, String> lineCreateParams;
         lineCreateParams = new HashMap<>();
