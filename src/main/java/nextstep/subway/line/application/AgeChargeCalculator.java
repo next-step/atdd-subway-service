@@ -8,18 +8,18 @@ public class AgeChargeCalculator {
     public static final int AGE_SIXTY_FIVE = 65;
     public static final int BASIC_DISCOUNT = 350;
     public static final int FREE_CHARGE = 0;
-    public static final int TEENAGER_DISCOUNT_RATE = 50;
-    public static final int CHILDREN_DISCOUNT_RATE = 80;
+    public static final int CHILDREN_DISCOUNT_RATE = 50;
+    public static final int TEENAGER_DISCOUNT_RATE = 20;
     public static final int PERCENTAGE = 100;
 
     public static int calculate(int charge, int age) {
 
         if (isTeenager(age)) {
-            return (charge - BASIC_DISCOUNT) * TEENAGER_DISCOUNT_RATE / PERCENTAGE;
+            return (charge - BASIC_DISCOUNT) * (PERCENTAGE - TEENAGER_DISCOUNT_RATE) / PERCENTAGE;
         }
 
         if (isChildren(age)) {
-            return (charge - BASIC_DISCOUNT) * CHILDREN_DISCOUNT_RATE / PERCENTAGE;
+            return (charge - BASIC_DISCOUNT) * (PERCENTAGE - CHILDREN_DISCOUNT_RATE) / PERCENTAGE;
         }
         if (isBabyOrOld(age)) {
             return FREE_CHARGE;
