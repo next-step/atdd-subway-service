@@ -81,4 +81,38 @@ public class ChargeTest {
         // then
         assertThat(charge.value()).isEqualTo(2750);
     }
+
+    @Test
+    @DisplayName("거리, 노선, 나이 요금 계산 - 청소년의 경우")
+    void chargeWithDistanceAndLineAndAge(){
+        // given
+        int distance = 66;
+        Set<Line> lines = new HashSet<>();
+        lines.add(new Line("2호선", "green", new Station("강남역"), new Station("신림역"), 50, 200));
+        lines.add(new Line("5호선", "purple", new Station("신길역"), new Station("강동역"), 50, 500));
+        lines.add(new Line("3호선", "purple", new Station("교대역"), new Station("일산역"), 50, 300));
+
+        // when
+        Charge charge = new Charge(distance, lines, 18);
+
+        // then
+        assertThat(charge.value()).isEqualTo(1920);
+    }
+
+    @Test
+    @DisplayName("거리, 노선, 나이 요금 계산 - 유소년의 경우")
+    void chargeWithDistanceAndLineAndAge2(){
+        // given
+        int distance = 66;
+        Set<Line> lines = new HashSet<>();
+        lines.add(new Line("2호선", "green", new Station("강남역"), new Station("신림역"), 50, 200));
+        lines.add(new Line("5호선", "purple", new Station("신길역"), new Station("강동역"), 50, 500));
+        lines.add(new Line("3호선", "purple", new Station("교대역"), new Station("일산역"), 50, 300));
+
+        // when
+        Charge charge = new Charge(distance, lines, 12);
+
+        // then
+        assertThat(charge.value()).isEqualTo(1200);
+    }
 }

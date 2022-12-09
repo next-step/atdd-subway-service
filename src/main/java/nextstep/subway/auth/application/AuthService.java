@@ -28,7 +28,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException("인증이 유효하지 않습니다.");
+            return null;
         }
 
         String email = jwtTokenProvider.getPayload(credentials);

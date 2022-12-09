@@ -25,6 +25,9 @@ public class PathService {
 
     public PathResponse path(Long sourceId, Long targetId, LoginMember loginMember) {
         PathResult pathResult= pathGraph.findPath2(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
+        if(loginMember != null){
+            return PathResultConvertor.convert(pathResult, loginMember);
+        }
         return PathResultConvertor.convert(pathResult);
     }
 

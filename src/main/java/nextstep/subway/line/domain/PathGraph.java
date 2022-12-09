@@ -36,14 +36,6 @@ public class PathGraph {
         DijkstraShortestPath stationGraph = getStationGraph(graph, sections);
         GraphPath path = stationGraph.getPath(source, target);
 
-        int distance = (int)path.getWeight();
-        List<SectionEdge> edgeList = path.getEdgeList();
-        Set<Line> lines = new HashSet<>();
-        for (SectionEdge edge : edgeList) {
-            lines.add(edge.getLine());
-        }
-        Charge charge = new Charge(distance, lines);
-
         return new PathResult(path.getVertexList(), (int)path.getWeight(), getContainLines(path));
     }
 
