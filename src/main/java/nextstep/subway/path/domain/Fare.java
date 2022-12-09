@@ -3,7 +3,11 @@ package nextstep.subway.path.domain;
 public class Fare {
 
     public static final int DEFAULT_FARE = 1250;
-    public static final int DEFAULT_DISTANCE = 10;
+    public static final int OVER_FARE_FIRST_APPLY_RANGE = 10;
+    public static final int OVER_FARE_SECOND_APPLY_RANGE = 50;
+    public static final int OVER_FARE = 100;
+    public static final int OVER_FARE_FIRST_PER_RANGE = 5;
+    public static final int OVER_FARE_SECOND_PER_RANGE = 8;
     private final int distance;
 
     public Fare(int distance) {
@@ -11,20 +15,20 @@ public class Fare {
     }
 
     public int calculate() {
-        if (distance <= DEFAULT_DISTANCE) {
+        if (distance <= OVER_FARE_FIRST_APPLY_RANGE) {
             return DEFAULT_FARE;
         }
-        if (10 < this.distance && this.distance <= 50) {
-            return DEFAULT_FARE + calculateOverFareByFiveKm(this.distance - DEFAULT_DISTANCE);
+        if (this.distance <= OVER_FARE_SECOND_APPLY_RANGE) {
+            return DEFAULT_FARE + calculateOverFareByFirstRange(this.distance - OVER_FARE_FIRST_APPLY_RANGE);
         }
-        return DEFAULT_FARE + calculateOverFareByFiveKm(50 - DEFAULT_DISTANCE) + calculateOverFareByEightKm(this.distance - 50);
+        return DEFAULT_FARE + calculateOverFareByFirstRange(OVER_FARE_SECOND_APPLY_RANGE - OVER_FARE_FIRST_APPLY_RANGE) + calculateOverFareBySecondRange(this.distance - OVER_FARE_SECOND_APPLY_RANGE);
     }
 
-    private int calculateOverFareByFiveKm(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 5) + 1) * 100);
+    private int calculateOverFareByFirstRange(int distance) {
+        return (int) ((Math.ceil((distance - 1) / OVER_FARE_FIRST_PER_RANGE) + 1) * OVER_FARE);
     }
 
-    private int calculateOverFareByEightKm(int distance) {
-        return (int) ((Math.ceil((distance - 1) / 8) + 1) * 100);
+    private int calculateOverFareBySecondRange(int distance) {
+        return (int) ((Math.ceil((distance - 1) / OVER_FARE_SECOND_PER_RANGE) + 1) * OVER_FARE);
     }
 }
