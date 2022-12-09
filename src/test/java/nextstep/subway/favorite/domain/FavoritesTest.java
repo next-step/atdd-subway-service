@@ -12,6 +12,7 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 public class FavoritesTest {
     private Member 사용자;
+    private Member 다른_사용자;
     private Station 강남역;
     private Station 양재역;
     private Station 판교역;
@@ -24,6 +25,7 @@ public class FavoritesTest {
         양재역 = new Station("양재역");
         판교역 = new Station("판교역");
         사용자 = new Member(EMAIL, PASSWORD, AGE);
+        다른_사용자 = new Member(NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
         첫번째_즐겨찾기 = Favorite.builder()
                 .member(사용자)
                 .source(강남역)
@@ -43,7 +45,7 @@ public class FavoritesTest {
         Favorites favorites = new Favorites();
 
         // then
-        assertThatThrownBy(() -> favorites.getFavorites().add(첫번째_즐겨찾기))
+        assertThatThrownBy(() -> favorites.values().add(첫번째_즐겨찾기))
                 .isInstanceOf(UnsupportedOperationException.class);
     }
 
@@ -68,6 +70,6 @@ public class FavoritesTest {
         favorites.add(두번째_즐겨찾기);
 
         // then
-        assertThat(favorites.getFavorites()).hasSize(2);
+        assertThat(favorites.values()).hasSize(2);
     }
 }

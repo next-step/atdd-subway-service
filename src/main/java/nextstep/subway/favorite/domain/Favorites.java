@@ -26,7 +26,7 @@ public class Favorites {
         }
     }
 
-    public List<Favorite> getFavorites() {
+    public List<Favorite> values() {
         return Collections.unmodifiableList(favorites);
     }
 

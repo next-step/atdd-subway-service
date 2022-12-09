@@ -11,6 +11,9 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 @Service
 @Transactional
 public class FavoriteService {
@@ -35,8 +38,14 @@ public class FavoriteService {
                 .target(target)
                 .build();
         member.addFavorite(favorite);
-        favoriteRepository.flush();
 
         return FavoriteResponse.from(favorite);
+    }
+
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+        return member.getFavorites().values().stream()
+                .map(FavoriteResponse::from)
+                .collect(Collectors.toList());
     }
 }

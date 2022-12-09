@@ -29,6 +29,22 @@ public class Member extends BaseEntity {
         this.age = age;
     }
 
+    public void update(Member member) {
+        this.email = member.email;
+        this.password = member.password;
+        this.age = member.age;
+    }
+
+    public void checkPassword(String password) {
+        if (!StringUtils.equals(this.password, password)) {
+            throw new AuthorizationException();
+        }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
     public Long getId() {
         return id;
     }
@@ -45,20 +61,8 @@ public class Member extends BaseEntity {
         return age;
     }
 
-    public void update(Member member) {
-        this.email = member.email;
-        this.password = member.password;
-        this.age = member.age;
-    }
-
-    public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
-        }
-    }
-
-    public void addFavorite(Favorite favorite) {
-        this.favorites.add(favorite);
+    public Favorites getFavorites() {
+        return favorites;
     }
 
     @Override
