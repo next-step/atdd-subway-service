@@ -1,7 +1,6 @@
 package nextstep.subway.fare.domain;
 
-import nextstep.subway.exception.AgeFarePolicyValidException;
-import nextstep.subway.exception.NotFoundAgeFarePolicyException;
+import nextstep.subway.exception.BadRequestException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -28,7 +27,7 @@ class AgeFarePolicyTest {
     @ValueSource(ints = {0, 5})
     void exception(int input) {
         Assertions.assertThatThrownBy(() -> AgeFarePolicy.findByAge(input))
-                .isInstanceOf(NotFoundAgeFarePolicyException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(AGE_FARE_POLICY_NOT_EXIST);
     }
 
@@ -49,7 +48,7 @@ class AgeFarePolicyTest {
         AgeFarePolicy policy = AgeFarePolicy.findByAge(10);
 
         Assertions.assertThatThrownBy(() -> policy.discount(0))
-                .isInstanceOf(AgeFarePolicyValidException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(FARE_LESS_THAN_DEDUCTION_FARE);
     }
 }

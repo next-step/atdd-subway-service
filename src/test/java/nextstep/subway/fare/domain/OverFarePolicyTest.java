@@ -1,8 +1,7 @@
 package nextstep.subway.fare.domain;
 
-import nextstep.subway.exception.NotFoundOverFarePolicyException;
+import nextstep.subway.exception.NotFoundException;
 import org.assertj.core.api.Assertions;
-import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
@@ -18,7 +17,7 @@ class OverFarePolicyTest {
     @ValueSource(ints = {-1, -10})
     void exception(int input) {
         Assertions.assertThatThrownBy(() -> OverFarePolicy.findPolicyByDistance(input))
-                .isInstanceOf(NotFoundOverFarePolicyException.class)
+                .isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith(OVER_FARE_POLICY_NOT_EXIST);
     }
 

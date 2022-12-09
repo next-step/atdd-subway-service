@@ -1,7 +1,6 @@
 package nextstep.subway.path.dto.domain;
 
-import nextstep.subway.exception.PathNotFoundException;
-import nextstep.subway.exception.StationNotFoundException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.vo.Path;
 import nextstep.subway.station.domain.Station;
@@ -55,19 +54,19 @@ public class PathFinder {
 
     private void checkSameStations(Station source, Station target) {
         if(source.equals(target)) {
-            throw new PathNotFoundException(INVALID_SAME_STATIONS);
+            throw new NotFoundException(INVALID_SAME_STATIONS);
         }
     }
 
     private void checkConnectedPath(GraphPath<Station, DefaultWeightedEdge> path) {
         if (path == null) {
-            throw new PathNotFoundException(INVALID_CONNECTED_STATIONS);
+            throw new NotFoundException(INVALID_CONNECTED_STATIONS);
         }
     }
 
     private void checkStationIsNotEmpty(Station source, Station target) {
         if(source == null || target == null) {
-            throw new StationNotFoundException(NOT_EXISTS_STATION);
+            throw new NotFoundException(NOT_EXISTS_STATION);
         }
     }
 }

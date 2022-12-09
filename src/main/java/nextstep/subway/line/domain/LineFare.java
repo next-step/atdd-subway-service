@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.FareValidException;
+import nextstep.subway.exception.BadRequestException;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -33,7 +33,7 @@ public class LineFare implements Comparable<LineFare> {
 
     private static void checkFareNotNegative(int fare) {
         if (fare < MIN_FARE) {
-            throw new FareValidException(INVALID_OVER_FARE);
+            throw new BadRequestException(INVALID_OVER_FARE);
         }
     }
 

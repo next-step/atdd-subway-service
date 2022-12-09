@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-import nextstep.subway.exception.PathNotFoundException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.domain.PathFinder;
@@ -90,7 +90,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(sections);
 
         Assertions.assertThatThrownBy(() -> pathFinder.findAllStationsByStations(수서역, 잠실역))
-                .isInstanceOf(PathNotFoundException.class)
+                .isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith(INVALID_CONNECTED_STATIONS);
     }
 
@@ -100,7 +100,7 @@ class PathFinderTest {
         PathFinder pathFinder = PathFinder.from(sections);
 
         Assertions.assertThatThrownBy(() -> pathFinder.findAllStationsByStations(수서역, 수서역))
-                .isInstanceOf(PathNotFoundException.class)
+                .isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith(INVALID_SAME_STATIONS);
     }
 

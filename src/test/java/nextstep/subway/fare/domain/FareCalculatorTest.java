@@ -1,6 +1,6 @@
 package nextstep.subway.fare.domain;
 
-import nextstep.subway.exception.FareValidException;
+import nextstep.subway.exception.BadRequestException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -63,7 +63,7 @@ class FareCalculatorTest {
     @ValueSource(ints = {-1, -10})
     void exception(int input) {
         Assertions.assertThatThrownBy(() -> fareCalculator.calculate(input))
-                .isInstanceOf(FareValidException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(INVALID_OVER_DISTANCE);
     }
 
@@ -76,7 +76,7 @@ class FareCalculatorTest {
 
         Assertions.assertThat(result).isEqualTo(1350);
     }
-    
+
     @DisplayName("연령별 요금정책을 적용해서 운임요금을 계산한다.")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
     @CsvSource(value = {"6:500", "13:800", "19:1350"}, delimiter = ':')

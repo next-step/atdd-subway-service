@@ -1,8 +1,7 @@
 package nextstep.subway.fare.domain;
 
 
-import nextstep.subway.exception.AgeFarePolicyValidException;
-import nextstep.subway.exception.NotFoundAgeFarePolicyException;
+import nextstep.subway.exception.BadRequestException;
 
 import java.util.Arrays;
 
@@ -30,7 +29,7 @@ public enum AgeFarePolicy {
         return Arrays.stream(AgeFarePolicy.values())
                 .filter(it -> it.ranged(age))
                 .findAny()
-                .orElseThrow(() -> new NotFoundAgeFarePolicyException(AGE_FARE_POLICY_NOT_EXIST));
+                .orElseThrow(() -> new BadRequestException(AGE_FARE_POLICY_NOT_EXIST));
     }
 
     private boolean ranged(int age) {
@@ -44,7 +43,7 @@ public enum AgeFarePolicy {
 
     private void checkFareIsNotLessThanDeductionFare(int fare) {
         if (fare < this.deductionFare) {
-            throw new AgeFarePolicyValidException(FARE_LESS_THAN_DEDUCTION_FARE);
+            throw new BadRequestException(FARE_LESS_THAN_DEDUCTION_FARE);
         }
     }
 }

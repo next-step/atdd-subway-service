@@ -1,8 +1,7 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.FareValidException;
+import nextstep.subway.exception.BadRequestException;
 import org.assertj.core.api.Assertions;
-import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -19,7 +18,7 @@ class LineFareTest {
     @ValueSource(ints = {-1, -10})
     void exception(int input) {
         Assertions.assertThatThrownBy(() -> LineFare.from(input))
-                .isInstanceOf(FareValidException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(INVALID_OVER_FARE);
     }
 

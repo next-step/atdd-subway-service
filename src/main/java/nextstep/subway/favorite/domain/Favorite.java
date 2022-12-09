@@ -1,6 +1,6 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.exception.FavoriteCreateException;
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -44,13 +44,13 @@ public class Favorite {
 
     private static void checkMemberNotNull(Member member) {
         if (member == null) {
-            throw new FavoriteCreateException(FAVORITE_NOT_CONTAIN_MEMBER);
+            throw new BadRequestException(FAVORITE_NOT_CONTAIN_MEMBER);
         }
     }
 
     private static void checkStationNotNull(Station sourceStation, Station targetStation) {
         if (sourceStation == null || targetStation == null) {
-            throw new FavoriteCreateException(FAVORITE_NOT_CONTAIN_STATION);
+            throw new BadRequestException(FAVORITE_NOT_CONTAIN_STATION);
         }
     }
 

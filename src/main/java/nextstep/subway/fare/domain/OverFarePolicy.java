@@ -1,7 +1,7 @@
 package nextstep.subway.fare.domain;
 
 
-import nextstep.subway.exception.NotFoundOverFarePolicyException;
+import nextstep.subway.exception.NotFoundException;
 
 import java.util.Arrays;
 import java.util.function.IntFunction;
@@ -35,7 +35,7 @@ public enum OverFarePolicy {
         return Arrays.stream(OverFarePolicy.values())
                 .filter(it -> it.isFareSectionIncluding(distance))
                 .findAny()
-                .orElseThrow(() -> new NotFoundOverFarePolicyException(OVER_FARE_POLICY_NOT_EXIST));
+                .orElseThrow(() -> new NotFoundException(OVER_FARE_POLICY_NOT_EXIST));
     }
 
     public int calculateOverFare(int distance) {

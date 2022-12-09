@@ -1,7 +1,7 @@
 package nextstep.subway.fare.domain;
 
 
-import nextstep.subway.exception.FareValidException;
+import nextstep.subway.exception.BadRequestException;
 
 import static nextstep.subway.utils.Constant.BASIC_FARE;
 import static nextstep.subway.utils.Constant.MIN_DISTANCE_OF_BASIC_FARE_SECTION;
@@ -46,7 +46,7 @@ public class FareCalculator {
 
     private void checkDistanceNotNegative(int distance) {
         if (distance < MIN_DISTANCE_OF_BASIC_FARE_SECTION) {
-            throw new FareValidException(INVALID_OVER_DISTANCE);
+            throw new BadRequestException(INVALID_OVER_DISTANCE);
         }
     }
 
