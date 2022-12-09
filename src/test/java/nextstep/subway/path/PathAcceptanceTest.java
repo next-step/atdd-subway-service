@@ -111,7 +111,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(createAtList).hasSize(stationResponses.size());
         assertThat(createAtList).doesNotContainNull();
         assertThat(path.getDistance()).isEqualTo(distance);
-        assertThat(path.getFare()).isEqualTo(1250 + 100);
+        assertThat(path.getFare()).isEqualTo(1350);
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color,

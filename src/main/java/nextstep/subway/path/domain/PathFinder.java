@@ -26,7 +26,7 @@ public class PathFinder {
         if (Objects.isNull(graphPath)) {
             throw new IllegalStateException(PATH_NOT_CONNECTED);
         }
-        return new Path(graphPath.getVertexList(), (int)graphPath.getWeight());
+        return new Path(graphPath.getVertexList(), new Distance((int)graphPath.getWeight()));
     }
 
     private void validateStations(Station source, Station target) {

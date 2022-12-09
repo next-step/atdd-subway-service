@@ -64,7 +64,7 @@ class PathFinderTest {
         Path result = pathFinder.find(강남역, 남부터미널역);
 
         // then
-        assertThat(result.getDistance()).isEqualTo(12);
+        assertThat(result.getDistance()).isEqualTo(new Distance(12));
         assertThat(result.getStations()).containsExactlyElementsOf(
             Arrays.asList(강남역, 양재역, 남부터미널역));
     }
@@ -76,7 +76,7 @@ class PathFinderTest {
         Path result = pathFinder.find(교대역, 양재역);
 
         // then
-        assertThat(result.getDistance()).isEqualTo(5);
+        assertThat(result.getDistance()).isEqualTo(new Distance(5));
         assertThat(result.getStations()).containsExactlyElementsOf(
             Arrays.asList(교대역, 남부터미널역, 양재역));
     }
