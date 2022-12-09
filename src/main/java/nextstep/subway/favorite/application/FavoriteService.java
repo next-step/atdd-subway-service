@@ -40,7 +40,7 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findAll(Long loginMemberId) {
-        return favoriteRepository.findAllByMember_Id(loginMemberId).stream()
+        return favoriteRepository.findAllByMemberId(loginMemberId).stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
@@ -54,7 +54,7 @@ public class FavoriteService {
 
     private Favorites initFavorites(Long loginMemberId) {
         Favorites favorites = new Favorites();
-        favorites.addAll(favoriteRepository.findAllByMember_Id(loginMemberId));
+        favorites.addAll(favoriteRepository.findAllByMemberId(loginMemberId));
         return favorites;
     }
 }
