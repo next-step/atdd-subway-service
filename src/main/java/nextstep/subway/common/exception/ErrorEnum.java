@@ -4,7 +4,7 @@ public enum ErrorEnum {
     ERROR_MESSAGE_DEFAULT("오류가 발생하였습니다."),
     SOURCE_AND_TARGET_EQUAL_STATION("출발역과 도착역은 같을 수 없습니다."),
     NOT_CONNECTED_STATIONS("출발역과 도착역이 연결되있지 않습니다."),
-    VALID_LINE_LENGTH_GREATER_THAN_ZERO("노선의 길이는 0보다 커야합니다."),
+    VALID_LINE_LENGTH_GREATER_THAN_ZERO("노선의 길이는 0 이상이어야."),
     VALID_GREATER_OR_EQUAL_LENGTH_BETWEEN_STATION("역과 역 사이의 거리보다 좁은 거리를 입력해주세요."),
     EXISTS_STATION("등록하려는 지하철역이 존재합니다."),
     NOT_EXISTS_STATION("지하철역이 존재하지 않습니다."),
@@ -15,7 +15,12 @@ public enum ErrorEnum {
     NOT_MATCH_PASSWORD("로그인 실패! 비밀번호가 일치하지 않습니다."),
     INVALID_TOKEN("유효하지 않은 토큰입니다."),
     NOT_EXISTS_MEMBER("회원 정보를 찾을 수 없습니다."),
-    NOT_EXISTS_FAVORITE("즐겨찾기 정보를 찾을 수 없습니다.");
+    NOT_EXISTS_FAVORITE("즐겨찾기 정보를 찾을 수 없습니다."),
+    DISTANCE_GREATER_ZERO("거리는 0 이상이어야 합니다."),
+    LINE_FARE_GREATER_ZERO("노선 요금은 0 이상이어야 합니다."),
+    NOT_EXIST_AGE_FARE_POLICY("연령별 요금 정책이 존재하지 않습니다."),
+    FARE_LESS_THAN_DEDUCTION_FARE("지하철 운임요금이 공제금액보다 작습니다."),
+    NOT_EXISTS_DISTANCE_AND_FARE_POLICY("거리와 나이에 해당하는 요금계산 정책이 없습니다."),;
 
     private final String message;
 

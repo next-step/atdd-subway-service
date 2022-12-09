@@ -25,8 +25,8 @@ import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.common.exception.ErrorEnum;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
-import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -94,7 +94,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      * When 즐겨찾기 삭제 요청
      * Then 즐겨찾기 삭제됨
      * When 삭제된 즐겨찾기 조회 요청
-     * Then 즐겨찾기 조회되지 않음
+     * Then 즐겨찾기 조회되지 않음     *
      */
     @DisplayName("즐겨찾기를 관리한다.")
     @Test

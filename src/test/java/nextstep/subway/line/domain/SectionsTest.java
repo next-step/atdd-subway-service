@@ -90,5 +90,4 @@ public class SectionsTest {
         assertThatThrownBy(() -> 구간.delete(수서역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
 }

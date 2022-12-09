@@ -51,4 +51,5 @@ public class FavoriteController {
         favoriteService.delete(loginMember.getId(), favoriteId);
         return ResponseEntity.noContent().build();
     }
+
 }

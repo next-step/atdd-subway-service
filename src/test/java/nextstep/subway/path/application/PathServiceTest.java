@@ -40,6 +40,7 @@ public class PathServiceTest {
     private Station 교대역;
     private Station 남부터미널역;
     private Station 석촌역;
+    private int age = 19;
 
     /**
      * 교대역       --- *2호선(10)* ---   강남역
@@ -66,7 +67,7 @@ public class PathServiceTest {
         when(stationRepository.findById(2L)).thenReturn(Optional.of(양재역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
 
-        PathResponse response = pathService.findShortestPath(1L, 2L);
+        PathResponse response = pathService.findShortestPath(1L, 2L, age);
 
         assertAll(
                 () -> assertThat(response.getStations()).hasSize(2),
@@ -80,7 +81,7 @@ public class PathServiceTest {
         when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
+        assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L, age))
                         .isInstanceOf(RuntimeException.class);
     }
 
@@ -90,7 +91,7 @@ public class PathServiceTest {
         when(stationRepository.findById(2L)).thenReturn(Optional.of(석촌역));
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
 
-        assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
+        assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L, age))
                         .isInstanceOf(RuntimeException.class);
     }
 
@@ -99,7 +100,7 @@ public class PathServiceTest {
         when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
         when(stationRepository.findById(0L)).thenReturn(Optional.empty());
 
-        assertThatThrownBy(() -> pathService.findShortestPath( 1L, 0L))
+        assertThatThrownBy(() -> pathService.findShortestPath( 1L, 0L, age))
                 .isInstanceOf(RuntimeException.class);
     }
 }

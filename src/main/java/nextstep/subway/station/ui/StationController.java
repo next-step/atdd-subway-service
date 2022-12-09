@@ -45,7 +45,7 @@ public class StationController {
     }
 
     @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+    public ResponseEntity<ErrorResponse> handleIllegalArgsException(DataIntegrityViolationException e) {
         ErrorResponse errorResponse = new ErrorResponse(ErrorEnum.EXISTS_STATION.message());
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
