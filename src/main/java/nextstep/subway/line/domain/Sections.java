@@ -145,7 +145,7 @@ public class Sections {
                 .anyMatch(it -> it.hasEqualDownStation(candidate));
     }
 
-    public List<Section> getSectionList() {
+    public List<Section> getSections() {
         return sections;
     }
 }
