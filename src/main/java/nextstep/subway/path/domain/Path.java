@@ -20,4 +20,17 @@ public class Path {
     public int getDistance() {
         return distance;
     }
+
+    public int getCalculateFare() {
+        int fare = 1250;
+
+        if(distance > 10) {
+            fare += (int) ((Math.ceil((distance - 10 - 1) / 5) + 1) * 100);
+        }
+
+        if(distance > 50) {
+            fare += (int) ((Math.ceil((distance - 50 - 1) / 8) + 1) * 100);
+        }
+        return fare;
+    }
 }
