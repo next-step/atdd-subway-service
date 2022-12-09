@@ -16,7 +16,7 @@ import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-public class PathTest {
+public class PathFinderTest {
 
     private Line 삼호선;
     private Line 이호선;
@@ -56,17 +56,17 @@ public class PathTest {
     @DisplayName("역 간의 최단 경로를 조회한다.")
     @Test
     void 최단_경로_조회_테스트() {
-        Path path = new Path(lines, 강남역, 남부터미널역);
+        PathFinder pathFinder = new PathFinder(lines);
 
-        assertThat(path.getBestPath()).containsExactly(강남역, 양재역, 남부터미널역);
-        assertThat(path.getBestPathDistance().value()).isEqualTo(12);
+        assertThat(pathFinder.findShortestPath(강남역, 남부터미널역)).containsExactly(강남역, 양재역, 남부터미널역);
+        assertThat(pathFinder.findShortestPathDistance(강남역, 남부터미널역).value()).isEqualTo(12);
     }
 
     @DisplayName("동일역으로 최단 경로를 조회한다.")
     @Test
     void 동일역으로_최단_경로_생성_시_예외_테스트() {
         assertThatThrownBy(
-                () -> new Path(lines, 강남역, 강남역)
+                () -> new PathFinder(lines).findShortestPath(강남역, 강남역)
         ).isInstanceOf(InvalidDataException.class);
     }
 
@@ -74,7 +74,7 @@ public class PathTest {
     @Test
     void 연결되지_않은_역으로_최단_경로_생성_시_예외_테스트() {
         assertThatThrownBy(
-                () -> new Path(lines, 남부터미널역, 당산역)
+                () -> new PathFinder(lines).findShortestPath(남부터미널역, 당산역)
         ).isInstanceOf(InvalidDataException.class);
     }
 
