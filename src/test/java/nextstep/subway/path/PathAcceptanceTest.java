@@ -36,10 +36,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     /**
      * stationA  --- lineD    ---       stationD                      stationF
      * /             거리 1               /                              /
-     * *lineA* 거리 5, 추가요금 900    lineC 거리 1               *lineE* 거리 2
+     * *lineA* 거리 5, 추가요금 900    lineC 거리 1               lineE (거리 11, 추가요금 900원)
      * /                                    /                            /
-     * stationB  ---   lineB ---  stationC                      stationE
-     * 거리 3
+     * stationB  ---   lineB  ---  stationC                      stationE
+     *
      */
     @BeforeEach
     public void setUp() {
@@ -55,7 +55,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         lineB = 지하철_노선_생성_요청(createLineCreateParams("B", "blue", stationB, stationC, 3, 0)).jsonPath().getLong("id");
         lineC = 지하철_노선_생성_요청(createLineCreateParams("C", "yellow", stationC, stationD, 1, 0)).jsonPath().getLong("id");
         lineD = 지하철_노선_생성_요청(createLineCreateParams("D", "orange", stationD, stationA, 1, 0)).jsonPath().getLong("id");
-        lineE = 지하철_노선_생성_요청(createLineCreateParams("E", "grey", stationE, stationF, 2, 0)).jsonPath().getLong("id");
+        lineE = 지하철_노선_생성_요청(createLineCreateParams("E", "grey", stationE, stationF, 11, 900)).jsonPath().getLong("id");
     }
 
     /*
@@ -147,7 +147,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    @DisplayName("900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원 -> 청소년 할인 (2150 - 350) * 0.8 -> 1440원")
+    @DisplayName("900원 추가 요금이 있는 노선 5km 이용 시 1,250원 -> 2,150원 -> 청소년 할인 (2150 - 350) * 0.8 -> 1440원")
     @Test
     void findPath_addFare_discount_teenager() {
 
@@ -158,6 +158,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationA, stationB),
                 () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(5),
                 () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(1440)
+        );
+    }
+
+    @DisplayName("900원 추가 요금이 있는 노선 11km 이용 시 1,350원 -> 2,250원 -> 청소년 할인 (2250 - 350) * 0.5 -> 950원")
+    @Test
+    void findPath_addFare_discount_children() {
+
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(children, stationE, stationF);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationE, stationF),
+                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(11),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(950)
         );
     }
 
