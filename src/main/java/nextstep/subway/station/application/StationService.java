@@ -41,10 +41,4 @@ public class StationService {
         return stationRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND.getMessage()));
     }
-
-    @Transactional(readOnly = true)
-    public Station findById(Long id) {
-        return stationRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND.getMessage()));
-    }
 }
