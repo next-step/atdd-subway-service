@@ -20,11 +20,13 @@ import org.springframework.http.MediaType;
 import java.util.Arrays;
 import java.util.List;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStepTest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceStepTest.*;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록됨;
+import static nextstep.subway.member.MemberAcceptanceStepTest.회원_생성을_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -116,35 +118,6 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_삭제됨(deleteResponse);
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_생성을_요청(String accessToken, Long source, Long target) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(new FavoriteRequest(source, target))
-                .when().post("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_목록_조회_요청(String accessToken) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/favorites")
-                .then().log().all()
-                .extract();
-    }
-
-    private ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
-        return RestAssured
-                .given().log().all()
-                .auth().oauth2(accessToken)
-                .when().delete("/favorites/{favoriteId}", favoriteId)
-                .then().log().all()
-                .extract();
-    }
 
     private void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

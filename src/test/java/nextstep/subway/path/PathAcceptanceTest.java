@@ -7,7 +7,6 @@ import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
-import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
@@ -25,10 +24,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStepTest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceStepTest.회원_생성을_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.path.PathAcceptanceStepTest.최단_경로_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -173,19 +174,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private ExtractableResponse<Response> 최단_경로_조회_요청(String accessToken, Long sourceStationId, Long targetStationId) {
-        Map<String, Long> params = new HashMap<>();
-        params.put("source", sourceStationId);
-        params.put("target", targetStationId);
-
-        return RestAssured.given().log().all()
-                .auth().oauth2(accessToken)
-                .queryParams(params)
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/paths")
-                .then().log().all()
-                .extract();
-    }
 
 
     private void 지하철_최단_경로_조회됨(ExtractableResponse<Response> response, int distance, int fare) {

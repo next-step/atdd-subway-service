@@ -13,6 +13,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStepTest.로그인_요청;
+import static nextstep.subway.member.MemberAcceptanceStepTest.내_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceStepTest.회원_생성을_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -101,15 +104,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
-    }
+
 
     public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertAll(
