@@ -11,10 +11,9 @@ public class LineFixture {
 
 
     public static Line lineA() {
-        return new Line(LINE_A_NAME, LINE_A_COLOR, stationA(), stationB(), 5);
+        return new Line(LINE_A_NAME, LINE_A_COLOR, stationA(), stationB(), 5, 0);
     }
-
     public static Line lineB() {
-        return new Line(LINE_B_NAME, LINE_B_COLOR, stationA(), stationC(), 5);
+        return new Line(LINE_B_NAME, LINE_B_COLOR, stationA(), stationC(), 5, 0);
     }
 }

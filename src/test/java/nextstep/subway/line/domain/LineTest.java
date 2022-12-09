@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 import static nextstep.subway.line.domain.LineFixture.lineA;
 import static nextstep.subway.line.domain.SectionFixture.sectionBC;
@@ -13,6 +15,18 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 @DisplayName("노선 관련 기능")
 public class LineTest {
+
+    @DisplayName("노선 생성")
+    @ParameterizedTest
+    @CsvSource({"1호선, blue, 900"})
+    void constructor(String name, String color, int fare) {
+        Line line = Line.of(name, color, fare);
+        assertAll(
+                () -> assertThat(line.getColor()).isEqualTo(color),
+                () -> assertThat(line.getName()).isEqualTo(name),
+                () -> assertThat(line.getFare()).isEqualTo(fare)
+        );
+    }
 
     @DisplayName("노선에 등록 되어있지 않은 역을 제거할 수 없다.")
     @Test

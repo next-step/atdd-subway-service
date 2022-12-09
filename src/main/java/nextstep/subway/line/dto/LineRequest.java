@@ -8,6 +8,7 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
+    private int fare;
 
     public LineRequest() {
     }
@@ -41,6 +42,10 @@ public class LineRequest {
     }
 
     public Line toLine() {
-        return Line.of(name, color);
+        return Line.of(name, color, fare);
+    }
+
+    public int getFare() {
+        return this.fare;
     }
 }

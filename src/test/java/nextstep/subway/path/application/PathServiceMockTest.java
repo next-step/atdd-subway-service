@@ -66,11 +66,11 @@ class PathServiceMockTest {
         stationE = new Station("E");
         stationF = new Station("F");
 
-        lineA = Line.of("A", "RED");
-        lineB = Line.of("B", "BLUE");
-        lineC = Line.of("C", "GREEN");
-        lineD = Line.of("D", "YELLOW");
-        lineE = Line.of("E", "ORANGE");
+        lineA = Line.of("A", "RED", 0);
+        lineB = Line.of("B", "BLUE", 0);
+        lineC = Line.of("C", "GREEN", 0);
+        lineD = Line.of("D", "YELLOW", 0);
+        lineE = Line.of("E", "ORANGE", 0);
 
         lineA.addSection(new Section(lineA, stationA, stationB, new Distance(5)));
         lineB.addSection(new Section(lineB, stationB, stationC, new Distance(3)));
