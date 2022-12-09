@@ -8,16 +8,6 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.MediaType;
 
-/**
- * <pre>
- * nextstep.subway.line.acceptance
- * LineSectionRestAssured
- * </pre>
- *
- * @author : Deokmoon
- * @date : 2022/12/09
- * @tags :
- */
 public class LineSectionRestAssured {
     public static ExtractableResponse<Response> 지하철_노선에_지하철역_제외_요청(LineResponse line, StationResponse station) {
         return RestAssured

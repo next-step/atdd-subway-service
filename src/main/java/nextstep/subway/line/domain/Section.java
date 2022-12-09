@@ -3,6 +3,7 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -25,6 +26,12 @@ public class Section {
     private int distance;
 
     public Section() {
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -68,5 +75,30 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void addStations(List<Station> stations) {
+        stations.add(upStation);
+        stations.add(downStation);
+    }
+
+    public void addNextStation(List<Station> stations) {
+        stations.add(downStation);
+    }
+
+    public boolean isEqualUpStationNewSectionDownStation(Section section) {
+        return upStation.equals(section.getDownStation());
+    }
+
+    public boolean isEqualDownStationNewSectionUpStation(Section section) {
+        return downStation.equals(section.getUpStation());
+    }
+
+    public String findUpStationName() {
+        return upStation.getName();
+    }
+
+    public String findDownStationName() {
+        return downStation.getName();
     }
 }

@@ -9,16 +9,6 @@ import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.dto.StationResponse;
 import org.springframework.http.MediaType;
 
-/**
- * <pre>
- * nextstep.subway.line.acceptance
- * LineRestAssured
- * </pre>
- *
- * @author : Deokmoon
- * @date : 2022/12/09
- * @tags :
- */
 public class LineRestAssured {
     public static ExtractableResponse<Response> 지하철_노선_등록되어_있음(LineRequest params) {
         return 지하철_노선_생성_요청(params);
