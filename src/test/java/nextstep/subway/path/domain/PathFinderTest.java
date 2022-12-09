@@ -57,9 +57,10 @@ public class PathFinderTest {
     @Test
     void 최단_경로_조회_테스트() {
         PathFinder pathFinder = new PathFinder(lines);
+        Path path = pathFinder.findShortestPath(강남역, 남부터미널역);
 
-        assertThat(pathFinder.findShortestPath(강남역, 남부터미널역)).containsExactly(강남역, 양재역, 남부터미널역);
-        assertThat(pathFinder.findShortestPathDistance(강남역, 남부터미널역).value()).isEqualTo(12);
+        assertThat(path.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
+        assertThat(path.getDistance().value()).isEqualTo(12);
     }
 
     @DisplayName("동일역으로 최단 경로를 조회한다.")

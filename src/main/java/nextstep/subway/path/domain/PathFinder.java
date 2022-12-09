@@ -27,19 +27,13 @@ public class PathFinder {
         }
     }
 
-    public List<Station> findShortestPath(Station source, Station target) {
+    public Path findShortestPath(Station source, Station target) {
         validatePath(source, target);
         try {
-            return dijkstraShortestPath.getPath(source, target).getVertexList();
-        } catch (IllegalArgumentException e) {
-            throw new InvalidDataException(NO_CONNECTION_BETWEEN_STATIONS_EXCEPTION);
-        }
-    }
+            List<Station> stations = dijkstraShortestPath.getPath(source, target).getVertexList();
+            Distance distance = new Distance((int) dijkstraShortestPath.getPath(source, target).getWeight());
 
-    public Distance findShortestPathDistance(Station source, Station target) {
-        validatePath(source, target);
-        try {
-            return new Distance((int) dijkstraShortestPath.getPath(source, target).getWeight());
+            return new Path(stations, distance);
         } catch (IllegalArgumentException e) {
             throw new InvalidDataException(NO_CONNECTION_BETWEEN_STATIONS_EXCEPTION);
         }
