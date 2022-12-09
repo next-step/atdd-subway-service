@@ -71,7 +71,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_fail_sameStation() {
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationA);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, stationA, stationA);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -89,7 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_fail_notConnect() {
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationF);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, stationA, stationF);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
@@ -107,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_success() {
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationC);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, stationA, stationC);
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationA, stationD, stationC),
@@ -129,7 +129,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     */
     @Test
     void findPath_fail_notExist() {
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(100L, stationF);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, 100L, stationF);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
     }
 
@@ -137,7 +137,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void findPath_addFare() {
 
-        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationB);
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, stationA, stationB);
 
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
