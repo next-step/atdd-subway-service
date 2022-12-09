@@ -5,9 +5,9 @@ import java.util.Objects;
 
 @Embeddable
 public class Distance {
-    private int distance;
+    private double distance;
 
-    public Distance(int distance) {
+    public Distance(double distance) {
         this.distance = distance;
     }
 
@@ -25,7 +25,7 @@ public class Distance {
         return new Distance(this.distance + distance.distance);
     }
 
-    public int getDistance() {
+    public double getDistance() {
         return distance;
     }
 
@@ -48,5 +48,17 @@ public class Distance {
     @Override
     public int hashCode() {
         return Objects.hash(distance);
+    }
+
+    public boolean isUnderEqualTo(int i) {
+        return this.distance <= i;
+    }
+
+    public boolean isOver(int i) {
+        return this.distance < i;
+    }
+
+    public int countPerSize(int dividePerSize) {
+        return (int) Math.ceil(this.distance - 1) / dividePerSize;
     }
 }
