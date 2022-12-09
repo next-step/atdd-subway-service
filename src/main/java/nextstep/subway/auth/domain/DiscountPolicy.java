@@ -8,7 +8,7 @@ public abstract class DiscountPolicy {
 
     protected abstract Money getCharge();
 
-    public static DiscountPolicy from(Age age) {
+    public static DiscountPolicy fromAge(Age age) {
         if (age.isChild()) {
             return new ChildDiscountPolicy();
         }
