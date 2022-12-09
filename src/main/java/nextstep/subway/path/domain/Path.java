@@ -14,9 +14,9 @@ public class Path {
     private static final String IDENTICAL_STATIONS_EXCEPTION = "출발역과 도착역이 동일합니다.";
     private static final String NO_CONNECTION_BETWEEN_STATIONS_EXCEPTION = "출발역과 도착역이 연결되지 않았습니다.";
 
-    Graph graph = new Graph();
-    List<Station> stations;
-    Distance distance;
+    private Graph graph = new Graph();
+    private List<Station> stations;
+    private Distance distance;
 
     public Path(List<Line> lines, Station source, Station target) {
         validatePath(source, target);

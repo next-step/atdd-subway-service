@@ -8,8 +8,8 @@ import java.util.stream.Collectors;
 
 public class PathResponse {
 
-    List<StationResponse> stations;
-    int distance;
+    private List<StationResponse> stations;
+    private int distance;
 
     public PathResponse() {
 
