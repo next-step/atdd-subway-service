@@ -3,26 +3,27 @@ package nextstep.subway.line.application;
 public class DistanceChargeCalculator {
 
     public static final int OVER_CHARGE = 100;
+    public static final int TEN = 10;
+    public static final int FIFTY = 50;
+    public static final int OVER_PER_FIVE = 5;
+    public static final int OVER_PER_EIGHT = 8;
 
     public static int calculate(int charge, int distance) {
-
-        if(distance > 10 && distance <= 50){
-            int over = distance - 10;
-            int overCharge = (int)((Math.ceil((over - 1) / 5) + 1) * OVER_CHARGE);
+        if(distance > TEN && distance <= FIFTY){
+            int overCharge = calculateOverCharge(OVER_PER_FIVE, distance - TEN);
             return charge + overCharge;
         }
 
-        if(distance > 50){
-            int over = distance - 50;
-            int overCharge = (int)((Math.ceil((over - 1) / 8) + 1) * OVER_CHARGE);
-            return calculate(charge+overCharge, 50);
+        if(distance > FIFTY){
+            int overCharge = calculateOverCharge(OVER_PER_EIGHT, distance - FIFTY);
+            return calculate(charge+overCharge, FIFTY);
         }
 
         return charge;
     }
 
 
-    private int calculateOverFare(int standard, int distance) {
+    private static int calculateOverCharge(int standard, int distance) {
         return (int) ((Math.ceil((distance - 1) / standard) + 1) * OVER_CHARGE);
     }
 }

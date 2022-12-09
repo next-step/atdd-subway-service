@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import java.util.Set;
+import nextstep.subway.line.application.AgeChargeCalculator;
 import nextstep.subway.line.application.DistanceChargeCalculator;
 import nextstep.subway.line.application.LineChargeCalculator;
 
@@ -10,31 +11,24 @@ public class Charge {
     private int charge;
 
     public Charge(int distance, Set<Line> lines) {
-        this.charge = LineChargeCalculator.calculate(DistanceChargeCalculator.calculate(DEFAULT_CHARGE, distance), lines);
+        this.charge = chargeLineCost(chargeDistance(DEFAULT_CHARGE, distance), lines);
     }
 
     public Charge(int distance, Set<Line> lines, int age) {
-        this.charge = LineChargeCalculator.calculate(DistanceChargeCalculator.calculate(DEFAULT_CHARGE, distance), lines);
-        agePolicy(age);
+        this(distance, lines);
+        this.charge = discountAge(this.charge, age);
     }
 
-    private void agePolicy(int age) {
-        if(age >= 13 && age < 19){
-            this.charge = (this.charge - 350) * 8 / 10;
-        }
-        if(age >= 6 && age < 13){
-            this.charge = (this.charge - 350) * 5 / 10;
-        }
+    private int chargeDistance(int charge, int distance){
+        return DistanceChargeCalculator.calculate(charge, distance);
     }
 
-    private void lineCostPolicy(Set<Line> lines) {
-        int cost = 0;
-        for (Line line : lines) {
-            if(cost < line.getCost()){
-                cost = line.getCost();
-            }
-        }
-        this.charge += cost;
+    private int chargeLineCost(int charge, Set<Line> lines){
+        return LineChargeCalculator.calculate(charge, lines);
+    }
+
+    private int discountAge(int charge, int age){
+        return AgeChargeCalculator.calculate(charge, age);
     }
 
     public int value() {
