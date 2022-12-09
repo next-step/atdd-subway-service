@@ -40,18 +40,6 @@ public class Section extends DefaultWeightedEdge {
         this.distance = distance;
     }
 
-    public static Section findShortestDistanceSection(Set<Section> sections) {
-        Comparator<Section> comparatorByDistance = Comparator.comparingInt(Section::distanceValue);
-
-        return sections.stream()
-                .min(comparatorByDistance)
-                .orElseThrow(() -> new StationNotIncludedException());
-    }
-
-    public int distanceValue() {
-        return distance.getDistance();
-    }
-
     public Long getId() {
         return id;
     }
