@@ -31,14 +31,16 @@ public class PathGraphTest {
         line.addSection(station2, station3, 10);
 
         // when
-        PathResponse pathResponse = pathGraph.findPath(station1, station3, line.getSections());
-        List<String> list = pathResponse.getStations().stream()
-                .map(StationResponse::getName)
+        PathResult pathResult = pathGraph.findPath(station1, station3, line.getSections());
+        List<String> list = pathResult.getStations().stream()
+                .map(station -> StationResponse.of(station).getName())
                 .collect(Collectors.toList());
 
         // then
         assertThat(list).containsExactly("암사역","천호역","몽촌토성역");
-        assertThat(pathResponse.getDistance()).isEqualTo(20);
-        assertThat(pathResponse.getCharge()).isEqualTo(2250);
+        assertThat(pathResult.getDistance()).isEqualTo(20);
+        assertThat(pathResult.getLines()).contains(
+                line
+        );
     }
 }

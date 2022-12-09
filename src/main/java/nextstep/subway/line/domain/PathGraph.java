@@ -4,7 +4,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
@@ -15,23 +14,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class PathGraph {
 
-    public PathResponse findPath(Station source, Station target, List<Section> sections){
-        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
-        DijkstraShortestPath stationGraph = getStationGraph(graph, sections);
-        GraphPath path = stationGraph.getPath(source, target);
-
-        int distance = (int)path.getWeight();
-        List<SectionEdge> edgeList = path.getEdgeList();
-        Set<Line> lines = new HashSet<>();
-        for (SectionEdge edge : edgeList) {
-            lines.add(edge.getLine());
-        }
-        Charge charge = new Charge(distance, lines);
-
-        return new PathResponse(createStations(path), (int)path.getWeight(), charge.value());
-    }
-
-    public PathResult findPath2(Station source, Station target, List<Section> sections){
+    public PathResult findPath(Station source, Station target, List<Section> sections){
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
         DijkstraShortestPath stationGraph = getStationGraph(graph, sections);
         GraphPath path = stationGraph.getPath(source, target);

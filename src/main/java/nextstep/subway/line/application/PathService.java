@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import static nextstep.subway.line.application.PathResultConvertor.*;
+
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.PathGraph;
 import nextstep.subway.line.domain.PathResult;
@@ -24,11 +26,15 @@ public class PathService {
     }
 
     public PathResponse path(Long sourceId, Long targetId, LoginMember loginMember) {
-        PathResult pathResult= pathGraph.findPath2(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
-        if(loginMember != null){
-            return PathResultConvertor.convert(pathResult, loginMember);
+        PathResult pathResult= pathGraph.findPath(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
+        if(isLoggedIn(loginMember)){
+            return convert(pathResult, loginMember);
         }
-        return PathResultConvertor.convert(pathResult);
+        return convert(pathResult);
+    }
+
+    private boolean isLoggedIn(LoginMember loginMember) {
+        return loginMember != null;
     }
 
     private Station getStation(Long sourceId) {
