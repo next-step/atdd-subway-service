@@ -1,75 +1,41 @@
 package nextstep.subway.path.domain;
 
-import static java.lang.Integer.*;
+import static nextstep.subway.exception.ExceptionMessage.*;
 
-import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.alg.shortestpath.KShortestPaths;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
-import org.springframework.stereotype.Component;
 
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.dto.PathFinderResult;
+import nextstep.subway.path.dto.Path;
 import nextstep.subway.station.domain.Station;
 
-@Component
 public class PathFinder {
 
-    public PathFinderResult find(List<Line> allLines, Long sourceId, Long targetId) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = makeGraph(allLines);
-        List<Long> shortestPath = getShortestStationIds(graph, sourceId, targetId);
-        int minDistance = getShortestDistance(sourceId, targetId, graph);
-        return new PathFinderResult(shortestPath, minDistance);
+    private final StationGraph graph;
+    private final DijkstraShortestPath path;
+
+    public PathFinder(StationGraph graph) {
+        this.graph = graph;
+        this.path = new DijkstraShortestPath(graph.getGraph());
     }
 
-    private int getShortestDistance(Long sourceId, Long targetId,
-        WeightedMultigraph<String, DefaultWeightedEdge> graph) {
-        return minDistance(
-            new KShortestPaths(graph, MAX_VALUE).getPaths(String.valueOf(sourceId), String.valueOf(targetId)));
-    }
-
-    private List<Long> getShortestStationIds(WeightedMultigraph<String, DefaultWeightedEdge> graph, Long sourceId,
-        Long targetId) {
-        return toLongIds(new DijkstraShortestPath(graph).getPath(String.valueOf(sourceId),
-            String.valueOf(targetId))
-            .getVertexList());
-    }
-
-    private WeightedMultigraph<String, DefaultWeightedEdge> makeGraph(List<Line> allLines) {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
-        for (Line line : allLines) {
-            addVertex(graph, line);
-            setEdgeWeight(graph, line);
+    public Path find(Station source, Station target) {
+        validateStations(source, target);
+        GraphPath graphPath = path.getPath(source, target);
+        if (Objects.isNull(graphPath)) {
+            throw new IllegalStateException(PATH_NOT_CONNECTED);
         }
-        return graph;
+        return new Path(graphPath.getVertexList(), (int)graphPath.getWeight());
     }
 
-    private void setEdgeWeight(WeightedMultigraph<String, DefaultWeightedEdge> graph, Line line) {
-        for (Section section : line.getSections()) {
-            graph.setEdgeWeight(graph.addEdge(String.valueOf(section.getUpStation().getId()),
-                String.valueOf(section.getDownStation().getId())),
-                section.getDistance());
+    private void validateStations(Station source, Station target) {
+        if (source.equals(target)) {
+            throw new IllegalStateException(PATH_SAME_STATION);
         }
-    }
 
-    private void addVertex(WeightedMultigraph<String, DefaultWeightedEdge> graph, Line line) {
-        for (Station station : line.getStations()) {
-            graph.addVertex(String.valueOf(station.getId()));
+        if (graph.doesNotContain(source) || graph.doesNotContain(target)) {
+            throw new IllegalStateException(PATH_MUST_CONTAIN_GRAPH);
         }
-    }
-
-    private int minDistance(List<GraphPath> paths) {
-        return (int)paths.stream().map(GraphPath::getWeight)
-            .mapToDouble(x -> x)
-            .min().orElseThrow(RuntimeException::new);
-    }
-
-    private List<Long> toLongIds(List<String> shortestPath) {
-        return shortestPath.stream().map(Long::valueOf).collect(Collectors.toList());
     }
 }

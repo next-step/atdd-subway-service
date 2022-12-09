@@ -1,10 +1,12 @@
 package nextstep.subway.line.excpetion;
 
+import static nextstep.subway.exception.ExceptionMessage.*;
+
+import nextstep.subway.exception.BadRequestException;
+
 public class LastSectionException extends BadRequestException {
 
-    public static final String MESSAGE = "마지막 구간은 삭제할 수 없습니다.";
-
     public LastSectionException() {
-        super(MESSAGE);
+        super(LAST_SECTION);
     }
 }

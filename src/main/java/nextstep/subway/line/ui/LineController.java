@@ -17,11 +17,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import nextstep.subway.line.application.LineService;
-import nextstep.subway.line.dto.ErrorResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.line.excpetion.BadRequestException;
 
 @RestController
 @RequestMapping("/lines")
@@ -75,11 +73,6 @@ public class LineController {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
         return ResponseEntity.badRequest().build();
-    }
-
-    @ExceptionHandler
-    public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
-        return ResponseEntity.badRequest().body(new ErrorResponse(e.getMessage()));
     }
 
 }

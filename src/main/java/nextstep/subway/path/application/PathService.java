@@ -1,39 +1,32 @@
 package nextstep.subway.path.application;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import org.springframework.stereotype.Service;
 
-import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.dto.PathFinderResult;
+import nextstep.subway.path.domain.StationGraph;
+import nextstep.subway.path.dto.Path;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.path.dto.PathResponse.PathStationResponse;
 import nextstep.subway.station.application.StationService;
+import nextstep.subway.station.domain.Station;
 
 @Service
 public class PathService {
 
-    private final PathFinder pathFinder;
-    private final LineService lineService;
+    private final SectionRepository sectionRepository;
     private final StationService stationService;
 
-    public PathService(PathFinder pathFinder, LineService lineService, StationService stationService) {
-        this.pathFinder = pathFinder;
-        this.lineService = lineService;
+    public PathService(SectionRepository sectionRepository, StationService stationService) {
+        this.sectionRepository = sectionRepository;
         this.stationService = stationService;
     }
 
     public PathResponse findPath(long sourceId, long targetId) {
-        PathFinderResult result = pathFinder.find(lineService.findAll(), sourceId, targetId);
-        return new PathResponse(toPathStationResponse(result.getStationsIds()), result.getDistance());
+        Station source = stationService.findStationById(sourceId);
+        Station target = stationService.findStationById(targetId);
+        StationGraph graph = new StationGraph(sectionRepository.findAll());
+        Path path = new PathFinder(graph).find(source, target);
+        return PathResponse.of(path);
     }
 
-    private List<PathStationResponse> toPathStationResponse(List<Long> stationsIds) {
-        return stationsIds.stream()
-            .map(stationService::findStationById)
-            .map(station -> new PathStationResponse(station.getId(), station.getName(), station.getCreatedDate()))
-            .collect(Collectors.toList());
-    }
 }

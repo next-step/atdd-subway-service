@@ -1,6 +1,8 @@
 package nextstep.subway.path;
 
+import static java.time.LocalDateTime.*;
 import static java.util.stream.Collectors.*;
+import static nextstep.subway.exception.ExceptionMessage.*;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
@@ -65,6 +67,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         최단_경로_응답(pathsResponse, Arrays.asList(강남역, 양재역, 남부터미널역), 12);
+    }
+
+    @DisplayName("존재하지 않은 출발역이나 도착역을 조회할 경우")
+    @Test
+    void paths2() {
+        // when
+        ExtractableResponse<Response> pathsResponse = 최단_경로_조회_요청(new StationResponse(98L, "왕십리역", now(), now()),
+            new StationResponse(99L, "강남역", now(), now()));
+
+        // then
+        assertThat(pathsResponse.jsonPath().getString("message")).isEqualTo(NO_STATION);
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse source, StationResponse target) {
