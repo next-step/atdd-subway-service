@@ -9,7 +9,7 @@ import nextstep.subway.line.dto.LineCreateRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.rest.LineRestAssured;
 import nextstep.subway.line.rest.LineSectionRestAssured;
-import nextstep.subway.path.message.LinePathMessage;
+import nextstep.subway.path.message.PathMessage;
 import nextstep.subway.path.rest.PathRestAssured;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
@@ -73,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 최단 경로 조회시
      * Then 최단 경로를 반환한다
      */
-    @DisplayName("강남역 - 남부터미널역 최단경로 조회하기")
+    @DisplayName("시작역[강남역]와 도착역[남부터미널역]을 선택하여 최단 경로를 조회하면 경로에 포함 된 역과 총 거리를 반환한다")
     @Test
     void find_shortest_path_test() {
         // when
@@ -93,7 +93,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 최단경로 조회시
      * Then 예외처리 된다
      */
-    @DisplayName("학동역 - 남부터미널역 최단경로 조회시 예외 처리 - 학동역은 노선에 등록되어 있지 않음")
+    @DisplayName("노선에 등록되지 않은 시작역을 선택하여 최단 경로를 조회하면 예외 처리되어 최단 경로를 조회할 수 없다")
     @Test
     void find_shortest_path_with_not_enrolled_source_station_test() {
         // when
@@ -102,7 +102,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(LinePathMessage.GRAPH_ERROR_NOT_FOUND_SOURCE_STATION.message())
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(PathMessage.GRAPH_ERROR_NOT_FOUND_SOURCE_STATION.message())
         );
     }
 
@@ -111,7 +111,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 최단경로 조회시
      * Then 예외처리 된다
      */
-    @DisplayName("강남역 - 학동역 최단경로 조회시 예외 처리 - 학동역은 노선에 등록되어 있지 않음")
+    @DisplayName("노선에 등록되지 않은 도착역을 선택하여 최단 경로를 조회하면 예외 처리되어 최단 경로를 조회할 수 없다")
     @Test
     void find_shortest_path_with_not_enrolled_target_station_test() {
         // when
@@ -120,7 +120,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(LinePathMessage.GRAPH_ERROR_NOT_FOUND_TARGET_STATION.message())
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(PathMessage.GRAPH_ERROR_NOT_FOUND_TARGET_STATION.message())
         );
     }
 
@@ -129,7 +129,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 최단경로 조회시
      * Then 예외처리 된다
      */
-    @DisplayName("강남역 - 강남역 최단경로 조회시 예외 처리 - 출발역과 도착역이 동일함")
+    @DisplayName("시작역와 도착역을 동일한 역으로 선택하여 최단 경로를 조회하면 예외 처리되어 최단 경로를 조회할 수 없다")
     @Test
     void find_shortest_path_with_same_stations_test() {
         // when
@@ -138,7 +138,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(LinePathMessage.GRAPH_ERROR_SOURCE_AND_TARGET_STATION_IS_EQUALS.message())
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(PathMessage.GRAPH_ERROR_SOURCE_AND_TARGET_STATION_IS_EQUALS.message())
         );
     }
 
@@ -147,7 +147,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 최단경로 조회시
      * Then 예외처리 된다
      */
-    @DisplayName("강남역 - 여의도역 최단경로 조회시 예외 처리 - 출발역과 도착역이 연결되어 있지 않음")
+    @DisplayName("연결되지 않은 역의 최단 경로를 조회하면 예외 처리되어 최단 경로를 조회할 수 없다")
     @Test
     void find_shortest_path_with_not_connected_stations_test() {
         // when
@@ -156,7 +156,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value()),
-                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(LinePathMessage.GRAPH_ERROR_NOT_CONNECTED_STATIONS.message())
+                () -> assertThat(response.jsonPath().getString("message")).isEqualTo(PathMessage.GRAPH_ERROR_NOT_CONNECTED_STATIONS.message())
         );
     }
 
@@ -165,7 +165,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * When 최단경로 조회시
      * Then 예외처리 된다
      */
-    @DisplayName("미등록된역 - 강남역 최단경로 조회시 예외 처리 - 출발역이 등록되어 있지 않음")
+    @DisplayName("미등록된역을 선택하여 최단 경로를 조회하면 예외 처리되어 최단 경로를 조회할 수 없다")
     @Test
     void find_shortest_path_with_not_found_source_station_test() {
         // when
