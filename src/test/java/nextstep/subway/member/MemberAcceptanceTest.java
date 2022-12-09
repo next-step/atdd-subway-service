@@ -31,30 +31,58 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         super.setUp();
     }
 
+    /**
+     *
+     * Feature: 회원 정보 기능
+     *
+     *   Scenario: 회원정보 생성 후 조회, 수정, 삭제 테스트를 한다.
+     *     When 회원 생성 요청
+     *     Then 회원 생성 됨
+     *     When 회원 조회를 요청
+     *     Then 회원 조회 됨
+     *     When 회원 수정 요청
+     *     Then 회원 수정 됨
+     *     When 회원 삭제 요청
+     *     Then 회원 삭제 됨
+     *
+     */
     @DisplayName("회원 정보를 관리한다.")
     @Test
     void manageMember() {
-        // when
+        // when 회원 생성 요청
         ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
-        // then
+        // then 회원 생성 됨
         회원_생성됨(createResponse);
 
-        // when
+        // when 회원 조회를 요청
         ExtractableResponse<Response> findResponse = 회원_정보_조회_요청(createResponse);
-        // then
+        // then 회원 조회 됨
         회원_정보_조회됨(findResponse, EMAIL, AGE);
 
-        // when
+        // when 회원 수정 요청
         ExtractableResponse<Response> updateResponse = 회원_정보_수정_요청(createResponse, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
-        // then
+        // then 회원 수정 됨
         회원_정보_수정됨(updateResponse);
 
-        // when
+        // when 회원 삭제 요청
         ExtractableResponse<Response> deleteResponse = 회원_삭제_요청(createResponse);
-        // then
+        // then 회원 삭제 됨
         회원_삭제됨(deleteResponse);
     }
 
+    /**
+     *
+     * Feature: 내 정보 기능
+     *
+     *   Scenario: 내 정보에서 조회, 수정, 삭제 테스트를 한다.
+     *     When 내 정보 조회 요청
+     *     Then 내 정보 조회 됨
+     *     When 내 정보 수정 요청
+     *     Then 내 정보 수정 됨
+     *     When 내 정보 삭제 요청
+     *     Then 내 정보 삭제 됨
+     *
+     */
     @DisplayName("나의 정보를 관리한다.")
     @Test
     void manageMyInfo() {
@@ -62,22 +90,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         //given
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         String token = 로그인_후_토큰_조회(EMAIL, PASSWORD);
-        //when
+        //when 내 정보 조회 요청
         ExtractableResponse<Response> retrieveMyInformationResponse = 내_정보_조회_요청(token);
-        //then
+        //then 내 정보 조회 됨
         내_정보_조회됨(retrieveMyInformationResponse, EMAIL, AGE);
 
         //회원정보 수정
-        //when
+        //when 내 정보 수정 요청
         ExtractableResponse<Response> updateMyInformationResponse =
                 내_정보_수정_요청(NEW_EMAIL, NEW_PASSWORD, NEW_AGE, token);
-        //then
+        //then 내 정보 수정 됨
         내_정보_수정됨(updateMyInformationResponse);
 
         //회원정보 삭제
-        //when
-        ExtractableResponse<Response> deleteMyInformationResponse = 내_정보_삭제_요청(token);
-        //then
+        //when 내 정보 삭제 요청
+        String newToken = 로그인_후_토큰_조회(NEW_EMAIL, NEW_PASSWORD);
+        ExtractableResponse<Response> deleteMyInformationResponse = 내_정보_삭제_요청(newToken);
+        //then 내 정보 삭제 됨
         내_정보_삭제됨(deleteMyInformationResponse);
     }
 

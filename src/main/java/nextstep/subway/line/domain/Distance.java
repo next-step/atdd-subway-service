@@ -25,7 +25,7 @@ public class Distance {
     }
 
     public Distance subtract(Distance distance) {
-        int newDistance = this.distance - distance.getDistance();
+        int newDistance = this.distance - distance.getValue();
         if (newDistance <= LOWER_LIMIT) {
             throw new IllegalArgumentException(ErrorMessage.EXCEED_SECTION_DISTANCE.getMessage());
         }
@@ -34,11 +34,11 @@ public class Distance {
     }
 
     public Distance add(Distance distance) {
-        this.distance += distance.getDistance();
+        this.distance += distance.getValue();
         return this;
     }
 
-    public int getDistance() {
+    public int getValue() {
         return distance;
     }
 
