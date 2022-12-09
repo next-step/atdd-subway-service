@@ -11,16 +11,11 @@ public class LoginMember {
     public LoginMember() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
-        this.id = id;
-        this.email = email;
-        this.age = Age.from(age);
-    }
-
-    public LoginMember(Long id, String email, Age age) {
+    public LoginMember(Long id, String email, Age age, DiscountPolicy discountPolicy) {
         this.id = id;
         this.email = email;
         this.age = age;
+        this.discountPolicy = discountPolicy;
     }
 
     public Long getId() {
@@ -35,7 +30,7 @@ public class LoginMember {
         return age;
     }
 
-    public void addDiscountPolicy(DiscountPolicy discountPolicyByAge) {
-        this.discountPolicy = discountPolicyByAge;
+    public Money getCharge() {
+        return discountPolicy.getCharge();
     }
 }
