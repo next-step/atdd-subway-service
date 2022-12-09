@@ -1,8 +1,9 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.application.LineService;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -28,8 +29,10 @@ public class PathService {
         Station target = findStationById(targetId);
         List<Line> lines = findAllLines();
 
-        Path path = new Path(lines, source, target);
-        return new PathResponse(path.getBestPath(), path.getBestPathDistance());
+        PathFinder pathFinder = new PathFinder(lines);
+        List<Station> stations = pathFinder.findShortestPath(source, target);
+        Distance distance = pathFinder.findShortestPathDistance(source, target);
+        return new PathResponse(stations, distance);
     }
 
     private Station findStationById(Long stationId) {
