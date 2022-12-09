@@ -12,6 +12,7 @@ import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.dto.LineCreateRequest;
@@ -53,6 +54,11 @@ public class LineService {
 	}
 
 	@Transactional(readOnly = true)
+	public Lines findAll() {
+		return Lines.from(lineRepository.findAll());
+	}
+
+	@Transactional(readOnly = true)
 	public LineResponse findLineResponseById(Long id) {
 		return LineResponse.from(findById(id));
 	}
@@ -75,7 +81,7 @@ public class LineService {
 
 		Station upStation = station(request.getUpStationId());
 		Station downStation = station(request.getDownStationId());
-		List<Section> sectionsToUpdate = sectionService.findSectionsToUpdate(upStation, downStation);
+		List<Section> sectionsToUpdate = sectionService.findSectionsToUpdate(upStation, downStation, line);
 
 		Section section = Section.of(line, upStation, downStation, Distance.from(request.getDistance()));
 		line.connectSection(section, sectionsToUpdate);

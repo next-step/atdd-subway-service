@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 import javax.persistence.CascadeType;
@@ -16,6 +17,7 @@ import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Embeddable
 public class Sections {
@@ -25,7 +27,7 @@ public class Sections {
 	private static final String SAME_UP_DOWN_STATION_ERROR_MESSAGE = "이미 등록된 구간입니다.";
 	private static final String INVALID_MINIMUM_SECTION_COUNT_MESSAGE = "구간이 하나인 노선에서는 제거할 수 없습니다.";
 	private static final int MINIMUM_SECTION_COUNT = 1;
-
+	private static final String SECTION_NOT_FOUND_ERROR_MESSAGE = "구간 정보가 존재하지 않습니다.";
 
 	@OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Section> sections = new ArrayList<>();
@@ -47,7 +49,11 @@ public class Sections {
 		return new Sections(sections);
 	}
 
-	public List<Section> getList() {
+	public static Sections empty() {
+		return new Sections(Collections.emptyList());
+	}
+
+	public List<Section> list() {
 		return sections;
 	}
 
@@ -79,7 +85,7 @@ public class Sections {
 			.collect(Collectors.toCollection(LinkedList::new));
 	}
 
-	public List<Station> sortedStations() {
+	public Stations sortedStations() {
 		List<Station> stations = new LinkedList<>();
 		stations.add(firstUpStation());
 
@@ -87,7 +93,7 @@ public class Sections {
 			Station nextStation = sectionByUpStation(stations.get(i)).getDownStation();
 			stations.add(nextStation);
 		}
-		return stations;
+		return Stations.from(stations);
 	}
 
 	private Section sectionByUpStation(Station station) {
@@ -131,11 +137,11 @@ public class Sections {
 	}
 
 	private boolean notIncludeDownStation(Section section) {
-		return !sortedStations().contains(section.getUpStation());
+		return sortedStations().notContains(section.getUpStation());
 	}
 
 	private boolean notIncludeUpStation(Section section) {
-		return !sortedStations().contains(section.getDownStation());
+		return sortedStations().notContains(section.getDownStation());
 	}
 
 	public void add(Section newSection) {
@@ -143,13 +149,16 @@ public class Sections {
 	}
 
 	public void remove(Section sectionByUpStation, Section sectionByDownStation) {
-		validateRemoveSection();
+		validateRemoveSection(sectionByUpStation, sectionByDownStation);
 		removeSection(sectionByUpStation, sectionByDownStation);
 	}
 
-	private void validateRemoveSection() {
+	private void validateRemoveSection(Section sectionByUpStation, Section sectionByDownStation) {
 		if (invalidSectionMinimumSize()) {
 			throw new InvalidDataException(INVALID_MINIMUM_SECTION_COUNT_MESSAGE);
+		}
+		if (sectionByUpStation == null && sectionByDownStation == null) {
+			throw new NotFoundException(SECTION_NOT_FOUND_ERROR_MESSAGE);
 		}
 	}
 
@@ -158,8 +167,7 @@ public class Sections {
 	}
 
 	private void removeSection(Section sectionByUpStation, Section sectionByDownStation) {
-		SectionRemover.of(sectionByUpStation, sectionByDownStation)
-			.remove(this, sectionByUpStation, sectionByDownStation);
+		SectionRemoverNew.remove(this, sectionByUpStation, sectionByDownStation);
 	}
 
 	public void removeSection(Section section) {
@@ -168,5 +176,28 @@ public class Sections {
 
 	public List<Section> getSections() {
 		return this.sections;
+	}
+
+	public Sections merge(List<Section> sections) {
+		List<Section> mergedSections = new ArrayList<>(this.sections);
+		mergedSections.addAll(sections);
+		return from(mergedSections);
+	}
+
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (o == null || getClass() != o.getClass()) {
+			return false;
+		}
+		Sections sections1 = (Sections)o;
+		return Objects.equals(sections, sections1.sections);
+	}
+
+	@Override
+	public int hashCode() {
+		return Objects.hashCode(sections);
 	}
 }

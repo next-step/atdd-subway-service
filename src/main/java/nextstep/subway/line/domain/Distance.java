@@ -23,12 +23,16 @@ public class Distance {
 		return new Distance(value);
 	}
 
+	public static Distance from(double value) {
+		return new Distance((int) value);
+	}
+
 	public int value() {
 		return value;
 	}
 
 	private boolean isPositive(int value) {
-		return value >= 0;
+		return value > 0;
 	}
 
 	public Distance subtract(Distance distance) {
