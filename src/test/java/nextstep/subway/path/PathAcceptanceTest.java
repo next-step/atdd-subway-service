@@ -78,9 +78,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void 최단_경로_조회() {
         //when
         PathResponse response = 최단_경로_조회_요청(강남역, 삼전역).as(PathResponse.class);
-        //then
-        assertThat(response.getStations()).containsSequence(
-                강남역, 양재역, 종합운동장역, 삼전역);
+
+        assertThat(response.getStations().stream().map(station -> station.getId())).containsSequence(
+                강남역.getId(), 양재역.getId(), 종합운동장역.getId(), 삼전역.getId());
     }
 
     @DisplayName("최단 경로 조회 실패 - 출발역과 도착역이 같은 경우")

@@ -9,11 +9,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import java.nio.file.Path;
-
-import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.BDDMockito.given;
 
 @ExtendWith(MockitoExtension.class)
@@ -53,6 +49,4 @@ class PathServiceTest {
         assertThatThrownBy(() -> service.findShortestPath(-1L,1L))
                 .isInstanceOf(IllegalArgumentException.class);
     }
-
-
 }
