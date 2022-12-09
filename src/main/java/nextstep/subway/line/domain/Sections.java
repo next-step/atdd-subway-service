@@ -1,6 +1,6 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.line.exception.InvalidDataException;
+import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -143,5 +143,9 @@ public class Sections {
     private boolean isFirstStation(Station candidate) {
         return !sections.stream()
                 .anyMatch(it -> it.hasEqualDownStation(candidate));
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 }

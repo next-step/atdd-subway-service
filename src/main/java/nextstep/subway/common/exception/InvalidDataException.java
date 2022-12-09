@@ -1,4 +1,4 @@
-package nextstep.subway.line.exception;
+package nextstep.subway.common.exception;
 
 public class InvalidDataException extends RuntimeException {
 

@@ -4,8 +4,8 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
-import nextstep.subway.line.exception.InvalidDataException;
-import nextstep.subway.line.exception.NoSuchDataException;
+import nextstep.subway.common.exception.InvalidDataException;
+import nextstep.subway.common.exception.NoSuchDataException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -60,10 +60,5 @@ public class LineController {
     public ResponseEntity removeLineStation(@PathVariable Long lineId, @RequestParam Long stationId) {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
-    }
-
-    @ExceptionHandler({NoSuchDataException.class, InvalidDataException.class, DataIntegrityViolationException.class})
-    public ResponseEntity handleDataIntegrityViolationException(RuntimeException e) {
-        return ResponseEntity.badRequest().build();
     }
 }
