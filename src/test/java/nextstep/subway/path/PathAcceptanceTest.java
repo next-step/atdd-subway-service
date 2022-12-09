@@ -34,17 +34,17 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private Long stationF;
 
     /**
-     * stationA  --- lineD    --- stationD                      stationF
-     * /             거리 1        /                              /
-     * *lineA* 거리 5                lineC 거리 1               *lineE* 거리 2
-     * /                             /                            /
+     * stationA  --- lineD    ---       stationD                      stationF
+     * /             거리 1               /                              /
+     * *lineA* 거리 5, 추가요금 900    lineC 거리 1               *lineE* 거리 2
+     * /                                    /                            /
      * stationB  ---   lineB ---  stationC                      stationE
      * 거리 3
      */
     @BeforeEach
     public void setUp() {
         super.setUp();
-        stationA = 지하철역_생성_요청(memberA,  "A").jsonPath().getLong("id");
+        stationA = 지하철역_생성_요청(memberA, "A").jsonPath().getLong("id");
         stationB = 지하철역_생성_요청(memberA, "B").jsonPath().getLong("id");
         stationC = 지하철역_생성_요청(memberA, "C").jsonPath().getLong("id");
         stationD = 지하철역_생성_요청(memberA, "D").jsonPath().getLong("id");
@@ -114,7 +114,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(2),
                 () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(1250)
         );
-
     }
 
     /*
@@ -132,6 +131,20 @@ public class PathAcceptanceTest extends AcceptanceTest {
     void findPath_fail_notExist() {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(100L, stationF);
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    @DisplayName("900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원")
+    @Test
+    void findPath_addFare() {
+
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationB);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationA, stationB),
+                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(5),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(2150)
+        );
     }
 
     private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId, int distance) {
