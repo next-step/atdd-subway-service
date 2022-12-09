@@ -53,14 +53,14 @@ class PathServiceTest {
         // 이호선 : 강남역 - 교대역 - 삼성역
         given(stationRepository.findById(sourceStationId)).willReturn(Optional.of(StationFixture.강남역));
         given(stationRepository.findById(targetStationId)).willReturn(Optional.of(StationFixture.삼성역));
-        given(lineRepository.findAll()).willReturn(Arrays.asList(LineFixture.이호선));
+        given(lineRepository.findAllWithSections()).willReturn(Arrays.asList(LineFixture.이호선));
 
         // when
         PathResponse pathResponse = pathService.getShortestDistance(sourceStationId, targetStationId);
 
         // then
         then(stationRepository).should(times(2)).findById(any());
-        then(lineRepository).should(times(1)).findAll();
+        then(lineRepository).should(times(1)).findAllWithSections();
         assertAll(
                 () -> assertThat(getStationNames(pathResponse)).containsExactly("강남역", "교대역", "삼성역"),
                 () -> assertThat(pathResponse.getDistance()).isEqualTo(10)
