@@ -51,11 +51,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         stationE = 지하철역_생성_요청(memberA, "E").jsonPath().getLong("id");
         stationF = 지하철역_생성_요청(memberA, "F").jsonPath().getLong("id");
 
-        lineA = 지하철_노선_생성_요청(createLineCreateParams("A", "red", stationA, stationB, 5)).jsonPath().getLong("id");
-        lineB = 지하철_노선_생성_요청(createLineCreateParams("B", "blue", stationB, stationC, 3)).jsonPath().getLong("id");
-        lineC = 지하철_노선_생성_요청(createLineCreateParams("C", "yellow", stationC, stationD, 1)).jsonPath().getLong("id");
-        lineD = 지하철_노선_생성_요청(createLineCreateParams("D", "orange", stationD, stationA, 1)).jsonPath().getLong("id");
-        lineE = 지하철_노선_생성_요청(createLineCreateParams("E", "grey", stationE, stationF, 2)).jsonPath().getLong("id");
+        lineA = 지하철_노선_생성_요청(createLineCreateParams("A", "red", stationA, stationB, 5, 900)).jsonPath().getLong("id");
+        lineB = 지하철_노선_생성_요청(createLineCreateParams("B", "blue", stationB, stationC, 3, 0)).jsonPath().getLong("id");
+        lineC = 지하철_노선_생성_요청(createLineCreateParams("C", "yellow", stationC, stationD, 1, 0)).jsonPath().getLong("id");
+        lineD = 지하철_노선_생성_요청(createLineCreateParams("D", "orange", stationD, stationA, 1, 0)).jsonPath().getLong("id");
+        lineE = 지하철_노선_생성_요청(createLineCreateParams("E", "grey", stationE, stationF, 2, 0)).jsonPath().getLong("id");
     }
 
     /*
@@ -147,7 +147,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
-    private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId, int distance) {
+    private Map<String, String> createLineCreateParams(String name, String color, Long upStationId, Long downStationId, int distance, int fare) {
         Map<String, String> lineCreateParams;
         lineCreateParams = new HashMap<>();
         lineCreateParams.put("name", name);
@@ -155,6 +155,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         lineCreateParams.put("upStationId", upStationId + "");
         lineCreateParams.put("downStationId", downStationId + "");
         lineCreateParams.put("distance", distance + "");
+        lineCreateParams.put("fare", fare + "");
         return lineCreateParams;
     }
 }

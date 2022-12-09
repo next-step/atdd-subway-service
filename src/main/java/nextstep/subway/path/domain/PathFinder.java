@@ -15,17 +15,29 @@ public class PathFinder {
     public static final String SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE = "출발역과 도착역이 같을 수 없습니다.";
 
     private final List<Line> lines;
+    private final Station source;
+    private final Station target;
 
-    public PathFinder(List<Line> lines) {
+    public PathFinder(Station source, Station target, List<Line> lines) {
+        validSearchPath(source, target);
+        this.source = source;
+        this.target = target;
         this.lines = lines;
     }
 
-    public List<Station> findStations(Station source, Station target) {
-        return findPath(source, target, registerStationInfo()).getVertexList();
+    public List<Station> findStations() {
+        return findPath(registerStationInfo()).getVertexList();
     }
 
-    public int findDistance(Station source, Station target) {
-        return (int) findPath(source, target, registerStationInfo()).getWeight();
+    public int findDistance() {
+        return (int) findPath(registerStationInfo()).getWeight();
+    }
+
+    public int findLineFare() {
+        return findPath(registerStationInfo()).getEdgeList().stream()
+                .mapToInt(SectionEdge::getFare)
+                .max()
+                .orElse(0);
     }
 
     private void validSearchPath(Station source, Station target) {
@@ -34,11 +46,9 @@ public class PathFinder {
         }
     }
 
-    public GraphPath<Station, SectionEdge> findPath(Station source, Station target, SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
+    private GraphPath<Station, SectionEdge> findPath(SimpleDirectedWeightedGraph<Station, SectionEdge> graph) {
 
-        validSearchPath(source, target);
-
-        GraphPath<Station, SectionEdge> result = new DijkstraShortestPath<>(graph).getPath(source, target);
+        GraphPath<Station, SectionEdge> result = new DijkstraShortestPath<>(graph).getPath(this.source, this.target);
 
         if (result == null) {
             throw new IllegalArgumentException();

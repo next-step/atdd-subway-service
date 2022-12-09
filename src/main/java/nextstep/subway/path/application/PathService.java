@@ -25,13 +25,13 @@ public class PathService {
 
     public PathResponse findPath(Long sourceId, Long targetId) {
 
-        List<Line> lines = lineRepository.findAll();
+        List<Line> findLines = lineRepository.findAll();
 
         Station source = stationRepository.findById(sourceId).orElseThrow(EntityNotFoundException::new);
         Station target = stationRepository.findById(targetId).orElseThrow(EntityNotFoundException::new);
 
-        PathFinder pathFinder = new PathFinder(lines);
-        int distance = pathFinder.findDistance(source, target);
-        return new PathResponse(pathFinder.findStations(source, target), distance, new Fare(distance).calculate());
+        PathFinder pathFinder = new PathFinder(source, target, findLines);
+
+        return new PathResponse(pathFinder, new Fare(pathFinder.findDistance()).calculate());
     }
 }
