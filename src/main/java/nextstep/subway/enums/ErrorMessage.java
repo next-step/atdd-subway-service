@@ -9,6 +9,7 @@ public enum ErrorMessage {
     INVALID_DISTANCE("역과 역 사이의 거리보다 좁은 거리를 입력해주세요."),
     DUPLICATED_STATION("출발역과 도착역이 중복될 수 없습니다."),
     NOT_FOUND_PATH("경로가 존재하지 않습니다."),
+    UNAUTHORIZED("유효하지 않은 인증 정보입니다."),
     ;
 
     private final String message;

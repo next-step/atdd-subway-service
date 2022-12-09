@@ -52,7 +52,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         return Stream.of(
                 dynamicTest("등록한 회원이 없는 경우 예외가 발생한다", 로그인_요청_실패(EMAIL, PASSWORD)),
                 dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
-                dynamicTest("이메일로 조회되는 회원은 있지만 패스워드가 일치하지 않아 예외가 발생한다", 로그인_요청_실패(EMAIL, WRONG_PASSWORD))
+                dynamicTest("패스워드가 일치하지 않아 예외가 발생한다", 로그인_요청_실패(EMAIL, WRONG_PASSWORD))
         );
     }
 
@@ -103,5 +103,6 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static void 로그인_실패한다(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+        assertThat(response.jsonPath().getString("accessToken")).isNull();
     }
 }
