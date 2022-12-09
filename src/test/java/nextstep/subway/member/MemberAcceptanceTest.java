@@ -9,11 +9,13 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.utils.Message.INVALID_OVER_SECTION_DISTANCE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -92,7 +94,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         // then 내 정보 삭제 됨
         내_정보_삭제됨(myInfoDeleteResponse);
 
-
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -161,6 +162,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
+
     private ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
         return RestAssured
                 .given().log().all()
@@ -169,6 +171,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .then().log().all()
                 .extract();
     }
+
 
     public static void 회원_생성됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
@@ -205,7 +208,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     private void 내_정보_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 }
