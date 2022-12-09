@@ -207,7 +207,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static ExtractableResponse<Response> 로그인을_요청하고_토큰을_발급받는다(String email, String password) {
+    public static ExtractableResponse<Response> 로그인을_요청하고_토큰을_발급받는다(String email, String password) {
         ExtractableResponse<Response> tokenResponse = 로그인_요청(new TokenRequest(email, password));
         로그인_성공하고_토큰을_발급받는다(tokenResponse);
         return tokenResponse;

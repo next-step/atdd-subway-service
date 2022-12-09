@@ -5,6 +5,7 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -78,5 +79,18 @@ public class Favorite extends BaseEntity {
         public Favorite build() {
             return new Favorite(this);
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Favorite favorite = (Favorite) o;
+        return Objects.equals(id, favorite.id) && Objects.equals(member, favorite.member) && Objects.equals(source, favorite.source) && Objects.equals(target, favorite.target);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, member, source, target);
     }
 }

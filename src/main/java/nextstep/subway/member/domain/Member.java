@@ -2,10 +2,12 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
@@ -53,5 +55,22 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    public void addFavorite(Favorite favorite) {
+        this.favorites.add(favorite);
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Member member = (Member) o;
+        return Objects.equals(id, member.id) && Objects.equals(email, member.email) && Objects.equals(password, member.password) && Objects.equals(age, member.age) && Objects.equals(favorites, member.favorites);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email, password, age, favorites);
     }
 }

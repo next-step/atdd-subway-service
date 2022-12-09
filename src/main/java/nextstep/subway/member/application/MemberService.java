@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -23,16 +24,22 @@ public class MemberService {
 
     @Transactional(readOnly = true)
     public MemberResponse findMember(Long id) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         return MemberResponse.of(member);
     }
 
     public void updateMember(Long id, MemberRequest param) {
-        Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        Member member = findMemberById(id);
         member.update(param.toMember());
     }
 
     public void deleteMember(Long id) {
         memberRepository.deleteById(id);
+    }
+
+    @Transactional(readOnly = true)
+    public Member findMemberById(Long id) {
+        return memberRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND.getMessage()));
     }
 }

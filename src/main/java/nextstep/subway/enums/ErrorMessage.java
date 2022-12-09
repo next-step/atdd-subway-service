@@ -10,6 +10,7 @@ public enum ErrorMessage {
     DUPLICATED_STATION("출발역과 도착역이 중복될 수 없습니다."),
     NOT_FOUND_PATH("경로가 존재하지 않습니다."),
     UNAUTHORIZED("유효하지 않은 인증 정보입니다."),
+    DUPLICATED_FAVORITE("즐겨찾기가 이미 추가되었습니다."),
     ;
 
     private final String message;
