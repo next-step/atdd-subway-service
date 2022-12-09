@@ -33,6 +33,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     StationResponse 잠실새내역;
     StationResponse 종합운동장역;
 
+    StationResponse 섬역;
+
     LineResponse 신분당선;
     LineResponse 이호선;
     LineResponse 삼호선;
@@ -59,6 +61,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         삼전역 = StationAcceptanceTest.지하철역_등록되어_있음("삼전역").as(StationResponse.class);
         잠실새내역 = StationAcceptanceTest.지하철역_등록되어_있음("잠실새내역").as(StationResponse.class);
         종합운동장역 = StationAcceptanceTest.지하철역_등록되어_있음("종합운동장역").as(StationResponse.class);
+        섬역 = StationAcceptanceTest.지하철역_등록되어_있음("섬역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 1);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-700", 강남역, 잠실새내역, 10);
@@ -104,7 +107,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     void 최단_경로_조회_출발역과_도착역이_연결되지_않은_경우() {
         //when, then:
-        assertThat(최단_경로_조회_요청(잠실새내역, 남부터미널역).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(최단_경로_조회_요청(잠실새내역, 섬역).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse 출발역, StationResponse 도착역) {

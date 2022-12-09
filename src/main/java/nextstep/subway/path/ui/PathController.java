@@ -30,4 +30,8 @@ public class PathController {
     public ResponseEntity handleIllegalArgsException(Exception e) {
         return ResponseEntity.badRequest().build();
     }
+    @ExceptionHandler({RuntimeException.class})
+    public ResponseEntity handleRuntimeException(Exception e) {
+        return ResponseEntity.badRequest().build();
+    }
 }

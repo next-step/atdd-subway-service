@@ -3,6 +3,7 @@ package nextstep.subway.path.application;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
@@ -21,7 +22,7 @@ class PathFinderTest {
 
     @BeforeEach
     void setUp() {
-        List<Section> sections = Arrays.asList(
+        sections = Arrays.asList(
                 new Section(null, 삼전역, 종합운동장역, 5),
                 new Section(null, 종합운동장역, 잠실새내역, 5),
                 new Section(null, 삼전역, 잠실새내역, 2)
@@ -29,6 +30,7 @@ class PathFinderTest {
     }
 
     @Test
+    @DisplayName("다익스트라로 최단 경로를 찾음")
     void findByDijkstra() {
         List<Station> byDijkstra = PathFinder.of(sections).findByDijkstra(삼전역, 잠실새내역);
 
@@ -36,6 +38,7 @@ class PathFinderTest {
     }
 
     @Test
+    @DisplayName("KShortets로 최단 경로를 찾음")
     void findByKShortest() {
         List<Station> byKShortest = PathFinder.of(sections).findByKShortest(삼전역, 잠실새내역);
 
