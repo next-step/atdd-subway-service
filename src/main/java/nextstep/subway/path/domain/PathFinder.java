@@ -1,24 +1,34 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.exception.InvalidRequestException;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
 public class PathFinder {
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
 
     public Path findFastPaths(List<Line> lines, Station sourceStation, Station targetStation) {
+        checkIsSameStation(sourceStation, targetStation);
         setGraphVertexAndEdge(lines);
-        GraphPath<Station, DefaultWeightedEdge> graphPath = getGraphPath(sourceStation, targetStation);
+        GraphPath<Station, SectionEdge> graphPath = getGraphPath(sourceStation, targetStation);
         checkIsLinkedStation(graphPath);
-        return new Path(graphPath.getVertexList(), (int) graphPath.getWeight());
+        return new Path(
+                graphPath.getVertexList(),
+                new Distance((int) graphPath.getWeight()),
+                graphPath.getEdgeList());
+    }
+
+    private void checkIsSameStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new InvalidRequestException("출발역과 도착역이 동일합니다.");
+        }
     }
 
     private void setGraphVertexAndEdge(List<Line> lines) {
@@ -34,20 +44,18 @@ public class PathFinder {
 
     private void setEdgeWeight(Line line) {
         line.getSections().getList().forEach(section -> {
-            graph.setEdgeWeight(graph.addEdge(
-                    section.getUpStation(),
-                    section.getDownStation()),
-                    section.getDistance()
-            );
+            SectionEdge sectionEdge = graph.addEdge(section.getUpStation(), section.getDownStation());
+            sectionEdge.setSection(section);
+            graph.setEdgeWeight(sectionEdge, section.getDistance());
         });
     }
 
-    private GraphPath<Station, DefaultWeightedEdge> getGraphPath(Station sourceStation, Station targetStation) {
+    private GraphPath<Station, SectionEdge> getGraphPath(Station sourceStation, Station targetStation) {
         DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
         return dijkstraShortestPath.getPath(sourceStation, targetStation);
     }
 
-    private void checkIsLinkedStation(GraphPath<Station, DefaultWeightedEdge> graphPath) {
+    private void checkIsLinkedStation(GraphPath<Station, SectionEdge> graphPath) {
         if (graphPath == null) {
             throw new InvalidRequestException("출발역과 도착역이 연결 되어있지 않습니다.");
         }

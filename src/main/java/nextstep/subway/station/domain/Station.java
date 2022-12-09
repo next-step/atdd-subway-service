@@ -1,8 +1,11 @@
 package nextstep.subway.station.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.PathFinder;
 
 import javax.persistence.*;
+import java.util.List;
 import java.util.Objects;
 
 @Entity
@@ -27,6 +30,11 @@ public class Station extends BaseEntity {
         return name;
     }
 
+    public void validationSaveFavoriteRequest(Station targetStation, List<Line> lines) {
+        PathFinder pathFinder = new PathFinder();
+        pathFinder.findFastPaths(lines, this, targetStation);
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
@@ -40,4 +48,5 @@ public class Station extends BaseEntity {
     public int hashCode() {
         return Objects.hash(id, name);
     }
+
 }

@@ -32,7 +32,7 @@ public class SectionsTest {
         역삼역 = new Station("역삼역");
         없는역 = new Station("없는역");
 
-        신분당선 = new Line("신분당선", "빨간색", 강남역, 판교역, 10);
+        신분당선 = new Line("신분당선", "빨간색", 강남역, 판교역, 10, 500);
         신분당선.addStation(광교역, 판교역, 5);
 
         판교_역삼_구간 = new Section(null, 판교역, 역삼역, 10);

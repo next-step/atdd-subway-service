@@ -66,6 +66,10 @@ public class Section implements Comparable<Section> {
         return distance.value();
     }
 
+    public Line getLine() {
+        return line;
+    }
+
     @Override
     public int compareTo(Section o) {
         return this.downStation == o.upStation ? -1 : 1;

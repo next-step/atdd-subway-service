@@ -65,7 +65,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                         "bg-red-600",
                         강남역.getId(),
                         양재역.getId(),
-                        10))
+                        10,
+                        500))
                 .as(LineResponse.class);
         LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 교대역, 3);
         별도호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(
@@ -74,7 +75,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
                         "bg-red-600",
                         이어지지않은역_1.getId(),
                         이어지지않은역_2.getId(),
-                        5))
+                        5,
+                        0))
                 .as(LineResponse.class);
 
         MemberAcceptanceTest.회원_생성을_요청("eunveloper@gmail.com", "1234", 28);

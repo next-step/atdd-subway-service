@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.EntityNotFoundException;
 import nextstep.subway.exception.InvalidRequestException;
 import nextstep.subway.line.domain.Line;
@@ -24,7 +25,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findPaths(Long sourceId, Long targetId) {
+    public PathResponse findPaths(Long sourceId, Long targetId, LoginMember loginMember) {
         checkSameStation(sourceId, targetId);
 
         Station sourceStation = findStationById(sourceId);
@@ -33,6 +34,7 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder();
         Path path = pathFinder.findFastPaths(lines, sourceStation, targetStation);
+        path.calculatePrice(loginMember.getAge());
 
         return PathResponse.of(path);
     }
