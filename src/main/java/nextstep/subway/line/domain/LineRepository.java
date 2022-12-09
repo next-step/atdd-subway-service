@@ -8,7 +8,7 @@ import java.util.Optional;
 
 public interface LineRepository extends JpaRepository<Line, Long> {
 
-    @Query("select l " +
+    @Query("select distinct l " +
             "from Line l " +
             "left join fetch l.sections.sectionItems s " +
             "left join fetch s.upStation " +
@@ -19,6 +19,8 @@ public interface LineRepository extends JpaRepository<Line, Long> {
             "from Line l " +
             "left join fetch l.sections.sectionItems s " +
             "left join fetch s.upStation " +
-            "left join fetch s.downStation ")
+            "left join fetch s.downStation " +
+            "where l.id = :id"
+    )
     Optional<Line> findByIdWithSections(Long id);
 }

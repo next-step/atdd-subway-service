@@ -101,25 +101,6 @@ class LineServiceTest {
     }
 
     /**
-     * Given 지하철 노선 id가 주어지면
-     * When 노선 조회시
-     * Then 해당 노선에 대한 정보를 반환한다
-     */
-    @DisplayName("지하철 노선 조회 - 노선 id가 주어진 경우")
-    @Test
-    void find_line_by_id_test() {
-        // given
-        given(lineRepository.findByIdWithSections(any())).willReturn(Optional.of(이호선));
-
-        // when
-        Line line = lineService.findLineById(1L);
-
-        // then
-        then(lineRepository).should(times(1)).findByIdWithSections(any());
-        assertThat(line).isEqualTo(이호선);
-    }
-
-    /**
      * Given 지하철 노선 id와 수정 요청이 주어지면
      * When 노선을 수정시
      * Then 정상적으로 수정한다
@@ -179,7 +160,6 @@ class LineServiceTest {
         lineService.addLineStation(1L, sectionCreateRequest);
 
         // then
-        then(lineService).should(times(1)).findLineById(any());
         then(stationService).should(times(2)).findStationById(any());
         assertThat(이호선.getStations()).containsExactly(강남역, 교대역, 삼성역, 선릉역);
     }

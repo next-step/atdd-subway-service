@@ -65,6 +65,11 @@ public class Line extends BaseEntity {
         this.sections.removeStation(station);
     }
 
+
+    public List<Section> getSections() {
+        return this.sections.getAll();
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

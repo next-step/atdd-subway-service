@@ -126,4 +126,8 @@ public class Sections {
             stations.add(section.getDownStation());
         }
     }
+
+    public List<Section> getAll() {
+        return this.sectionItems;
+    }
 }
