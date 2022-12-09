@@ -14,8 +14,8 @@ public class Path {
         this.distance =  distance;
     }
 
-    public static Path from(List<Station> vertexList, int weight) {
-        return new Path(vertexList, weight);
+    public static Path from(List<Station> stations, int distance) {
+        return new Path(stations, distance);
     }
 
 

@@ -22,9 +22,6 @@ import static nextstep.subway.utils.Message.FAVORITE_NOT_EXIST;
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
-//    private final StationRepository stationRepository;
-//    private final MemberRepository memberRepository;
-
     private final StationService stationService;
     private final MemberService memberService;
 
