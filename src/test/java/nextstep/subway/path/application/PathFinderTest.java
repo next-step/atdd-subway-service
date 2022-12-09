@@ -20,6 +20,9 @@ class PathFinderTest {
 
     List<Section> sections;
 
+    PathFindAlgorithm dijkstraAlgorithm;
+    KShortestPathFinder kShortestAlgorithm;
+
     @BeforeEach
     void setUp() {
         sections = Arrays.asList(
@@ -27,12 +30,14 @@ class PathFinderTest {
             new Section(null, 종합운동장역, 잠실새내역, 5),
             new Section(null, 삼전역, 잠실새내역, 2)
         );
+        dijkstraAlgorithm = new DijkstraPathFinder();
+        kShortestAlgorithm = new KShortestPathFinder();
     }
 
     @Test
     @DisplayName("다익스트라로 최단 경로를 찾음")
     void findByDijkstra() {
-        List<Station> byDijkstra = PathFinder.of(sections).findByDijkstra(삼전역, 잠실새내역);
+        List<Station> byDijkstra = PathFinder.of(sections, dijkstraAlgorithm).find(삼전역, 잠실새내역);
 
         assertThat(byDijkstra).containsSequence(삼전역, 잠실새내역);
     }
@@ -40,7 +45,7 @@ class PathFinderTest {
     @Test
     @DisplayName("KShortets로 최단 경로를 찾음")
     void findByKShortest() {
-        List<Station> byKShortest = PathFinder.of(sections).findByKShortest(삼전역, 잠실새내역);
+        List<Station> byKShortest = PathFinder.of(sections, kShortestAlgorithm).find(삼전역, 잠실새내역);
 
         assertThat(byKShortest).containsSequence(삼전역, 잠실새내역);
     }
@@ -55,7 +60,7 @@ class PathFinderTest {
             new Section(null, 동대문역, 충무로역, 5)
         );
 
-        assertThatThrownBy(() -> PathFinder.of(notConnectedSections).findByDijkstra(삼전역, 충무로역))
+        assertThatThrownBy(() -> PathFinder.of(notConnectedSections, dijkstraAlgorithm).find(삼전역, 충무로역))
             .isInstanceOf(IllegalArgumentException.class);
     }
 }

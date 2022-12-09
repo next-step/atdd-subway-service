@@ -21,10 +21,13 @@ public class PathService {
     private final StationService stationService;
     private final SectionRepository sectionRepository;
 
+    private final PathFindAlgorithm pathFinder;
 
-    public PathService(StationService stationService, SectionRepository sectionRepository) {
+
+    public PathService(StationService stationService, SectionRepository sectionRepository, PathFindAlgorithm pathFinder) {
         this.stationService = stationService;
         this.sectionRepository = sectionRepository;
+        this.pathFinder = pathFinder;
     }
 
     public PathResponse findShortestPath(Long source, Long target) {
@@ -32,7 +35,7 @@ public class PathService {
         Station departStation = stationService.findStationById(source);
         Station destStation = stationService.findStationById(target);
         List<Section> allSections = sectionRepository.findAll();
-        return PathResponse.from(PathFinder.of(allSections).findByDijkstra(departStation, destStation));
+        return PathResponse.from(PathFinder.of(allSections, pathFinder).find(departStation, destStation));
     }
 
     private static void validateInput(Long sourceStationId, Long targetStationId) {
@@ -43,4 +46,5 @@ public class PathService {
             throw new IllegalArgumentException(MESSAGE_SOURCE_TARGET_SHOULD_BE_DIFFERENT);
         }
     }
+
 }
