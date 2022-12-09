@@ -1,10 +1,17 @@
 package nextstep.subway.auth.domain;
 
+import javax.persistence.Embeddable;
 import java.util.Objects;
 
+@Embeddable
 public class Money {
 
-    private final double amount;
+    private static final double ZERO = 0;
+
+    private Double amount;
+
+    protected Money() {
+    }
 
     private Money(double amount) {
         this.amount = amount;
@@ -14,8 +21,16 @@ public class Money {
         return new Money(amount);
     }
 
+    public static Money zero() {
+        return new Money(ZERO);
+    }
+
     public double getAmount() {
         return this.amount;
+    }
+
+    protected void setAmount(double amount) {
+        this.amount = amount;
     }
 
     public Money plus(Money targetMoney) {
@@ -32,6 +47,10 @@ public class Money {
 
     public Money divideByDecimalPoint(double rate) {
         return Money.from(this.amount - (this.amount * rate));
+    }
+
+    public Money mul(double target) {
+        return Money.from(this.amount * target);
     }
 
     @Override

@@ -56,4 +56,14 @@ class MoneyTest {
         final Money sourceMoney = Money.from(source);
         assertThat(sourceMoney.divideByDecimalPoint(rate)).isEqualTo(Money.from(expected));
     }
+
+    @DisplayName("곱하기")
+    @Test
+    void multiply_money_success() {
+        final double source = 100;
+        final double target = 2;
+        final double expected = 200;
+        final Money sourceMoney = Money.from(source);
+        assertThat(sourceMoney.mul(target)).isEqualTo(Money.from(expected));
+    }
 }
