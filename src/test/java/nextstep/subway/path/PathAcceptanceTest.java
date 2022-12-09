@@ -68,6 +68,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         Then 경로 조회에 실패함
     */
+    @DisplayName("출발역과 도착역이 같은 두 역의 최단 거리 경로를 조회")
     @Test
     void findPath_fail_sameStation() {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, stationA, stationA);
@@ -86,6 +87,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         Then 경로 조회에 실패함
     */
+    @DisplayName("연결되지 않은 두 역의 최단 거리 경로를 조회")
     @Test
     void findPath_fail_notConnect() {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, stationA, stationF);
@@ -104,6 +106,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         Then 최단 거리 경로를 응답
         And 지하철 이용 요금도 함께 응답함
     */
+    @DisplayName("두 역의 최단 거리 경로를 조회")
     @Test
     void findPath_success() {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, stationA, stationC);
@@ -126,6 +129,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         Then 경로 조회에 실패함
     */
+    @DisplayName("존재하지 않는 역의 최단 경로를 조회")
     @Test
     void findPath_fail_notExist() {
         ExtractableResponse<Response> response = 지하철_경로_조회_요청(memberA, 100L, stationF);
@@ -133,7 +137,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /*
-      Scenario: 두 역의 최단 거리 경로를 조회
+      Scenario: 두 역의 최단 거리 경로를 조회 / 노선 추가 요금 조회
 
         Given 지하철역이 등록되어있음
         And 지하철 노선이 등록되어있음
@@ -145,7 +149,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         And 지하철 이용 요금도 함께 응답함
           기본요금(1250) + 노선요금(900)
     */
-    @DisplayName("900원 추가 요금이 있는 노선 8km 이용 시 1,250원 -> 2,150원")
+    @DisplayName("두 역의 최단 거리 경로를 조회 / 노선 추가 요금 조회")
     @Test
     void findPath_addFare() {
 
@@ -160,7 +164,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     /*
-      Scenario: 두 역의 최단 거리 경로를 조회
+      Scenario: 두 역의 최단 거리 경로를 조회 / 청소년 할인
 
         Given 지하철역이 등록되어있음
         And 지하철 노선이 등록되어있음
@@ -172,7 +176,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         And 지하철 이용 요금도 함께 응답함
           기본요금(1250) + 노선요금(900) + 거리요금(100) + 청소년 할인
     */
-    @DisplayName("900원 추가 요금이 있는 노선 5km 이용 시 1,250원 -> 2,150원 -> 청소년 할인 (2150 - 350) * 0.8 -> 1440원")
+    @DisplayName("두 역의 최단 거리 경로를 조회 / 청소년 할인")
     @Test
     void findPath_addFare_discount_teenager() {
 
@@ -186,8 +190,36 @@ public class PathAcceptanceTest extends AcceptanceTest {
         );
     }
 
+
     /*
-      Scenario: 두 역의 최단 거리 경로를 조회
+      Scenario: 비로그인 사용자의 최단 거리 경로를 조회
+
+        Given 지하철역이 등록되어있음
+        And 지하철 노선이 등록되어있음
+        And 지하철 노선에 지하철역이 등록되어있음
+
+        When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+
+        Then 최단 거리 경로를 응답 (11KM)
+        And 지하철 이용 요금도 함께 응답함
+          기본요금(1250) + 노선요금(900) + 거리요금(100)
+    */
+    @DisplayName("비로그인 사용자의 최단 거리 경로를 조회")
+    @Test
+    void findPath_Guest() {
+
+        ExtractableResponse<Response> response = 지하철_경로_조회_요청(stationA, stationB);
+
+        assertAll(
+                () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+                () -> assertThat(response.jsonPath().getList("stations.id", Long.class)).containsExactly(stationA, stationB),
+                () -> assertThat(response.jsonPath().getInt("distance")).isEqualTo(5),
+                () -> assertThat(response.jsonPath().getInt("fare")).isEqualTo(2150)
+        );
+    }
+
+    /*
+      Scenario: 두 역의 최단 거리 경로를 조회 / 어린이 할인
 
         Given 지하철역이 등록되어있음
         And 지하철 노선이 등록되어있음
@@ -199,7 +231,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         And 지하철 이용 요금도 함께 응답함
             기본요금(1250) + 노선요금(900) + 거리요금(100) + 어린이 할인
    */
-    @DisplayName("900원 추가 요금이 있는 노선 11km 이용 시 1,350원 -> 2,250원 -> 어린이 할인 (2250 - 350) * 0.5 -> 950원")
+    @DisplayName("두 역의 최단 거리 경로를 조회 / 어린이 할인")
     @Test
     void findPath_addFare_discount_children() {
 
