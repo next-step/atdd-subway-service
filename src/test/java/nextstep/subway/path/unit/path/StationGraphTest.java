@@ -1,4 +1,4 @@
-package nextstep.subway.path.unit;
+package nextstep.subway.path.unit.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -6,8 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 import java.util.Arrays;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.SectionEdge;
-import nextstep.subway.path.domain.StationGraph;
+import nextstep.subway.path.domain.path.SectionEdge;
+import nextstep.subway.path.domain.path.StationGraph;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.DisplayName;
@@ -28,7 +28,7 @@ public class StationGraphTest {
     private final Section 교대역_강남역 = Section.of(이호선, 교대역, 강남역, 10);
     private final Section 교대역_남부터미널역 = Section.of(삼호선, 교대역, 남부터미널역, 7);
     private final Section 남부터미널역_양재역 = Section.of(삼호선, 남부터미널역, 양재역, 5);
-    
+
     @DisplayName("경로그래프를 생성할 수 있다.")
     @Test
     void createStationGraph() {
@@ -38,10 +38,10 @@ public class StationGraphTest {
         // then
 
         assertAll(
-                ()->assertThat(graph.containsVertex(강남역)),
-                ()->assertThat(graph.containsVertex(양재역)),
-                ()->assertThat(graph.containsVertex(교대역)),
-                ()->assertThat(graph.containsVertex(남부터미널역))
+                () -> assertThat(graph.containsVertex(강남역)),
+                () -> assertThat(graph.containsVertex(양재역)),
+                () -> assertThat(graph.containsVertex(교대역)),
+                () -> assertThat(graph.containsVertex(남부터미널역))
         );
     }
 
@@ -57,9 +57,6 @@ public class StationGraphTest {
         // then
         assertThat(stationGraph.getGraph().containsVertex(남부터미널역));
     }
-
-
-
 
 
 }

@@ -1,8 +1,8 @@
-package nextstep.subway.path.unit;
+package nextstep.subway.path.unit.fare;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import nextstep.subway.path.domain.Discount;
+import nextstep.subway.path.domain.fare.Discount;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

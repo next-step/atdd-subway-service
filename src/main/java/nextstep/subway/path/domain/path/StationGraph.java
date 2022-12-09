@@ -1,13 +1,8 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.path;
 
-import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import nextstep.subway.ErrorMessage;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 public class StationGraph {
@@ -17,6 +12,10 @@ public class StationGraph {
 
     public StationGraph(List<Section> sections) {
         sections.forEach(this::addGraphEdge);
+    }
+
+    public static StationGraph of(List<Section> sections) {
+        return new StationGraph(sections);
     }
 
     public void addGraphEdge(Section section) {

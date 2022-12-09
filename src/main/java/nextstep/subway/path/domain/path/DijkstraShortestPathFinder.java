@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.path;
 
 import java.util.Objects;
 import nextstep.subway.ErrorMessage;
@@ -12,23 +12,21 @@ public class DijkstraShortestPathFinder implements PathFinder {
     private final DijkstraShortestPath<Station, SectionEdge> path;
     private final WeightedMultigraph<Station, SectionEdge> graph;
 
-    public DijkstraShortestPathFinder(StationGraph stationGraph) {
+    private DijkstraShortestPathFinder(StationGraph stationGraph) {
         this.graph = stationGraph.getGraph();
         this.path = new DijkstraShortestPath(stationGraph.getGraph());
     }
 
-    @Override
-    public Path findPath(Station source, Station target) {
-        GraphPath graphPath = getGraphPath(source, target);
-        return Path.of(graphPath);
+    public static PathFinder of(StationGraph stationGraph) {
+        return new DijkstraShortestPathFinder(stationGraph);
     }
 
     @Override
-    public Path findPathByLoginMember(Station source, Station target, Integer age) {
-        GraphPath graphPath = getGraphPath(source, target);
-        return Path.ofAge(graphPath, age);
+    public GraphPath findPath(Station source, Station target) {
+        return getGraphPath(source, target);
     }
-    private GraphPath getGraphPath(Station source, Station target){
+
+    private GraphPath getGraphPath(Station source, Station target) {
         validatePathFindRequest(source, target);
         GraphPath graphPath = path.getPath(source, target);
         validatePathFindResult(graphPath);
@@ -36,13 +34,13 @@ public class DijkstraShortestPathFinder implements PathFinder {
     }
 
     private void validatePathFindResult(GraphPath graphPath) {
-        if (Objects.isNull(graphPath)){
+        if (Objects.isNull(graphPath)) {
             throw new IllegalStateException(ErrorMessage.FIND_PATH_NOT_CONNECTED);
         }
     }
 
     private void validatePathFindRequest(Station source, Station target) {
-        if (source.equals(target)){
+        if (source.equals(target)) {
             throw new IllegalStateException(ErrorMessage.FIND_PATH_SAME_STATION);
         }
         if (!graph.containsVertex(source) || !graph.containsVertex(target)) {

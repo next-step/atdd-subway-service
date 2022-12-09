@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.path;
 
 import nextstep.subway.line.domain.Section;
 import org.jgrapht.graph.DefaultWeightedEdge;
@@ -10,7 +10,10 @@ public class SectionEdge extends DefaultWeightedEdge {
     public SectionEdge(Section section) {
         this.section = section;
     }
-    public int getLineSurCharge(){
-        return section.getLine().getSurCharge().value();
+
+    public Section getSection() {
+        return section;
     }
+
+
 }

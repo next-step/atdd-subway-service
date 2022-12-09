@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.path.domain.path;
 
 import java.util.List;
 import java.util.Objects;
@@ -17,25 +17,22 @@ public class KShortestPathFinder implements PathFinder {
     private static int PATH_COMPUTE_COUNT = 100;
     private static int FASTEST_INDEX = 0;
 
-    public KShortestPathFinder(StationGraph stationGraph) {
+    private KShortestPathFinder(StationGraph stationGraph) {
         this.graph = stationGraph.getGraph();
         this.path = new KShortestPaths(stationGraph.getGraph(), PATH_COMPUTE_COUNT);
     }
 
-
-    @Override
-    public Path findPath(Station source, Station target) {
-        GraphPath graphPath = getGraphPath(source, target);
-        return Path.of(graphPath);
+    public static KShortestPathFinder of(StationGraph stationGraph) {
+        return new KShortestPathFinder(stationGraph);
     }
 
+
     @Override
-    public Path findPathByLoginMember(Station source, Station target, Integer age) {
-        GraphPath graphPath = getGraphPath(source, target);
-        return Path.ofAge(graphPath, age);
+    public GraphPath findPath(Station source, Station target) {
+        return getGraphPath(source, target);
     }
 
-    private GraphPath getGraphPath(Station source, Station target){
+    private GraphPath getGraphPath(Station source, Station target) {
         validatePathFindRequest(source, target);
         List<GraphPath> paths = path.getPaths(source, target);
         GraphPath graphPath = paths.get(FASTEST_INDEX);
@@ -44,13 +41,13 @@ public class KShortestPathFinder implements PathFinder {
     }
 
     private void validatePathFindResult(GraphPath graphPath) {
-        if (Objects.isNull(graphPath)){
+        if (Objects.isNull(graphPath)) {
             throw new IllegalStateException(ErrorMessage.FIND_PATH_NOT_CONNECTED);
         }
     }
 
     private void validatePathFindRequest(Station source, Station target) {
-        if (source.equals(target)){
+        if (source.equals(target)) {
             throw new IllegalStateException(ErrorMessage.FIND_PATH_SAME_STATION);
         }
         if (!graph.containsVertex(source) || !graph.containsVertex(target)) {
