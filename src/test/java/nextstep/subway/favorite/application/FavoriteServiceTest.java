@@ -14,11 +14,10 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import java.util.NoSuchElementException;
+import javax.persistence.EntityNotFoundException;
 
+import static nextstep.subway.favorite.application.FavoriteService.FAVORITE_DUPLICATE_EXCEPTION_MESSAGE;
 import static nextstep.subway.favorite.domain.Favorite.TARGET_SOURCE_SAME_EXCEPTION_MESSAGE;
-import static nextstep.subway.favorite.domain.Favorites.FAVORITE_DUPLICATE_EXCEPTION_MESSAGE;
-import static nextstep.subway.favorite.domain.Favorites.HAS_NOT_FAVORITE_EXCEPTION_MESSAGE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -98,7 +97,6 @@ class FavoriteServiceTest {
     void findAll() {
         favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId()));
         favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationC.getId()));
-        favoriteService.create(memberB.getId(), new FavoriteCreatedRequest(stationA.getId(), stationC.getId()));
         assertThat(favoriteService.findAll(memberA.getId())).hasSize(2);
     }
 
@@ -118,7 +116,6 @@ class FavoriteServiceTest {
         Long favoriteId = favoriteService.create(memberA.getId(), new FavoriteCreatedRequest(stationA.getId(), stationB.getId())).getId();
 
         assertThatThrownBy(() -> favoriteService.delete(memberB.getId(), favoriteId))
-                .isInstanceOf(NoSuchElementException.class)
-                .hasMessageContaining(HAS_NOT_FAVORITE_EXCEPTION_MESSAGE);
+                .isInstanceOf(EntityNotFoundException.class);
     }
 }
