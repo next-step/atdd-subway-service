@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.path.application.LinePathGraph;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -67,8 +66,8 @@ public class Line extends BaseEntity {
     }
 
 
-    public void addPathGraph(LinePathGraph graph) {
-        this.sections.addPathGraph(graph);
+    public List<Section> getSections() {
+        return this.sections.getAll();
     }
 
     @Override

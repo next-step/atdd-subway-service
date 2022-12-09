@@ -13,4 +13,6 @@ public class StationFixture {
     public static Station 잠실역 = new Station("잠실역");
     public static Station 논현역 = new Station("논현역");
     public static Station 신논현역 = new Station("신논현역");
+    public static Station 학동역 = new Station("학동역");
+    public static Station 여의도역 = new Station("여의도역");
 }

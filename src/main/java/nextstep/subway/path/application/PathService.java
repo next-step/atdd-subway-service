@@ -2,6 +2,8 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.ShortestPathFinder;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -18,7 +20,8 @@ public class PathService {
     private final StationRepository stationRepository;
     private final LineRepository lineRepository;
 
-    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
+    public PathService(StationRepository stationRepository,
+                       LineRepository lineRepository) {
         this.stationRepository = stationRepository;
         this.lineRepository = lineRepository;
     }
@@ -29,9 +32,8 @@ public class PathService {
         Station targetStation = stationRepository.findById(targetStationId)
                 .orElseThrow(EntityNotFoundException::new);
 
-        List<Line> lines = lineRepository.findAll();
-        LinePathGraph linePathGraph = new LinePathGraph(lines);
-        LinePath path = linePathGraph.getShortestPath(sourceStation, targetStation);
-        return PathResponse.of(path);
+        List<Line> lines = lineRepository.findAllWithSections();
+        PathFinder shortestPathFinder = new ShortestPathFinder(lines);
+        return PathResponse.of(shortestPathFinder.findPath(sourceStation, targetStation));
     }
 }

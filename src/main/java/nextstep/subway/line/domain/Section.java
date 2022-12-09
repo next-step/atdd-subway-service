@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.line.message.SectionMessage;
-import nextstep.subway.path.application.LinePathGraph;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -88,10 +87,6 @@ public class Section {
 
     public boolean isSameDownStation(Station station) {
         return this.downStation.equals(station);
-    }
-
-    public void addGraphEdge(LinePathGraph graph) {
-        graph.addEdge(getUpStation(), getDownStation(), getDistance());
     }
 
     @Override
