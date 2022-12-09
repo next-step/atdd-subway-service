@@ -20,13 +20,11 @@ public class PathService {
 
     private final StationService stationService;
     private final SectionRepository sectionRepository;
-    private final PathFinder pathFinder;
 
 
-    public PathService(StationService stationService, SectionRepository sectionRepository, PathFinder pathFinder) {
+    public PathService(StationService stationService, SectionRepository sectionRepository) {
         this.stationService = stationService;
         this.sectionRepository = sectionRepository;
-        this.pathFinder = pathFinder;
     }
 
     public PathResponse findShortestPath(Long source, Long target) {
@@ -34,7 +32,7 @@ public class PathService {
         Station departStation = stationService.findStationById(source);
         Station destStation = stationService.findStationById(target);
         List<Section> allSections = sectionRepository.findAll();
-        return PathResponse.from(pathFinder.find(allSections, departStation, destStation));
+        return PathResponse.from(PathFinder.of(allSections).findByDijkstra(departStation, destStation));
     }
 
     private static void validateInput(Long sourceStationId, Long targetStationId) {
