@@ -20,9 +20,4 @@ public class PathController {
     public ResponseEntity findBestPath(@RequestParam(name = "source") Long sourceId, @RequestParam(name = "target") Long targetId) {
         return ResponseEntity.ok(pathService.findBestPath(sourceId, targetId));
     }
-
-    @ExceptionHandler({NoSuchDataException.class, InvalidDataException.class, DataIntegrityViolationException.class})
-    public ResponseEntity handleDataIntegrityViolationException(RuntimeException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }

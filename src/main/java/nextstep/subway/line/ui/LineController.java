@@ -61,9 +61,4 @@ public class LineController {
         lineService.removeLineStation(lineId, stationId);
         return ResponseEntity.ok().build();
     }
-
-    @ExceptionHandler({NoSuchDataException.class, InvalidDataException.class, DataIntegrityViolationException.class})
-    public ResponseEntity handleDataIntegrityViolationException(RuntimeException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
