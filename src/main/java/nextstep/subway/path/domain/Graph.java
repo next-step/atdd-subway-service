@@ -1,22 +1,26 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
+import java.util.List;
+
 public class Graph {
     private WeightedMultigraph<Station, DefaultWeightedEdge> graph;
 
-    public Graph() {
-        this.graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+    public Graph(List<Line> lines) {
+        generateGraph(lines);
     }
 
-    public void addVertex(Station station) {
-        graph.addVertex(station);
-    }
+    private void generateGraph(List<Line> lines){
+        graph = new WeightedMultigraph(org.jgrapht.graph.DefaultWeightedEdge.class);
 
-    public void setEdgeWeight(Station source, Station target, int distance) {
-        graph.setEdgeWeight(graph.addEdge(source, target), distance);
+        lines.stream().forEach(line -> line.getStations().stream()
+                .forEach(station -> graph.addVertex(station)));
+        lines.stream().forEach(line -> line.getSections().stream()
+                .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().value())));
     }
 
     public WeightedMultigraph<Station, DefaultWeightedEdge> getGraph() {
