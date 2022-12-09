@@ -66,7 +66,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> pathsResponse = 최단_경로_조회_요청(강남역, 남부터미널역);
 
         // then
-        최단_경로_응답(pathsResponse, Arrays.asList(강남역, 양재역, 남부터미널역), 12);
+        최단_경로_및_요금_응답(pathsResponse, Arrays.asList(강남역, 양재역, 남부터미널역), 12);
     }
 
     @DisplayName("존재하지 않은 출발역이나 도착역을 조회할 경우")
@@ -89,7 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
             .extract();
     }
 
-    private void 최단_경로_응답(ExtractableResponse<Response> response, List<StationResponse> stationResponses,
+    private void 최단_경로_및_요금_응답(ExtractableResponse<Response> response, List<StationResponse> stationResponses,
         int distance) {
         PathResponse path = response.as(PathResponse.class);
 
@@ -111,6 +111,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(createAtList).hasSize(stationResponses.size());
         assertThat(createAtList).doesNotContainNull();
         assertThat(path.getDistance()).isEqualTo(distance);
+        assertThat(path.getFare()).isEqualTo(1250 + 100);
     }
 
     public static LineResponse 지하철_노선_등록되어_있음(String name, String color,

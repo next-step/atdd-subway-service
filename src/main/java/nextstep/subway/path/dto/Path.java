@@ -8,6 +8,7 @@ public class Path {
 
     private List<Station> stations;
     private int distance;
+    private int fare;
 
     public Path(List<Station> stations, int distance) {
         this.stations = stations;
@@ -20,5 +21,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
