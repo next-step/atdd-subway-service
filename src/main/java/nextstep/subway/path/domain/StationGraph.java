@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.PathCannotFindException;
 import nextstep.subway.exception.StationNotIncludedException;
 import nextstep.subway.line.domain.Distance;
@@ -15,12 +16,14 @@ import java.util.stream.Collectors;
 
 public class StationGraph {
     private final WeightedMultigraph<Station, SectionWeigthedEdge> stationGraph = new WeightedMultigraph<>(SectionWeigthedEdge.class);
+    private final LoginMember loginMember;
 
-    public StationGraph(List<Line> lines) {
+    public StationGraph(List<Line> lines, LoginMember loginMember) {
         lines.forEach(line -> {
             addVertex(line);
             addEdge(line.getSections().stream().map(SectionWeigthedEdge::new).collect(Collectors.toList()));
         });
+        this.loginMember = loginMember;
     }
 
     private void addVertex(Line line) {
@@ -52,18 +55,23 @@ public class StationGraph {
 
     private Path convertToPath(GraphPath<Station, SectionWeigthedEdge> graphPath) {
         validateGraphPath(graphPath);
-        int maxLineFare = graphPath.getEdgeList().stream()
-                .mapToInt(SectionWeigthedEdge::getSurcharge)
-                .max()
-                .orElse(0);
         List<Station> shortestPathVertexes = graphPath.getVertexList();
         Distance shortestPathDistance = new Distance((int) graphPath.getWeight());
-        return new Path(shortestPathVertexes, shortestPathDistance, maxLineFare);
+        int maxLineFare = getMaxLineFare(graphPath.getEdgeList());
+        Fare fare = Fare.of(shortestPathDistance, maxLineFare, loginMember);
+        return new Path(shortestPathVertexes, shortestPathDistance, fare);
     }
 
     private void validateGraphPath(GraphPath<Station, SectionWeigthedEdge> graphPath) {
         if (Objects.isNull(graphPath)) {
             throw new PathCannotFindException();
         }
+    }
+
+    private int getMaxLineFare(List<SectionWeigthedEdge> edgeList) {
+        return edgeList.stream()
+                .mapToInt(SectionWeigthedEdge::getSurcharge)
+                .max()
+                .orElse(0);
     }
 }

@@ -12,16 +12,12 @@ import java.util.List;
 public class Path {
     private final List<Station> stations;
     private final Distance distance;
-    private int fare;
+    private final Fare fare;
 
-    public Path(List<Station> stations, Distance distance, int maxLineFare) {
+    public Path(List<Station> stations, Distance distance, Fare fare) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = FareCalculator.calculateFare(distance) + maxLineFare;
-    }
-
-    public void calculateFare(LoginMember loginMember) {
-        fare = DiscountCalculator.getFare(loginMember, fare);
+        this.fare = fare;
     }
 
     public List<Station> getStations() {
@@ -32,7 +28,7 @@ public class Path {
         return distance;
     }
 
-    public int getFare() {
+    public Fare getFare() {
         return fare;
     }
 }

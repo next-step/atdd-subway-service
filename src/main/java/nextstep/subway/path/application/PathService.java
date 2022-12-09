@@ -19,12 +19,10 @@ import java.util.List;
 public class PathService {
     private final StationService stationService;
     private final LineRepository lineRepository;
-    private final SectionRepository sectionRepository;
 
-    public PathService(StationService stationService, LineRepository lineRepository, SectionRepository sectionRepository) {
+    public PathService(StationService stationService, LineRepository lineRepository) {
         this.stationService = stationService;
         this.lineRepository = lineRepository;
-        this.sectionRepository = sectionRepository;
     }
 
     @Transactional(readOnly = true)
@@ -33,8 +31,7 @@ public class PathService {
         Station target = stationService.stationById(pathRequest.getTarget());
         List<Line> lines = lineRepository.findAll();
 
-        Path path = new StationGraph(lines).findShortestPath(source, target);
-        path.calculateFare(loginMember);
+        Path path = new StationGraph(lines, loginMember).findShortestPath(source, target);
 
         return PathResponse.of(path);
     }
