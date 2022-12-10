@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.AgeGroup;
 import nextstep.subway.line.domain.AdditionalFee;
 import nextstep.subway.line.domain.Distance;
 
@@ -60,6 +61,10 @@ public class Fare {
 
     public Fare add(AdditionalFee additionalFee) {
         return new Fare(this.fare + additionalFee.getValue());
+    }
+
+    public Fare applySale(AgeGroup group) {
+        return new Fare((int)((this.fare - group.getDeductFare()) * group.getSale()));
     }
 
     public static class FareStage {

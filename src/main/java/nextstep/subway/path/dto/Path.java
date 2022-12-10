@@ -2,6 +2,7 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 
+import nextstep.subway.auth.domain.AgeGroup;
 import nextstep.subway.line.domain.AdditionalFee;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.domain.Fare;
@@ -29,5 +30,9 @@ public class Path {
 
     public Distance getDistance() {
         return distance;
+    }
+
+    public void applySale(AgeGroup ageGroup) {
+        this.fare = this.fare.applySale(ageGroup);
     }
 }
