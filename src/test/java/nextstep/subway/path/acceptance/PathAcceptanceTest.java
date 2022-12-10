@@ -1,5 +1,6 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.RestAssured;
@@ -9,8 +10,6 @@ import java.util.stream.Collectors;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.ErrorMessage;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
-import nextstep.subway.line.acceptance.LineSectionAcceptanceTest;
-import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.dto.ErrorResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -59,26 +58,42 @@ public class PathAcceptanceTest extends AcceptanceTest {
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(LineRequest.from("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(LineRequest.from("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
         분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(LineRequest.from("분당선", "bg-yellow-600", 오리역.getId(), 수내역.getId(), 10)).as(LineResponse.class);
-
-
     }
 
+
+
+
+
     /**
-     * Given 경로가 생성되어 있고, 두개 역이 해당 경로 위에 존재할때
-     * When 두개 역 사이의 최단경로를 조회하면
-     * Then 최단 경로 거리, 최단 경로를 확인할 수 있다.
+     * Feature: 지하철 경로 검색
+     *
+     *   Scenario: 두 역의 최단 거리 경로를 조회
+     *     Given 지하철역이 등록되어있음
+     *     And 지하철 노선이 등록되어있음
+     *     And 지하철 노선에 지하철역이 등록되어있음
+     *     When 출발역에서 도착역까지의 최단 거리 경로 조회를 요청
+     *     Then 최단 거리 경로를 응답
+     *     And 총 거리도 함께 응답함
+     *     And ** (추가) 지하철 이용 요금도 함께 응답함 **
      */
-    @DisplayName("두 역 사이의 최단경로를 조회할 수 있다.")
+    @DisplayName("최단 경로 조회")
     @Test
-    void pathFind_success() {
+    void pathFind() {
         // given
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
         // when
         ExtractableResponse<Response> response = 경로_조회_요청(강남역.getId(), 남부터미널역.getId());
         // then
         경로가_일치함(response, "강남역", "양재역", "남부터미널역");
+
         경로의_총_거리가_일치함(response, 12);
+
+        지하철_이용_요금이_일치함(response, 1250);
     }
+
+
+
+
     /**
      * Given 경로가 생성되어 있고, 두개 역이 해당 경로 위에 존재할때
      * When 경로 조회를 요청하는 두개 역이 같으면
@@ -150,6 +165,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 경로의_총_거리가_일치함(ExtractableResponse response, int 거리) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(거리);
+    }
+
+    private void 지하철_이용_요금이_일치함(ExtractableResponse<Response> response, int 요금) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(요금);
     }
     
 }

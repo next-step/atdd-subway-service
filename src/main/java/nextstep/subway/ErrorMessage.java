@@ -32,6 +32,8 @@ public class ErrorMessage {
     public static final String LOGIN_EMAIL_NOT_FOUND = "로그인 이메일이 일치하지 않습니다.";
     public static final String LOGIN_PASSWORD_NOT_MATCH = "로그인 비밀번호가 일치하지 않습니다.";
 
+    public static final String PRICE_CANNOT_BE_NEGATIVE = "요금은 음수가 될 수 없습니다.";
+
     public static String notValidDistance(int minimumDistance) {
         return String.format("거리는 %d보다 커야 합니다.", minimumDistance);
     }

@@ -1,4 +1,4 @@
-package nextstep.subway.path.unit;
+package nextstep.subway.path.unit.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -8,19 +8,20 @@ import java.util.Arrays;
 import nextstep.subway.ErrorMessage;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.path.domain.DijkstraShortestPathFinder;
-import nextstep.subway.path.domain.KShortestPathFinder;
-import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.domain.StationGraph;
-import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.path.DijkstraShortestPathFinder;
+import nextstep.subway.path.domain.path.KShortestPathFinder;
+import nextstep.subway.path.domain.path.PathFinder;
+import nextstep.subway.path.domain.path.StationGraph;
 import nextstep.subway.station.domain.Station;
+import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 public class PathFinderTest {
-    private final Line 이호선 = Line.ofNameAndColor("2호선", "초록색");
-    private final Line 신분당선 = Line.ofNameAndColor("신분당선", "빨간색");
-    private final Line 삼호선 = Line.ofNameAndColor("3호선", "주황색");
+
+    private final Line 이호선 = Line.ofNameAndColorAndSurCharge("2호선", "초록색", 400);
+    private final Line 신분당선 = Line.ofNameAndColorAndSurCharge("신분당선", "빨간색", 300);
+    private final Line 삼호선 = Line.ofNameAndColorAndSurCharge("3호선", "주황색", 200);
     private final Station 강남역 = new Station("강남역");
     private final Station 양재역 = new Station("양재역");
     private final Station 교대역 = new Station("교대역");
@@ -36,24 +37,24 @@ public class PathFinderTest {
     @Test
     void findShortestPath() {
         // given
-        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
+        StationGraph stationGraph = StationGraph.of(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
 
-        PathFinder pathFinder = new DijkstraShortestPathFinder(stationGraph);
+        PathFinder pathFinder = DijkstraShortestPathFinder.of(stationGraph);
 
         // when
-        Path path = pathFinder.findPath(강남역, 남부터미널역);
+        GraphPath graphPath = pathFinder.findPath(강남역, 남부터미널역);
 
         // then
-        assertThat(path.getStations()).containsExactly(강남역, 양재역, 남부터미널역);
-        assertThat(path.getDistance().value()).isEqualTo(15);
+        assertThat(graphPath.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역);
+        assertThat(graphPath.getWeight()).isEqualTo(15);
     }
 
     @DisplayName("최단 경로를 구할때 두개 역이 같으면 IllegalStateException 발생한다.")
     @Test
     void findShortestPath_exception_same_station() {
         // given
-        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
-        PathFinder pathFinder = new DijkstraShortestPathFinder(stationGraph);
+        StationGraph stationGraph = StationGraph.of(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
+        PathFinder pathFinder = DijkstraShortestPathFinder.of(stationGraph);
 
         // then
         assertThatThrownBy(() -> pathFinder.findPath(강남역, 강남역)).isInstanceOf(IllegalStateException.class)
@@ -64,8 +65,8 @@ public class PathFinderTest {
     @Test
     void findShortestPath_exception_station_not_on_graph() {
         // given
-        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
-        PathFinder pathFinder = new DijkstraShortestPathFinder(stationGraph);
+        StationGraph stationGraph = StationGraph.of(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
+        PathFinder pathFinder = DijkstraShortestPathFinder.of(stationGraph);
 
         // then
         assertThatThrownBy(() -> pathFinder.findPath(강남역, 수원역)).isInstanceOf(IllegalStateException.class)
@@ -76,26 +77,26 @@ public class PathFinderTest {
     @Test
     void findShortestPath_exception_not_connected() {
         // given
-        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_남부터미널역));
-        PathFinder pathFinder = new DijkstraShortestPathFinder(stationGraph);
+        StationGraph stationGraph = StationGraph.of(Arrays.asList(강남역_양재역, 교대역_남부터미널역));
+        PathFinder pathFinder = DijkstraShortestPathFinder.of(stationGraph);
         // then
         assertThatThrownBy(() -> pathFinder.findPath(강남역, 남부터미널역)).isInstanceOf(IllegalStateException.class)
                 .hasMessage(ErrorMessage.FIND_PATH_NOT_CONNECTED);
     }
 
 
-    @DisplayName("경로전략 KShortestPaths로 바꿔서도 정상동작한다.")
+    @DisplayName("경로전략 KShortestPaths 로 바꿔서도 정상동작한다.")
     @Test
     void findPath_newStrategy() {
         // given
-        StationGraph stationGraph = new StationGraph(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
-        PathFinder pathFinder = new KShortestPathFinder(stationGraph);
+        StationGraph stationGraph = StationGraph.of(Arrays.asList(강남역_양재역, 교대역_강남역, 교대역_남부터미널역, 남부터미널역_양재역));
+        PathFinder pathFinder = KShortestPathFinder.of(stationGraph);
         // when
-        Path path = pathFinder.findPath(강남역, 남부터미널역);
+        GraphPath graphPath = pathFinder.findPath(강남역, 남부터미널역);
         // then
         assertAll(
-                ()->assertThat(path.getStations()).containsExactly(강남역, 양재역, 남부터미널역),
-                ()->assertThat(path.getDistance().value()).isEqualTo(15)
+                () -> assertThat(graphPath.getVertexList()).containsExactly(강남역, 양재역, 남부터미널역),
+                () -> assertThat(graphPath.getWeight()).isEqualTo(15)
         );
     }
 

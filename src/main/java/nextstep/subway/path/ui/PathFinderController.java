@@ -1,11 +1,10 @@
 package nextstep.subway.path.ui;
 
 
-import java.util.List;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.EntityNotFoundException;
-import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.dto.ErrorResponse;
-import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.application.PathFinderService;
 import nextstep.subway.path.dto.PathResponse;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -27,8 +26,9 @@ public class PathFinderController {
     }
 
     @GetMapping
-    public ResponseEntity<PathResponse> findPath(@RequestParam Long source, @RequestParam Long target) {
-        return ResponseEntity.ok(pathFinderService.getShortestPath(source, target));
+    public ResponseEntity<PathResponse> findPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
+            @RequestParam Long source, @RequestParam Long target) {
+        return ResponseEntity.ok(pathFinderService.getShortestPath(source, target, loginMember));
     }
 
     @ExceptionHandler(value = {DataIntegrityViolationException.class, IllegalStateException.class, EntityNotFoundException.class})

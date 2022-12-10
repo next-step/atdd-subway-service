@@ -22,6 +22,10 @@ public class Distance {
         validateDistance(distance);
         return new Distance(distance);
     }
+    public static Distance from(final double distance) {
+        validateDistance((int)distance);
+        return new Distance((int)distance);
+    }
 
     private static void validateDistance(int distance) {
         if(distance<=MINIMUM_DISTANCE){
