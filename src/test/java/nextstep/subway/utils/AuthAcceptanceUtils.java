@@ -20,6 +20,12 @@ public class AuthAcceptanceUtils {
 		return post(LOGIN_API_URL, tokenRequest).extract();
 	}
 
+	public static String 로그인_완료되어_토큰_발급(final String email, final String password) {
+		return 로그인_요청(email, password)
+			.as(TokenResponse.class)
+			.getAccessToken();
+	}
+
 	public static void 로그인_성공(ExtractableResponse<Response> 로그인_요청) {
 		assertAll(
 			() -> assertThat(로그인_요청.statusCode()).isEqualTo(HttpStatus.OK.value()),

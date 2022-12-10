@@ -64,8 +64,33 @@ public class MemberAcceptanceUtils {
 		return get(MY_INFO_API_URL, accessToken).extract();
 	}
 
+	public static ExtractableResponse<Response> 내_정보_수정_요청(String accessToken, String email, String password,
+		Integer age) {
+		MemberRequest memberRequest = new MemberRequest(email, password, age);
+		return put(MY_INFO_API_URL, memberRequest, accessToken).extract();
+	}
+
+	public static ExtractableResponse<Response> 내_정보_삭제_요청(String accessToken) {
+		return delete(MY_INFO_API_URL, accessToken).extract();
+	}
+
 	public static void 내_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
 		회원_정보_조회됨(response, email, age);
+	}
+
+	public static void 내_정보_수정됨(ExtractableResponse<Response> response, String accessToken, String newEmail,
+		int newAge) {
+		ExtractableResponse<Response> updateResponse = 내_정보_조회_요청(accessToken);
+
+		assertAll(
+			() -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
+			() -> assertThat(updateResponse.as(MemberResponse.class).getEmail()).isEqualTo(newEmail),
+			() -> assertThat(updateResponse.as(MemberResponse.class).getAge()).isEqualTo(newAge)
+		);
+	}
+
+	public static void 내_정보_삭제됨(ExtractableResponse<Response> response) {
+		회원_삭제됨(response);
 	}
 
 }

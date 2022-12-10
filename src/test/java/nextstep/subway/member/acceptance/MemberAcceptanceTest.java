@@ -1,5 +1,6 @@
 package nextstep.subway.member.acceptance;
 
+import static nextstep.subway.utils.AuthAcceptanceUtils.*;
 import static nextstep.subway.utils.MemberAcceptanceUtils.*;
 
 import org.junit.jupiter.api.DisplayName;
@@ -44,7 +45,22 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	@DisplayName("나의 정보를 관리한다.")
 	@Test
 	void manageMyInfo() {
+		회원_생성을_요청(EMAIL, PASSWORD, AGE);
+		String 사용자_토큰 = 로그인_완료되어_토큰_발급(EMAIL, PASSWORD);
 
+		// when
+		ExtractableResponse<Response> 내_정보_조회_요청 = 내_정보_조회_요청(사용자_토큰);
+		// then
+		내_정보_조회됨(내_정보_조회_요청, EMAIL, AGE);
+
+		// when
+		ExtractableResponse<Response> 내_정보_수정_요청 = 내_정보_수정_요청(사용자_토큰, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+		// then
+		내_정보_수정됨(내_정보_수정_요청, 사용자_토큰, NEW_EMAIL, NEW_AGE);
+
+		// when
+		ExtractableResponse<Response> 내_정보_삭제_요청 = 내_정보_삭제_요청(사용자_토큰);
+		// then
+		내_정보_삭제됨(내_정보_삭제_요청);
 	}
-
 }

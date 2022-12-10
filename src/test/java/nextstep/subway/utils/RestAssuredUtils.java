@@ -50,6 +50,15 @@ public class RestAssuredUtils {
 			.then().log().all();
 	}
 
+	public static ValidatableResponse delete(final String url, final String accessToken) {
+		return requestSpecification
+			.when()
+			.auth().oauth2(accessToken)
+			.delete(url)
+			.then().log().all();
+	}
+
+
 	public static ValidatableResponse delete(final String url, final Long path, final Long param) {
 		return RestAssured.delete(url, path, param)
 			.then().log().all();
@@ -62,4 +71,14 @@ public class RestAssuredUtils {
 			.put(url)
 			.then().log().all();
 	}
+
+	public static <T> ValidatableResponse put(final String url, final T updateRequest, String accessToken) {
+		return requestSpecification
+			.body(updateRequest)
+			.when()
+			.auth().oauth2(accessToken)
+			.put(url)
+			.then().log().all();
+	}
+
 }
