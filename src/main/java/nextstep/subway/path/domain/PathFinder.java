@@ -18,7 +18,7 @@ public class PathFinder {
     public PathFinder(List<Station> stations, double weight) {
         validCheckStationIsEmpty(stations);
         this.stations = stations;
-        this.distance = Math.toIntExact(Math.round(weight));
+        this.distance = (int) weight;
     }
 
     private void validCheckStationIsEmpty(List<Station> stations) {

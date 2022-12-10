@@ -8,18 +8,15 @@ import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.SourceAndTargetStationDto;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_FAVORITE;
-import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_MEMBER;
 
 @Service
 @Transactional
@@ -37,7 +34,7 @@ public class FavoriteService {
 
     public FavoriteResponse saveFavorite(LoginMember loginMember, FavoriteRequest request) {
         SourceAndTargetStationDto stations = stationService.findStationById(request.getSourceId(), request.getTargetId());
-        Member member = memberService.findById(loginMember.getId());
+        Member member = memberService.findMemberEntity(loginMember.getId());
         Favorite result = favoriteRepository.save(
                 Favorite.of(stations.getSourceStation(), stations.getTargetStation(), member)
         );

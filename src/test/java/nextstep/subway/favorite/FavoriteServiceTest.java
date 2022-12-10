@@ -50,18 +50,17 @@ class FavoriteServiceTest {
     private Station 가디역 = Station.from("가디역");
     private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30));
     private Member 유저 = new Member("test@test.com", "test", 20);
-    private Favorite 즐겨찾기 = new Favorite(신도림역, 가디역, 유저);
+    private Favorite 즐겨찾기 = Favorite.of(신도림역, 가디역, 유저);
 
     private LoginMember loginMember = new LoginMember(1L, "test@test.com", 20);
 
     private FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
 
-
     @Test
     @DisplayName("성공적으로 즐겨찾기를 저장한다")
     void saveFavorite() {
         when(stationService.findStationById(any(), any())).thenReturn(SourceAndTargetStationDto.of(신도림역, 가디역));
-        when(memberService.findById(any())).thenReturn(유저);
+        when(memberService.findMemberEntity(any())).thenReturn(유저);
         when(favoriteRepository.save(any())).thenReturn(즐겨찾기);
 
         FavoriteResponse result = favoriteService.saveFavorite(loginMember, favoriteRequest);

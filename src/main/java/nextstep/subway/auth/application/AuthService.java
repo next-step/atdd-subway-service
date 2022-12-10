@@ -4,10 +4,14 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
+import nextstep.subway.exception.NotFoundDataException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_MEMBER;
+import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_STATION;
 
 @Service
 public class AuthService {
@@ -35,7 +39,7 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NotFoundDataException(NOT_FOUND_MEMBER.getMessage()));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

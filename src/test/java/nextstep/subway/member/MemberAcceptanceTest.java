@@ -182,6 +182,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 내_정보_삭제됨(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
