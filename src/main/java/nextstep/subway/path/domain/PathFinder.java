@@ -2,12 +2,15 @@ package nextstep.subway.path.domain;
 
 import static nextstep.subway.exception.ExceptionMessage.*;
 
+import java.util.List;
 import java.util.Objects;
 
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
+import nextstep.subway.line.domain.AdditionalFee;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.station.domain.Station;
 
@@ -27,7 +30,16 @@ public class PathFinder {
         if (Objects.isNull(graphPath)) {
             throw new IllegalStateException(PATH_NOT_CONNECTED);
         }
-        return new Path(graphPath.getVertexList(), new Distance((int)graphPath.getWeight()));
+        return new Path(graphPath.getVertexList(), new Distance((int)graphPath.getWeight()),
+            calculateAdditionalFee(graphPath.getEdgeList()));
+    }
+
+    private AdditionalFee calculateAdditionalFee(List<Section> edgeList) {
+        return edgeList.stream()
+            .map(section -> section.getLine().getAdditionalFee())
+            .filter(Objects::nonNull)
+            .max(AdditionalFee::greaterThan)
+            .orElseGet(() -> new AdditionalFee(0));
     }
 
     private void validateStations(Station source, Station target) {

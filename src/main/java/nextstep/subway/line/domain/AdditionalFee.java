@@ -13,7 +13,11 @@ public class AdditionalFee {
         this.fee = fee;
     }
 
-    public Integer get() {
+    public Integer getValue() {
         return fee;
+    }
+
+    public int greaterThan(AdditionalFee fee) {
+        return this.fee - fee.getValue();
     }
 }

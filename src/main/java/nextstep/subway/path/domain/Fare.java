@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.AdditionalFee;
 import nextstep.subway.line.domain.Distance;
 
 public class Fare {
@@ -55,6 +56,10 @@ public class Fare {
     @Override
     public int hashCode() {
         return fare;
+    }
+
+    public Fare add(AdditionalFee additionalFee) {
+        return new Fare(this.fare + additionalFee.getValue());
     }
 
     public static class FareStage {

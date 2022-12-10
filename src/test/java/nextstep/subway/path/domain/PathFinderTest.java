@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.line.domain.AdditionalFee;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
@@ -45,9 +46,9 @@ class PathFinderTest {
         교대역 = new Station(3L, "교대역");
         남부터미널역 = new Station(4L, "남부터미널역");
 
-        신분당선 = new Line("신분당선", "red");
-        이호선 = new Line("이호선", "green");
-        삼호선 = new Line("삼호선", "orange");
+        신분당선 = new Line("신분당선", "red", new AdditionalFee(100));
+        이호선 = new Line("이호선", "green", new AdditionalFee(0));
+        삼호선 = new Line("삼호선", "orange", new AdditionalFee(500));
 
         모든구간 = new ArrayList<>(Arrays.asList(new Section(신분당선, 강남역, 양재역, new Distance(10)),
             new Section(이호선, 교대역, 강남역, new Distance(10)),
@@ -58,7 +59,7 @@ class PathFinderTest {
         pathFinder = new PathFinder(new StationGraph(모든구간));
     }
 
-    @DisplayName("경로 조회의 결과 역아이디 리스트와 거리를 반환 - 환승했을 때 더 빠름")
+    @DisplayName("경로 조회의 결과 역아이디 리스트와 거리를 반환, 노선추가요금 있을 때 최대요금만 반영 - 환승했을 때 더 빠름")
     @Test
     void find1() {
         // when
@@ -68,6 +69,7 @@ class PathFinderTest {
         assertThat(result.getDistance()).isEqualTo(new Distance(12));
         assertThat(result.getStations()).containsExactlyElementsOf(
             Arrays.asList(강남역, 양재역, 남부터미널역));
+        assertThat(result.getFare()).isEqualTo(new Fare(1250 + 100 + 500));
     }
 
     @DisplayName("경로 조회의 결과 역아이디 리스트와 거리를 반환 - 환승 안했을 때 더 빠름")
@@ -80,6 +82,7 @@ class PathFinderTest {
         assertThat(result.getDistance()).isEqualTo(new Distance(5));
         assertThat(result.getStations()).containsExactlyElementsOf(
             Arrays.asList(교대역, 남부터미널역, 양재역));
+        assertThat(result.getFare()).isEqualTo(new Fare(1250 + 500));
     }
 
     @DisplayName("출발지와 도착지가 같은 경우 예외처리한다")
@@ -114,5 +117,18 @@ class PathFinderTest {
         assertThatThrownBy(() -> pathFinder.find(교대역, 혜화역))
             .isInstanceOf(IllegalStateException.class)
             .hasMessage(PATH_NOT_CONNECTED);
+    }
+
+    @DisplayName("환승 안하고 노선에 추가요금 없을 때")
+    @Test
+    void find6() {
+        // when
+        Path result = pathFinder.find(교대역, 강남역);
+
+        // then
+        assertThat(result.getDistance()).isEqualTo(new Distance(10));
+        assertThat(result.getStations()).containsExactlyElementsOf(
+            Arrays.asList(교대역, 강남역));
+        assertThat(result.getFare()).isEqualTo(new Fare(1250));
     }
 }
