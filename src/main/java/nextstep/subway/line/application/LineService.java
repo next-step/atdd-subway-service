@@ -42,7 +42,7 @@ public class LineService {
     public List<LineResponse> findLines() {
         List<Line> persistLines = lineRepository.findAll();
         return persistLines.stream()
-                .map(line -> LineResponse.from(line))
+                .map(LineResponse::from)
                 .collect(Collectors.toList());
     }
 
@@ -69,7 +69,7 @@ public class LineService {
     public void removeLineStation(Long lineId, Long stationId) {
         Line line = findLineById(lineId);
         Station station = findStationById(stationId);
-        line.removeStation(line, station);
+        line.removeStation(station);
     }
 
     private Station findStationById(Long stationId) {

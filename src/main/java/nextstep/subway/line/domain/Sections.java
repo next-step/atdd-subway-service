@@ -136,12 +136,12 @@ public class Sections {
 
     private boolean isSameUpStation(Station station) {
         List<Station> stations = getSortedStations();
-        return stations.stream().anyMatch(eachStation -> eachStation.getId() == station.getId());
+        return stations.stream().anyMatch(eachStation -> eachStation.equals(station));
     }
 
     private boolean isSameDownStation(Station station) {
         List<Station> stations = getSortedStations();
-        return stations.stream().anyMatch(eachStation -> eachStation.getId() == station.getId());
+        return stations.stream().anyMatch(eachStation -> eachStation.equals(station));
     }
 
     public List<Section> asList() {
@@ -156,22 +156,18 @@ public class Sections {
         return this.sections.size() == ZERO;
     }
 
-    public void removeStation(Line line, Station deleteStation) {
+    public void removeStation(Station deleteStation) {
         if (this.sections.size() <= ZERO) {
             throw new IllegalArgumentException(ErrorCode.CAN_NOT_DELETE_STATION_CAUSE_SECTIONS_SIZE_EXCEPTION.getErrorMessage() + sections.size());
         }
         Section sectionOfMatchedUpStation = findSectionWhenMatchUpStation(deleteStation);
         Section sectionOfMatchedDownStation = findSectionWhenMatchDownStation(deleteStation);
-        this.sections.add(new Section(line
-                , sectionOfMatchedUpStation.getUpStation()
-                , sectionOfMatchedDownStation.getDownStation()
+        this.sections.add(new Section(sections.get(ZERO).getLine()
+                , sectionOfMatchedDownStation.getUpStation()
+                , sectionOfMatchedUpStation.getDownStation()
                 , sectionOfMatchedUpStation.getDistance() + sectionOfMatchedDownStation.getDistance()));
-        removeSection(sectionOfMatchedUpStation);
-        removeSection(sectionOfMatchedDownStation);
-    }
-
-    private void removeSection(Section deleteSection) {
-        this.sections.remove(deleteSection);
+        this.sections.remove(sectionOfMatchedUpStation);
+        this.sections.remove(sectionOfMatchedDownStation);
     }
 
     private Section findSectionWhenMatchUpStation(Station station) {

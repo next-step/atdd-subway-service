@@ -65,7 +65,7 @@ public class Line extends BaseEntity {
         return this.sections.getSortedStations();
     }
 
-    public void removeStation(Line line, Station station) {
-        this.sections.removeStation(line, station);
+    public void removeStation(Station station) {
+        this.sections.removeStation(station);
     }
 }
