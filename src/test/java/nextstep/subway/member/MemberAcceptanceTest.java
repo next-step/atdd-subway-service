@@ -51,15 +51,34 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     }
 
+    public static ExtractableResponse<Response> 내정보_요청(String accessToken) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 내정보_요청_성공함(ExtractableResponse<Response> response, String email) {
+        MemberResponse memberResponse = response.as(MemberResponse.class);
+
+        assertThat(memberResponse.getEmail()).isEqualTo(email);
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_요청_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 
         return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(memberRequest)
-                .when().post("/members")
-                .then().log().all()
+            .given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .when().post("/members")
+            .then().log().all()
                 .extract();
     }
 
