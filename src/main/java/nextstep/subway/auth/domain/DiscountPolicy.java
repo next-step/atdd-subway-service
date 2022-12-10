@@ -17,4 +17,8 @@ public abstract class DiscountPolicy {
         }
         return new DefaultDiscountPolicy();
     }
+
+    public static DiscountPolicy defaultPolicy() {
+        return new DefaultDiscountPolicy();
+    }
 }

@@ -10,6 +10,8 @@ public class Age {
     public static final int TEENAGER_START_AGE = 13;
     public static final int TEENAGER_END_AGE = 18;
 
+    public static final int DEFAULT_AGE = 0;
+
     private int age;
 
     private Age(int age) {
@@ -21,6 +23,10 @@ public class Age {
 
     public static Age from(int age) {
         return new Age(age);
+    }
+
+    public static Age defaultAge() {
+        return new Age(DEFAULT_AGE);
     }
 
     public int getAge() {
