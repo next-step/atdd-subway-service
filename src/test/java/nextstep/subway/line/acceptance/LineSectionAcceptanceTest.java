@@ -11,19 +11,23 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.DynamicTest;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineRestAssured.지하철_노선_조회_요청;
 import static nextstep.subway.line.acceptance.LineSectionRestAssured.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.line.acceptance.LineSectionRestAssured.지하철_노선에_지하철역_제외_요청;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 @DisplayName("지하철 구간 관련 기능")
 public class LineSectionAcceptanceTest extends AcceptanceTest {
@@ -117,6 +121,37 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
+    @DisplayName("지하철 구간을 관리")
+    @TestFactory
+    Stream<DynamicTest> manageLineSectionScenario() {
+        return Stream.of(
+                dynamicTest("지하철 구간 등록", () -> {
+                    // when
+                    ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+                    // then
+                    지하철_노선에_지하철역_등록됨(response);
+
+                }),
+                dynamicTest("지하철 노선에 등록된 역 목록 조회 확인", () -> {
+                    // when
+                    ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
+                    // then
+                    지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 양재역, 광교역));
+                }),
+                dynamicTest("지하철 구간 삭제", () -> {
+                    // when
+                    ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
+                    // then
+                    지하철_노선에_지하철역_제외됨(removeResponse);
+                }),
+                dynamicTest("지하철 구간 삭제 요청 반영 확인", () -> {
+                    // when
+                    ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
+                    // then
+                    지하철_노선에_지하철역_순서_정렬됨(response, Arrays.asList(강남역, 광교역));
+                })
+        );
+    }
 
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
@@ -129,11 +164,11 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     public static void 지하철_노선에_지하철역_순서_정렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
         LineResponse line = response.as(LineResponse.class);
         List<Long> stationIds = line.getStations().stream()
-                .map(it -> it.getId())
+                .map(station -> station.getId())
                 .collect(Collectors.toList());
 
         List<Long> expectedStationIds = expectedStations.stream()
-                .map(it -> it.getId())
+                .map(station -> station.getId())
                 .collect(Collectors.toList());
 
         assertThat(stationIds).containsExactlyElementsOf(expectedStationIds);
