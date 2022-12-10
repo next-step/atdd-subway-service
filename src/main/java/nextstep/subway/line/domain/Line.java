@@ -22,7 +22,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
-    private Fare fare = new Fare(0);
+    private Fare surcharge = new Fare(0);
 
     @Embedded
     private Sections sections = new Sections();
@@ -37,25 +37,31 @@ public class Line extends BaseEntity {
 
     public Line(String name, String color, Station upStation, Station downStation,
         int distance) {
-        this(name, color, upStation, downStation, new Distance(distance));
+        this(name, color, upStation, downStation, new Distance(distance), new Fare(0));
     }
 
     public Line(String name, String color, Station upStation, Station downStation,
-        Distance distance) {
+        int distance, Fare surcharge) {
+        this(name, color, upStation, downStation, new Distance(distance), surcharge);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation,
+        Distance distance, Fare surcharge) {
         this.name = name;
         this.color = color;
         this.sections = Sections.of(new Section(this, upStation, downStation, distance));
+        this.surcharge = surcharge;
     }
 
     public Line(String name, String color, Fare fare) {
         this(name, color, Collections.emptyList(), fare);
     }
 
-    public Line(String name, String color, List<Section> sections, Fare fare) {
+    public Line(String name, String color, List<Section> sections, Fare surcharge) {
         this.name = name;
         this.color = color;
         this.sections = new Sections(sections);
-        this.fare = fare;
+        this.surcharge = surcharge;
     }
 
     public void update(Line line) {
@@ -83,8 +89,8 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    public Fare getFare() {
-        return fare;
+    public Fare getSurcharge() {
+        return surcharge;
     }
 
     public void addSection(Station upStation, Station downStation, Distance distance) {

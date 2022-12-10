@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
@@ -51,11 +52,16 @@ public class LineRequest {
         return distance;
     }
 
+    public int getSurcharge() {
+        return surcharge;
+    }
+
     public Line toLine() {
         return new Line(name, color);
     }
 
     public Line toLine(final Station upStation, final Station downStation) {
-        return new Line(name, color, upStation, downStation, new Distance(distance));
+        return new Line(name, color, upStation, downStation, new Distance(distance),
+            new Fare(surcharge));
     }
 }

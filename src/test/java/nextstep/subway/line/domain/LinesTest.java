@@ -18,7 +18,7 @@ class LinesTest {
         ));
 
         //when
-        Fare fare = lines.maxFares();
+        Fare fare = lines.maxSurcharge();
 
         //then
         assertThat(fare).isEqualTo(new Fare(1000));
