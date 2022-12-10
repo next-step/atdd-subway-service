@@ -56,7 +56,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
 
     }
 
-    private static ExtractableResponse<Response> 토큰_발급(TokenRequest tokenRequest) {
+    public static ExtractableResponse<Response> 토큰_발급(TokenRequest tokenRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -64,5 +64,9 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .when().post(BASE_URL)
                 .then().log().all()
                 .extract();
+    }
+
+    public static void 토큰_발급됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }
 }
