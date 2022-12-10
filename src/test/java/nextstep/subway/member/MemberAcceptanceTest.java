@@ -82,10 +82,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 내정보_수정_요청(tokenResponse.getAccessToken(), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
         내정보_수정_성공함(response);
-
-        ExtractableResponse<Response> updatedResponse = 내정보_요청(tokenResponse.getAccessToken());
-
-        내정보_요청_성공함(updatedResponse, NEW_EMAIL);
     }
 
     @DisplayName("유효하지 않은 토큰으로 나의 정보를 수정하면 실패함")
