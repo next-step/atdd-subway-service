@@ -54,4 +54,11 @@ public class Fare implements Comparable<Fare> {
     public int hashCode() {
         return Objects.hash(fare);
     }
+
+    @Override
+    public String toString() {
+        return "Fare{" +
+            "fare=" + fare +
+            '}';
+    }
 }
