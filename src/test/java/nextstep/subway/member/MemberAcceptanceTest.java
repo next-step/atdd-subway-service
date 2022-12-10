@@ -60,23 +60,25 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
         // when
         ExtractableResponse<Response> generateTokenResponse = 토큰_발급(new TokenRequest(EMAIL, PASSWORD));
-        String token = generateTokenResponse.as(TokenResponse.class).getAccessToken();
         // then
         토큰_발급됨(generateTokenResponse);
 
         // when
-        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(token);
-        LoginMember loginMember = findResponse.as(LoginMember.class);
+        ExtractableResponse<Response> findResponse = 내_정보_조회_요청(generateTokenResponse.as(TokenResponse.class).getAccessToken());
         // then
         내_정보_조회됨(findResponse, EMAIL, AGE);
 
         // when
-        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(token, loginMember, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+        ExtractableResponse<Response> updateResponse = 내_정보_수정_요청(generateTokenResponse.as(TokenResponse.class).getAccessToken(), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
         // then
+        ExtractableResponse<Response> newGenerateTokenResponse = 토큰_발급(new TokenRequest(NEW_EMAIL, NEW_PASSWORD));
+        ExtractableResponse<Response> test = 내_정보_조회_요청(newGenerateTokenResponse.as(TokenResponse.class).getAccessToken());
+        내_정보_조회됨(test, NEW_EMAIL, NEW_AGE);
         내_정보_수정됨(updateResponse);
 
         // when
-        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(token, loginMember);
+        ExtractableResponse<Response> deleteResponse = 내_정보_삭제_요청(newGenerateTokenResponse.as(TokenResponse.class).getAccessToken());
         // then
         내_정보_삭제됨(deleteResponse);
     }
@@ -136,22 +138,23 @@ public class MemberAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_정보_수정_요청(String token, LoginMember loginMember, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 내_정보_수정_요청(String token, String email, String password, Integer age) {
+        MemberRequest memberRequest = new MemberRequest(email, password, age);
+        System.out.println(email);
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
-                .body(loginMember)
+                .body(memberRequest)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().put("/members/me")
                 .then().log().all()
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 내_정보_삭제_요청(String token, LoginMember loginMember) {
+    public static ExtractableResponse<Response> 내_정보_삭제_요청(String token) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(token)
-                .body(loginMember)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .when().delete("/members/me")
                 .then().log().all()
