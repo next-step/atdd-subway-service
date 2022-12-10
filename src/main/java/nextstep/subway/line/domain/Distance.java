@@ -17,12 +17,16 @@ public class Distance {
 
     private int distance;
 
-    public Distance(int distance) {
-        this.distance = distance;
-    }
-
     public Distance() {
 
+    }
+
+    public Distance(double distance) {
+        this((int) distance);
+    }
+
+    public Distance(int distance) {
+        this.distance = distance;
     }
 
     public Distance minus(final Distance newDistance) {

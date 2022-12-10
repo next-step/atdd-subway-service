@@ -1,11 +1,8 @@
 package nextstep.subway.path.domain;
 
-import static nextstep.subway.fare.domain.Fare.FREE;
-
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.exception.WrongPathException;
@@ -49,28 +46,7 @@ public class PathFinder {
                 new SectionWeightEdge(section)));
     }
 
-    public List<Station> shortestPath(Station from, Station to) {
-        GraphPath<Station, SectionWeightEdge> path = getPath(from, to);
-
-        return path.getVertexList();
-    }
-
-    public int getShortestDistance(Station from, Station to) {
-        GraphPath<Station, SectionWeightEdge> path = getPath(from, to);
-
-        return (int) path.getWeight();
-    }
-
-    public Fare getFare(Station from, Station to) {
-        GraphPath<Station, SectionWeightEdge> path = getPath(from, to);
-        return path.getEdgeList()
-            .stream()
-            .map(SectionWeightEdge::getSurcharge)
-            .max(Fare::compareTo)
-            .orElse(FREE);
-    }
-
-    private GraphPath<Station, SectionWeightEdge> getPath(
+    public Path getPath(
         Station from, Station to) {
         validateArgument(from, to);
 
@@ -79,7 +55,7 @@ public class PathFinder {
 
         GraphPath<Station, SectionWeightEdge> path = dijkstraShortestPath.getPath(from, to);
         validatePath(path);
-        return path;
+        return new Path(path);
     }
 
     private void validateArgument(Station from, Station to) {
