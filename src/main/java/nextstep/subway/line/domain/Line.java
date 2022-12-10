@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Entity
 public class Line extends BaseEntity {
@@ -71,20 +72,34 @@ public class Line extends BaseEntity {
 
     public void removeStation(Station station) {
         checkValidationForEmptySections();
-
-        removeStation(getSectionUpLineStation(station), getSectionDownLineStation(station));
+        addIfRemovePositionMiddleSection(station);
+        removeStation(getRemoveSections(station));
     }
 
-    private void removeStation(Optional<Section> upLineStation, Optional<Section> downLineStation) {
+    private void addIfRemovePositionMiddleSection(Station station) {
+        Optional<Section> upLineStation = getSectionUpLineStation(station);
+        Optional<Section> downLineStation = getSectionDownLineStation(station);
+
         if (upLineStation.isPresent() && downLineStation.isPresent()) {
             Section newUpLineStation = upLineStation.get();
             Section newDownLineStation = downLineStation.get();
             int newDistance = newUpLineStation.getDistance() + newDownLineStation.getDistance();
             this.sections.add(new Section(this, newUpLineStation.getUpStation(), newDownLineStation.getDownStation(), newDistance));
         }
+    }
 
-        upLineStation.ifPresent(it -> this.sections.remove(it));
-        downLineStation.ifPresent(it -> this.sections.remove(it));
+    private List getRemoveSections(Station station) {
+        return Arrays.asList(getSectionUpLineStation(station), getSectionDownLineStation(station))
+                .stream()
+                .filter(section -> !section.isPresent())
+                .map(section -> section.get())
+                .collect(Collectors.toList());
+    }
+
+    private void removeStation(List<Section> removeSections) {
+        for (Section removeSection : removeSections) {
+            this.sections.remove(removeSection);
+        }
     }
 
     private Optional<Section> getSectionUpLineStation(Station station) {
