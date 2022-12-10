@@ -4,7 +4,7 @@ import java.util.Objects;
 import javax.persistence.Embeddable;
 
 @Embeddable
-public class Fare {
+public class Fare implements Comparable<Fare> {
 
     public static final Fare DEFAULT_FARE = new Fare(1250);
 
@@ -15,6 +15,11 @@ public class Fare {
 
     public Fare(int fare) {
         this.fare = fare;
+    }
+
+    @Override
+    public int compareTo(Fare otherFare) {
+        return Integer.compare(this.fare, otherFare.fare);
     }
 
     public Fare plus(Fare other) {
