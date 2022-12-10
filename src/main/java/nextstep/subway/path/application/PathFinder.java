@@ -2,10 +2,10 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class PathFinder {
         try {
             GraphPath path = createShortestPath(lines).getPath(source, target);
             checkNotNull(path);
-            return new Path(path.getVertexList(), (int) path.getWeight());
+            return new Path(path.getVertexList(), (int) path.getWeight(), path.getEdgeList());
         } catch (IllegalArgumentException e) {
             throw new IllegalArgumentException("출발역과 도착역이 노선에 포함되어 있지 않습니다.");
         }
@@ -37,13 +37,13 @@ public class PathFinder {
     }
 
     private DijkstraShortestPath createShortestPath(List<Line> lines) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph(DefaultWeightedEdge.class);
+        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
         addStation(graph, lines);
         addDistance(graph, lines);
         return new DijkstraShortestPath(graph);
     }
 
-    private void addStation(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Line> lines) {
+    private void addStation(WeightedMultigraph<Station, SectionEdge> graph, List<Line> lines) {
         lines.stream()
             .map(line -> line.getStations())
             .flatMap(Collection::stream)
@@ -51,12 +51,14 @@ public class PathFinder {
             .forEach(graph::addVertex);
     }
 
-    private void addDistance(WeightedMultigraph<Station, DefaultWeightedEdge> graph, List<Line> lines) {
+    private void addDistance(WeightedMultigraph<Station, SectionEdge> graph, List<Line> lines) {
         lines.stream()
             .map(line -> line.getSections().getSections())
             .flatMap(Collection::stream)
-            .forEach(section ->
-                graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance().getDistance())
-            );
+            .forEach(section -> {
+                SectionEdge edge = new SectionEdge(section);
+                graph.addEdge((Station) edge.getSource(), (Station) edge.getTarget(), edge);
+                graph.setEdgeWeight(edge, edge.getWeight());
+            });
     }
 }
