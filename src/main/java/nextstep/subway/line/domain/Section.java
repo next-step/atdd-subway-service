@@ -68,6 +68,14 @@ public class Section {
         this.distance -= newDistance;
     }
 
+    public boolean isSameDownStation(Station station) {
+        return this.downStation.isSameStation(station);
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return this.upStation.isSameStation(station);
+    }
+
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");

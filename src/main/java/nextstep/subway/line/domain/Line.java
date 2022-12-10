@@ -104,13 +104,13 @@ public class Line extends BaseEntity {
 
     private Optional<Section> getSectionUpLineStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getDownStation() == station)
+                .filter(it -> it.isSameDownStation(station))
                 .findFirst();
     }
 
     private Optional<Section> getSectionDownLineStation(Station station) {
         return this.sections.stream()
-                .filter(it -> it.getUpStation() == station)
+                .filter(it -> it.isSameUpStation(station))
                 .findFirst();
     }
 

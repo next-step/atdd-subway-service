@@ -37,6 +37,10 @@ public class Station extends BaseEntity {
                 Objects.equals(name, station.name);
     }
 
+    public boolean isSameStation(Station station) {
+        return this.equals(station);
+    }
+
     @Override
     public int hashCode() {
         return Objects.hash(id, name);
