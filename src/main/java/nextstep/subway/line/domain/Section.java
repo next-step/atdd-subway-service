@@ -9,9 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Entity
 public class Section implements Comparable<Section> {
@@ -88,8 +87,8 @@ public class Section implements Comparable<Section> {
         return this.distance.plus(distance);
     }
 
-    public void putEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        graph.setEdgeWeight(graph.addEdge(upStation, downStation), distance.distance());
+    public Fare getFare() {
+        return line.getFare();
     }
 
     @Override

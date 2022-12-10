@@ -13,8 +13,6 @@ import nextstep.subway.line.exception.InvalidRemoveException;
 import nextstep.subway.line.exception.NoRelateStationException;
 import nextstep.subway.line.exception.SectionAlreadyExistException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -41,6 +39,10 @@ public class Sections {
         stations.add(findFirstStation());
         stations.addAll(downStationsInOrder());
         return stations;
+    }
+
+    public List<Section> getSections() {
+        return sections;
     }
 
     public void add(Line line, Station upStation, Station downStation, Distance distance) {
@@ -136,11 +138,6 @@ public class Sections {
             .filter(it -> it.getDownStation() == station)
             .findFirst();
     }
-
-    public void putEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.forEach(section -> section.putEdgeWeight(graph));
-    }
-
 
     public boolean contains(Section section) {
         return sections.contains(section);

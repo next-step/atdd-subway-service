@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
@@ -27,7 +28,10 @@ public class PathService {
             .orElseThrow(() -> new NoSuchElementException("도착역 정보 없음"));
 
         PathFinder pathFinder = new PathFinder(lineRepository.findAll());
-        return PathResponse.from(pathFinder.shortestPath(sourceStation, targetStation),
-            pathFinder.getShortestDistance(sourceStation, targetStation));
+
+        List<Station> stations = pathFinder.shortestPath(sourceStation, targetStation);
+        int shortestDistance = pathFinder.getShortestDistance(sourceStation, targetStation);
+
+        return PathResponse.from(stations, shortestDistance);
     }
 }
