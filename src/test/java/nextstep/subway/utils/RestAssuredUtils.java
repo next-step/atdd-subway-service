@@ -26,6 +26,15 @@ public class RestAssuredUtils {
 			.then().log().all();
 	}
 
+	public static ValidatableResponse get(final String url, final String accessToken) {
+		return requestSpecification
+			.when()
+			.auth().oauth2(accessToken)
+			.get(url)
+			.then().log().all();
+	}
+
+
 	public static <T> ValidatableResponse post(final String url, final T request) {
 		return requestSpecification
 			.body(request)
