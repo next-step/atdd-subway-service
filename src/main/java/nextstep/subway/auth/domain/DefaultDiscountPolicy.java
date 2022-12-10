@@ -4,6 +4,6 @@ public class DefaultDiscountPolicy extends DiscountPolicy {
 
     @Override
     public Money getCharge() {
-        return defaultCharge;
+        return defaultCharge.getCharge();
     }
 }

@@ -5,7 +5,7 @@ import nextstep.subway.line.domain.Distance;
 
 public abstract class ExtraChargePolicy {
 
-    protected final Money extraUnit = Money.from(100);
+    protected final PathMoney extraUnit = PathMoney.from(Money.from(100));
     protected Distance distance;
 
     public abstract Money getExtraCharge();

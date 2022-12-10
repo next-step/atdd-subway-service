@@ -25,7 +25,7 @@ public class Line extends BaseEntity {
     private SectionLineUp sectionLineUp = new SectionLineUp();
 
     @Embedded
-    private Money extraCharge;
+    private LineMoney extraCharge;
 
     public Line() {
     }
@@ -42,7 +42,7 @@ public class Line extends BaseEntity {
     }
 
     public Line(String name, String color, Station upStation, Station downStation, Distance distance,
-            Money extraCharge) {
+            LineMoney extraCharge) {
         this(name, color, upStation, downStation, distance);
         this.extraCharge = extraCharge;
     }
@@ -81,6 +81,6 @@ public class Line extends BaseEntity {
     }
 
     public Money getExtraCharge() {
-        return extraCharge;
+        return extraCharge.getMoney();
     }
 }

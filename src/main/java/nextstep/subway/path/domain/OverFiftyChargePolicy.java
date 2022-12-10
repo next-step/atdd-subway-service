@@ -13,6 +13,7 @@ public class OverFiftyChargePolicy extends ExtraChargePolicy {
 
     @Override
     public Money getExtraCharge() {
-        return extraUnit.mul(distance.countPerSize(PER_EIGHT));
+        return extraUnit.mul(distance.countPerSize(PER_EIGHT))
+                .getCharge();
     }
 }

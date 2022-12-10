@@ -49,7 +49,7 @@ public class Money {
         return Money.from(this.amount - (this.amount * rate));
     }
 
-    public Money mul(double target) {
+    public Money mul(int target) {
         return Money.from(this.amount * target);
     }
 

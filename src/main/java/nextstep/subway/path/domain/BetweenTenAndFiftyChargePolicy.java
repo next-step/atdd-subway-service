@@ -13,6 +13,7 @@ public class BetweenTenAndFiftyChargePolicy extends ExtraChargePolicy {
 
     @Override
     public Money getExtraCharge() {
-        return extraUnit.mul(distance.countPerSize(PER_FIVE));
+        return extraUnit.mul(distance.countPerSize(PER_FIVE))
+                .getCharge();
     }
 }
