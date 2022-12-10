@@ -10,13 +10,13 @@ public class SectionWeightEdge extends DefaultWeightedEdge {
     private Station source;
     private Station target;
     private double weight;
-    private Fare fare;
+    private Fare surcharge;
 
     public SectionWeightEdge(Section section) {
         this.source = section.getUpStation();
         this.target = section.getDownStation();
         this.weight = section.getDistance().distance();
-        this.fare = section.getFare();
+        this.surcharge = section.getSurcharge();
     }
 
     @Override
@@ -32,5 +32,9 @@ public class SectionWeightEdge extends DefaultWeightedEdge {
     @Override
     protected double getWeight() {
         return weight;
+    }
+
+    public Fare getSurcharge() {
+        return surcharge;
     }
 }

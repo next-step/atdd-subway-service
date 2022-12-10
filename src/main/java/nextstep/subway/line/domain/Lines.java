@@ -11,9 +11,9 @@ public class Lines {
         this.lines = lines;
     }
 
-    public Fare maxFares() {
+    public Fare maxSurcharge() {
         return lines.stream()
-            .map(Line::getFare)
+            .map(Line::getSurcharge)
             .max(Fare::compareTo)
             .orElse(new Fare(0));
     }

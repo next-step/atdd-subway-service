@@ -87,8 +87,8 @@ public class Section implements Comparable<Section> {
         return this.distance.plus(distance);
     }
 
-    public Fare getFare() {
-        return line.getFare();
+    public Fare getSurcharge() {
+        return line.getSurcharge();
     }
 
     @Override
