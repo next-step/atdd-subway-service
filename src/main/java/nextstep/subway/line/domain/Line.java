@@ -8,6 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -19,6 +20,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    @Embedded
+    private Fare fare = new Fare(0);
 
     @Embedded
     private Sections sections = new Sections();
@@ -43,10 +46,11 @@ public class Line extends BaseEntity {
         this.sections = Sections.of(new Section(this, upStation, downStation, distance));
     }
 
-    public Line(String name, String color, List<Section> sections) {
+    public Line(String name, String color, List<Section> sections, Fare fare) {
         this.name = name;
         this.color = color;
         this.sections = new Sections(sections);
+        this.fare = fare;
     }
 
     public void update(Line line) {
@@ -74,11 +78,19 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public Fare getFare() {
+        return fare;
+    }
+
     public void addSection(Station upStation, Station downStation, Distance distance) {
         sections.add(this, upStation, downStation, distance);
     }
 
     public void removeStation(Station station) {
         sections.remove(this, station);
+    }
+
+    public boolean contains(Section section) {
+        return sections.contains(section);
     }
 }

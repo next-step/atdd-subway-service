@@ -1,12 +1,17 @@
 package nextstep.subway.fare.domain;
 
 import java.util.Objects;
+import javax.persistence.Embeddable;
 
+@Embeddable
 public class Fare {
 
     public static final Fare DEFAULT_FARE = new Fare(1250);
 
-    private final int fare;
+    private int fare;
+
+    protected Fare() {
+    }
 
     public Fare(int fare) {
         this.fare = fare;
