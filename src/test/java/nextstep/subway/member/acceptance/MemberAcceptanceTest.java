@@ -46,20 +46,21 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 	@Test
 	void manageMyInfo() {
 		회원_생성을_요청(EMAIL, PASSWORD, AGE);
-		String 사용자_토큰 = 로그인_완료되어_토큰_발급(EMAIL, PASSWORD);
+		String 사용자 = 로그인_완료되어_토큰_발급(EMAIL, PASSWORD);
 
 		// when
-		ExtractableResponse<Response> 내_정보_조회_요청 = 내_정보_조회_요청(사용자_토큰);
+		ExtractableResponse<Response> 내_정보_조회_요청 = 내_정보_조회_요청(사용자);
 		// then
 		내_정보_조회됨(내_정보_조회_요청, EMAIL, AGE);
 
 		// when
-		ExtractableResponse<Response> 내_정보_수정_요청 = 내_정보_수정_요청(사용자_토큰, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+		ExtractableResponse<Response> 내_정보_수정_요청 = 내_정보_수정_요청(사용자, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+		String 변경된_사용자 = 로그인_완료되어_토큰_발급(NEW_EMAIL, NEW_PASSWORD);
 		// then
-		내_정보_수정됨(내_정보_수정_요청, 사용자_토큰, NEW_EMAIL, NEW_AGE);
+		내_정보_수정됨(내_정보_수정_요청, 변경된_사용자, NEW_EMAIL, NEW_AGE);
 
 		// when
-		ExtractableResponse<Response> 내_정보_삭제_요청 = 내_정보_삭제_요청(사용자_토큰);
+		ExtractableResponse<Response> 내_정보_삭제_요청 = 내_정보_삭제_요청(변경된_사용자);
 		// then
 		내_정보_삭제됨(내_정보_삭제_요청);
 	}

@@ -28,8 +28,8 @@ public class RestAssuredUtils {
 
 	public static ValidatableResponse get(final String url, final String accessToken) {
 		return requestSpecification
-			.when()
 			.auth().oauth2(accessToken)
+			.when()
 			.get(url)
 			.then().log().all();
 	}
