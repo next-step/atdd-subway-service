@@ -3,6 +3,7 @@ package nextstep.subway.path.domain;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.line.exception.WrongPathException;
@@ -56,6 +57,15 @@ public class PathFinder {
         GraphPath<Station, SectionWeightEdge> path = getPath(from, to);
 
         return (int) path.getWeight();
+    }
+
+    public Fare getFare(Station from, Station to) {
+        GraphPath<Station, SectionWeightEdge> path = getPath(from, to);
+        return path.getEdgeList()
+            .stream()
+            .map(SectionWeightEdge::getSurcharge)
+            .max(Fare::compareTo)
+            .orElse(new Fare(0));
     }
 
     private GraphPath<Station, SectionWeightEdge> getPath(
