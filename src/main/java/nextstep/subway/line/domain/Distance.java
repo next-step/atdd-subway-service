@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.fare.domain.Fare.FREE;
+
 import java.util.Objects;
 import javax.persistence.Embeddable;
 import nextstep.subway.fare.domain.Fare;
@@ -45,7 +47,7 @@ public class Distance {
             return new Fare(calculateFare(additionalDistance, MIDDLE_DISTANCE_CHARGE_RANGE));
         }
 
-        return new Fare(0);
+        return FREE;
     }
 
     private int calculateFare(int additionalDistance, int additionalFare) {

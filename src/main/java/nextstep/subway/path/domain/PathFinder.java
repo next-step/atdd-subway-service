@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.fare.domain.Fare.FREE;
+
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -65,7 +67,7 @@ public class PathFinder {
             .stream()
             .map(SectionWeightEdge::getSurcharge)
             .max(Fare::compareTo)
-            .orElse(new Fare(0));
+            .orElse(FREE);
     }
 
     private GraphPath<Station, SectionWeightEdge> getPath(

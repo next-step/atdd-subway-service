@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.fare.domain.Fare.FREE;
+
 import java.util.Collections;
 import java.util.List;
 import javax.persistence.Column;
@@ -22,7 +24,7 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
     @Embedded
-    private Fare surcharge = new Fare(0);
+    private Fare surcharge = FREE;
 
     @Embedded
     private Sections sections = new Sections();
@@ -37,7 +39,7 @@ public class Line extends BaseEntity {
 
     public Line(String name, String color, Station upStation, Station downStation,
         int distance) {
-        this(name, color, upStation, downStation, new Distance(distance), new Fare(0));
+        this(name, color, upStation, downStation, new Distance(distance), FREE);
     }
 
     public Line(String name, String color, Station upStation, Station downStation,

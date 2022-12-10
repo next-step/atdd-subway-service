@@ -4,6 +4,7 @@ import static nextstep.subway.fare.domain.AgeFarePolicy.ADULT;
 import static nextstep.subway.fare.domain.AgeFarePolicy.CHILD;
 import static nextstep.subway.fare.domain.AgeFarePolicy.INFANT;
 import static nextstep.subway.fare.domain.AgeFarePolicy.TEENAGER;
+import static nextstep.subway.fare.domain.Fare.FREE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
@@ -34,7 +35,7 @@ class AgeFarePolicyTest {
         Fare adultFare = ADULT.discount(new Fare(1250));
 
         //then
-        assertThat(infantFare).isEqualTo(new Fare(0));
+        assertThat(infantFare).isEqualTo(FREE);
         assertThat(childFare).isEqualTo(new Fare(450));
         assertThat(teenagerFare).isEqualTo(new Fare(720));
         assertThat(adultFare).isEqualTo(new Fare(1250));
