@@ -57,13 +57,15 @@ public class SectionsTest {
         sections.add(section2);
         sections.add(section3);
         // then
-        assertThat(sections.asList()).hasSize(3);
-        assertThat(sections.asList().get(1).findUpStationName()).isEqualTo("강남역");
-        assertThat(sections.asList().get(1).findDownStationName()).isEqualTo("낙성대역");
-        assertThat(sections.asList().get(2).findUpStationName()).isEqualTo("낙성대역");
-        assertThat(sections.asList().get(2).findDownStationName()).isEqualTo("대림역");
-        assertThat(sections.asList().get(0).findUpStationName()).isEqualTo("대림역");
-        assertThat(sections.asList().get(0).findDownStationName()).isEqualTo("신도림역");
+        assertAll(() -> {
+            assertThat(sections.asList()).hasSize(3);
+            assertThat(sections.asList().get(1).findUpStationName()).isEqualTo("강남역");
+            assertThat(sections.asList().get(1).findDownStationName()).isEqualTo("낙성대역");
+            assertThat(sections.asList().get(2).findUpStationName()).isEqualTo("낙성대역");
+            assertThat(sections.asList().get(2).findDownStationName()).isEqualTo("대림역");
+            assertThat(sections.asList().get(0).findUpStationName()).isEqualTo("대림역");
+            assertThat(sections.asList().get(0).findDownStationName()).isEqualTo("신도림역");
+        });
     }
 
     @DisplayName("section 추가 시 상하행역이 기존 Section과 모두 동일하면 예외 발생")
@@ -86,12 +88,33 @@ public class SectionsTest {
 
         //then
         assertAll(() -> {
-            assertThat(actual.size()).isEqualTo(5);
+            assertThat(actual).hasSize(5);
             assertThat(actual.get(0)).isEqualTo(stationA);
             assertThat(actual.get(1)).isEqualTo(stationB);
             assertThat(actual.get(2)).isEqualTo(stationC);
             assertThat(actual.get(3)).isEqualTo(stationD);
             assertThat(actual.get(4)).isEqualTo(stationE);
+        });
+    }
+
+    @DisplayName("station 삭제 시 해당 구간 삭제 확인")
+    @Test
+    void removeStation() {
+        // when
+        sections.removeStation(stationD);
+        List<Station> actual = sections.getSortedStations();
+
+        for (Station station : actual) {
+            System.out.println("station: " + station.getName());
+        }
+
+        // then
+        assertAll(() -> {
+            assertThat(actual).hasSize(4);
+            assertThat(actual.get(0)).isEqualTo(stationA);
+            assertThat(actual.get(1)).isEqualTo(stationB);
+            assertThat(actual.get(2)).isEqualTo(stationC);
+            assertThat(actual.get(3)).isEqualTo(stationE);
         });
     }
 
