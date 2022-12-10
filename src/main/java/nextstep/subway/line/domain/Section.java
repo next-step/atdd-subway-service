@@ -3,6 +3,8 @@ package nextstep.subway.line.domain;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import java.util.Arrays;
+import java.util.List;
 
 @Entity
 public class Section {
@@ -25,6 +27,12 @@ public class Section {
     private int distance;
 
     public Section() {
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -68,5 +76,66 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void addStations(List<Station> stations) {
+        stations.add(upStation);
+        stations.add(downStation);
+    }
+
+    public void addNextStation(List<Station> stations) {
+        stations.add(downStation);
+    }
+
+    public boolean isEqualUpStationNewSectionDownStation(Section section) {
+        return upStation.equals(section.getDownStation());
+    }
+
+    public boolean isEqualDownStationNewSectionUpStation(Section section) {
+        return downStation.equals(section.getUpStation());
+    }
+
+    public String findUpStationName() {
+        return upStation.getName();
+    }
+
+    public String findDownStationName() {
+        return downStation.getName();
+    }
+
+    public void belongLine(Line line) {
+        this.line = line;
+    }
+
+    public List<Station> toStations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return this.downStation.equals(station);
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return this.upStation.equals(station);
+    }
+
+    public long getUpStationId() {
+        return upStation.getId();
+    }
+
+    public long getDownStationId() {
+        return downStation.getId();
+    }
+
+    public boolean isSameSection(Section section) {
+        return isSameUpStation(section.getUpStation()) && isSameUpStation(section.getDownStation());
+    }
+
+    public boolean isSameUpStation(Section section) {
+        return upStation.equals(section.getUpStation());
+    }
+
+    public boolean isSameDownStation(Section section) {
+        return downStation.equals(section.getDownStation());
     }
 }
