@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.line.domain.Distance;
+
 public class Fare {
     public static final FareStage defaultFareStage = new FareStage(0, 1250, 10);
     public static final FareStage firstFareStage = new FareStage(10, 100, 5);
@@ -34,7 +36,7 @@ public class Fare {
             / firstFareStage.getPerDistance() * firstFareStage.farePerDistance;
     }
 
-    public int get() {
+    public int getValue() {
         return fare;
     }
 
@@ -79,11 +81,11 @@ public class Fare {
         }
 
         public boolean in(Distance distance) {
-            return this.fromDistance < distance.get();
+            return this.fromDistance < distance.getValue();
         }
 
         public int calculateOverFare(Distance distance) {
-            int calculatedDistance = distance.get() - this.fromDistance;
+            int calculatedDistance = distance.getValue() - this.fromDistance;
             return (int)((Math.ceil((calculatedDistance - 1) / this.perDistance) + 1)
                 * this.farePerDistance);
         }

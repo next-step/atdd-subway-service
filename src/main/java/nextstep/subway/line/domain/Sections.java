@@ -55,7 +55,7 @@ public class Sections {
     private void addWhenMiddleStationRemove(Section upLineStation, Section downLineStation) {
         Station newUpStation = downLineStation.getUpStation();
         Station newDownStation = upLineStation.getDownStation();
-        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        Distance newDistance = upLineStation.getDistance().plus(downLineStation.getDistance());
         this.sections.add(new Section(upLineStation.getLine(), newUpStation, newDownStation, newDistance));
     }
 

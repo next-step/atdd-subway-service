@@ -2,7 +2,7 @@ package nextstep.subway.path.dto;
 
 import java.util.List;
 
-import nextstep.subway.path.domain.Distance;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.domain.Fare;
 import nextstep.subway.station.domain.Station;
 

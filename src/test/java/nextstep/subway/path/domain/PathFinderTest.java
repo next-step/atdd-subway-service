@@ -11,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.Path;
@@ -48,10 +49,10 @@ class PathFinderTest {
         이호선 = new Line("이호선", "green");
         삼호선 = new Line("삼호선", "orange");
 
-        모든구간 = new ArrayList<>(Arrays.asList(new Section(신분당선, 강남역, 양재역, 10),
-            new Section(이호선, 교대역, 강남역, 10),
-            new Section(삼호선, 교대역, 남부터미널역, 3),
-            new Section(삼호선, 남부터미널역, 양재역, 2)
+        모든구간 = new ArrayList<>(Arrays.asList(new Section(신분당선, 강남역, 양재역, new Distance(10)),
+            new Section(이호선, 교대역, 강남역, new Distance(10)),
+            new Section(삼호선, 교대역, 남부터미널역, new Distance(3)),
+            new Section(삼호선, 남부터미널역, 양재역, new Distance(2))
         ));
 
         pathFinder = new PathFinder(new StationGraph(모든구간));
@@ -106,7 +107,7 @@ class PathFinderTest {
         Station 혜화역 = new Station(5L, "혜화역");
         Station 이수역 = new Station(6L, "숙대입구역");
         Line 사호선 = new Line("사호선", "blue");
-        모든구간.add(new Section(사호선, 이수역, 혜화역, 10));
+        모든구간.add(new Section(사호선, 이수역, 혜화역, new Distance(10)));
         pathFinder = new PathFinder(new StationGraph(모든구간));
 
         // when/then

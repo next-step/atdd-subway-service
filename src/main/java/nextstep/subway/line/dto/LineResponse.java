@@ -11,6 +11,7 @@ public class LineResponse {
     private Long id;
     private String name;
     private String color;
+    private Integer additionalFee;
     private List<StationResponse> stations;
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
@@ -18,17 +19,20 @@ public class LineResponse {
     public LineResponse() {
     }
 
-    public LineResponse(Long id, String name, String color, List<StationResponse> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    public LineResponse(Long id, String name, String color, Integer additionalFee, List<StationResponse> stations,
+        LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
+        this.additionalFee = additionalFee;
         this.stations = stations;
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
     }
 
     public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(),
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getAdditionalFee().get(), stations,
+            line.getCreatedDate(),
             line.getModifiedDate());
     }
 
@@ -36,7 +40,8 @@ public class LineResponse {
         List<StationResponse> stations = line.getStations().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(),
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), line.getAdditionalFee().get(), stations,
+            line.getCreatedDate(),
             line.getModifiedDate());
     }
 
@@ -62,5 +67,9 @@ public class LineResponse {
 
     public LocalDateTime getModifiedDate() {
         return modifiedDate;
+    }
+
+    public Integer getAdditionalFee() {
+        return additionalFee;
     }
 }

@@ -40,7 +40,7 @@ class SectionsTest {
     @Test
     void getStations2() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 5));
+        sections.add(new Section(line, upStation, downStation, new Distance(5)));
 
         List<Station> stations = sections.getStations();
 
@@ -52,9 +52,9 @@ class SectionsTest {
     @Test
     void addSection1() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 5));
+        sections.add(new Section(line, upStation, downStation, new Distance(5)));
 
-        sections.add(new Section(line, upStation, middleStation, 3));
+        sections.add(new Section(line, upStation, middleStation, new Distance(3)));
 
         assertThat(sections.getStations()).hasSize(3);
         assertThat(sections.getStations().stream().map(Station::getName).collect(Collectors.toList())).containsExactly(
@@ -65,9 +65,9 @@ class SectionsTest {
     @Test
     void addSection2() {
         Sections sections = new Sections();
-        sections.add(new Section(line, middleStation, downStation, 5));
+        sections.add(new Section(line, middleStation, downStation, new Distance(5)));
 
-        sections.add(new Section(line, upStation, middleStation, 3));
+        sections.add(new Section(line, upStation, middleStation, new Distance(3)));
 
         assertThat(sections.getStations()).hasSize(3);
         assertThat(sections.getStations().stream().map(Station::getName).collect(Collectors.toList())).containsExactly(
@@ -78,9 +78,9 @@ class SectionsTest {
     @Test
     void addSection3() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, middleStation, 5));
+        sections.add(new Section(line, upStation, middleStation, new Distance(5)));
 
-        sections.add(new Section(line, middleStation, downStation, 3));
+        sections.add(new Section(line, middleStation, downStation, new Distance(3)));
 
         assertThat(sections.getStations()).hasSize(3);
         assertThat(sections.getStations().stream().map(Station::getName).collect(Collectors.toList())).containsExactly(
@@ -91,9 +91,9 @@ class SectionsTest {
     @Test
     void addSection4() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 5));
+        sections.add(new Section(line, upStation, downStation, new Distance(5)));
 
-        assertThatThrownBy(() -> sections.add(new Section(line, downStation, upStation, 3)))
+        assertThatThrownBy(() -> sections.add(new Section(line, downStation, upStation, new Distance(3))))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("이미 등록된 구간 입니다.");
     }
@@ -102,9 +102,10 @@ class SectionsTest {
     @Test
     void addSection5() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 5));
+        sections.add(new Section(line, upStation, downStation, new Distance(5)));
 
-        assertThatThrownBy(() -> sections.add(new Section(line, new Station("방배역"), new Station("잠실역"), 3)))
+        assertThatThrownBy(
+            () -> sections.add(new Section(line, new Station("방배역"), new Station("잠실역"), new Distance(3))))
             .isInstanceOf(RuntimeException.class)
             .hasMessage("등록할 수 없는 구간 입니다.");
     }
@@ -113,8 +114,8 @@ class SectionsTest {
     @Test
     void removeSection1() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 5));
-        sections.add(new Section(line, upStation, middleStation, 3));
+        sections.add(new Section(line, upStation, downStation, new Distance(5)));
+        sections.add(new Section(line, upStation, middleStation, new Distance(3)));
 
         sections.remove(middleStation);
 
@@ -127,8 +128,8 @@ class SectionsTest {
     @Test
     void removeSection2() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 5));
-        sections.add(new Section(line, upStation, middleStation, 3));
+        sections.add(new Section(line, upStation, downStation, new Distance(5)));
+        sections.add(new Section(line, upStation, middleStation, new Distance(3)));
 
         sections.remove(upStation);
 
@@ -141,8 +142,8 @@ class SectionsTest {
     @Test
     void removeSection3() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 5));
-        sections.add(new Section(line, upStation, middleStation, 3));
+        sections.add(new Section(line, upStation, downStation, new Distance(5)));
+        sections.add(new Section(line, upStation, middleStation, new Distance(3)));
 
         sections.remove(downStation);
 
@@ -155,7 +156,7 @@ class SectionsTest {
     @Test
     void removeSection4() {
         Sections sections = new Sections();
-        sections.add(new Section(line, upStation, downStation, 5));
+        sections.add(new Section(line, upStation, downStation, new Distance(5)));
 
         assertThatThrownBy(() -> sections.remove(upStation))
             .isInstanceOf(RuntimeException.class);

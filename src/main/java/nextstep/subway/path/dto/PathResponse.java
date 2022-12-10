@@ -18,8 +18,8 @@ public class PathResponse {
     }
 
     public static PathResponse of(Path path) {
-        return new PathResponse(PathStationResponse.of(path.getStations()), path.getDistance().get(),
-            path.getFare().get());
+        return new PathResponse(PathStationResponse.of(path.getStations()), path.getDistance().getValue(),
+            path.getFare().getValue());
     }
 
     public List<PathStationResponse> getStations() {

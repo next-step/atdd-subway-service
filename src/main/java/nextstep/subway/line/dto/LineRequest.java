@@ -1,5 +1,6 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.line.domain.AdditionalFee;
 import nextstep.subway.line.domain.Line;
 
 public class LineRequest {
@@ -8,6 +9,7 @@ public class LineRequest {
     private Long upStationId;
     private Long downStationId;
     private int distance;
+    private int additionalFee;
 
     public LineRequest() {
     }
@@ -18,6 +20,12 @@ public class LineRequest {
         this.upStationId = upStationId;
         this.downStationId = downStationId;
         this.distance = distance;
+    }
+
+    public LineRequest(String name, String color, Long upStationId, Long downStationId, int distance,
+        int additionalFee) {
+        this(name, color, upStationId, downStationId, distance);
+        this.additionalFee = additionalFee;
     }
 
     public String getName() {
@@ -40,7 +48,11 @@ public class LineRequest {
         return distance;
     }
 
+    public int getAdditionalFee() {
+        return additionalFee;
+    }
+
     public Line toLine() {
-        return new Line(name, color);
+        return new Line(name, color, new AdditionalFee(additionalFee));
     }
 }

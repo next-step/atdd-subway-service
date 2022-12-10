@@ -7,6 +7,7 @@ import java.util.Objects;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.path.dto.Path;
 import nextstep.subway.station.domain.Station;
 

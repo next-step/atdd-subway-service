@@ -24,7 +24,8 @@ public class StationGraph {
     private void addVertexAndEdgeWeight(Section section) {
         graph.addVertex(section.getUpStation());
         graph.addVertex(section.getDownStation());
-        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+        graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()),
+            section.getDistance().getValue());
     }
 
     public boolean doesNotContain(Station station) {
