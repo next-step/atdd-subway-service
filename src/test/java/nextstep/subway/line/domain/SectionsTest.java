@@ -49,12 +49,21 @@ public class SectionsTest {
     void addSection() {
         // given
         Sections sections = new Sections();
-        Section section = new Section(new Station("강남역"), new Station("보라매역"), 10);
+        Section section = new Section(new Station("강남역"), new Station("신도림역"), 10);
+        Section section2 = new Section(new Station("강남역"), new Station("낙성대역"), 2);
+        Section section3= new Section(new Station("낙성대역"), new Station("대림역"), 2);
         // when
         sections.add(section);
+        sections.add(section2);
+        sections.add(section3);
         // then
-        assertThat(sections.asList().get(0).findUpStationName()).isEqualTo("강남역");
-        assertThat(sections.asList().get(0).findDownStationName()).isEqualTo("보라매역");
+        assertThat(sections.asList()).hasSize(3);
+        assertThat(sections.asList().get(1).findUpStationName()).isEqualTo("강남역");
+        assertThat(sections.asList().get(1).findDownStationName()).isEqualTo("낙성대역");
+        assertThat(sections.asList().get(2).findUpStationName()).isEqualTo("낙성대역");
+        assertThat(sections.asList().get(2).findDownStationName()).isEqualTo("대림역");
+        assertThat(sections.asList().get(0).findUpStationName()).isEqualTo("대림역");
+        assertThat(sections.asList().get(0).findDownStationName()).isEqualTo("신도림역");
     }
 
     @DisplayName("section 추가 시 상하행역이 기존 Section과 모두 동일하면 예외 발생")
