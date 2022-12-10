@@ -8,13 +8,16 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
 @Embeddable
 public class Sections {
 
-    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL)
+    private final static int ZERO = 0;
+
+    @OneToMany(mappedBy = "line", cascade = CascadeType.ALL, orphanRemoval = true)
     @ReadOnlyProperty
     private final List<Section> sections;
 
@@ -28,10 +31,18 @@ public class Sections {
 
     public void add(Section section) {
         checkValidation(section);
+        if (isSameUpStation(section.getUpStation())) {
+            updateStationWhenUpStationSame(section);
+        }
+        if (isSameDownStation(section.getDownStation())) {
+            updateStationWhenDownStationSame(section);
+        }
         sections.add(section);
     }
 
     private void checkValidation(Section section) {
+        checkDuplicatedBothStation(section);
+        checkNoMatchSection(section);
         checkDuplicatedSection(section);
     }
 
@@ -41,8 +52,27 @@ public class Sections {
         }
     }
 
+    private void checkNoMatchSection(Section section) {
+        if (isSectionsNotEmpty() && isNoMatchStation(section)) {
+            throw new IllegalArgumentException(ErrorCode.NO_MATCH_STATION_EXCEPTION.getErrorMessage());
+        }
+    }
+
+    private void checkDuplicatedBothStation(Section section) {
+        if (isSectionsSizeZero()) {
+            return;
+        }
+        List<Station> allStation = getSortedStations();
+        if (allStation.contains(section.getUpStation()) && allStation.contains(section.getDownStation())) {
+            throw new IllegalArgumentException(ErrorCode.BOTH_STATION_ALREADY_EXIST_EXCEPTION.getErrorMessage());
+        }
+    }
+
 
     public List<Station> getSortedStations() {
+        if (this.sections.size() <= ZERO) {
+            return new ArrayList<>();
+        }
         List<Station> sortedStations = new ArrayList<>();
         Section firstSection = findFirstSection();
         firstSection.addStations(sortedStations);
@@ -60,7 +90,7 @@ public class Sections {
     }
 
     private Section findFirstSection() {
-        Section firstSection = sections.get(0);
+        Section firstSection = sections.get(ZERO);
         Optional<Section> previousSection = findPreviousSection(firstSection);
         while (previousSection.isPresent()) {
             firstSection = previousSection.get();
@@ -81,7 +111,81 @@ public class Sections {
                 .findFirst();
     }
 
+    private void updateStationWhenDownStationSame(Section section) {
+        this.sections.stream()
+                .filter(section::isSameDownStation)
+                .findFirst()
+                .ifPresent(eachStation -> eachStation.updateDownStation(section.getUpStation(), section.getDistance()));
+    }
+
+    private void updateStationWhenUpStationSame(Section section) {
+        this.sections.stream()
+                .filter(section::isSameUpStation)
+                .findFirst()
+                .ifPresent(eachStation -> eachStation.updateUpStation(section.getDownStation(), section.getDistance()));
+    }
+
+    private boolean isNoMatchStation(Section newSection) {
+        return sections.stream()
+                .map(Section::toStations)
+                .flatMap(Collection::stream)
+                .distinct()
+                .noneMatch(station -> newSection.isSameDownStation(station) ||
+                        newSection.isSameUpStation(station));
+    }
+
+    private boolean isSameUpStation(Station station) {
+        List<Station> stations = getSortedStations();
+        return stations.stream().anyMatch(eachStation -> eachStation.getId() == station.getId());
+    }
+
+    private boolean isSameDownStation(Station station) {
+        List<Station> stations = getSortedStations();
+        return stations.stream().anyMatch(eachStation -> eachStation.getId() == station.getId());
+    }
+
     public List<Section> asList() {
         return this.sections;
     }
+
+    private boolean isSectionsNotEmpty() {
+        return this.sections.size() > ZERO;
+    }
+
+    private boolean isSectionsSizeZero() {
+        return this.sections.size() == ZERO;
+    }
+
+    public void removeStation(Line line, Station deleteStation) {
+        if (this.sections.size() <= ZERO) {
+            throw new IllegalArgumentException(ErrorCode.CAN_NOT_DELETE_STATION_CAUSE_SECTIONS_SIZE_EXCEPTION.getErrorMessage() + sections.size());
+        }
+        Section sectionOfMatchedUpStation = findSectionWhenMatchUpStation(deleteStation);
+        Section sectionOfMatchedDownStation = findSectionWhenMatchDownStation(deleteStation);
+        this.sections.add(new Section(line
+                , sectionOfMatchedUpStation.getUpStation()
+                , sectionOfMatchedDownStation.getDownStation()
+                , sectionOfMatchedUpStation.getDistance() + sectionOfMatchedDownStation.getDistance()));
+        removeSection(sectionOfMatchedUpStation);
+        removeSection(sectionOfMatchedDownStation);
+    }
+
+    private void removeSection(Section deleteSection) {
+        this.sections.remove(deleteSection);
+    }
+
+    private Section findSectionWhenMatchUpStation(Station station) {
+        return this.sections.stream()
+                .filter(eachStation -> eachStation.getUpStationId() == station.getId())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_SUCH_STATION_IN_THE_LINE_EXCEPTION.getErrorMessage()));
+    }
+
+    private Section findSectionWhenMatchDownStation(Station station) {
+        return this.sections.stream()
+                .filter(eachStation -> eachStation.getDownStationId() == station.getId())
+                .findFirst()
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_SUCH_STATION_IN_THE_LINE_EXCEPTION.getErrorMessage()));
+    }
+
 }
