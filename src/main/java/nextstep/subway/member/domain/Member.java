@@ -2,6 +2,7 @@ package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.Favorites;
 import org.apache.commons.lang3.StringUtils;
@@ -37,12 +38,23 @@ public class Member extends BaseEntity {
 
     public void checkPassword(String password) {
         if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException();
+            throw new AuthorizationException(ErrorMessage.UNAUTHORIZED.getMessage());
         }
     }
 
     public void addFavorite(Favorite favorite) {
         this.favorites.add(favorite);
+    }
+
+    public void removeFavorite(Favorite favorite) {
+        validateOwner(favorite);
+        this.favorites.remove(favorite);
+    }
+
+    private void validateOwner(Favorite favorite) {
+        if (!this.equals(favorite.getMember())) {
+            throw new IllegalArgumentException(ErrorMessage.CANNOT_REMOVE_FAVORITE.getMessage());
+        }
     }
 
     public Long getId() {

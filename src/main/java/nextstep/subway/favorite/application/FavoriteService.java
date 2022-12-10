@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -42,10 +43,19 @@ public class FavoriteService {
         return FavoriteResponse.from(favorite);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long memberId) {
         Member member = memberService.findMemberById(memberId);
         return member.getFavorites().values().stream()
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(Long memberId, Long favoriteId) {
+        Member member = memberService.findMemberById(memberId);
+        Favorite favorite = favoriteRepository.findById(favoriteId)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND_PATH.getMessage()));
+
+        member.removeFavorite(favorite);
     }
 }

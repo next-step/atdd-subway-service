@@ -12,7 +12,7 @@ import java.util.Objects;
 
 @Embeddable
 public class Favorites {
-    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST)
+    @OneToMany(mappedBy = "member", cascade = CascadeType.PERSIST, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
     public void add(Favorite favorite) {
@@ -24,6 +24,10 @@ public class Favorites {
         if (favorites.contains(favorite)) {
             throw new IllegalArgumentException(ErrorMessage.DUPLICATED_FAVORITE.getMessage());
         }
+    }
+
+    public void remove(Favorite favorite) {
+        this.favorites.remove(favorite);
     }
 
     public List<Favorite> values() {

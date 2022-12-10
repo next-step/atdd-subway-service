@@ -72,4 +72,18 @@ public class FavoritesTest {
         // then
         assertThat(favorites.values()).hasSize(2);
     }
+
+    @DisplayName("즐겨찾기 삭제")
+    @Test
+    void 즐겨찾기_삭제() {
+        // given
+        Favorites favorites = new Favorites();
+        favorites.add(첫번째_즐겨찾기);
+        favorites.add(두번째_즐겨찾기);
+        favorites.remove(첫번째_즐겨찾기);
+
+        // then
+        assertThat(favorites.values()).hasSize(1);
+        assertThat(favorites.values()).containsExactly(두번째_즐겨찾기);
+    }
 }
