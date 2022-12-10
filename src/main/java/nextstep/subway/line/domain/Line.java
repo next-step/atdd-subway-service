@@ -166,17 +166,21 @@ public class Line extends BaseEntity {
     private Station findSectionFirstStation() {
         Station downStation = this.getSections().get(0).getUpStation();
         while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getDownStation().equals(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+            findSectionFirstStation(downStation);
         }
 
         return downStation;
+    }
+
+    private void findSectionFirstStation(Station downStation) {
+        Station finalDownStation = downStation;
+        Optional<Section> nextLineStation = this.getSections().stream()
+                .filter(it -> it.getDownStation().equals(finalDownStation))
+                .findFirst();
+        if (!nextLineStation.isPresent()) {
+            return;
+        }
+        downStation = nextLineStation.get().getUpStation();
     }
 
     // 리팩토링 메소드
@@ -196,15 +200,19 @@ public class Line extends BaseEntity {
 
     private void settingDownStations(Station downStation, List<Station> stations) {
         while (downStation != null) {
-            Station finalDownStation =  downStation;
-            Optional<Section> nextLineStation = this.getSections().stream()
-                    .filter(it -> it.getUpStation().equals(finalDownStation))
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
+            findNextDownStataion(downStation);
             stations.add(downStation);
         }
+    }
+
+    private void findNextDownStataion(Station downStation) {
+        Station finalDownStation =  downStation;
+        Optional<Section> nextLineStation = this.getSections().stream()
+                .filter(it -> it.getUpStation().equals(finalDownStation))
+                .findFirst();
+        if (!nextLineStation.isPresent()) {
+            return;
+        }
+        downStation = nextLineStation.get().getDownStation();
     }
 }
