@@ -56,21 +56,17 @@ public class Line extends BaseEntity {
         return sections;
     }
 
-    private void addSection(Section section) {
-        this.sections.add(section);
-    }
+    public void addSection(Section section) {
+        checkValidationForDuplicationSection(section.getUpStation(), section.getDownStation());
+        checkValidationForValidSection(section.getUpStation(), section.getDownStation(), getStations());
 
-    public void addSection(Station upStation, Station downStation, int distance) {
-        checkValidationForDuplicationSection(upStation, downStation);
-        checkValidationForValidSection(upStation, downStation, getStations());
-
-        if (isEmptySection(upStation, downStation, distance)) {
-            this.sections.add(new Section(this, upStation, downStation, distance));
+        if (isEmptySection(section.getUpStation(), section.getDownStation(), section.getDistance())) {
+            this.sections.add(new Section(this, section.getUpStation(), section.getDownStation(), section.getDistance()));
             return;
         }
 
-        updateSectionStation(upStation, downStation, distance);
-        addSection(new Section(this, upStation, downStation, distance));
+        updateSectionStation(section.getUpStation(), section.getDownStation(), section.getDistance());
+        this.sections.add(section);
     }
 
     public void removeStation(Station station) {
