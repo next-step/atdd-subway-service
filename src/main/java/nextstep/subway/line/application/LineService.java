@@ -1,7 +1,9 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.auth.domain.Money;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineMoney;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.dto.LineRequest;
@@ -34,7 +36,7 @@ public class LineService {
         final Station downStation = stationService.findById(request.getDownStationId());
         final Line persistLine = lineRepository.save(
                 new Line(request.getName(), request.getColor(), upStation, downStation,
-                        new Distance(request.getDistance())));
+                        new Distance(request.getDistance()), LineMoney.from(Money.from(request.getExtraCharge()))));
         return LineResponse.of(persistLine);
     }
 

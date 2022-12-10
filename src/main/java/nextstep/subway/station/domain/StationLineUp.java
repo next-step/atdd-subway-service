@@ -21,4 +21,8 @@ public class StationLineUp {
     public boolean unKnownStation(Station station) {
         return this.stationList.stream().noneMatch(it -> it.equals(station));
     }
+
+    public boolean hasStation(Station station) {
+        return this.stationList.stream().anyMatch(it -> it.equals(station));
+    }
 }

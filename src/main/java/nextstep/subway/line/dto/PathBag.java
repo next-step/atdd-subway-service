@@ -1,7 +1,9 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.auth.domain.Money;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationLineUp;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -38,5 +40,16 @@ public class PathBag {
 
     public List<SectionPath> getSectionPaths() {
         return sectionPaths;
+    }
+
+    public Money getMaxLineCharge(StationLineUp stationLineUp) {
+        return Money.from(sectionPaths.stream()
+                .filter(it ->
+                        stationLineUp.hasStation(it.getUpStation()) &&
+                                stationLineUp.hasStation(it.getDownStation()))
+                .map(SectionPath::getExtraCharge)
+                .mapToDouble(Money::getAmount)
+                .max()
+                .orElseThrow(() -> new IllegalStateException("추가 운임 값이 없습니다")));
     }
 }

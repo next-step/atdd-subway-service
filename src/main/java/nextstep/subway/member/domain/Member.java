@@ -6,6 +6,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,7 +23,8 @@ public class Member extends BaseEntity {
     private Long id;
     private String email;
     private String password;
-    private Integer age;
+    @Embedded
+    private Age age;
 
     @OneToMany(mappedBy = "member", orphanRemoval = true, fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Set<Favorite> favoriteList = new LinkedHashSet<>();
@@ -30,7 +32,7 @@ public class Member extends BaseEntity {
     public Member() {
     }
 
-    public Member(String email, String password, Integer age) {
+    public Member(String email, String password, Age age) {
         this.email = email;
         this.password = password;
         this.age = age;
@@ -48,8 +50,12 @@ public class Member extends BaseEntity {
         return password;
     }
 
-    public Integer getAge() {
+    public Age getAge() {
         return age;
+    }
+
+    public Integer getAgeIntValue() {
+        return age.getAge();
     }
 
     public void update(Member member) {

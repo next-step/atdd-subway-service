@@ -1,8 +1,9 @@
 package nextstep.subway.path.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -22,9 +23,10 @@ public class PathController {
 
     @GetMapping
     public ResponseEntity<PathResponse> getPath(
+            @AuthenticationPrincipal(required = false) LoginMember loginMember,
             @RequestParam("source") long sourceId,
             @RequestParam("target") long targetId) {
-        return ResponseEntity.ok(pathService.getShortestPath(sourceId, targetId));
+        return ResponseEntity.ok(pathService.getShortestPath(loginMember, sourceId, targetId));
     }
 
     @ExceptionHandler({ IllegalArgumentException.class })

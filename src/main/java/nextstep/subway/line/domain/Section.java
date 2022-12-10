@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.auth.domain.Money;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -62,7 +63,7 @@ public class Section {
         return distance;
     }
 
-    public int getDistanceInt() {
+    public double getDistanceDouble() {
         return distance.getDistance();
     }
 
@@ -88,5 +89,9 @@ public class Section {
     public static Section mergeSection(Section upSection, Section downSection) {
         return new Section(upSection.line, upSection.getUpStation(), downSection.downStation,
                 upSection.distance.plus(downSection.distance));
+    }
+
+    public Money getExtraCharge() {
+        return this.line.getExtraCharge();
     }
 }

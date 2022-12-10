@@ -1,9 +1,10 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.acceptance.StationAcceptanceTest;
@@ -15,14 +16,23 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.인증_성공;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.인증_요청;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.인증_요청_데이터_생성;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.회원_생성됨;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.path.acceptance.PathChargeAcceptanceTest.요금_조회_성공;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
 
     private static final long NOT_EXIST_ID = 9999;
+    public static final String EMAIL = "email@email.com";
+    public static final String PASSWORD = "password";
+    public static final int AGE = 20;
 
     StationResponse 강남역;
     StationResponse 양재역;
@@ -36,6 +46,8 @@ class PathAcceptanceTest extends AcceptanceTest {
     LineResponse 이호선;
     LineResponse 삼호선;
     LineResponse 구호선;
+
+    String token;
 
     /**
      * [] = 지하철역, ----XXXX----> = 노선 구간,  (n) = 거리
@@ -69,6 +81,18 @@ class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(이호선, 종합운동장역, 삼전역, 1);
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 삼전역, 100);
         지하철_노선에_지하철역_등록_요청(구호선, 종합운동장역, 삼전역, 1);
+
+        // when
+        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        // then
+        회원_생성됨(createResponse);
+
+        // when
+        ExtractableResponse<Response> authResponse = 인증_요청(인증_요청_데이터_생성(EMAIL, PASSWORD));
+        // then
+        인증_성공(authResponse);
+
+        token = authResponse.as(TokenResponse.class).getAccessToken();
     }
 
     @DisplayName("최단 경로 조회 성공")
@@ -89,8 +113,13 @@ class PathAcceptanceTest extends AcceptanceTest {
         //when:
         PathResponse response = 최단_경로_조회_요청(강남역, 삼전역).as(PathResponse.class);
         //then:
-        assertThat(response.getStationNames()).containsSequence(
-                강남역.getName(), 양재역.getName(), 종합운동장역.getName(), 삼전역.getName());
+        최단_경로_조회됨(response, new String[]{강남역.getName(), 양재역.getName(), 종합운동장역.getName(), 삼전역.getName()});
+        //일반 사용자 기본요금(1250) + 노선 추가금액(0) + 이동거리(10km 이하 : 0) = 1250원
+        요금_조회_성공(response,1250);
+    }
+
+    private void 최단_경로_조회됨(PathResponse response, String[] stationNames) {
+        assertThat(response.stationNames()).containsSequence(stationNames);
     }
 
     @DisplayName("최단 경로 조회 실패 - 출발역과 도착역이 같은 경우")
@@ -158,13 +187,23 @@ class PathAcceptanceTest extends AcceptanceTest {
         assertThat(최단_경로_조회_요청(강남역, 김포공항역).statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
+    public static ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse 출발역, StationResponse 도착역, String token) {
+        return 최단_경로_조회_요청(출발역.getId(), 도착역.getId(), token);
+
+    }
+
     private ExtractableResponse<Response> 최단_경로_조회_요청(StationResponse 출발역, StationResponse 도착역) {
         return 최단_경로_조회_요청(출발역.getId(), 도착역.getId());
 
     }
 
     private ExtractableResponse<Response> 최단_경로_조회_요청(long 출발역_id, long 도착역_id) {
+        return 최단_경로_조회_요청(출발역_id, 도착역_id, token);
+    }
+
+    private static ExtractableResponse<Response> 최단_경로_조회_요청(long 출발역_id, long 도착역_id, String token) {
         return RestAssured.given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .param("source", 출발역_id)
                 .param("target", 도착역_id)
