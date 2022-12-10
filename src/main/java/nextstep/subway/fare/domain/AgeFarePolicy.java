@@ -2,7 +2,7 @@ package nextstep.subway.fare.domain;
 
 import java.util.function.Function;
 
-public enum FareAge {
+public enum AgeFarePolicy {
     INFANT(0, fare -> new Fare(0)),
     CHILD(6, fare -> fare.minus(new Fare(350)).discount(50)),
     TEENAGER(13, fare -> fare.minus(new Fare(350)).discount(20)),
@@ -11,13 +11,13 @@ public enum FareAge {
     private int startAge;
     private Function<Fare, Fare> discount;
 
-    FareAge(int startAge,
+    AgeFarePolicy(int startAge,
         Function<Fare, Fare> discount) {
         this.startAge = startAge;
         this.discount = discount;
     }
 
-    public static FareAge from(final int age) {
+    public static AgeFarePolicy from(final int age) {
         if (age >= ADULT.startAge) {
             return ADULT;
         }

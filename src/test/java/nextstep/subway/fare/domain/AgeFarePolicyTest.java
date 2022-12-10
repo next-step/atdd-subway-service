@@ -1,22 +1,22 @@
 package nextstep.subway.fare.domain;
 
-import static nextstep.subway.fare.domain.FareAge.ADULT;
-import static nextstep.subway.fare.domain.FareAge.CHILD;
-import static nextstep.subway.fare.domain.FareAge.INFANT;
-import static nextstep.subway.fare.domain.FareAge.TEENAGER;
+import static nextstep.subway.fare.domain.AgeFarePolicy.ADULT;
+import static nextstep.subway.fare.domain.AgeFarePolicy.CHILD;
+import static nextstep.subway.fare.domain.AgeFarePolicy.INFANT;
+import static nextstep.subway.fare.domain.AgeFarePolicy.TEENAGER;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.jupiter.api.Test;
 
-class FareAgeTest {
+class AgeFarePolicyTest {
 
     @Test
     void 나이대별_생성_테스트() {
         //when
-        FareAge infant = FareAge.from(1);
-        FareAge child = FareAge.from(6);
-        FareAge teenager = FareAge.from(13);
-        FareAge adult = FareAge.from(20);
+        AgeFarePolicy infant = AgeFarePolicy.from(1);
+        AgeFarePolicy child = AgeFarePolicy.from(6);
+        AgeFarePolicy teenager = AgeFarePolicy.from(13);
+        AgeFarePolicy adult = AgeFarePolicy.from(20);
 
         //then
         assertThat(infant).isEqualTo(INFANT);

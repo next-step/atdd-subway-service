@@ -21,7 +21,7 @@ public class Fare implements Comparable<Fare> {
     public static Fare of(Distance distance, int age, Fare lineFare) {
         Fare fare = DEFAULT_FARE.plus(distance.additionalFareByDistance())
             .plus(lineFare);
-        return FareAge.from(age).discount(fare);
+        return AgeFarePolicy.from(age).discount(fare);
     }
 
     @Override
