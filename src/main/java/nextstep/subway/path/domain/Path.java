@@ -45,7 +45,7 @@ public class Path {
 
     private int applyAdditionalFare() {
         return lines.stream()
-            .map(Line::getFare)
+            .map(Line::getSurcharge)
             .max(Integer::compareTo)
             .orElse(0);
     }
