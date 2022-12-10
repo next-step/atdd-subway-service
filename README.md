@@ -145,9 +145,9 @@ licensed.
 
 #### 기존 피드백 사항 정리
 
-* 즐겨찾기 인수테스트 Fixture 분리.
-* AuthorizationException 에 "아이디 또는 패스워드가 일치하지 않습니다" 구체적 메시지 전달
-* AuthorizationException Handling not found -> forbidden 변경
+* 즐겨찾기 인수테스트 Fixture 분리. [완료]
+* AuthorizationException 에 "아이디 또는 패스워드가 일치하지 않습니다" 구체적 메시지 전달 [완료]
+* AuthorizationException Handling not found -> forbidden 변경 [완료]
 
 #### 요구사항
 

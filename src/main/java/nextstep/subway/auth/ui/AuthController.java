@@ -4,6 +4,7 @@ import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -27,6 +28,6 @@ public class AuthController {
 
     @ExceptionHandler(AuthorizationException.class)
     public ResponseEntity<Void> authorizedExceptionHandler(AuthorizationException exception) {
-        return ResponseEntity.notFound().build();
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
 }
