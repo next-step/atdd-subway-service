@@ -4,13 +4,16 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인을_시도한다;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -20,6 +23,14 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+
+    public static final String wrongToken = "wrongToken";
+
+    @BeforeEach
+    void setUpLogin() {
+        super.setUp();
+        회원_생성됨(회원_생성을_요청(EMAIL, PASSWORD, AGE));
+    }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -45,10 +56,62 @@ public class MemberAcceptanceTest extends AcceptanceTest {
         회원_삭제됨(deleteResponse);
     }
 
-    @DisplayName("나의 정보를 관리한다.")
+    @DisplayName("나의 정보를 요청한다")
     @Test
-    void manageMyInfo() {
+    void findMyInfo() {
+        TokenResponse tokenResponse = 로그인을_시도한다(EMAIL, PASSWORD).as(TokenResponse.class);
 
+        ExtractableResponse<Response> 내정보 = 내정보_요청(tokenResponse.getAccessToken());
+
+        내정보_요청_성공함(내정보, EMAIL);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 나의 정보를 요청하면 실패함")
+    @Test
+    void failToFindMyInfo() {
+        ExtractableResponse<Response> 내정보 = 내정보_요청(wrongToken);
+
+        내정보_요청_실패함(내정보);
+    }
+
+    @DisplayName("나의 정보를 수정한다")
+    @Test
+    void updateMyInfo() {
+        TokenResponse tokenResponse = 로그인을_시도한다(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        ExtractableResponse<Response> response = 내정보_수정_요청(tokenResponse.getAccessToken(), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        내정보_수정_성공함(response);
+
+        ExtractableResponse<Response> updatedResponse = 내정보_요청(tokenResponse.getAccessToken());
+
+        내정보_요청_성공함(updatedResponse, NEW_EMAIL);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 나의 정보를 수정하면 실패함")
+    @Test
+    void failToUpdateMyInfo() {
+        ExtractableResponse<Response> response = 내정보_수정_요청(wrongToken, NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
+
+        내정보_요청_실패함(response);
+    }
+
+    @DisplayName("나의 정보를 삭제한다")
+    @Test
+    void deleteMyInfo() {
+        TokenResponse tokenResponse = 로그인을_시도한다(EMAIL, PASSWORD).as(TokenResponse.class);
+
+        ExtractableResponse<Response> response = 내정보_삭제_요청(tokenResponse.getAccessToken());
+
+        내정보_삭제_성공함(response);
+    }
+
+    @DisplayName("유효하지 않은 토큰으로 나의 정보를 삭제하면 실패함")
+    @Test
+    void failToDeleteMyInfo() {
+        ExtractableResponse<Response> response = 내정보_삭제_요청(wrongToken);
+
+        내정보_요청_실패함(response);
     }
 
     public static ExtractableResponse<Response> 내정보_요청(String accessToken) {
@@ -68,6 +131,33 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 내정보_요청_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
+
+    public static ExtractableResponse<Response> 내정보_수정_요청(String accessToken, String newEmail, String newPassword, int newAge) {
+        MemberRequest memberRequest = new MemberRequest(newEmail, newPassword, newAge);
+        return RestAssured.given().log().all()
+            .contentType(MediaType.APPLICATION_JSON_VALUE)
+            .body(memberRequest)
+            .auth().oauth2(accessToken)
+            .when().put("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static ExtractableResponse<Response> 내정보_삭제_요청(String accessToken) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 내정보_수정_성공함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 내정보_삭제_성공함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
