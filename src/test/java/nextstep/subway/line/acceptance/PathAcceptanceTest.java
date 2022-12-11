@@ -1,6 +1,8 @@
 package nextstep.subway.line.acceptance;
 
 import io.restassured.RestAssured;
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
@@ -17,10 +19,13 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
@@ -125,10 +130,33 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최적경로 조회")
     void getShortestPath() {
-        // 요청 Request를 세팅하고
+        Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨();
 
         // Assert를 이용해 요청을 보내고
+        ExtractableResponse<Response> extract = 지하철역_최적경로_조회(params);
 
         // 응답값을 받는다
+        지하철노선_최적경로_응답됨(extract);
+    }
+
+    private Map 지하철노선_최적경로_조회_세팅됨() {
+        Map params = new HashMap<>();
+        params.put("source", 3);
+        params.put("target", 2);
+        return params;
+    }
+
+    private void 지하철노선_최적경로_응답됨(ExtractableResponse<Response> extract) {
+        assertThat(extract.jsonPath().getList("name").containsAll(Arrays.asList("교대역", "남부터미널역", "양재역"))).isTrue();
+    }
+
+    private ExtractableResponse<Response> 지하철역_최적경로_조회(Map<String, Integer> params) {
+        ExtractableResponse<Response> extract = RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .params(params).when().get("/paths")
+                .then().log().all()
+                .extract();
+        return extract;
     }
 }
