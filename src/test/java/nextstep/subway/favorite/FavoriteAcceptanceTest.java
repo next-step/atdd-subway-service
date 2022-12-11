@@ -121,6 +121,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     }
 
+    @DisplayName("기존에 등록된 즐겨찾기를 생성한다.")
+    @Test
+    void 중복된_즐겨찾기_등록_테스트() {
+        // given
+        FavoriteResponse 즐겨찾기1 = 즐겨찾기_생성_요청(new FavoriteRequest(당산역.getId(), 홍대입구역.getId())).as(FavoriteResponse.class);
+
+        // when
+        ExtractableResponse<Response> createRequest = 즐겨찾기_생성_요청(new FavoriteRequest(당산역.getId(), 홍대입구역.getId()));
+
+        // then
+        즐겨찾기_생성되지_않음(createRequest);
+    }
+
+    @DisplayName("출발역과 도착역이 같은 구간을 즐겨찾기 생성한다.")
+    @Test
+    void 출발역과_도착역이_같은_즐겨찾기_등록_테스트() {
+        // when
+        ExtractableResponse<Response> createRequest = 즐겨찾기_생성_요청(new FavoriteRequest(당산역.getId(), 당산역.getId()));
+
+        // then
+        즐겨찾기_생성되지_않음(createRequest);
+    }
+
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(FavoriteRequest favoriteRequest) {
         return RestAssured
                 .given().log().all()
@@ -162,5 +185,9 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 즐겨찾기_생성되지_않음(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 }
