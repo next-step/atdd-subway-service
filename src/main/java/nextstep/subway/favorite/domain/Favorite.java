@@ -47,7 +47,7 @@ public class Favorite extends BaseEntity {
     }
 
     private static void validationCheckIsSourceAndTargetSame(Station sourceStation, Station targetStation) {
-        if (sourceStation.getId().equals(targetStation.getId())) {
+        if (sourceStation.equals(targetStation)) {
             throw new NotValidDataException(NOT_CONNECT_STATION.getMessage());
         }
     }
