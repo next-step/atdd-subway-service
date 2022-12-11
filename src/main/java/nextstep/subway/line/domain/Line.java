@@ -19,6 +19,9 @@ public class Line extends BaseEntity {
     @Embedded
     private final Sections sections = new Sections();
 
+    @Embedded
+    private final ExtraFee extraFee = new ExtraFee();
+
     protected Line() {
     }
 

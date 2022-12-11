@@ -40,6 +40,6 @@ public class AuthService {
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NotFoundDataException(NOT_FOUND_MEMBER.getMessage()));
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return LoginMember.ofByLogin(member.getId(), member.getEmail(), member.getAge());
     }
 }

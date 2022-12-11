@@ -1,17 +1,30 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.member.domain.Member;
+
 public class LoginMember {
     private Long id;
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    private MemberType memberType;
+
+    private LoginMember() {
     }
 
-    public LoginMember(Long id, String email, Integer age) {
+    private LoginMember(Long id, String email, Integer age, MemberType memberType) {
         this.id = id;
         this.email = email;
         this.age = age;
+        this.memberType = memberType;
+    }
+
+    public static LoginMember ofByLogin(Long id, String email, Integer age) {
+        return new LoginMember(id, email, age, MemberType.LOGIN);
+    }
+
+    public static Object ofByNotLogin() {
+        return new LoginMember(null, null, null, MemberType.NOT_LOGIN);
     }
 
     public Long getId() {

@@ -52,7 +52,7 @@ class FavoriteServiceTest {
     private Member 유저 = new Member("test@test.com", "test", 20);
     private Favorite 즐겨찾기 = Favorite.of(신도림역, 가디역, 유저);
 
-    private LoginMember loginMember = new LoginMember(1L, "test@test.com", 20);
+    private LoginMember loginMember = LoginMember.ofByLogin(1L, "test@test.com", 20);
 
     private FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
 
