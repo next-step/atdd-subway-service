@@ -52,7 +52,7 @@ public class AuthServiceTest {
 
     @DisplayName("토큰이 주어지면 토큰의 payload에 담긴 이메일 파싱 후 일치되는 회원 정보를 반환한다")
     @Test
-    void findMemberByToken_test() {
+    void find_member_by_token() {
         // given
         given(jwtTokenProvider.validateToken(any())).willReturn(true);
         given(jwtTokenProvider.getPayload(any())).willReturn(EMAIL);

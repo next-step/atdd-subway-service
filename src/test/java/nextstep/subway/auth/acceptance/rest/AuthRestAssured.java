@@ -8,7 +8,7 @@ import org.springframework.http.MediaType;
 
 public class AuthRestAssured {
 
-    public static ExtractableResponse<Response> 토큰_발급_요청(TokenRequest request) {
+    public static ExtractableResponse<Response> 로그인_요청(TokenRequest request) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
