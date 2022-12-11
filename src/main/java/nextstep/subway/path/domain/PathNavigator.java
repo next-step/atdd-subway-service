@@ -47,6 +47,15 @@ public class PathNavigator {
 		}
 	}
 
+	public boolean isInvalidPath(Station source, Station target) {
+		try {
+			shortestPath.getPath(source, target);
+			return false;
+		} catch (IllegalArgumentException e) {
+			return true;
+		}
+	}
+
 	private void validateStations(Station source, Station target) {
 		Assert.notNull(source, "출발역이 존재하지 않습니다.");
 		Assert.notNull(target, "도착역이 존재하지 않습니다.");
