@@ -33,14 +33,7 @@ public class FavoriteService {
         Station source = stationService.findStationById(request.getSource());
         Station target = stationService.findStationById(request.getTarget());
 
-        Favorite favorite = Favorite.builder()
-                .member(member)
-                .source(source)
-                .target(target)
-                .build();
-        member.addFavorite(favorite);
-
-        return FavoriteResponse.from(favorite);
+        return FavoriteResponse.from(member.addFavorite(source, target));
     }
 
     @Transactional(readOnly = true)

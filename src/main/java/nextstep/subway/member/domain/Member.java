@@ -1,11 +1,10 @@
 package nextstep.subway.member.domain;
 
 import nextstep.subway.BaseEntity;
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.Favorites;
-import org.apache.commons.lang3.StringUtils;
+import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.Objects;
@@ -15,19 +14,21 @@ public class Member extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String email;
-    private String password;
-    private Integer age;
+    @Embedded
+    private Email email;
+    @Embedded
+    private Password password;
+    @Embedded
+    private Age age;
     @Embedded
     private Favorites favorites = new Favorites();
 
-    public Member() {
-    }
+    public Member() {}
 
     public Member(String email, String password, Integer age) {
-        this.email = email;
-        this.password = password;
-        this.age = age;
+        this.email = Email.from(email);
+        this.password = Password.from(password);
+        this.age = Age.from(age);
     }
 
     public void update(Member member) {
@@ -37,13 +38,18 @@ public class Member extends BaseEntity {
     }
 
     public void checkPassword(String password) {
-        if (!StringUtils.equals(this.password, password)) {
-            throw new AuthorizationException(ErrorMessage.UNAUTHORIZED.getMessage());
-        }
+        this.password.equalsPassword(password);
     }
 
-    public void addFavorite(Favorite favorite) {
+    public Favorite addFavorite(Station source, Station target) {
+        Favorite favorite = Favorite.builder()
+                .member(this)
+                .source(source)
+                .target(target)
+                .build();
+
         this.favorites.add(favorite);
+        return favorite;
     }
 
     public void removeFavorite(Favorite favorite) {
@@ -62,15 +68,15 @@ public class Member extends BaseEntity {
     }
 
     public String getEmail() {
-        return email;
+        return email.value();
     }
 
     public String getPassword() {
-        return password;
+        return password.value();
     }
 
     public Integer getAge() {
-        return age;
+        return age.value();
     }
 
     public Favorites getFavorites() {

@@ -8,7 +8,6 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.junit.jupiter.api.function.Executable;
 import org.springframework.http.HttpStatus;
@@ -16,7 +15,7 @@ import org.springframework.http.MediaType;
 
 import java.util.stream.Stream;
 
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
@@ -57,18 +56,31 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
     @DisplayName("Bearer Auth")
-    @Test
-    void myInfoWithBearerAuth() {
+    @TestFactory
+    Stream<DynamicTest> myInfoWithBearerAuth() {
+        return Stream.of(
+                dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
+                dynamicTest("등록한 회원으로 로그인에 성공하고 토큰을 발급받는다", 로그인_요청_성공(EMAIL, PASSWORD)),
+                dynamicTest("로그인에 성공하고 내 정보를 조회한다", 내_정보_조회_요청_성공(EMAIL, PASSWORD))
+        );
     }
 
     @DisplayName("Bearer Auth 로그인 실패")
-    @Test
-    void myInfoWithBadBearerAuth() {
+    @TestFactory
+    Stream<DynamicTest> myInfoWithBadBearerAuth() {
+        return Stream.of(
+                dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
+                dynamicTest("로그인하지 않으면 내 정보를 조회할 수 없다", 로그인_요청_실패(EMAIL, WRONG_PASSWORD))
+        );
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
-    @Test
-    void myInfoWithWrongBearerAuth() {
+    @TestFactory
+    Stream<DynamicTest> myInfoWithWrongBearerAuth() {
+        return Stream.of(
+                dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
+                dynamicTest("유효하지 않은 토큰으로 내 정보를 조회할 수 없다", 내_정보_조회_요청_실패("wrongToken"))
+        );
     }
 
     public Executable 로그인_요청_성공(String email, String password) {

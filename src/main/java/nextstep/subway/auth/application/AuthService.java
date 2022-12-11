@@ -5,6 +5,7 @@ import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.enums.ErrorMessage;
+import nextstep.subway.member.domain.Email;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -42,7 +43,7 @@ public class AuthService {
     }
 
     private Member findMemberByEmail(String email) {
-        return memberRepository.findByEmail(email)
+        return memberRepository.findByEmail(Email.from(email))
                 .orElseThrow(() -> new AuthorizationException(ErrorMessage.UNAUTHORIZED.getMessage()));
     }
 }

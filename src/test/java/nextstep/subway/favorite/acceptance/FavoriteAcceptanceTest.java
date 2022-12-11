@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.stream.Stream;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_생성_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.DynamicTest.dynamicTest;

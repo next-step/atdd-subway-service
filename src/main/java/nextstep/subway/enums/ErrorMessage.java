@@ -12,6 +12,8 @@ public enum ErrorMessage {
     UNAUTHORIZED("유효하지 않은 인증 정보입니다."),
     DUPLICATED_FAVORITE("즐겨찾기가 이미 추가되었습니다."),
     CANNOT_REMOVE_FAVORITE("즐겨찾기를 삭제할 수 없습니다."),
+    INVALID_AGE_RANGE("유효하지 않은 나이입니다."),
+    INVALID_BLANK("빈 값은 허용되지 않습니다."),
     ;
 
     private final String message;

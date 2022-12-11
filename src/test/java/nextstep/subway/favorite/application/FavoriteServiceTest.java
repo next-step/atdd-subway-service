@@ -18,8 +18,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.List;
 import java.util.Optional;
 
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -40,9 +42,29 @@ public class FavoriteServiceTest {
         favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
     }
 
-    @DisplayName("즐겨찾기를 생성하는 경우")
+    @DisplayName("즐겨찾기 추가할 사용자는 반드시 존재해야 한다.")
     @Test
-    void createFavorite() {
+    void 즐겨찾기_추가할_사용자는_반드시_존재해야_한다() {
+        // given
+        when(memberService.findMemberById(anyLong())).thenThrow(IllegalArgumentException.class);
+
+        // when, then
+        assertThatIllegalArgumentException().isThrownBy(() -> favoriteService.createFavorite(1L, FavoriteRequest.of(1L, 2L)));
+    }
+
+    @DisplayName("즐겨찾기 추가할 지하철역은 반드시 존재해야 한다.")
+    @Test
+    void 즐겨찾기_추가할_지하철역은_반드시_존재해야_한다() {
+        // given
+        when(stationService.findStationById(anyLong())).thenThrow(IllegalArgumentException.class);
+
+        // when, then
+        assertThatIllegalArgumentException().isThrownBy(() -> favoriteService.createFavorite(1L, FavoriteRequest.of(1L, 2L)));
+    }
+
+    @DisplayName("즐겨찾기를 생성한다.")
+    @Test
+    void 즐겨찾기를_생성한다() {
         // given
         when(memberService.findMemberById(1L)).thenReturn(new Member(EMAIL, PASSWORD, AGE));
         when(stationService.findStationById(1L)).thenReturn(new Station("강남역"));
@@ -56,19 +78,24 @@ public class FavoriteServiceTest {
         assertThat(favorite.getTarget().getName()).isEqualTo("양재역");
     }
 
-    @DisplayName("즐겨찾기를 조회하는 경우")
+    @DisplayName("사용자가 존재하지 않으면 즐겨찾기 목록 조회에 실패한다.")
     @Test
-    void findFavorites() {
+    void 사용자가_존재하지_않으면_즐겨찾기_목록_조회에_실패한다() {
+        // given
+        when(memberService.findMemberById(anyLong())).thenThrow(IllegalArgumentException.class);
+
+        // when, then
+        assertThatIllegalArgumentException().isThrownBy(() -> favoriteService.findFavorites(1L));
+    }
+
+    @DisplayName("사용자의 즐겨찾기 목록을 조회한다.")
+    @Test
+    void 사용자의_즐겨찾기_목록을_조회한다() {
         // given
         Station 강남역 = new Station("강남역");
         Station 양재역 = new Station("양재역");
         Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
-        Favorite 즐겨찾기 = Favorite.builder()
-                .member(사용자)
-                .source(강남역)
-                .target(양재역)
-                .build();
-        사용자.addFavorite(즐겨찾기);
+        사용자.addFavorite(강남역, 양재역);
 
         when(memberService.findMemberById(1L)).thenReturn(사용자);
 
@@ -79,19 +106,34 @@ public class FavoriteServiceTest {
         assertThat(favorites).hasSize(1);
     }
 
-    @DisplayName("즐겨찾기를 삭제하는 경우")
+    @DisplayName("사용자가 존재하지 않으면 즐겨찾기 삭제에 실패한다.")
     @Test
-    void deleteFavorite() {
+    void 사용자가_존재하지_않으면_즐겨찾기_삭제에_실패한다() {
+        // given
+        when(memberService.findMemberById(anyLong())).thenThrow(IllegalArgumentException.class);
+
+        // when, then
+        assertThatIllegalArgumentException().isThrownBy(() -> favoriteService.deleteFavorite(1L, 1L));
+    }
+
+    @DisplayName("즐겨찾기가 존재하지 않으면 즐겨찾기 삭제에 실패한다.")
+    @Test
+    void 즐겨찾기가_존재하지_않으면_즐겨찾기_삭제에_실패한다() {
+        // given
+        when(favoriteRepository.findById(anyLong())).thenThrow(IllegalArgumentException.class);
+
+        // when, then
+        assertThatIllegalArgumentException().isThrownBy(() -> favoriteService.deleteFavorite(1L, 1L));
+    }
+
+    @DisplayName("즐겨찾기 삭제에 성공한다.")
+    @Test
+    void 즐겨찾기_삭제에_성공한다() {
         // given
         Station 강남역 = new Station("강남역");
         Station 양재역 = new Station("양재역");
         Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
-        Favorite 즐겨찾기 = Favorite.builder()
-                .member(사용자)
-                .source(강남역)
-                .target(양재역)
-                .build();
-        사용자.addFavorite(즐겨찾기);
+        Favorite 즐겨찾기 = 사용자.addFavorite(강남역, 양재역);
 
         when(memberService.findMemberById(1L)).thenReturn(사용자);
         when(favoriteRepository.findById(1L)).thenReturn(Optional.of(즐겨찾기));
