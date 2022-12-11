@@ -22,8 +22,7 @@ public class PathResponse {
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
 
-        return new PathResponse(response,
-                Integer.parseInt(String.valueOf(Math.round(pathFinder.getWeight()))));
+        return new PathResponse(response, pathFinder.getDistance());
     }
 
     public List<StationResponse> getStations() {

@@ -1,5 +1,7 @@
 package nextstep.subway.station.application;
 
+import nextstep.subway.exception.NotFoundDataException;
+import nextstep.subway.exception.type.NotFoundDataExceptionType;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.SourceAndTargetStationDto;
@@ -36,7 +38,7 @@ public class StationService {
     }
 
     public Station findStationById(Long id) {
-        return stationRepository.findById(id).orElseThrow(RuntimeException::new);
+        return stationRepository.findById(id).orElseThrow(() -> new NotFoundDataException(NotFoundDataExceptionType.NOT_FOUND_STATION.getMessage()));
     }
 
     public SourceAndTargetStationDto findStationById(Long sourceId, Long targetId) {

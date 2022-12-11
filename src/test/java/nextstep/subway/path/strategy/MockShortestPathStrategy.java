@@ -14,7 +14,7 @@ public class MockShortestPathStrategy implements PathStrategy {
     }
 
     @Override
-    public PathFinder getShortPath(Station source, Station target, List<Line> lines) {
+    public PathFinder getShortPath(Station source, Station target) {
         return new PathFinder(Arrays.asList(source, target), 10);
     }
 }
