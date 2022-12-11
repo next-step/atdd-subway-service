@@ -110,3 +110,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
     When 지하철 노선에 등록된 역 목록 조회 요청
     Then 삭제한 지하철 구간이 반영된 역 목록이 조회됨
   ```
+#### Step1 회고 작성
+- 미션 요구사항뿐만 아니라, 다른 리팩토링 대상이 있으면 주도적으로 처리필요
+  - 요구사항외 이 내용도 바꿔도 될까? 라는 고민이 있으면 합당하다면 수행
+- 의미 있는 Commit 단위를 TDD 기반으로 작성 필요
+- 메서드 순서 클린코드 기반하여 작성 public / private(호출되는 순서)
