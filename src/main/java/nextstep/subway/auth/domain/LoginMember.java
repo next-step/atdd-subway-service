@@ -34,6 +34,6 @@ public class LoginMember {
         if (this.equals(GUEST)) {
             return NO_SALE_AGE;
         }
-        return AgeGroup.calculate(this.age);
+        return AgeGroup.findByAge(this.age);
     }
 }

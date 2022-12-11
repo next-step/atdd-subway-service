@@ -64,7 +64,7 @@ public class Fare {
     }
 
     public Fare applySale(AgeGroup group) {
-        return new Fare((int)((this.fare - group.getDeductFare()) * group.getSale()));
+        return new Fare(group.applySale(fare));
     }
 
     public static class FareStage {

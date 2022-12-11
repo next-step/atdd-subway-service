@@ -2,6 +2,8 @@ package nextstep.subway.line.domain;
 
 import javax.persistence.Embeddable;
 
+import nextstep.subway.line.excpetion.DistanceException;
+
 @Embeddable
 public class Distance {
     private Integer distance;
@@ -36,7 +38,7 @@ public class Distance {
 
     public Distance minus(Distance distance) {
         if (this.distance <= distance.getValue()) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new DistanceException();
         }
         return new Distance(this.getValue() - distance.getValue());
     }
