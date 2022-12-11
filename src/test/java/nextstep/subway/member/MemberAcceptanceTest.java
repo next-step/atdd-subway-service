@@ -13,7 +13,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인을_시도한다;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
@@ -59,7 +59,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 요청한다")
     @Test
     void findMyInfo() {
-        TokenResponse tokenResponse = 로그인을_시도한다(EMAIL, PASSWORD).as(TokenResponse.class);
+        TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         ExtractableResponse<Response> 내정보 = 내정보_요청(tokenResponse.getAccessToken());
 
@@ -77,7 +77,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 수정한다")
     @Test
     void updateMyInfo() {
-        TokenResponse tokenResponse = 로그인을_시도한다(EMAIL, PASSWORD).as(TokenResponse.class);
+        TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         ExtractableResponse<Response> response = 내정보_수정_요청(tokenResponse.getAccessToken(), NEW_EMAIL, NEW_PASSWORD, NEW_AGE);
 
@@ -95,7 +95,7 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     @DisplayName("나의 정보를 삭제한다")
     @Test
     void deleteMyInfo() {
-        TokenResponse tokenResponse = 로그인을_시도한다(EMAIL, PASSWORD).as(TokenResponse.class);
+        TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         ExtractableResponse<Response> response = 내정보_삭제_요청(tokenResponse.getAccessToken());
 

@@ -30,7 +30,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void login() {
 
-        ExtractableResponse<Response> response = 로그인을_시도한다(EMAIL, PASSWORD);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, PASSWORD);
 
         로그인이_성공한다(response);
     }
@@ -39,7 +39,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void loginWithWrongPassword() {
 
-        ExtractableResponse<Response> response = 로그인을_시도한다(EMAIL, wrongPassword);
+        ExtractableResponse<Response> response = 로그인_요청(EMAIL, wrongPassword);
 
         로그인이_실패한다(response);
     }
@@ -48,7 +48,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void loginWithWrongEmail() {
 
-        ExtractableResponse<Response> response = 로그인을_시도한다(wrongEmail, PASSWORD);
+        ExtractableResponse<Response> response = 로그인_요청(wrongEmail, PASSWORD);
 
         로그인이_실패한다(response);
     }
@@ -57,7 +57,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @Test
     void myInfoWithBearerAuth() {
 
-        TokenResponse tokenResponse = 로그인을_시도한다(EMAIL, PASSWORD).as(TokenResponse.class);
+        TokenResponse tokenResponse = 로그인_요청(EMAIL, PASSWORD).as(TokenResponse.class);
 
         ExtractableResponse<Response> 내정보 = 내정보_요청(tokenResponse.getAccessToken());
 
@@ -75,7 +75,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    public static ExtractableResponse<Response> 로그인을_시도한다(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
         return RestAssured
             .given().log().all()
