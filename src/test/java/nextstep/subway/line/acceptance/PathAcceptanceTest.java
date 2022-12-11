@@ -19,7 +19,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
@@ -146,11 +145,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return params;
     }
 
-    private void 지하철노선_최적경로_응답됨(ExtractableResponse<Response> extract) {
+    private static void 지하철노선_최적경로_응답됨(ExtractableResponse<Response> extract) {
         assertThat(extract.jsonPath().getList("name").containsAll(Arrays.asList("교대역", "남부터미널역", "양재역"))).isTrue();
     }
 
-    private ExtractableResponse<Response> 지하철역_최적경로_조회(Map<String, Integer> params) {
+    private static ExtractableResponse<Response> 지하철역_최적경로_조회(Map<String, Integer> params) {
         ExtractableResponse<Response> extract = RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
