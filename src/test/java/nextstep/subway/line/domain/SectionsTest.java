@@ -104,10 +104,6 @@ public class SectionsTest {
         sections.removeStation(stationD);
         List<Station> actual = sections.getSortedStations();
 
-        for (Station station : actual) {
-            System.out.println("station: " + station.getName());
-        }
-
         // then
         assertAll(() -> {
             assertThat(actual).hasSize(4);
