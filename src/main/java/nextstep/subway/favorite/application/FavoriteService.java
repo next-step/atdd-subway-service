@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.application;
 
-import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
