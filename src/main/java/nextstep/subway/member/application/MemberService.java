@@ -7,10 +7,13 @@ import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
 import org.springframework.stereotype.Service;
 
+import javax.persistence.EntityNotFoundException;
 import java.util.Objects;
 
 @Service
 public class MemberService {
+    private static final String MESSAGE_MEMBER_ENTITY_NOT_FOUND = "회원이 존재하지 않습니다";
+    private static final String MESSAGE_MEMBER_ID_IS_ILLEGAL = "회원이 존재하지 않습니다";
     private MemberRepository memberRepository;
 
     public MemberService(MemberRepository memberRepository) {
@@ -23,14 +26,17 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
-        checkIdIsNull(id);
-        Member member = memberRepository.findById(id).orElseThrow(AuthorizationException::new);
-        return MemberResponse.of(member);
+        return MemberResponse.of(findMemberEntity(id));
     }
 
-    private static void checkIdIsNull(Long id) {
+    public Member findMemberEntity(Long id) {
+        checkIdIsNull(id);
+        return memberRepository.findById(id).orElseThrow(() -> new EntityNotFoundException(MESSAGE_MEMBER_ENTITY_NOT_FOUND));
+    }
+
+    private void checkIdIsNull(Long id) {
         if (Objects.isNull(id)) {
-            throw new AuthorizationException();
+            throw new IllegalArgumentException(MESSAGE_MEMBER_ID_IS_ILLEGAL);
         }
     }
 
