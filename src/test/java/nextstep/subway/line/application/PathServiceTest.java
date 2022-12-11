@@ -85,4 +85,20 @@ class PathServiceTest {
         when(stationRepository.findAll()).thenReturn(stations);
         when(sectionRepository.findAll()).thenReturn(sections);
     }
+
+    @Test
+    @DisplayName("최적경로 조회 - 실제 객체")
+    void getShortestPathTest2() {
+        PathService pathService = new PathService(stationRepository, sectionRepository);
+
+        List<Station> stations = Mock_지하철역_등록됨();
+        List<Section> sections = Mock_구간역_등록됨();
+
+        // when
+        Mock_최소거리_조건_등록됨(stations, sections);
+        List<StationResponse> stationResponses = Mock_최소거리_조회됨(pathService);
+
+        // then
+        Mock_최소거리_검증됨(stationResponses);
+    }
 }

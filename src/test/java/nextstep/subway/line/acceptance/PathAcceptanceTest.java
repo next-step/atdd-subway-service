@@ -4,26 +4,17 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
-import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
-import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
@@ -39,12 +30,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
-
-    @Autowired
-    private StationRepository stationRepository;
-
-    @Autowired
-    private SectionRepository sectionRepository;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -74,51 +59,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return 지하철_노선_생성_요청(params).body()
                 .jsonPath()
                 .getObject(".", LineResponse.class);
-    }
-
-    @Test
-    @DisplayName("다익스트라 알고리즘 예시")
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
-        List<String> shortestPath
-                = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(3);
-    }
-
-    @Test
-    @DisplayName("테스트 - 최적경로 조회 테스트(추후 삭제)")
-    void getShortestLinePathTest() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
-        List<Station> stationAll = stationRepository.findAll();
-        List<Section> sectionAll = sectionRepository.findAll();
-
-        for (Station station : stationAll) {
-            graph.addVertex(String.valueOf(station.getName()));
-        }
-
-        for (Section section : sectionAll) {
-            graph.setEdgeWeight(graph.addEdge(section.getUpStation().getName(), section.getDownStation().getName()), section.getDistance());
-        }
-
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
-        List<String> shortestPath
-                = dijkstraShortestPath.getPath("교대역", "양재역").getVertexList();
-
-        assertThat(shortestPath.size()).isEqualTo(3);
-        assertThat(shortestPath.containsAll(Arrays.asList("교대역", "남부터미널역", "양재역"))).isTrue();
     }
 
     /**
