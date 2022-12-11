@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class SectionsTest {
+class SectionsTest {
 
     @Test
     @DisplayName("Sections 내 stations 을 조회한다.")

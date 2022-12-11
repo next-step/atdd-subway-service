@@ -51,13 +51,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public Sections getSections() {
-        return sections;
-    }
-
     public List<Station> getStations() {
-
-        //return stations;
         return sections.getStations();
     }
 
