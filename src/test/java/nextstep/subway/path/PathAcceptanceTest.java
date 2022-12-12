@@ -1,15 +1,23 @@
 package nextstep.subway.path;
 
+import io.restassured.response.ExtractableResponse;
+import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.acceptance.LineRestAssured;
 import nextstep.subway.line.acceptance.LineSectionRestAssured;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
+
+import static nextstep.subway.path.PathRestAssured.지하철_최단_경로_조회_요청;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 /**
  * Feature 지하철 경로 관련 기능
@@ -66,30 +74,40 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역 사이의 최단 경로 조회")
     @Test
     void findTheShortestPath() {
-
+        ExtractableResponse<Response> response = 지하철_최단_경로_조회_요청(교대역.getId(), 강남역.getId());
+        지하철_최단_경로_조회_조회됨(response,10);
     }
 
     @DisplayName("예외발생 - 출발역과 도착역으로 최단 경로 조회")
     @Test
-    void makeExceptionWhenStartStationAndEndStationIsSame() {
+    void makeExceptionWhenSourceStationAndTargetStationIsSame() {
 
     }
 
     @DisplayName("예외발생 - 연결되어 있지 않은 출발역과 도착역으로 최단 경로 조회")
     @Test
-    void makeExceptionWhenStartStationAndEndStationIsNotBelongToSameLine() {
+    void makeExceptionWhenSourceStationAndTargetStationIsNotBelongToSameLine() {
 
     }
 
     @DisplayName("예외발생 - 존재하지 않은 출발역으로 최단 경로 조회")
     @Test
-    void makeExceptionWhenStartStationIsNotExist() {
+    void makeExceptionWhenSourceStationIsNotExist() {
 
     }
 
     @DisplayName("예외발생 - 존재하지 않은 도착역으로 최단 경로 조회")
     @Test
-    void makeExceptionWhenEndStationIsNotExist() {
+    void makeExceptionWhenTargetStationIsNotExist() {
 
+    }
+
+
+    @Test
+    public static void 지하철_최단_경로_조회_조회됨(ExtractableResponse<Response> response, int expectDistance) {
+        assertAll(() -> {
+            assertThat(response.statusCode()).isEqualTo(HttpStatus.OK);
+            assertThat(response.as(PathResponse.class)).isEqualTo(expectDistance);
+        });
     }
 }
