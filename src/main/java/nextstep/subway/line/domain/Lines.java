@@ -19,11 +19,4 @@ public class Lines {
     public List<Line> getLines() {
         return Collections.unmodifiableList(lines);
     }
-
-    public LineFare findMaxLineFare() {
-        return lines.stream()
-                .map(Line::getFare)
-                .max(Comparator.comparing(it -> it))
-                .orElse(LineFare.zero());
-    }
 }
