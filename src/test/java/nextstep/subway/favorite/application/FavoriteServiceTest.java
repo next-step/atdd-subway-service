@@ -22,6 +22,8 @@ import nextstep.subway.Favorite.domain.Favorite;
 import nextstep.subway.Favorite.domain.FavoriteRepository;
 import nextstep.subway.Favorite.dto.FavoriteRequest;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.domain.Age;
+import nextstep.subway.common.domain.Email;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
@@ -106,15 +108,15 @@ class FavoriteServiceTest {
 		LoginMember 로그인_사용자 = 로그인_사용자();
 		Station 강남역 = station(Name.from("강남역"));
 		Station 역삼역 = station(Name.from("역삼역"));
-		Favorite favorite = Favorite.of(강남역, 역삼역, 로그인_사용자.getId());
-		given(favoriteRepository.findAllByMemberId(로그인_사용자.getId()))
+		Favorite favorite = Favorite.of(강남역, 역삼역, 로그인_사용자.id());
+		given(favoriteRepository.findAllByMemberId(로그인_사용자.id()))
 			.willReturn(Collections.singletonList(favorite));
 
 		// When
 		favoriteService.findAllFavorites(로그인_사용자);
 
 		// Then
-		verify(favoriteRepository).findAllByMemberId(로그인_사용자.getId());
+		verify(favoriteRepository).findAllByMemberId(로그인_사용자.id());
 	}
 
 	@Test
@@ -144,12 +146,12 @@ class FavoriteServiceTest {
 	}
 
 	private void 즐겨찾기_존재하지_않음() {
-		when(favoriteRepository.findByIdAndMemberId(anyLong(), eq(로그인_사용자().getId())))
+		when(favoriteRepository.findByIdAndMemberId(anyLong(), eq(로그인_사용자().id())))
 			.thenReturn(Optional.empty());
 	}
 
 	private void 검색된_즐겨찾기(Favorite favorite) {
-		when(favoriteRepository.findByIdAndMemberId(anyLong(), eq(로그인_사용자().getId())))
+		when(favoriteRepository.findByIdAndMemberId(anyLong(), eq(로그인_사용자().id())))
 			.thenReturn(Optional.of(favorite));
 	}
 
@@ -158,7 +160,7 @@ class FavoriteServiceTest {
 	}
 
 	private LoginMember 로그인_사용자() {
-		return new LoginMember(1L, EMAIL, AGE);
+		return new LoginMember(1L, Email.from(EMAIL), Age.from(AGE));
 	}
 
 	private void 연결_경로_없음(Station source, Station target) {
@@ -184,7 +186,7 @@ class FavoriteServiceTest {
 		Favorite favorite = favoriteArgumentCaptor.getValue();
 
 		assertAll(
-			() -> assertThat(favorite.memberId()).isEqualTo(member.getId()),
+			() -> assertThat(favorite.memberId()).isEqualTo(member.id()),
 			() -> assertThat(favorite.source()).isEqualTo(expectedSource),
 			() -> assertThat(favorite.target()).isEqualTo(expectedTarget)
 		);
@@ -192,12 +194,12 @@ class FavoriteServiceTest {
 
 	private void 중복된_즐겨찾기_없음(LoginMember member, Station source, Station target) {
 		when(favoriteRepository.existsBySourceIdAndTargetIdAndMemberId(source.getId(), target.getId(),
-			member.getId())).thenReturn(false);
+			member.id())).thenReturn(false);
 	}
 
 	private void 중복된_즐겨찾기_있음(LoginMember member, Station source, Station target) {
 		when(favoriteRepository.existsBySourceIdAndTargetIdAndMemberId(source.getId(), target.getId(),
-			member.getId())).thenReturn(true);
+			member.id())).thenReturn(true);
 	}
 
 }

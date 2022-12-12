@@ -35,14 +35,14 @@ public class FavoriteService {
 	public FavoritesResponse saveFavorite(LoginMember loginMember, FavoriteRequest request) {
 		Station source = stationService.findById(request.getSource());
 		Station target = stationService.findById(request.getTarget());
-		validate(source, target, loginMember.getId());
+		validate(source, target, loginMember.id());
 		Favorite favorite = savedFavorite(loginMember, source, target);
 		return FavoritesResponse.from(favorite);
 	}
 
 	@Transactional(readOnly = true)
 	public List<FavoritesResponse> findAllFavorites(LoginMember loginMember) {
-		List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.getId());
+		List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.id());
 		return FavoritesResponse.listOf(favorites);
 	}
 
@@ -52,7 +52,7 @@ public class FavoriteService {
 	}
 
 	private Favorite favorite(LoginMember loginMember, long id) {
-		return favoriteRepository.findByIdAndMemberId(id, loginMember.getId())
+		return favoriteRepository.findByIdAndMemberId(id, loginMember.id())
 			.orElseThrow(
 				() -> new NotFoundException(String.format("사용자(%s)가 저장한 즐겨찾기 id(%s)가 존재하지 않습니다.", loginMember, id)));
 	}
@@ -79,7 +79,7 @@ public class FavoriteService {
 	}
 
 	private Favorite savedFavorite(LoginMember loginMember, Station source, Station target) {
-		Favorite of = Favorite.of(source, target, loginMember.getId());
+		Favorite of = Favorite.of(source, target, loginMember.id());
 		return favoriteRepository.save(of);
 	}
 

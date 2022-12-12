@@ -1,5 +1,8 @@
 package nextstep.subway.auth.dto;
 
+import nextstep.subway.common.domain.Email;
+import nextstep.subway.member.domain.Password;
+
 public class TokenRequest {
     private String email;
     private String password;
@@ -18,5 +21,13 @@ public class TokenRequest {
 
     public String getPassword() {
         return password;
+    }
+
+    public Email email() {
+        return Email.from(email);
+    }
+
+    public Password password() {
+        return Password.from(password);
     }
 }

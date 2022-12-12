@@ -58,8 +58,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 	@MethodSource
 	void myInfoWithBadBearerAuth(
 		String email,
-		String password,
-		String message
+		String password
 	) {
 		// when
 		ExtractableResponse<Response> 로그인_요청 = 로그인_요청(email, password);
@@ -70,7 +69,7 @@ class AuthAcceptanceTest extends AcceptanceTest {
 
 	private static Stream<Arguments> myInfoWithBadBearerAuth() {
 		return Stream.of(
-			Arguments.of("Incorrect email", "Incorrect password", "존재하지 않는 회원의 로그인 요청"),
+			Arguments.of("IncorrectEmail@email.com", "Incorrect password", "존재하지 않는 회원의 로그인 요청"),
 			Arguments.of(EMAIL, "Incorrect password", "잘못된 비밀번호를 통한 로그인 요청")
 		);
 	}
