@@ -32,10 +32,13 @@ public class LineResponse {
     }
 
     public static LineResponse of(Line line) {
-        List<StationResponse> stations = line.getStations().stream()
+        return new LineResponse(line.getId(), line.getName(), line.getColor(), getStationResponsesFromLine(line), line.getCreatedDate(), line.getModifiedDate());
+    }
+
+    private static List<StationResponse> getStationResponsesFromLine(Line line) {
+        return line.getStations().stream()
                 .map(StationResponse::of)
                 .collect(Collectors.toList());
-        return new LineResponse(line.getId(), line.getName(), line.getColor(), stations, line.getCreatedDate(), line.getModifiedDate());
     }
 
     public Long getId() {

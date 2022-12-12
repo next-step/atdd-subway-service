@@ -15,4 +15,8 @@ public class Stations {
     public Stream<Station> stream() {
         return stations.stream();
     }
+
+    public boolean isEmpty() {
+        return stations.isEmpty();
+    }
 }
