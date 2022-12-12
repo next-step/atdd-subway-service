@@ -49,7 +49,7 @@ class FavoriteServiceTest {
 
     private Station 신도림역 = Station.from("신도림역");
     private Station 가디역 = Station.from("가디역");
-    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30));
+    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30), 0);
     private Member 유저 = new Member("test@test.com", "test", 20);
     private Favorite 즐겨찾기 = Favorite.of(신도림역, 가디역, 유저);
 

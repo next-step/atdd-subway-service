@@ -44,7 +44,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
         강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
         역삼역 = 지하철역_등록되어_있음("광교역").as(StationResponse.class);
-        이호선 = 지하철_노선_생성_요청(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 10))
+        이호선 = 지하철_노선_생성_요청(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 역삼역.getId(), 10, 0))
                 .as(LineResponse.class);
         TOKEN = 토큰을_얻는다(로그인_요청을_한다(EMAIL, PASSWORD));
     }

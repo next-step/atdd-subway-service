@@ -32,7 +32,7 @@ public class LineService {
     public LineResponse saveLine(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line line = Line.of(request.getName(), request.getColor(), upStation, downStation, Distance.from(request.getDistance()));
+        Line line = Line.of(request.getName(), request.getColor(), upStation, downStation, Distance.from(request.getDistance()), request.getExtraFee());
         Line persistLine = lineRepository.save(line);
 
         return LineResponse.from(persistLine);

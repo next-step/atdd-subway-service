@@ -5,6 +5,8 @@ import nextstep.subway.exception.NotValidDataException;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import java.util.Objects;
+
 import static nextstep.subway.exception.type.ValidExceptionType.MIN_EXTRA_FEE_NOT_ZERO;
 
 @Embeddable
@@ -17,12 +19,15 @@ public class ExtraFee {
 
 
     protected ExtraFee() {
-        this.extraFee = MIN_EXTRA_FEE;
     }
 
-    public ExtraFee(int extraFee) {
+    private ExtraFee(int extraFee) {
         validCheckMinDistanceSize(extraFee);
         this.extraFee = extraFee;
+    }
+
+    public static ExtraFee from(int extraFee) {
+        return new ExtraFee(extraFee);
     }
 
     private void validCheckMinDistanceSize(int extraFee) {

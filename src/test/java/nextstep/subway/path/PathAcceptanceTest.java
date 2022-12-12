@@ -83,10 +83,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         수원역 = 지하철역_등록되어_있음("수원역").as(StationResponse.class);
         화서역 = 지하철역_등록되어_있음("화서역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재시민의숲.getId(), 40)).as(LineResponse.class);
-        일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "blue", 수원역.getId(), 화서역.getId(), 20)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 선릉역.getId(), 20)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 고속터미널역.getId(), 양재역.getId(), 30)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재시민의숲.getId(), 40, 0)).as(LineResponse.class);
+        일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "blue", 수원역.getId(), 화서역.getId(), 20, 0)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 선릉역.getId(), 20, 0)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 고속터미널역.getId(), 양재역.getId(), 30,0 )).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 고속터미널역, 교대역, 10);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 5);

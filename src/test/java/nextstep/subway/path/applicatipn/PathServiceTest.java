@@ -45,9 +45,9 @@ class PathServiceTest {
 
     private Station 수원역 = Station.from("수원역");
 
-    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30));
-    private Line 이호선 = Line.of("2호선", "green", 신도림역, 대림역, Distance.from(10));
-    private Line 칠호선 = Line.of("7호선", "deep-green", 가디역, 대림역, Distance.from(10));
+    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30), 0);
+    private Line 이호선 = Line.of("2호선", "green", 신도림역, 대림역, Distance.from(10), 0);
+    private Line 칠호선 = Line.of("7호선", "deep-green", 가디역, 대림역, Distance.from(10), 0);
 
     private LoginMember loginMember = LoginMember.ofByLogin(1L, "test@test.com", Age.from(10));
 

@@ -20,7 +20,7 @@ public class Line extends BaseEntity {
     private final Sections sections = new Sections();
 
     @Embedded
-    private final ExtraFee extraFee = new ExtraFee();
+    private ExtraFee extraFee = new ExtraFee();
 
     protected Line() {
     }
@@ -30,14 +30,15 @@ public class Line extends BaseEntity {
         this.color = builder.color;
     }
 
-    private Line(String name, String color, Station upStation, Station downStation, Distance distance) {
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, ExtraFee extraFee) {
         this.name = name;
         this.color = color;
+        this.extraFee = extraFee;
         sections.addSection(this, upStation, downStation, distance);
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, Distance distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    public static Line of(String name, String color, Station upStation, Station downStation, Distance distance, int extraFee) {
+        return new Line(name, color, upStation, downStation, distance, ExtraFee.from(extraFee));
     }
 
     public static class Builder {
