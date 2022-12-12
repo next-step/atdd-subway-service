@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.CascadeType;
@@ -108,19 +109,19 @@ public class Sections {
         if (!this.sections.isEmpty()
                 && isStationNotExisted(section.getUpStation())
                 && isStationNotExisted(section.getDownStation())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException(ErrorMessage.NOT_EXIST_SECTION.getMessage());
         }
-        ;
+
     }
 
     private void isValidDuplicate(Section section) {
         if (isStationExisted(section.getUpStation()) && isStationExisted(section.getDownStation())) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(ErrorMessage.DUPLCATED_SECTION.getMessage());
         }
     }
 
 
-    public void removeLineStation(Line line,Station station) {
+    public void removeLineStation(Line line, Station station) {
         isValidSectionsSize();
 
         Optional<Section> upLineStation = getFirstUpStation(station);
@@ -151,7 +152,7 @@ public class Sections {
 
     private void isValidSectionsSize() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new IllegalArgumentException(ErrorMessage.EMPTY_STATIONS.getMessage());
         }
     }
 }
