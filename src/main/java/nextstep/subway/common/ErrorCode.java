@@ -8,7 +8,9 @@ public enum ErrorCode {
     CAN_NOT_DELETE_STATION_CAUSE_SECTIONS_SIZE_EXCEPTION("[ERROR] 삭제하고자 하는 LINE은 구간이 적어 삭제할 수 없습니다.\n" +
             "현재 구간 수: "),
     NO_SAME_SECTION_EXCEPTION("[ERROR] 같은 Section을 추가할 수 없습니다."),
-    NO_MATCH_LINE_EXCEPTION("[ERROR] 일치하는 LINE이 없습니다.");
+    NO_MATCH_LINE_EXCEPTION("[ERROR] 일치하는 LINE이 없습니다."),
+    SOURCE_AND_TARGET_EQUAL("[ERROR] 출발역과 도착역이 일치합니다."),
+    SOURCE_NOT_CONNECTED_TO_TARGET("[ERROR] 출발역과 도착역이 연결되어 있지 않습니다.");
 
     private final String errorMessage;
     ErrorCode(String errorMessage) {
