@@ -1,17 +1,14 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPathFinder;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 
@@ -81,7 +78,7 @@ class PathServiceTest {
         PathFinder pathFinder = ShortestPathFinder.from(sections);
 
         List<Station> stations = pathFinder.findAllStationsInTheShortestPath(서울역, 신당역);
-        int distance = pathFinder.findTheShortestPath(서울역, 신당역);
+        int distance = pathFinder.findTheShortestPathDistance(서울역, 신당역);
 
         assertAll(() -> {
             assertThat(stations).hasSize(3);

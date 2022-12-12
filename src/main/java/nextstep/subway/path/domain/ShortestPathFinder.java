@@ -25,7 +25,7 @@ public class ShortestPathFinder implements PathFinder{
     }
 
     @Override
-    public int findTheShortestPath(Station sourceStation, Station targetStation) {
+    public int findTheShortestPathDistance(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(sourceStation, targetStation);
         return (int) path.getWeight();
     }

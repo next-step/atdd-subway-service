@@ -8,5 +8,5 @@ public interface PathFinder {
 
     List<Station> findAllStationsInTheShortestPath(Station sourceStation, Station targetStation);
 
-    int findTheShortestPath(Station sourceStation, Station targetStation);
+    int findTheShortestPathDistance(Station sourceStation, Station targetStation);
 }
