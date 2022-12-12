@@ -10,7 +10,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import static nextstep.subway.fare.domain.OverDistancePolicy.*;
 import static nextstep.subway.utils.Message.OVER_FARE_POLICY_NOT_EXIST;
 
-class OverFarePolicyTest {
+class OverDistancePolicyTest {
 
     @DisplayName("추가요금 정책이 없는 거리가 입력되면 예외가 발생한다.")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
