@@ -34,11 +34,12 @@ public class PathResponse {
     }
 
     public static PathResponse of(List<Station> stations, int distance, int fare) {
-        return new PathResponse(
-                stations.stream()
-                        .map(StationResponse::from)
-                        .collect(Collectors.toList()),
-                distance,
-                fare);
+        return new PathResponse(toStations(stations), distance, fare);
+    }
+
+    private static List<StationResponse> toStations(List<Station> stations) {
+        return stations.stream()
+                .map(StationResponse::from)
+                .collect(Collectors.toList());
     }
 }
