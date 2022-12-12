@@ -72,6 +72,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [X] 존재하지 않은 출발역이나 도착역을 조회 할 경우
 
 ## STEP4 - 요금조회
-- [ ] 경로 조회 시 거리 기준 요금 정보 포함하기
-- [ ] 노선별 추가 요금 정책 추가
-- [ ] 연령별 할인 정책 추가
+- [X] 경로 조회 시 거리 기준 요금 정보 포함하기
+- [X] 노선별 추가 요금 정책 추가
+- [X] 연령별 할인 정책 추가
