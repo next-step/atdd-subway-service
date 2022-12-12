@@ -40,6 +40,35 @@ public class Sections {
         sections.add(section);
     }
 
+    public List<Station> getSortedStations() {
+        if (this.sections.size() <= ZERO) {
+            return new ArrayList<>();
+        }
+        List<Station> sortedStations = new ArrayList<>();
+        Section firstSection = findFirstSection();
+        firstSection.addStations(sortedStations);
+        addNextStation(sortedStations, firstSection);
+        return sortedStations;
+    }
+
+    public List<Section> asList() {
+        return this.sections;
+    }
+
+    public void removeStation(Station deleteStation) {
+        if (this.sections.size() <= ZERO) {
+            throw new IllegalArgumentException(ErrorCode.CAN_NOT_DELETE_STATION_CAUSE_SECTIONS_SIZE_EXCEPTION.getErrorMessage() + sections.size());
+        }
+        Section sectionOfMatchedUpStation = findSectionWhenMatchUpStation(deleteStation);
+        Section sectionOfMatchedDownStation = findSectionWhenMatchDownStation(deleteStation);
+        this.sections.add(new Section(sections.get(ZERO).getLine()
+                , sectionOfMatchedDownStation.getUpStation()
+                , sectionOfMatchedUpStation.getDownStation()
+                , sectionOfMatchedUpStation.getDistance() + sectionOfMatchedDownStation.getDistance()));
+        this.sections.remove(sectionOfMatchedUpStation);
+        this.sections.remove(sectionOfMatchedDownStation);
+    }
+
     private void checkValidation(Section section) {
         checkDuplicatedBothStation(section);
         checkNoMatchSection(section);
@@ -66,18 +95,6 @@ public class Sections {
         if (allStation.contains(section.getUpStation()) && allStation.contains(section.getDownStation())) {
             throw new IllegalArgumentException(ErrorCode.BOTH_STATION_ALREADY_EXIST_EXCEPTION.getErrorMessage());
         }
-    }
-
-
-    public List<Station> getSortedStations() {
-        if (this.sections.size() <= ZERO) {
-            return new ArrayList<>();
-        }
-        List<Station> sortedStations = new ArrayList<>();
-        Section firstSection = findFirstSection();
-        firstSection.addStations(sortedStations);
-        addNextStation(sortedStations, firstSection);
-        return sortedStations;
     }
 
     private void addNextStation(List<Station> stations, Section previousSection) {
@@ -144,32 +161,6 @@ public class Sections {
         return stations.stream().anyMatch(eachStation -> eachStation.equals(station));
     }
 
-    public List<Section> asList() {
-        return this.sections;
-    }
-
-    private boolean isSectionsNotEmpty() {
-        return this.sections.size() > ZERO;
-    }
-
-    private boolean isSectionsSizeZero() {
-        return this.sections.size() == ZERO;
-    }
-
-    public void removeStation(Station deleteStation) {
-        if (this.sections.size() <= ZERO) {
-            throw new IllegalArgumentException(ErrorCode.CAN_NOT_DELETE_STATION_CAUSE_SECTIONS_SIZE_EXCEPTION.getErrorMessage() + sections.size());
-        }
-        Section sectionOfMatchedUpStation = findSectionWhenMatchUpStation(deleteStation);
-        Section sectionOfMatchedDownStation = findSectionWhenMatchDownStation(deleteStation);
-        this.sections.add(new Section(sections.get(ZERO).getLine()
-                , sectionOfMatchedDownStation.getUpStation()
-                , sectionOfMatchedUpStation.getDownStation()
-                , sectionOfMatchedUpStation.getDistance() + sectionOfMatchedDownStation.getDistance()));
-        this.sections.remove(sectionOfMatchedUpStation);
-        this.sections.remove(sectionOfMatchedDownStation);
-    }
-
     private Section findSectionWhenMatchUpStation(Station station) {
         return this.sections.stream()
                 .filter(eachStation -> eachStation.getUpStationId() == station.getId())
@@ -184,4 +175,11 @@ public class Sections {
                 .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_SUCH_STATION_IN_THE_LINE_EXCEPTION.getErrorMessage()));
     }
 
+    private boolean isSectionsNotEmpty() {
+        return this.sections.size() > ZERO;
+    }
+
+    private boolean isSectionsSizeZero() {
+        return this.sections.size() == ZERO;
+    }
 }

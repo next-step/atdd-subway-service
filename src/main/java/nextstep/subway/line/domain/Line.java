@@ -22,7 +22,7 @@ public class Line extends BaseEntity {
     @Embedded
     private final Sections sections = new Sections();
 
-    protected Line() {}
+    public Line() {}
 
     public Line(String name, String color) {
         this.name = name;
