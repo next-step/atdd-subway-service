@@ -5,14 +5,16 @@ import nextstep.subway.auth.exception.AuthorizationException;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.persistence.*;
+import java.util.Objects;
 
 @Entity
 public class Member extends BaseEntity {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = false)
     private String email;
 
     @Column(nullable = false)
@@ -38,10 +40,6 @@ public class Member extends BaseEntity {
         return email;
     }
 
-    public String getPassword() {
-        return password;
-    }
-
     public Integer getAge() {
         return age;
     }
@@ -56,5 +54,23 @@ public class Member extends BaseEntity {
         if (!StringUtils.equals(this.password, password)) {
             throw new AuthorizationException();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Member member = (Member) o;
+
+        if (!Objects.equals(id, member.id)) return false;
+        return Objects.equals(email, member.email);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id != null ? id.hashCode() : 0;
+        result = 31 * result + (email != null ? email.hashCode() : 0);
+        return result;
     }
 }

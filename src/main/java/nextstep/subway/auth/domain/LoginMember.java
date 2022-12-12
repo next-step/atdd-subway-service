@@ -5,7 +5,8 @@ public class LoginMember {
     private String email;
     private Integer age;
 
-    public LoginMember() {
+    protected LoginMember() {
+
     }
 
     public LoginMember(Long id, String email, Integer age) {
