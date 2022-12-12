@@ -11,8 +11,8 @@ import nextstep.subway.line.rest.LineRestAssured;
 import nextstep.subway.line.rest.LineSectionRestAssured;
 import nextstep.subway.path.message.PathMessage;
 import nextstep.subway.path.rest.PathRestAssured;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.rest.StationRestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -48,13 +48,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-        당산역 = StationAcceptanceTest.지하철역_등록되어_있음("당산역").as(StationResponse.class);
-        여의도역 = StationAcceptanceTest.지하철역_등록되어_있음("여의도역").as(StationResponse.class);
-        학동역 = StationAcceptanceTest.지하철역_등록되어_있음("학동역").as(StationResponse.class);
+        강남역 = StationRestAssured.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        양재역 = StationRestAssured.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        교대역 = StationRestAssured.지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        남부터미널역 = StationRestAssured.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        당산역 = StationRestAssured.지하철역_등록되어_있음("당산역").as(StationResponse.class);
+        여의도역 = StationRestAssured.지하철역_등록되어_있음("여의도역").as(StationResponse.class);
+        학동역 = StationRestAssured.지하철역_등록되어_있음("학동역").as(StationResponse.class);
 
         LineCreateRequest 신분당선_생성_요청 = new LineCreateRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
         LineCreateRequest 이호선_생성_요청 = new LineCreateRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10);
