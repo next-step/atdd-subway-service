@@ -10,11 +10,10 @@ import org.springframework.web.bind.annotation.*;
 
 import java.net.URI;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RestController
 public class StationController {
-    private StationService stationService;
+    private final StationService stationService;
 
     public StationController(StationService stationService) {
         this.stationService = stationService;
@@ -28,9 +27,7 @@ public class StationController {
 
     @GetMapping(value = "/stations", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<List<StationResponse>> showStations() {
-        return ResponseEntity.ok().body(stationService.findAllStations().stream()
-                .map(StationResponse::from)
-                .collect(Collectors.toList()));
+        return ResponseEntity.ok().body(stationService.findAllStations());
     }
 
     @DeleteMapping("/stations/{id}")
