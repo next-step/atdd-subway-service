@@ -15,6 +15,10 @@ public class Lines {
         return new Lines(lines);
     }
 
+    public static Lines from(List<Line> lines) {
+        return new Lines(lines);
+    }
+
 
     public List<Line> getLines() {
         return Collections.unmodifiableList(lines);

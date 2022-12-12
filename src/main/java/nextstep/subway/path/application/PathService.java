@@ -49,6 +49,10 @@ public class PathService {
         );
     }
 
+    private Lines findAllLines() {
+        return Lines.from(lineRepository.findAll());
+    }
+
     private int findFare(Sections sections, int distance, int age) {
         LineFare lineFare = sections.findMaxLineFare();
         FareCalculator fareCalculator = FareCalculator.of(lineFare.getFare(), age);
