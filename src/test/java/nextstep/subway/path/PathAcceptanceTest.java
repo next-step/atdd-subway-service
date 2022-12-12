@@ -1,6 +1,5 @@
 package nextstep.subway.path;
 
-import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -17,18 +16,16 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceStepTest.로그인_요청;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_됨;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberAcceptanceStepTest.회원_생성을_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.PASSWORD;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성됨;
 import static nextstep.subway.path.PathAcceptanceStepTest.최단_경로_조회_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -57,6 +54,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private String 성인회원;
     private String 청소년회원;
     private String 어린이회원;
+    private String 비회원;
     private String adultEmail = "adult@gmail.com";
     private String teenagerEmail = "teenager@gmail.com";
     private String childEmail = "child@gmail.com";
@@ -90,6 +88,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         어린이_회원_등록되어_있음();
         어린이_회원_로그인_됨();
+
+        비회원_생성();
     }
 
 
@@ -112,6 +112,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Then 어린이 회원의 출발역과 도착역 사이의 최단 경로 조회됨.
      * And 어린이 회원의 총 거리도 함께 응답함
      * And 어린이 회원의 지하철 이용 요금도 함께 응답함
+     *
+     * When 비회원의 지하철 경로 조회 요청
+     * Then 비회원의 출발역과 도착역 사이의 최단 경로 조회됨.
+     * And 비회원의 총 거리는 성인회원 정책으로 함께 응답함
+     * And 비회원의 지하철 이용 요금은 성인회원 정책으로 함께 응답함
+     *
      **/
     @DisplayName("출발역과 도착역 사이의 최단 경로를 조회한다.")
     @Test
@@ -125,6 +131,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         ExtractableResponse<Response> 어린이_회원_경로조회_결과 = 최단_경로_조회_요청(어린이회원, 양재역.getId(), 서현역.getId());
         지하철_최단_경로_조회됨(어린이_회원_경로조회_결과, 10, 550);
+
+        ExtractableResponse<Response> 비로그인_회원_경로조회_결과 = 최단_경로_조회_요청(비회원, 양재역.getId(), 서현역.getId());
+        지하철_최단_경로_조회됨(비로그인_회원_경로조회_결과, 10, 1450);
     }
 
 
@@ -255,6 +264,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         로그인_됨(loginChildResponse);
 
         어린이회원 = loginChildResponse.as(TokenResponse.class).getAccessToken();
+    }
+
+    private void 비회원_생성() {
+        비회원 = "Invalid access token";
     }
 
 }
