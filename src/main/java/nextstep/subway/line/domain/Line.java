@@ -28,6 +28,7 @@ public class Line extends BaseEntity {
     private Line(Builder builder) {
         this.name = builder.name;
         this.color = builder.color;
+        this.extraFee = ExtraFee.from(builder.extraFee);
     }
 
     public Line(String name, String color, Station upStation, Station downStation, Distance distance, ExtraFee extraFee) {
@@ -45,6 +46,8 @@ public class Line extends BaseEntity {
         private String name;
         private String color;
 
+        private int extraFee;
+
         public Builder() {
         }
 
@@ -55,6 +58,11 @@ public class Line extends BaseEntity {
 
         public Builder name(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder extraFee(int extraFee) {
+            this.extraFee = extraFee;
             return this;
         }
 

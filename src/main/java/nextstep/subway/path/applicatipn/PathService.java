@@ -32,7 +32,7 @@ public class PathService {
         PathStrategy strategy = new DijkstraShortestPathStrategy(lines);
         PathFinder pathFinder = strategy.getShortPath(station.getSourceStation(), station.getTargetStation());
         int maxExtraFee = Lines.from(lines).getMaxExtraFee(pathFinder.getStations());
-        int fee = FeeCalculator.from(maxExtraFee, pathFinder.getDistance()).getFee(new KmPerByFeePolicy());
+        int fee = FeeCalculator.from(maxExtraFee, pathFinder.getDistance()).getFee(new KmPerFeePolicy());
         int extraFee = AgePolicy.from(loginMember.getAge(), loginMember.getMemberType(), fee).discount(new DefaultAgePolicy());
 
         return PathResponse.from(pathFinder, extraFee);

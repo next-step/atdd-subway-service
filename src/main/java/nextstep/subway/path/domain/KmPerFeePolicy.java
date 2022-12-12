@@ -1,6 +1,6 @@
 package nextstep.subway.path.domain;
 
-public class KmPerByFeePolicy implements FeeStrategy {
+public class KmPerFeePolicy implements FeeStrategy {
     private final static int DEFAULT_FEE = 1250;
     private final static int ADD_PER_KM_FEE = 100;
     private final static int MIN_KM_LIMIT = 10;
