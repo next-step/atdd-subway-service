@@ -58,6 +58,10 @@ public class Section {
         return distance;
     }
 
+    public LineFare getFare() {
+        return line.getFare();
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
             throw new BadRequestException(INVALID_OVER_SECTION_DISTANCE);

@@ -179,6 +179,13 @@ public class Sections {
         return Objects.hash(sections);
     }
 
+    public LineFare findMaxLineFare(Sections sections) {
+        // Lines 조회 분리하지 않고, 구간에서 바로 Line 찾고 LineFare 찾기
+        return sections.getSections()
+                .stream()
+                .map(s -> s.getFare())
+                .max(Comparator.comparing(it -> it))
+                .orElse(LineFare.zero());
 
-
+    }
 }

@@ -10,6 +10,7 @@ import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -49,10 +50,12 @@ public class PathService {
     }
 
     private int findFare(Sections sections, List<Station> stations, int distance, int age) {
-        Lines lines = sections.findLinesFrom(stations);
-        LineFare lineFare = lines.findMaxLineFare();
+        LineFare lineFare2 = sections.findMaxLineFare(sections);
 
-        FareCalculator fareCalculator = FareCalculator.of(lineFare.getFare(), age);
+
+        LineFare lineFare = sections.findLinesFrom(stations).findMaxLineFare();
+
+        FareCalculator fareCalculator = FareCalculator.of(lineFare2.getFare(), age);
         return fareCalculator.calculate(distance);
     }
 
