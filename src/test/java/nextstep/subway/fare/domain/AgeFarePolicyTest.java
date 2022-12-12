@@ -15,8 +15,8 @@ class AgeFarePolicyTest {
     @DisplayName("나이에 맞는 정책을 구한다.")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
     @CsvSource(value = {"6:CHILD", "13:TEENAGER"}, delimiter = ':')
-    void findAgeFarePolicy(int input, AgeFarePolicy expected) {
-        AgeFarePolicy result = AgeFarePolicy.findByAge(input);
+    void findAgeFarePolicy(int age, AgeFarePolicy expected) {
+        AgeFarePolicy result = AgeFarePolicy.findByAge(age);
 
         Assertions.assertThat(result).isEqualTo(expected);
     }
@@ -24,8 +24,8 @@ class AgeFarePolicyTest {
     @DisplayName("나이에 맞는 정책이 없으면 예외를 발생한다.")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
     @ValueSource(ints = {0, 5})
-    void exception(int input) {
-        Assertions.assertThatThrownBy(() -> AgeFarePolicy.findByAge(input))
+    void exception(int age) {
+        Assertions.assertThatThrownBy(() -> AgeFarePolicy.findByAge(age))
                 .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(AGE_FARE_POLICY_NOT_EXIST);
     }
@@ -33,8 +33,8 @@ class AgeFarePolicyTest {
     @DisplayName("연령별 요금할인을 적용한다.")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
     @CsvSource(value = {"6:850", "13:1360"}, delimiter = ':')
-    void discount(int input, int expected) {
-        AgeFarePolicy policy = AgeFarePolicy.findByAge(input);
+    void discount(int age, int expected) {
+        AgeFarePolicy policy = AgeFarePolicy.findByAge(age);
 
         int result = policy.discount(2050);
 
