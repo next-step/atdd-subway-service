@@ -5,6 +5,7 @@ import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
+import nextstep.subway.member.application.MemberService;
 import nextstep.subway.station.application.StationService;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.favorite.domain.FavoriteFixture.즐겨찾기1;
 import static nextstep.subway.favorite.domain.FavoriteFixture.즐겨찾기2;
+import static nextstep.subway.member.domain.MemberFixture.회원1;
 import static nextstep.subway.station.StationFixture.서울역;
 import static nextstep.subway.station.StationFixture.시청역;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -49,7 +51,7 @@ public class FavoriteServiceTest {
         given(favoriteRepository.save(any())).willReturn(즐겨찾기1());
 
         // when
-        FavoriteResponse favoriteResponse = favoriteService.addFavorite(favoriteRequest);
+        FavoriteResponse favoriteResponse = favoriteService.addFavorite(회원1().getId(), favoriteRequest);
 
         // then
         assertAll(
@@ -69,7 +71,7 @@ public class FavoriteServiceTest {
 
         // when & then
         assertThatThrownBy(
-                () -> favoriteService.addFavorite(favoriteRequest)
+                () -> favoriteService.addFavorite(회원1().getId(), favoriteRequest)
         ).isInstanceOf(InvalidDataException.class);
     }
 
@@ -85,7 +87,7 @@ public class FavoriteServiceTest {
 
         // when & then
         assertThatThrownBy(
-                () -> favoriteService.addFavorite(favoriteRequest)
+                () -> favoriteService.addFavorite(회원1().getId(), favoriteRequest)
         ).isInstanceOf(InvalidDataException.class);
     }
 
@@ -93,10 +95,10 @@ public class FavoriteServiceTest {
     @Test
     void 즐겨찾기_목록_조회_테스트() {
         // given
-        given(favoriteRepository.findAll()).willReturn(Arrays.asList(즐겨찾기1(), 즐겨찾기2()));
+        given(favoriteRepository.findByMemberId(회원1().getId())).willReturn(Arrays.asList(즐겨찾기1(), 즐겨찾기2()));
 
         // when
-        List<FavoriteResponse> favoriteResponses = favoriteService.retrieveFavorites();
+        List<FavoriteResponse> favoriteResponses = favoriteService.retrieveFavorites(회원1().getId());
 
         //
         assertAll(

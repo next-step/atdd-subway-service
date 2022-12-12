@@ -2,11 +2,9 @@ package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.common.exception.InvalidDataException;
+import nextstep.subway.member.domain.Member;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.util.List;
 
 @Entity
@@ -20,17 +18,23 @@ public class Favorite extends BaseEntity {
     private Long sourceId;
     private Long targetId;
 
-    public Favorite() {
+    @ManyToOne
+    @JoinColumn(name = "member_id")
+    private Member member;
+
+    protected Favorite() {
+
     }
 
-    public Favorite(Long sourceId, Long targetId) {
+    public Favorite(Member member, Long sourceId, Long targetId) {
         validateIdenticalStation(sourceId, targetId);
+        this.member = member;
         this.sourceId = sourceId;
         this.targetId = targetId;
     }
 
     private void validateIdenticalStation(Long sourceId, Long targetId) {
-        if (sourceId == targetId) {
+        if (sourceId.equals(targetId)) {
             throw new InvalidDataException(IDENTICAL_STATION_EXCEPTION);
         }
     }
@@ -54,5 +58,9 @@ public class Favorite extends BaseEntity {
 
     public Long getTargetId() {
         return targetId;
+    }
+
+    public Member getMember() {
+        return member;
     }
 }
