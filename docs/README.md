@@ -8,7 +8,7 @@
 >   - [x] saveLine 리펙토링
 >   - [x] getStations 리펙토링
 >   - [x] sections 일급컬렉션 추가
->   - [ ] findLine 리펙터링
+>   - [x] findLine 리펙터링
 >   - [ ] findUpStation 리펙터링
 >   - [ ] removeLineStation 리펙터링
 >   - [ ] addLineStation 리펙터링
