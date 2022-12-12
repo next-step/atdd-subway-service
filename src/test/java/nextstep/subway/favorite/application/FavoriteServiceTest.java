@@ -23,6 +23,7 @@ import nextstep.subway.Favorite.domain.FavoriteRepository;
 import nextstep.subway.Favorite.dto.FavoriteRequest;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.Name;
+import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.path.application.PathService;
@@ -79,6 +80,23 @@ class FavoriteServiceTest {
 		FavoriteRequest request = FavoriteRequest.of(1L, 2L);
 		assertThatThrownBy(() -> favoriteService.saveFavorite(로그인_사용자, request))
 			.isInstanceOf(InvalidDataException.class);
+	}
+
+	@DisplayName("즐겨찾기 저장 시 중복되는 경우 예외 발생")
+	@Test
+	void saveFavoriteWhenDuplicate() {
+		// given
+		LoginMember 로그인_사용자 = 로그인_사용자();
+		Station 강남역 = station(Name.from("강남역"));
+		Station 역삼역 = station(Name.from("역삼역"));
+		검색된_지하철_역(1L, 강남역);
+		검색된_지하철_역(2L, 역삼역);
+		중복된_즐겨찾기_있음(로그인_사용자, 강남역, 역삼역);
+
+		// when, then
+		FavoriteRequest request = FavoriteRequest.of(1L, 2L);
+		assertThatThrownBy(() -> favoriteService.saveFavorite(로그인_사용자, request))
+			.isInstanceOf(DuplicateDataException.class);
 	}
 
 	@DisplayName("즐겨찾기 목록 조회")
@@ -147,10 +165,6 @@ class FavoriteServiceTest {
 		when(pathService.isInvalidPath(source, target)).thenReturn(true);
 	}
 
-	private void 연결_경로_있음(Station source, Station target) {
-		when(pathService.isInvalidPath(source, target)).thenReturn(false);
-	}
-
 	private void 검색된_지하철_역(Long id, Station station) {
 		when(stationService.findById(id))
 			.thenReturn(station);
@@ -179,6 +193,11 @@ class FavoriteServiceTest {
 	private void 중복된_즐겨찾기_없음(LoginMember member, Station source, Station target) {
 		when(favoriteRepository.existsBySourceIdAndTargetIdAndMemberId(source.getId(), target.getId(),
 			member.getId())).thenReturn(false);
+	}
+
+	private void 중복된_즐겨찾기_있음(LoginMember member, Station source, Station target) {
+		when(favoriteRepository.existsBySourceIdAndTargetIdAndMemberId(source.getId(), target.getId(),
+			member.getId())).thenReturn(true);
 	}
 
 }

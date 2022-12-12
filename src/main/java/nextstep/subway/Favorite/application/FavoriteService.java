@@ -10,6 +10,7 @@ import nextstep.subway.Favorite.domain.FavoriteRepository;
 import nextstep.subway.Favorite.dto.FavoriteRequest;
 import nextstep.subway.Favorite.dto.FavoritesResponse;
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
 import nextstep.subway.path.application.PathService;
@@ -64,10 +65,10 @@ public class FavoriteService {
 	private void validateDuplicateFavorite(Station source, Station target, long memberId) {
 		boolean existFavorite = favoriteRepository.existsBySourceIdAndTargetIdAndMemberId(
 			source.getId(), target.getId(), memberId);
-		// if (existFavorite) {
-		// 	throw new DuplicateDataException(
-		// 		String.format("출발역(%s), 도착역(%s) 인 즐겨찾기가 이미 존재합니다.", source.name(), target.name()));
-		// }
+		if (existFavorite) {
+			throw new DuplicateDataException(
+				String.format("출발역(%s), 도착역(%s) 인 즐겨찾기가 이미 존재합니다.", source.name(), target.name()));
+		}
 	}
 
 	private void validatePath(Station source, Station target) {
