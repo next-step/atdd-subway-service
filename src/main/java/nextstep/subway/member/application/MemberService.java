@@ -1,5 +1,6 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.exception.AuthorizationException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
@@ -31,6 +32,10 @@ public class MemberService {
     }
 
     public MemberResponse findMember(Long id) {
+        if (id == null) {
+            throw new AuthorizationException();
+        }
+
         Member member = memberRepository.findById(id).orElseThrow(RuntimeException::new);
         return MemberResponse.of(member);
     }

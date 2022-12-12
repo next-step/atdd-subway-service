@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.assertj.core.api.Assertions;
@@ -95,16 +96,13 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패(response);
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("Bearer Auth 유효하지 않은 토큰으로 내 정보를 조회하면 나이가 20로 비로그인된다.")
     @Test
     void myInfoWithWrongBearerAuth() {
         ExtractableResponse<Response> response = 내_정보_조회_요청("invalid_access_token");
 
         내_정보_조회_실패(response);
     }
-
-
-
 
     public static void 로그인_됨(ExtractableResponse<Response> response) {
         assertAll(
