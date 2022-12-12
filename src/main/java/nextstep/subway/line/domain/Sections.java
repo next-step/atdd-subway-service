@@ -159,6 +159,16 @@ public class Sections {
                 .collect(Collectors.toList()));
     }
 
+    public LineFare findMaxLineFare() {
+        // Lines 조회 분리하지 않고, 구간에서 바로 Line 찾고 LineFare 찾기
+        return this.sections
+                .stream()
+                .map(s -> s.getFare())
+                .max(Comparator.comparing(it -> it))
+                .orElse(LineFare.zero());
+
+    }
+
     private void validSectionSize() {
         if (this.sections.size() <= 1) {
             throw new RuntimeException();
@@ -177,15 +187,5 @@ public class Sections {
     @Override
     public int hashCode() {
         return Objects.hash(sections);
-    }
-
-    public LineFare findMaxLineFare(Sections sections) {
-        // Lines 조회 분리하지 않고, 구간에서 바로 Line 찾고 LineFare 찾기
-        return sections.getSections()
-                .stream()
-                .map(s -> s.getFare())
-                .max(Comparator.comparing(it -> it))
-                .orElse(LineFare.zero());
-
     }
 }

@@ -35,7 +35,7 @@ public class PathService {
         PathFinder pathFinder = PathFinder.from(sections.getSections());
         Path path = pathFinder.findAllStationsByStations(sourceStation, targetStation);
 
-        int fare = findFare(sections, path.getStations(), path.getDistance(), age);
+        int fare = findFare(sections, path.getDistance(), age);
 
         return PathResponse.of(path.getStations(), path.getDistance(), fare);
     }
@@ -49,13 +49,9 @@ public class PathService {
         );
     }
 
-    private int findFare(Sections sections, List<Station> stations, int distance, int age) {
-        LineFare lineFare2 = sections.findMaxLineFare(sections);
-
-
-        LineFare lineFare = sections.findLinesFrom(stations).findMaxLineFare();
-
-        FareCalculator fareCalculator = FareCalculator.of(lineFare2.getFare(), age);
+    private int findFare(Sections sections, int distance, int age) {
+        LineFare lineFare = sections.findMaxLineFare();
+        FareCalculator fareCalculator = FareCalculator.of(lineFare.getFare(), age);
         return fareCalculator.calculate(distance);
     }
 
