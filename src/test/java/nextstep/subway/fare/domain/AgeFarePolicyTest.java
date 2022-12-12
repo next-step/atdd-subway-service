@@ -30,7 +30,7 @@ class AgeFarePolicyTest {
                 .hasMessageStartingWith(AGE_FARE_POLICY_NOT_EXIST);
     }
 
-    @DisplayName("연령별 요금할인을 적용한다.")
+    @DisplayName("청소년이라면 요금에서 350원을 공제 후 20% 할인된 금액이 발생하고, 어린이라면 요금에서 350원을 공제 후 50% 할인된 금액이 발생한다.")
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
     @CsvSource(value = {"6:850", "13:1360"}, delimiter = ':')
     void discount(int age, int expected) {
