@@ -7,7 +7,7 @@ import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
-import static nextstep.subway.fare.domain.OverFarePolicy.*;
+import static nextstep.subway.fare.domain.OverDistancePolicy.*;
 import static nextstep.subway.utils.Message.OVER_FARE_POLICY_NOT_EXIST;
 
 class OverFarePolicyTest {
@@ -16,7 +16,7 @@ class OverFarePolicyTest {
     @ParameterizedTest(name = "{index} | {displayName} | {argumentsWithNames}")
     @ValueSource(ints = {-1, -10})
     void exception(int input) {
-        Assertions.assertThatThrownBy(() -> OverFarePolicy.findPolicyByDistance(input))
+        Assertions.assertThatThrownBy(() -> OverDistancePolicy.findPolicyByDistance(input))
                 .isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith(OVER_FARE_POLICY_NOT_EXIST);
     }

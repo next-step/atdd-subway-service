@@ -9,7 +9,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static nextstep.subway.utils.Message.AGE_FARE_POLICY_NOT_EXIST;
-import static nextstep.subway.utils.Message.FARE_LESS_THAN_DEDUCTION_FARE;
 
 class AgeFarePolicyTest {
 
@@ -40,15 +39,5 @@ class AgeFarePolicyTest {
         int result = policy.discount(2050);
 
         Assertions.assertThat(result).isEqualTo(expected);
-    }
-
-    @DisplayName("운임요금이 공제금액보다 작으면 예외를 발생한다.")
-    @Test
-    void discountException() {
-        AgeFarePolicy policy = AgeFarePolicy.findByAge(10);
-
-        Assertions.assertThatThrownBy(() -> policy.discount(0))
-                .isInstanceOf(BadRequestException.class)
-                .hasMessageStartingWith(FARE_LESS_THAN_DEDUCTION_FARE);
     }
 }

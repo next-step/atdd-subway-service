@@ -6,7 +6,6 @@ import nextstep.subway.exception.BadRequestException;
 import java.util.Arrays;
 
 import static nextstep.subway.utils.Message.AGE_FARE_POLICY_NOT_EXIST;
-import static nextstep.subway.utils.Message.FARE_LESS_THAN_DEDUCTION_FARE;
 
 public enum AgeFarePolicy {
     ADULT(19, Integer.MAX_VALUE, 0, 0),
@@ -37,13 +36,6 @@ public enum AgeFarePolicy {
     }
 
     public int discount(int fare) {
-        checkFareIsNotLessThanDeductionFare(fare);
         return (int) ((fare - this.deductionFare) * (1 - this.discountRate));
-    }
-
-    private void checkFareIsNotLessThanDeductionFare(int fare) {
-        if (fare < this.deductionFare) {
-            throw new BadRequestException(FARE_LESS_THAN_DEDUCTION_FARE);
-        }
     }
 }

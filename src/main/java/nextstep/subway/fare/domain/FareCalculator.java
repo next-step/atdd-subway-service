@@ -9,19 +9,19 @@ import static nextstep.subway.utils.Message.INVALID_OVER_DISTANCE;
 
 public class FareCalculator {
 
-    private static final int MIN_LINE_FARE = 0;
+    private static final int BASE_LINE_FARE = 0;
     private static final int MIN_ADULT_AGE = 19;
 
-    private int minLineFare;
+    private int baseLineFare;
     private int age;
 
     public FareCalculator() {
-        this.minLineFare = MIN_LINE_FARE;
+        this.baseLineFare = BASE_LINE_FARE;
         this.age = MIN_ADULT_AGE;
     }
 
     private FareCalculator(int lineFare, int age) {
-        this.minLineFare = lineFare;
+        this.baseLineFare = lineFare;
         this.age = age;
     }
 
@@ -37,7 +37,7 @@ public class FareCalculator {
         checkDistanceNotNegative(distance);
 
         int fare = calculateWithDistance(distance);
-        fare += minLineFare;
+        fare += baseLineFare;
 
         AgeFarePolicy policy = AgeFarePolicy.findByAge(age);
         return policy.discount(fare);
@@ -53,7 +53,7 @@ public class FareCalculator {
     private int calculateWithDistance(int distance) {
         int fare = BASIC_FARE;
 
-        OverFarePolicy policy = OverFarePolicy.findPolicyByDistance(distance);
+        OverDistancePolicy policy = OverDistancePolicy.findPolicyByDistance(distance);
 
         fare += policy.calculateOverFare(distance);
 
