@@ -53,7 +53,7 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 		// when : 즐겨찾기 목록 조회 요청
 		ExtractableResponse<Response> 즐겨찾기_목록_조회_요청 = 즐겨찾기_목록_조회_요청(사용자);
 		// then : 즐겨찾기 목록 조회됨
-		즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청);
+		즐겨찾기_목록_조회됨(즐겨찾기_목록_조회_요청, 강남역, 역삼역);
 
 		// when : 즐겨찾기 삭제 요청
 		ExtractableResponse<Response> 즐겨찾기_삭제_요청 = 즐겨찾기_삭제_요청(사용자, 즐겨찾기_생성_요청);
@@ -61,4 +61,28 @@ class FavoriteAcceptanceTest extends AcceptanceTest {
 		즐겨찾기_삭제됨(즐겨찾기_삭제_요청);
 	}
 
+	@DisplayName("즐겨찾기 관리 시 토큰정보 인증되지 않으면 예외 발생")
+	@Test
+	void manageFavoriteWithInvalidToken() {
+		// When : 즐겨찾기 생성 요청
+		String 유효하지_않은_인증_토큰  = "invalid token";
+		ExtractableResponse<Response> 즐겨찾기_생성_요청 = 즐겨찾기_생성_요청(유효하지_않은_인증_토큰, 강남역.getId(),
+			역삼역.getId());
+
+		// Then : 즐겨 찾기 생성 실패
+		인증_실패(즐겨찾기_생성_요청);
+
+		// When : 즐겨찾기 목록 조회 요청
+		ExtractableResponse<Response> 즐겨찾기_목록_조회_요청 = 즐겨찾기_목록_조회_요청(유효하지_않은_인증_토큰);
+
+		// Then : 즐겨 찾기 목록 조회 실패
+		인증_실패(즐겨찾기_목록_조회_요청);
+
+		// When : 즐겨찾기 삭제 요청
+		ExtractableResponse<Response> 즐겨찾기_생성_요청_성공 = 즐겨찾기_생성_요청(사용자, 강남역.getId(), 역삼역.getId());
+		ExtractableResponse<Response> 즐겨찾기_삭제_요청 = 즐겨찾기_삭제_요청(유효하지_않은_인증_토큰, 즐겨찾기_생성_요청_성공);
+
+		// Then : 즐겨 찾기 삭제 실패
+		인증_실패(즐겨찾기_삭제_요청);
+	}
 }

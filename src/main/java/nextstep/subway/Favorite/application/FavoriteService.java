@@ -35,7 +35,8 @@ public class FavoriteService {
 		Station source = stationService.findById(request.getSource());
 		Station target = stationService.findById(request.getTarget());
 		validate(source, target, loginMember.getId());
-		return FavoritesResponse.from(savedFavorite(loginMember, source, target));
+		Favorite favorite = savedFavorite(loginMember, source, target);
+		return FavoritesResponse.from(favorite);
 	}
 
 	@Transactional(readOnly = true)
@@ -77,7 +78,8 @@ public class FavoriteService {
 	}
 
 	private Favorite savedFavorite(LoginMember loginMember, Station source, Station target) {
-		return favoriteRepository.save(Favorite.of(source, target, loginMember.getId()));
+		Favorite of = Favorite.of(source, target, loginMember.getId());
+		return favoriteRepository.save(of);
 	}
 
 }

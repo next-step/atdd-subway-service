@@ -49,7 +49,7 @@ public class FavoriteAcceptanceUtils {
 		);
 	}
 
-	private static void 즐겨찾기_목록_포함됨(ExtractableResponse<Response> response, StationResponse[] stations) {
+	private static void 즐겨찾기_목록_포함됨(ExtractableResponse<Response> response, StationResponse... stations) {
 		List<Long> expectedIds = Arrays.stream(stations)
 			.map(StationResponse::getId)
 			.collect(Collectors.toList());
@@ -66,7 +66,8 @@ public class FavoriteAcceptanceUtils {
 		final String accessToken,
 		ExtractableResponse<Response> response
 	) {
-		return delete(accessToken, response.header("Location")).extract();
+		String location = response.header("Location");
+		return delete(location, accessToken).extract();
 	}
 
 	public static void 즐겨찾기_삭제됨(ExtractableResponse<Response> deleteResponse) {
