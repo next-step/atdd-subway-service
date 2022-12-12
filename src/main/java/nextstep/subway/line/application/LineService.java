@@ -40,6 +40,11 @@ public class LineService {
         return LineResponse.list(lineRepository.findAllWithSections());
     }
 
+    public Line findLineById(Long id) {
+        return lineRepository.findByIdWithSections(id)
+                .orElseThrow(RuntimeException::new);
+    }
+
     public LineResponse findLineResponseById(Long id) {
         return LineResponse.of(findLineById(id));
     }
@@ -68,10 +73,5 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.removeStation(station);
-    }
-
-    private Line findLineById(Long id) {
-        return lineRepository.findByIdWithSections(id)
-                .orElseThrow(RuntimeException::new);
     }
 }
