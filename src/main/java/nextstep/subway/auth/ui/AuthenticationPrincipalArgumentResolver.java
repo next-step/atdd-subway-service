@@ -28,11 +28,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        AuthenticationPrincipal annotation = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
-        if (annotation != null && !annotation.required()) {
-            return LoginMember.ofByNotLogin();
-        }
-
-        return authService.findMemberByToken(credentials);
+        boolean isRequired = Objects.requireNonNull(parameter.getParameterAnnotation(AuthenticationPrincipal.class)).required();
+        return authService.findMemberByToken(credentials, isRequired);
     }
 }

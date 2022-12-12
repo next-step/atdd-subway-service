@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.domain.Station;
@@ -20,8 +21,13 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청을_한다;
+import static nextstep.subway.auth.application.AuthServiceTest.EMAIL;
+import static nextstep.subway.auth.application.AuthServiceTest.PASSWORD;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_등록되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음;
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
+import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -90,8 +96,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     @Test
-    @DisplayName("성공적으로 최단 경로를 조회한다")
-    void getShortPath() {
+    @DisplayName("비로그인 후 성공적으로 최단 경로를 조회한다")
+    void getShortPathByNoLogin() {
         // when
         ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청(교대역.getId(), 양재시민의숲.getId());
 
@@ -99,6 +105,23 @@ public class PathAcceptanceTest extends AcceptanceTest {
         상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
         최단경로를_맞게_조회했는지_체크한다(결과, Arrays.asList(교대역.getId(), 남부터미널역.getId(), 양재역.getId(), 양재시민의숲.getId()), 40);
     }
+
+    @Test
+    @DisplayName("로그인 후 성공적으로 최단 경로를 조회한다 ")
+    void getShortPathByLogin() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        ExtractableResponse<Response> loginResponse = 로그인_요청을_한다(EMAIL, PASSWORD);
+        String accessToken = loginResponse.as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청_로그인시(교대역.getId(), 양재시민의숲.getId(), accessToken);
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        최단경로를_맞게_조회했는지_체크한다(결과, Arrays.asList(교대역.getId(), 남부터미널역.getId(), 양재역.getId(), 양재시민의숲.getId()), 40);
+    }
+
 
     @Test
     @DisplayName("출발지와 도착지가 같은 경우 예외를 발생한다")
@@ -109,6 +132,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.BAD_REQUEST);
     }
+
 
     @Test
     @DisplayName("존재하지 않는 역이 출발지일 경우 예외가 발생한다")
@@ -164,6 +188,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         return RestAssured
                 .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .params(params)
+                .when().get("/paths")
+                .then().log().all()
+                .extract();
+    }
+
+    private ExtractableResponse<Response> 지하철_경로_조회_요청_로그인시(Long sourceId, Long targetId, String token) {
+        Map<String, Long> params = new HashMap<>();
+        params.put("source", sourceId);
+        params.put("target", targetId);
+
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .accept(MediaType.APPLICATION_JSON_VALUE)
                 .params(params)

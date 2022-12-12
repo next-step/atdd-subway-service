@@ -23,7 +23,7 @@ public class PathController {
             @RequestParam(name = "source") Long sourceId,
             @RequestParam(name = "target") Long targetId
     ) {
-        PathResponse response = pathService.getPath(sourceId, targetId);
+        PathResponse response = pathService.getPath(sourceId, targetId, loginMember);
         return ResponseEntity.ok(response);
     }
 }

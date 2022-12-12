@@ -1,29 +1,29 @@
 package nextstep.subway.auth.domain;
 
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.member.domain.Age;
 
 public class LoginMember {
     private Long id;
     private String email;
-    private Integer age;
+    private Age age;
 
     private MemberType memberType;
 
     private LoginMember() {
     }
 
-    private LoginMember(Long id, String email, Integer age, MemberType memberType) {
+    private LoginMember(Long id, String email, Age age, MemberType memberType) {
         this.id = id;
         this.email = email;
         this.age = age;
         this.memberType = memberType;
     }
 
-    public static LoginMember ofByLogin(Long id, String email, Integer age) {
+    public static LoginMember ofByLogin(Long id, String email, Age age) {
         return new LoginMember(id, email, age, MemberType.LOGIN);
     }
 
-    public static Object ofByNotLogin() {
+    public static LoginMember ofByNotLogin() {
         return new LoginMember(null, null, null, MemberType.NOT_LOGIN);
     }
 
@@ -35,7 +35,12 @@ public class LoginMember {
         return email;
     }
 
-    public Integer getAge() {
+    public Age getAge() {
         return age;
+    }
+
+
+    public MemberType getMemberType() {
+        return memberType;
     }
 }

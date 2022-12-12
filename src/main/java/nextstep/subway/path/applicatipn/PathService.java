@@ -1,10 +1,10 @@
 package nextstep.subway.path.applicatipn;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.DijkstraShortestPathStrategy;
-import nextstep.subway.path.domain.PathFinder;
-import nextstep.subway.path.domain.PathStrategy;
+import nextstep.subway.line.domain.Lines;
+import nextstep.subway.path.domain.*;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.dto.SourceAndTargetStationDto;
@@ -26,12 +26,15 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse getPath(Long sourceId, Long targetId) {
+    public PathResponse getPath(Long sourceId, Long targetId, LoginMember loginMember) {
         SourceAndTargetStationDto station = stationService.findStationById(sourceId, targetId);
         List<Line> lines = lineService.findAll();
         PathStrategy strategy = new DijkstraShortestPathStrategy(lines);
         PathFinder pathFinder = strategy.getShortPath(station.getSourceStation(), station.getTargetStation());
+        int maxExtraFee = Lines.from(lines).getMaxExtraFee(pathFinder.getStations());
+        int fee = FeeCalculator.of(maxExtraFee, pathFinder.getDistance()).getFee();
+        int extraFee = AgePolicy.from(loginMember.getAge(), loginMember.getMemberType()).discount(fee);
 
-        return PathResponse.from(pathFinder);
+        return PathResponse.from(pathFinder, extraFee);
     }
 }
