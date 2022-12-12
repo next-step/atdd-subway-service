@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import nextstep.subway.Favorite.domain.Favorite;
 import nextstep.subway.Favorite.domain.FavoriteRepository;
+import nextstep.subway.Favorite.domain.Favorites;
 import nextstep.subway.Favorite.dto.FavoriteRequest;
 import nextstep.subway.Favorite.dto.FavoritesResponse;
 import nextstep.subway.auth.domain.LoginMember;
@@ -42,8 +43,8 @@ public class FavoriteService {
 
 	@Transactional(readOnly = true)
 	public List<FavoritesResponse> findAllFavorites(LoginMember loginMember) {
-		List<Favorite> favorites = favoriteRepository.findAllByMemberId(loginMember.id());
-		return FavoritesResponse.listOf(favorites);
+		Favorites favorites = Favorites.from(favoriteRepository.findAllByMemberId(loginMember.id()));
+		return favorites.mapToList(FavoritesResponse::from);
 	}
 
 	@Transactional
