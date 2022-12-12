@@ -2,7 +2,6 @@ package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.application.AuthService;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
-import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -12,9 +11,9 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static nextstep.subway.auth.domain.LoginMember.noneLoginMember;
+
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private static final int ADULT = 19;
-    
     private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
@@ -31,7 +30,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         AuthenticationPrincipal parameterAnnotation = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
         if(isNotLogin(credentials, parameterAnnotation.required())) {
-            return defaultLoginMember();
+            return noneLoginMember();
         }
         return authService.findMemberByToken(credentials);
     }
@@ -42,9 +41,5 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 
     private static boolean isEmpty(String credentials) {
         return credentials == null || credentials.isEmpty();
-    }
-
-    private static LoginMember defaultLoginMember() {
-        return new LoginMember(null, null, ADULT);
     }
 }

@@ -23,62 +23,48 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     public static final String WRONG_PASSWORD = "wrong_password";
 
     /**
-     * Feature: 로그인 성공
+     * Feature: 로그인 관련
      *   Scenario: 로그인을 시도한다.
      *     Given 회원 등록되어 있음
+     *     When 회원이 존재하지 않은 경우
+     *     Then 로그인 실패
      *     When 로그인 요청
-     *     Then 로그인 됨
+     *     Then 토큰 발급 성공
+     *     When 잘못된 패스워드로 로그인 요청
+     *     Then 로그인 실패
      */
-    @DisplayName("로그인 성공 관련")
+    @DisplayName("로그인 관련")
     @TestFactory
     Stream<DynamicTest> loginSuccess() {
         return Stream.of(
-                dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
-                dynamicTest("등록한 회원으로 로그인에 성공하고 토큰을 발급받는다", 로그인_요청_성공(EMAIL, PASSWORD))
-        );
-    }
-
-    /**
-     * Feature: 로그인 실패
-     *   Scenario: 로그인을 시도한다.
-     *     Given 회원이 등록되어 있지 않음
-     *     When 로그인 요청
-     *     Then 로그인 실패
-     */
-    @DisplayName("로그인 실패 관련")
-    @TestFactory
-    Stream<DynamicTest> loginFail() {
-        return Stream.of(
                 dynamicTest("등록한 회원이 없는 경우 예외가 발생한다", 로그인_요청_실패(EMAIL, PASSWORD)),
                 dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
+                dynamicTest("등록한 회원으로 로그인에 성공하고 토큰을 발급받는다", 로그인_요청_성공(EMAIL, PASSWORD)),
                 dynamicTest("패스워드가 일치하지 않아 예외가 발생한다", 로그인_요청_실패(EMAIL, WRONG_PASSWORD))
         );
     }
 
-    @DisplayName("Bearer Auth")
-    @TestFactory
-    Stream<DynamicTest> myInfoWithBearerAuth() {
-        return Stream.of(
-                dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
-                dynamicTest("등록한 회원으로 로그인에 성공하고 토큰을 발급받는다", 로그인_요청_성공(EMAIL, PASSWORD)),
-                dynamicTest("로그인에 성공하고 내 정보를 조회한다", 내_정보_조회_요청_성공(EMAIL, PASSWORD))
-        );
-    }
-
-    @DisplayName("Bearer Auth 로그인 실패")
+    /**
+     * Feature: Auth 관련
+     *   Scenario: 로그인을 시도한다.
+     *     Given 회원 등록되어 있음
+     *     When 로그인 요청
+     *     Then 토큰 발급 성공
+     *     When 내 정보 조회 요청
+     *     Then 내 정보 조회 성공
+     *     When 로그인 실패, 내 정보 조회 요청
+     *     Then 로그인 실패
+     *     When 유효하지 않은 토큰으로 내 정보 조회 요청
+     *     Then 내 정보 조회 실패
+     */
+    @DisplayName("Bearer Auth 관련")
     @TestFactory
     Stream<DynamicTest> myInfoWithBadBearerAuth() {
         return Stream.of(
                 dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
-                dynamicTest("로그인하지 않으면 내 정보를 조회할 수 없다", 로그인_요청_실패(EMAIL, WRONG_PASSWORD))
-        );
-    }
-
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
-    @TestFactory
-    Stream<DynamicTest> myInfoWithWrongBearerAuth() {
-        return Stream.of(
-                dynamicTest("새로운 회원을 등록한다", 회원_생성_요청_성공(EMAIL, PASSWORD, AGE)),
+                dynamicTest("등록한 회원으로 로그인에 성공하고 토큰을 발급받는다", 로그인_요청_성공(EMAIL, PASSWORD)),
+                dynamicTest("로그인에 성공하고 내 정보를 조회한다", 내_정보_조회_요청_성공(EMAIL, PASSWORD)),
+                dynamicTest("로그인하지 않으면 내 정보를 조회할 수 없다", 로그인_요청_실패(EMAIL, WRONG_PASSWORD)),
                 dynamicTest("유효하지 않은 토큰으로 내 정보를 조회할 수 없다", 내_정보_조회_요청_실패("wrongToken"))
         );
     }
