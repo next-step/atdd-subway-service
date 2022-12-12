@@ -7,8 +7,8 @@ import nextstep.subway.line.dto.LineCreateRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.LineUpdateRequest;
 import nextstep.subway.line.rest.LineRestAssured;
-import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.station.rest.StationRestAssured;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -33,8 +33,8 @@ public class LineAcceptanceTest extends AcceptanceTest {
         super.setUp();
 
         // given
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        광교역 = StationAcceptanceTest.지하철역_등록되어_있음("광교역").as(StationResponse.class);
+        강남역 = StationRestAssured.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        광교역 = StationRestAssured.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
         신분당선_생성_요청 = new LineCreateRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
         구신분당선_생성_요청 = new LineCreateRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
