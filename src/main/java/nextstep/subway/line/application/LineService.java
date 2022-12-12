@@ -34,6 +34,7 @@ public class LineService {
                 .upStation(upStation)
                 .downStation(downStation)
                 .distance(request.getDistance())
+                .addedFare(request.getAddedFare())
                 .build());
 
         return LineResponse.from(persistLine);

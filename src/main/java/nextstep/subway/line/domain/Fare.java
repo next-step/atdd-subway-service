@@ -30,6 +30,10 @@ public class Fare {
         return new Fare(fare);
     }
 
+    public Fare plus(Fare maxAddedFare) {
+        return new Fare(this.fare + maxAddedFare.value());
+    }
+
     public int value() {
         return fare;
     }

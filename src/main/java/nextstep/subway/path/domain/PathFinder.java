@@ -20,7 +20,7 @@ public class PathFinder {
                 .getPath(sourceStation, targetStation);
         validatePathExists(path);
 
-        return Path.of(Distance.from((int) path.getWeight()), path.getVertexList());
+        return Path.of(Distance.from((int) path.getWeight()), path.getVertexList(), lines);
     }
 
     private static WeightedMultigraph<Station, Section> getWeightedMultiGraph(List<Line> lines) {

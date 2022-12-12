@@ -34,6 +34,7 @@ public class DataLoaderConfig implements CommandLineRunner {
                 .upStation(강남역)
                 .downStation(양재역)
                 .distance(10)
+                .addedFare(0)
                 .build();
 
         Line 이호선 = Line.builder()
@@ -42,6 +43,7 @@ public class DataLoaderConfig implements CommandLineRunner {
                 .upStation(교대역)
                 .downStation(강남역)
                 .distance(10)
+                .addedFare(500)
                 .build();
 
         Line 삼호선 = Line.builder()
@@ -50,10 +52,12 @@ public class DataLoaderConfig implements CommandLineRunner {
                 .upStation(교대역)
                 .downStation(양재역)
                 .distance(10)
+                .addedFare(900)
                 .build();
 
         lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
         memberRepository.save(new Member("probitanima11@gmail.com", "11", 10));
+        memberRepository.save(new Member("shlee@gmail.com", "11", 13));
     }
 }
