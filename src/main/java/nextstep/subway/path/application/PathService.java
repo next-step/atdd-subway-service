@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.auth.domain.AgeGroup;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.StationGraph;
@@ -21,11 +22,12 @@ public class PathService {
         this.stationService = stationService;
     }
 
-    public PathResponse findPath(long sourceId, long targetId) {
+    public PathResponse findPath(long sourceId, long targetId, AgeGroup ageGroup) {
         Station source = stationService.findStationById(sourceId);
         Station target = stationService.findStationById(targetId);
         StationGraph graph = new StationGraph(sectionRepository.findAll());
         Path path = new PathFinder(graph).find(source, target);
+        path.applySale(ageGroup);
         return PathResponse.of(path);
     }
 

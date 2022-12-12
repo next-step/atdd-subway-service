@@ -13,6 +13,7 @@
 <br>
 
 # 지하철 노선도 미션
+
 [ATDD 강의](https://edu.nextstep.camp/c/R89PYi5H) 실습을 위한 지하철 노선도 애플리케이션
 
 <br>
@@ -20,25 +21,34 @@
 ## 🚀 Getting Started
 
 ### Install
+
 #### npm 설치
+
 ```
 cd frontend
 npm install
 ```
+
 > `frontend` 디렉토리에서 수행해야 합니다.
 
 ### Usage
+
 #### webpack server 구동
+
 ```
 npm run dev
 ```
+
 #### application 구동
+
 ```
 ./gradlew bootRun
 ```
+
 <br>
 
 ## ✏️ Code Review Process
+
 [텍스트와 이미지로 살펴보는 온라인 코드 리뷰 과정](https://github.com/next-step/nextstep-docs/tree/master/codereview)
 
 <br>
@@ -69,3 +79,19 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] 즐겨찾기 생성/목록조회/삭제 인수테스트
   - [x] 즐겨찾기 생성/목록조회/삭제 기능구현
   - [x] `Favorites`, `Member` 도메인 테스트 코드
+
+## Step4. 요금 조회
+
+### 요구사항
+
+- [x] 경로 조회 시 거리 기준 요금 정보 포함하기
+  - [x] ~ 10km: 1,250원
+  - [x] 10km 초과 50km 이하: 5km 마다 100원
+  - [x] 50km 초과 시: 8km 마다 100원
+- [x] 노선별 추가 요금 정책 추가
+  - [x] 노선에 `추가 요금` 필드 추가
+  - [x] 추가 요금이 있는 노선을 이용할 경우 측정된 요금에 추가 요금 추가
+  - [x] 경로 중 추가 요금은 가장 높은 금액의 경우만 적용(환승 시)
+- [x] 연령별 할인 정책 추가
+  - [x] 청소년(13세이상 19세미만): 350원 공제 후 20% 할인
+  - [x] 어린이(6세이상 13세미만): 350원 공제 후 50% 할인

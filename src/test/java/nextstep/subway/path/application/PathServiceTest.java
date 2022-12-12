@@ -12,6 +12,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.AgeGroup;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
@@ -42,9 +44,10 @@ class PathServiceTest {
         PathService pathService = new PathService(sectionRepository, stationService);
         when(stationService.findStationById(eq(1L))).thenReturn(강남역);
         when(stationService.findStationById(eq(2L))).thenReturn(역삼역);
-        when(sectionRepository.findAll()).thenReturn(Collections.singletonList(new Section(new Line(), 강남역, 역삼역, 10)));
+        when(sectionRepository.findAll()).thenReturn(
+            Collections.singletonList(new Section(new Line(), 강남역, 역삼역, new Distance(10))));
 
-        PathResponse pathResult = pathService.findPath(1L, 2L);
+        PathResponse pathResult = pathService.findPath(1L, 2L, AgeGroup.NO_SALE_AGE);
 
         assertThat(pathResult.getDistance()).isEqualTo(10);
         eqStation(pathResult.getStations().get(0), 강남역);
