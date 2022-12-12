@@ -1,6 +1,5 @@
 package nextstep.subway.line.domain;
 
-import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -46,36 +45,36 @@ public class Line extends BaseEntity {
         }
 
         Stations stations = new Stations();
-        Station downStation = findUpStation();
-        stations.add(downStation);
+        Station downStation = findFinalUpStation();
 
         while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
             stations.add(downStation);
+            downStation = nextStationOf(downStation, StationPosition.DOWN_STATION);
         }
 
         return stations;
     }
 
-    private Station findUpStation() {
+    public Station findFinalUpStation() {
         Station finalUpStation = null;
-        Section nextSection = sections.get(0);
-        while (nextSection != null) {
-            finalUpStation = nextSection.getUpStation();
-            Station stationToFind = finalUpStation;
-            nextSection = sections.stream()
-                    .filter(section -> stationToFind.equals(section.getDownStation()))
-                    .findFirst()
-                    .orElse(null);
+        Station nextUpstation = sections.get(0).getDownStation();
+        while (nextUpstation != null) {
+            finalUpStation = nextUpstation;
+            nextUpstation = nextStationOf(finalUpStation, StationPosition.UP_STATION);
         }
         return finalUpStation;
+    }
+
+    public Station nextStationOf(Station station, StationPosition stationPosition) {
+        Station downStation = null;
+        Section nextSection = sections.stream()
+                .filter(section -> section.isStationOppositeOf(station, stationPosition))
+                .findFirst()
+                .orElse(null);
+        if (nextSection != null) {
+            downStation = nextSection.getStationByPosition(stationPosition);
+        }
+        return downStation;
     }
 
     public Long getId() {

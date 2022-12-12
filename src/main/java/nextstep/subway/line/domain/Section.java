@@ -34,6 +34,33 @@ public class Section {
         this.distance = distance;
     }
 
+    private StationPosition positionOfStation(Station station) {
+        if (station.equals(upStation)) {
+            return StationPosition.UP_STATION;
+        }
+        if (station.equals(downStation)) {
+            return StationPosition.DOWN_STATION;
+        }
+        return null;
+    }
+
+    public boolean isStationOppositeOf(Station station, StationPosition stationPosition) {
+        if (stationPosition == null) {
+            throw new IllegalArgumentException();
+        }
+        return stationPosition.isOpposite(positionOfStation(station));
+    }
+
+    public Station getStationByPosition(StationPosition stationPosition) {
+        if (stationPosition.isUpStation()) {
+            return upStation;
+        }
+        if (stationPosition.isDownStation()) {
+            return downStation;
+        }
+        return null;
+    }
+
     public Long getId() {
         return id;
     }
