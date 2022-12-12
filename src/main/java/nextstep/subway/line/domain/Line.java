@@ -60,4 +60,9 @@ public class Line extends BaseEntity {
     public void addSection(Section section) {
         this.sections.add(section);
     }
+
+    public void addLineStation(Section section) {
+        this.sections.addSections(section);
+    }
+
 }

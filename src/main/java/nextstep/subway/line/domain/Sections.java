@@ -68,4 +68,54 @@ public class Sections {
         return downStation;
     }
 
+    public boolean isStationExisted(Station station) {
+        return this.getStations().stream().anyMatch(it -> it == station);
+    }
+
+    public boolean isStationNotExisted(Station station) {
+        return this.getStations().stream().noneMatch(it -> it == station);
+    }
+
+    public void addSections(Section section) {
+        isValidDuplicate(section);
+        isaValidNotExist(section);
+
+        updateUpStation(section);
+        updateDownStation(section);
+
+        this.sections.add(section);
+    }
+
+    private void updateUpStation(Section section) {
+        if (isStationExisted(section.getUpStation())) {
+            this.getSections().stream()
+                    .filter(it -> it.getUpStation() == section.getUpStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateUpStation(section.getDownStation(), section.getDistance()));
+        }
+    }
+
+    private void updateDownStation(Section section) {
+        if (isStationExisted(section.getUpStation())) {
+            this.getSections().stream()
+                    .filter(it -> it.getDownStation() == section.getDownStation())
+                    .findFirst()
+                    .ifPresent(it -> it.updateDownStation(section.getUpStation(), section.getDistance()));
+        }
+    }
+
+    private void isaValidNotExist(Section section) {
+        if (!this.sections.isEmpty()
+                && isStationNotExisted(section.getUpStation())
+                && isStationNotExisted(section.getDownStation())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+        ;
+    }
+
+    private void isValidDuplicate(Section section) {
+        if (isStationExisted(section.getUpStation()) && isStationExisted(section.getDownStation())) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
 }
