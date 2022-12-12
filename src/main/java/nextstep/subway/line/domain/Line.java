@@ -65,19 +65,17 @@ public class Line extends BaseEntity {
     }
 
     private Station findUpStation() {
-        Station downStation = sections.get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = sections.stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
+        Station finalUpStation = null;
+        Section nextSection = sections.get(0);
+        while (nextSection != null) {
+            finalUpStation = nextSection.getUpStation();
+            Station stationToFind = finalUpStation;
+            nextSection = sections.stream()
+                    .filter(section -> stationToFind.equals(section.getDownStation()))
+                    .findFirst()
+                    .orElse(null);
         }
-
-        return downStation;
+        return finalUpStation;
     }
 
     public Long getId() {
