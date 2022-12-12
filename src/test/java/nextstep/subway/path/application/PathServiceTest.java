@@ -19,6 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.*;
 
 
@@ -86,6 +87,24 @@ class PathServiceTest {
             assertThat(stations).hasSize(3);
             assertThat(distance).isEqualTo(25);
         });
+    }
+
+    @DisplayName("예외발생 - 출발역과 도착역이 같은 경우")
+    @Test
+    void makeExceptionWhenSourceStationEqualsTargetStation() {
+        PathFinder pathFinder = ShortestPathFinder.from(sections);
+
+        assertThatThrownBy(() -> pathFinder.findAllStationsInTheShortestPath(서울역, 서울역))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("예외발생 - 출발역과 도착역이 연결되지 않은 경우")
+    @Test
+    void makeExceptionWhenSourceStationIsNotConnectToTargetStation() {
+        PathFinder pathFinder = ShortestPathFinder.from(sections);
+
+        assertThatThrownBy(() -> pathFinder.findAllStationsInTheShortestPath(서울역, 교대역))
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
 }
