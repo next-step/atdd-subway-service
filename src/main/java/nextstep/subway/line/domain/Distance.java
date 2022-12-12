@@ -9,7 +9,8 @@ public class Distance {
 
     private int distance;
 
-    protected Distance() {}
+    protected Distance() {
+    }
 
     public Distance(int distance) {
         this.distance = distance;
@@ -33,4 +34,5 @@ public class Distance {
         isValidDistance(newDistance);
         return new Distance(this.distance - newDistance.getDistance());
     }
+
 }

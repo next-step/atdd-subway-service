@@ -118,4 +118,40 @@ public class Sections {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
     }
+
+
+    public void removeLineStation(Line line,Station station) {
+        isValidSectionsSize();
+
+        Optional<Section> upLineStation = getFirstUpStation(station);
+        Optional<Section> downLineStation = getFirstDownStation(sections, station);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            Station newUpStation = downLineStation.get().getUpStation();
+            Station newDownStation = upLineStation.get().getDownStation();
+            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+            sections.add(new Section(line, newUpStation, newDownStation, newDistance));
+        }
+
+        upLineStation.ifPresent(it -> line.getSections().remove(it));
+        downLineStation.ifPresent(it -> line.getSections().remove(it));
+    }
+
+    private Optional<Section> getFirstDownStation(List<Section> sections, Station station) {
+        return sections.stream()
+                .filter(it -> it.getDownStation() == station)
+                .findFirst();
+    }
+
+    private Optional<Section> getFirstUpStation(Station station) {
+        return sections.stream()
+                .filter(it -> it.getUpStation() == station)
+                .findFirst();
+    }
+
+    private void isValidSectionsSize() {
+        if (sections.size() <= 1) {
+            throw new RuntimeException();
+        }
+    }
 }
