@@ -44,4 +44,55 @@ public class LineTest {
 
         assertThat(신분당선.findFinalUpStation()).isEqualTo(신논현역);
     }
+
+    @DisplayName("노선에 등록된 두 지하철역 사이의 역 제거 ")
+    @Test
+    void 중간역_제거() {
+        Station 정자역 = new Station("정자역");
+        Station 광교역 = new Station("광교역");
+        Section 구간1 = new Section(신분당선, 양재역, 정자역, 10);
+        Section 구간2 = new Section(신분당선, 정자역, 광교역, 10);
+        신분당선.getSections().add(구간1);
+        신분당선.getSections().add(구간2);
+
+        신분당선.removeLineStation(정자역);
+
+        Section 예상_새_구간 = new Section(신분당선, 양재역, 광교역, 20);
+        assertAll(
+                () -> assertThat(신분당선.getSections()).doesNotContain(구간1, 구간2),
+                () -> assertThat(신분당선.getSections()).contains(예상_새_구간)
+        );
+    }
+
+    @DisplayName("노선에 등록된 상행종점 제거 ")
+    @Test
+    void 상행종점_제거() {
+        Station 신논현역 = new Station("신논현역");
+        Section 구간1 = new Section(신분당선, 신논현역, 강남역, 10);
+        신분당선.getSections().add(구간1);
+
+        신분당선.removeLineStation(신논현역);
+
+        Section 예상_잔여_구간 = new Section(신분당선, 강남역, 양재역, 10);
+        assertAll(
+                () -> assertThat(신분당선.getSections()).doesNotContain(구간1),
+                () -> assertThat(신분당선.getSections()).contains(예상_잔여_구간)
+        );
+    }
+
+    @DisplayName("노선에 등록된 하행종점 제거 ")
+    @Test
+    void 하행종점_제거() {
+        Station 정자역 = new Station("정자역");
+        Section 구간1 = new Section(신분당선, 양재역, 정자역, 10);
+        신분당선.getSections().add(구간1);
+
+        신분당선.removeLineStation(정자역);
+
+        Section 예상_잔여_구간 = new Section(신분당선, 강남역, 양재역, 10);
+        assertAll(
+                () -> assertThat(신분당선.getSections()).doesNotContain(구간1),
+                () -> assertThat(신분당선.getSections()).contains(예상_잔여_구간)
+        );
+    }
 }
