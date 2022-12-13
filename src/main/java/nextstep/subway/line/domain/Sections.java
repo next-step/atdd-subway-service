@@ -42,6 +42,34 @@ public class Sections {
         return sections.get(0).getDownStation();
     }
 
+    public Section getMatchSectionByPosition(Station station, StationPosition stationPosition) {
+        return sections.stream()
+                .filter(section -> section.isStationMatchWithPositionOf(station, stationPosition))
+                .findFirst().orElse(null);
+    }
+
+    public Station nextStationOf(Station station, StationPosition stationPosition) {
+        Station downStation = null;
+        Section nextSection = sections.stream()
+                .filter(section -> section.isStationOppositeOf(station, stationPosition))
+                .findFirst()
+                .orElse(null);
+        if (nextSection != null) {
+            downStation = nextSection.getStationByPosition(stationPosition);
+        }
+        return downStation;
+    }
+
+    public Station findFinalUpStation() {
+        Station finalUpStation = null;
+        Station nextUpstation = sections.get(0).getDownStation();
+        while (nextUpstation != null) {
+            finalUpStation = nextUpstation;
+            nextUpstation = nextStationOf(finalUpStation, StationPosition.UP_STATION);
+        }
+        return finalUpStation;
+    }
+
     public List<Section> getSections() {
         return sections;
     }

@@ -43,34 +43,12 @@ public class Line extends BaseEntity {
             return new Stations();
         }
         Stations stations = new Stations();
-        Station downStation = findFinalUpStation();
+        Station downStation = sections.findFinalUpStation();
         while (downStation != null) {
             stations.add(downStation);
-            downStation = nextStationOf(downStation, StationPosition.DOWN_STATION);
+            downStation = sections.nextStationOf(downStation, StationPosition.DOWN_STATION);
         }
         return stations;
-    }
-
-    public Station findFinalUpStation() {
-        Station finalUpStation = null;
-        Station nextUpstation = sections.getFirstSectionDownStation();
-        while (nextUpstation != null) {
-            finalUpStation = nextUpstation;
-            nextUpstation = nextStationOf(finalUpStation, StationPosition.UP_STATION);
-        }
-        return finalUpStation;
-    }
-
-    public Station nextStationOf(Station station, StationPosition stationPosition) {
-        Station downStation = null;
-        Section nextSection = sections.stream()
-                .filter(section -> section.isStationOppositeOf(station, stationPosition))
-                .findFirst()
-                .orElse(null);
-        if (nextSection != null) {
-            downStation = nextSection.getStationByPosition(stationPosition);
-        }
-        return downStation;
     }
 
     public void checkLineStationRemovable() {

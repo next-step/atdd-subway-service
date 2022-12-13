@@ -23,28 +23,6 @@ public class LineTest {
         신분당선 = new Line("신분당선", "red", 강남역, 양재역, 10);
     }
 
-    @DisplayName("지정위치에 따라 다음역 찾기")
-    @Test
-    void 다음역_찾기() {
-        assertAll(
-            () -> assertThat(신분당선.nextStationOf(강남역, StationPosition.DOWN_STATION)).isEqualTo(양재역),
-            () -> assertThat(신분당선.nextStationOf(양재역, StationPosition.UP_STATION)).isEqualTo(강남역)
-        );
-    }
-
-    @DisplayName("상행종점 찾기")
-    @Test
-    void 상행종점_찾기() {
-        Station 신논현역 = new Station("신논현역");
-        Station 정자역 = new Station("정자역");
-        Section 구간1 = new Section(신분당선, 신논현역, 강남역, 10);
-        Section 구간2 = new Section(신분당선, 양재역, 정자역, 10);
-        신분당선.getSections().add(구간1);
-        신분당선.getSections().add(구간2);
-
-        assertThat(신분당선.findFinalUpStation()).isEqualTo(신논현역);
-    }
-
     @DisplayName("노선에 등록된 두 지하철역 사이의 역 제거 ")
     @Test
     void 중간역_제거() {
