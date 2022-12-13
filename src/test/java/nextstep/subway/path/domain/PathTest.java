@@ -17,7 +17,6 @@ public class PathTest {
     private Station 교대역;
     private Station 강남역;
     private Station 양재역;
-    private Station 판교역;
     private Line 신분당선;
     private Line 이호선;
 
@@ -26,7 +25,6 @@ public class PathTest {
         교대역 = new Station("교대역");
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
-        판교역 = new Station("판교역");
         신분당선 = Line.builder()
                 .name("신분당선")
                 .color("red lighten-1")

@@ -8,7 +8,7 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.acceptance.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
