@@ -1,5 +1,6 @@
 package nextstep.subway.path;
 
+import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
@@ -10,6 +11,7 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -152,7 +154,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private ExtractableResponse<Response> 경로_조회_요청(StationResponse startStation, StationResponse endStation) {
-        return null;
+        return RestAssured
+                .given().log().all()
+                .accept(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(String.format("/paths?source=%d&target=%d", startStation.getId(), endStation.getId()))
+                .then().log().all()
+                .extract();
     }
 
     private void 경로_조회됨(ExtractableResponse<Response> response) {
