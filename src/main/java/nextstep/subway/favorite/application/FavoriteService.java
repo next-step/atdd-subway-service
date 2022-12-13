@@ -15,9 +15,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class FavoriteService {
 
-    private FavoriteRepository favoriteRepository;
-    private StationRepository stationRepository;
-    private MemberRepository memberRepository;
+    private final FavoriteRepository favoriteRepository;
+    private final StationRepository stationRepository;
+    private final MemberRepository memberRepository;
 
     public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository, MemberRepository memberRepository) {
         this.favoriteRepository = favoriteRepository;
@@ -44,17 +44,21 @@ public class FavoriteService {
                 );
     }
 
-    public List<FavoriteResponse> findFavoriteAll(Long id) {
-        return favoriteRepository.findAllByMember(getMember(id)).stream()
+    public List<FavoriteResponse> findFavoriteAll(Long memberId) {
+        return getMember(memberId).getFavorites().stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
     }
 
     public void deleteFavorite(Long memberId, Long id) {
         Member member = getMember(memberId);
-        Favorite findFavorite = favoriteRepository.findFavoriteByIdAndMember(id, member).orElseThrow(
+        Favorite findFavorite = getFavorite(id);
+        findFavorite.deleteBy(member);
+    }
+
+    private Favorite getFavorite(Long id) {
+        return favoriteRepository.findById(id).orElseThrow(
                 () -> new IllegalArgumentException("즐겨찾기 조회 실패")
         );
-        favoriteRepository.delete(findFavorite);
     }
 }

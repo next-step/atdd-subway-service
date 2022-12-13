@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -39,6 +40,17 @@ public class Favorite {
         this.source = source;
         this.target = target;
         this.member = member;
+        if(member != null){
+            addBy(member);
+        }
+    }
+
+    public void addBy(Member member){
+        member.addFavorite(this);
+    }
+
+    public void deleteBy(Member member){
+        member.deleteFavorite(this);
     }
 
     public Long getId() {

@@ -64,18 +64,18 @@ class FavoriteServiceTest {
         // 사용자정보를 통해 해당 사용자의 즐겨찾기 목록을 조회한다.
         // given
         FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationRepository, memberRepository);
+        Member member = new Member(1L, "test@test.com", "password", 10);
+        Favorite favorite1 = new Favorite(1L, new Station("강남역"), new Station("잠실역"), member);
+        Favorite favorite2 = new Favorite(2L, new Station("영등포역"), new Station("수원역"), member);
+        Favorite favorite3 = new Favorite(3L, new Station("시청역"), new Station("종로3가역"), member);
 
         // when
-        when(favoriteRepository.findAllByMember(any())).thenReturn(Arrays.asList(
-                new Favorite(1L, new Station("강남역"), new Station("잠실역"), new Member("test@test.com", "password", 10)),
-                new Favorite(2L, new Station("영등포역"), new Station("수원역"), new Member("test@test.com", "password", 10)),
-                new Favorite(3L, new Station("시청역"), new Station("종로3가역"), new Member("test@test.com", "password", 10))
-        ));
-        when(memberRepository.findById(any())).thenReturn(Optional.of(new Member(1L, "test@test.com", "password", 10)));
+        when(memberRepository.findById(any())).thenReturn(Optional.of(member));
         List<FavoriteResponse> favorites = favoriteService.findFavoriteAll(1L);
 
         // then
         assertThat(favorites).hasSize(3);
+
     }
 
     @Test
@@ -84,17 +84,17 @@ class FavoriteServiceTest {
         // 사용자정보를 통해 해당 사용자의 즐겨찾기 목록을 조회한다.
         // given
         FavoriteService favoriteService = new FavoriteService(favoriteRepository, stationRepository, memberRepository);
-        ArgumentCaptor<Favorite> arg = ArgumentCaptor.forClass(Favorite.class);
 
         // when
         Member member = new Member(100L,"test@test.com", "password", 10);
         Favorite favorite = new Favorite(new Station("강남역"), new Station("잠실역"), member);
+        assertThat(member.getFavorites()).hasSize(1);
+
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(favoriteRepository.findFavoriteByIdAndMember(any(), any())).thenReturn(Optional.of(favorite));
+        when(favoriteRepository.findById(any())).thenReturn(Optional.of(favorite));
         favoriteService.deleteFavorite(100L, 1L);
 
         // then
-        verify(favoriteRepository).delete(arg.capture());
-        assertThat(arg.getValue()).isEqualTo(favorite);
+        assertThat(member.getFavorites()).hasSize(0);
     }
 }

@@ -1,10 +1,10 @@
 package nextstep.subway.line.application;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import static nextstep.subway.line.application.PathResultConvertor.*;
+
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.PathGraph;
-import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.PathResult;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
@@ -25,8 +25,24 @@ public class PathService {
         this.pathGraph = pathGraph;
     }
 
-    public PathResponse path(Long sourceId, Long targetId) {
-        return pathGraph.findPath(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
+    public PathResponse path(Long sourceId, Long targetId, LoginMember loginMember) {
+        PathResult pathResult = pathGraph.findPath(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
+        return getResponseWithCharge(pathResult, loginMember);
+    }
+
+    private PathResponse getResponseWithCharge(PathResult pathResult, LoginMember loginMember){
+        discountCharge(pathResult, loginMember);
+        return convert(pathResult);
+    }
+
+    private void discountCharge(PathResult pathResult, LoginMember loginMember) {
+        if(isLoggedIn(loginMember)){
+            pathResult.discountCharge(loginMember.getAge());
+        }
+    }
+
+    private boolean isLoggedIn(LoginMember loginMember) {
+        return loginMember != null;
     }
 
     private Station getStation(Long sourceId) {

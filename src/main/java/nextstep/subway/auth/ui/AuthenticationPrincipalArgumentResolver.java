@@ -1,7 +1,9 @@
 package nextstep.subway.auth.ui;
 
 import nextstep.subway.auth.application.AuthService;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.infrastructure.AuthorizationExtractor;
 import org.springframework.core.MethodParameter;
 import org.springframework.web.bind.support.WebDataBinderFactory;
@@ -26,6 +28,12 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
-        return authService.findMemberByToken(credentials);
+        LoginMember loginMember = authService.findMemberByToken(credentials);
+
+        if(parameter.getParameterAnnotation(AuthenticationPrincipal.class).required()
+                && loginMember == null){
+            throw new AuthorizationException("인증 정보가 유효하지 않습니다.");
+        }
+        return loginMember;
     }
 }
