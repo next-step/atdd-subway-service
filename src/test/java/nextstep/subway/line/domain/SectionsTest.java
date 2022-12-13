@@ -8,10 +8,8 @@ import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.boot.test.context.SpringBootTest;
 
 @DisplayName("지하철 구간 도메인 단위테스트")
-@SpringBootTest
 public class SectionsTest {
     private Station 강남역;
     private Station 광교역;
