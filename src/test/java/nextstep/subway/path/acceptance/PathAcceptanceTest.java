@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -133,6 +133,58 @@ public class PathAcceptanceTest extends AcceptanceTest {
         // then
         경로_조회_실패됨(미존재역_교대역_조회);
 
+    }
+
+    @Test
+    @DisplayName("지하철 경로를 조회한다.")
+    void manageFindPath() {
+
+        // when
+        ExtractableResponse<Response> 강남역_남부터미널역_경로_조회 = 경로_조회_요청(강남역, 남부터미널역);
+
+        // then
+        경로_조회됨(강남역_남부터미널역_경로_조회);
+        경로_조회_졍렬됨(강남역_남부터미널역_경로_조회, Arrays.asList(강남역, 양재역, 남부터미널역));
+
+    }
+
+    @Test
+    @DisplayName("지하철 경로를 실패한다. - 출발역과 도착역이 동일한 경우")
+    void manageFindSameStation() {
+
+        // when
+        ExtractableResponse<Response> 교대역_교대역_조회 = 경로_조회_요청(교대역, 교대역);
+
+        // then
+        경로_조회_실패됨(교대역_교대역_조회);
+
+    }
+
+    @Test
+    @DisplayName("지하철 경로를 실패한다. - 출발역과 도착역이 연결되어 있지 않아 경로를 찾을 수 없음.")
+    void manageFindNoPath() {
+
+        // given
+        StationResponse 천안역 = 지하철역_등록되어_있음("천안역").as(StationResponse.class);
+        StationResponse 온양온천역 = 지하철역_등록되어_있음("온양온천역").as(StationResponse.class);
+        LineResponse 일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "bg-red-600", 천안역.getId(), 온양온천역.getId(), 10)).as(LineResponse.class);
+
+        // when
+        ExtractableResponse<Response> 천안역_교대역_조회 = 경로_조회_요청(천안역, 교대역);
+
+        // then
+        경로_조회_실패됨(천안역_교대역_조회);
+
+    }
+
+    @Test
+    @DisplayName("지하철 경로를 실패한다. - 존재하지 않은 지하철역이 있음.")
+    void manageFindNoStation() {
+        // when
+        ExtractableResponse<Response> 미존재역_교대역_조회 = 경로_조회_요청(new StationResponse(0L, "미존재역", LocalDateTime.now(), LocalDateTime.now()), 교대역);
+
+        // then
+        경로_조회_실패됨(미존재역_교대역_조회);
 
     }
 
