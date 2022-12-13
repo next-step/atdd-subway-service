@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.domain;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -22,6 +23,10 @@ public class Favorite {
     @JoinColumn(name = "target_station_id")
     private Station target;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
+
     protected Favorite(){
 
     }
@@ -34,7 +39,7 @@ public class Favorite {
         this.id = id;
         this.source = source;
         this.target = target;
-
+        this.member = member;
         if(member != null){
             addBy(member);
         }
