@@ -68,7 +68,7 @@ class LineServiceTest {
         // given
         long upStationId = 1L;
         long downStationId = 2L;
-        LineCreateRequest request = new LineCreateRequest("2호선", "color", upStationId, downStationId, 5);
+        LineCreateRequest request = new LineCreateRequest("2호선", "color", upStationId, downStationId, 5, 0);
 
         given(stationService.findStationById(upStationId)).willReturn(강남역);
         given(stationService.findStationById(downStationId)).willReturn(교대역);
@@ -111,7 +111,7 @@ class LineServiceTest {
         // given
         Line line = new Line("구분당선", "color");
         given(lineRepository.findByIdWithSections(any())).willReturn(Optional.of(line));
-        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("신분당선", "changeColor");
+        LineUpdateRequest lineUpdateRequest = new LineUpdateRequest("신분당선", "changeColor", 0);
 
         // when
         lineService.updateLine(1L, lineUpdateRequest);

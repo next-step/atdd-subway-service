@@ -36,9 +36,9 @@ public class LineAcceptanceTest extends AcceptanceTest {
         강남역 = StationRestAssured.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         광교역 = StationRestAssured.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        신분당선_생성_요청 = new LineCreateRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
-        구신분당선_생성_요청 = new LineCreateRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15);
-        신분당선_수정_요청 = new LineUpdateRequest("구신분당선", "bg-red-600");
+        신분당선_생성_요청 = new LineCreateRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 700);
+        구신분당선_생성_요청 = new LineCreateRequest("구신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 15, 0);
+        신분당선_수정_요청 = new LineUpdateRequest("구신분당선", "bg-red-600", 0);
     }
 
     @DisplayName("지하철 노선을 생성한다.")

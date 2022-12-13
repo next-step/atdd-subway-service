@@ -21,18 +21,42 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    @Embedded
+    private Fare overFare;
+
     protected Line() {
 
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name,
+                String color,
+                Station upStation,
+                Station downStation,
+                int distance) {
         this(name, color);
+        this.addSection(upStation, downStation, distance);
+    }
+
+    public Line(String name,
+                String color,
+                Station upStation,
+                Station downStation,
+                int distance,
+                int fare) {
+        this(name, color, fare);
         this.addSection(upStation, downStation, distance);
     }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.overFare = Fare.zero();
+    }
+
+    public Line(String name, String color, int fare) {
+        this.name = name;
+        this.color = color;
+        this.overFare = Fare.of(fare);
     }
 
     public void update(Line line) {
@@ -94,6 +118,7 @@ public class Line extends BaseEntity {
                 "id=" + id +
                 ", name='" + name + '\'' +
                 ", color='" + color + '\'' +
+                ", overFare='" + overFare + '\'' +
                 '}';
     }
 }

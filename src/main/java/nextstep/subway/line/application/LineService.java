@@ -33,7 +33,12 @@ public class LineService {
     private Line mapToLine(LineCreateRequest request) {
         Station upStation = stationService.findStationById(request.getUpStationId());
         Station downStation = stationService.findStationById(request.getDownStationId());
-        return new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance());
+        return new Line(request.getName(),
+                request.getColor(),
+                upStation,
+                downStation,
+                request.getDistance(),
+                request.getFare());
     }
 
     public List<LineResponse> findLines() {
