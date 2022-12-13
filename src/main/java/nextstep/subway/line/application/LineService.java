@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -76,8 +77,9 @@ public class LineService {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
 
+        Distance distance = new Distance(request.getDistance());
         if (stations.isEmpty()) {
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, distance));
             return;
         }
 
@@ -85,16 +87,16 @@ public class LineService {
             line.getSections().stream()
                     .filter(it -> it.getUpStation() == upStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateUpStation(downStation, request.getDistance()));
+                    .ifPresent(it -> it.updateUpStation(downStation, distance));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, distance));
         } else if (isDownStationExisted) {
             line.getSections().stream()
                     .filter(it -> it.getDownStation() == downStation)
                     .findFirst()
-                    .ifPresent(it -> it.updateDownStation(upStation, request.getDistance()));
+                    .ifPresent(it -> it.updateDownStation(upStation, distance));
 
-            line.getSections().add(new Section(line, upStation, downStation, request.getDistance()));
+            line.getSections().add(new Section(line, upStation, downStation, distance));
         } else {
             throw new RuntimeException();
         }

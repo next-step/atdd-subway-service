@@ -38,10 +38,6 @@ public class Sections {
         }
     }
 
-    public Station getFirstSectionDownStation() {
-        return sections.get(0).getDownStation();
-    }
-
     public Section getMatchSectionByPosition(Station station, StationPosition stationPosition) {
         return sections.stream()
                 .filter(section -> section.isStationMatchWithPositionOf(station, stationPosition))

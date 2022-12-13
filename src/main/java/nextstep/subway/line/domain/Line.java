@@ -27,10 +27,14 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+        this(name, color, upStation, downStation, new Distance(distance));
     }
 
     public void update(Line line) {
@@ -69,7 +73,7 @@ public class Line extends BaseEntity {
         if (upStationMatchSection != null && downStationMatchSection != null) {
             Station newUpStation = downStationMatchSection.getUpStation();
             Station newDownStation = upStationMatchSection.getDownStation();
-            int newDistance = upStationMatchSection.addDistanceOfSection(downStationMatchSection);
+            Distance newDistance = upStationMatchSection.addDistanceOfSection(downStationMatchSection);
             sections.add(new Section(this, newUpStation, newDownStation, newDistance));
         }
     }
