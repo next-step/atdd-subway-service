@@ -31,7 +31,7 @@ public class Age {
 	}
 
 	private boolean positive(int value) {
-		return value > ZERO;
+		return value >= ZERO;
 	}
 
 	@Override
