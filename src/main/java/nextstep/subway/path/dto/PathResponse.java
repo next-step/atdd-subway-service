@@ -22,9 +22,7 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse from(Path path, Integer age) {
-        Distance distance = path.getShortestDistance();
-        Fare fare = Fare.of(distance, age, path.getSurcharge());
+    public static PathResponse from(Path path, Distance distance, Fare fare) {
         return new PathResponse(path.shortestPath().stream()
             .map(StationResponse::of)
             .collect(Collectors.toList()),

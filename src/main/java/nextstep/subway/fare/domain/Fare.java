@@ -2,7 +2,7 @@ package nextstep.subway.fare.domain;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
-import nextstep.subway.line.domain.Distance;
+import nextstep.subway.path.domain.Path;
 
 @Embeddable
 public class Fare implements Comparable<Fare> {
@@ -20,9 +20,11 @@ public class Fare implements Comparable<Fare> {
         this.fare = fare;
     }
 
-    public static Fare of(Distance distance, int age, Fare lineFare) {
-        Fare fare = DEFAULT_FARE.plus(distance.additionalFareByDistance())
-            .plus(lineFare);
+    public static Fare calculateByPolicy(Path path, int distance, Integer age) {
+        Fare lineSurCharge = path.getSurcharge();
+        DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.from(distance);
+
+        Fare fare = DEFAULT_FARE.plus(distanceFarePolicy.apply(distance)).plus(lineSurCharge);
         return AgeFarePolicy.from(age).discount(fare);
     }
 

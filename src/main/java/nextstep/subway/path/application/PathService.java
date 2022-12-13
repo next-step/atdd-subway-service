@@ -1,6 +1,8 @@
 package nextstep.subway.path.application;
 
 import java.util.NoSuchElementException;
+import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
@@ -34,7 +36,9 @@ public class PathService {
             .orElseThrow(() -> new NoSuchElementException("회원 정보 없음"));
 
         Path path = new PathFinder(lineRepository.findAll()).getPath(sourceStation, targetStation);
-
-        return PathResponse.from(path, member.getAge());
+        Distance shortestDistance = path.getShortestDistance();
+        Fare fare = Fare.calculateByPolicy(path, shortestDistance.distance(), member.getAge());
+        
+        return PathResponse.from(path, shortestDistance, fare);
     }
 }
