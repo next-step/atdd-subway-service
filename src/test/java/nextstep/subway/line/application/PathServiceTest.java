@@ -2,7 +2,6 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
-import nextstep.subway.line.domain.TestStation;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -53,10 +52,10 @@ class PathServiceTest {
     }
 
     private List Mock_지하철역_등록됨() {
-        강남역 = new TestStation("강남역");
-        교대역 = new TestStation("교대역");
-        남부터미널역 = new TestStation("남부터미널역");
-        양재역 = new TestStation("양재역");
+        강남역 = new Station(1L, "강남역");
+        교대역 = new Station(2L, "교대역");
+        남부터미널역 = new Station(3L, "남부터미널역");
+        양재역 = new Station(4L, "양재역");
 
         return Arrays.asList(강남역, 교대역, 남부터미널역, 양재역);
     }

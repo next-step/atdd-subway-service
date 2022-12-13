@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,12 +12,12 @@ public class SectionTest {
     private Section section;
     @BeforeEach
     void setUp() {
-        section = new Section(new TestStation("강남"), new TestStation("양평"), 3);
+        section = new Section(new Station(1L, "강남"), new Station(2L,"양평"), 3);
     }
     @Test
     @DisplayName("isSameDownStation 테스트- 성공")
     public void isSameDownStation() {
-        TestStation actual = new TestStation("양평");
+        Station actual = new Station(2L, "양평");
 
         assertThat(section.isSameDownStation(actual)).isTrue();
     }
@@ -24,7 +25,7 @@ public class SectionTest {
     @Test
     @DisplayName("isSameDownStation 테스트 - 실패")
     public void isSameDownStation2() {
-        TestStation actual = new TestStation("강남");
+        Station actual = new Station(1L, "강남");
 
         assertThat(section.isSameDownStation(actual)).isFalse();
     }
@@ -32,7 +33,7 @@ public class SectionTest {
     @Test
     @DisplayName("isSameUpStation 테스트 - 성공")
     public void isSameUpStation() {
-        TestStation actual = new TestStation("강남");
+        Station actual = new Station(1L, "강남");
 
         assertThat(section.isSameUpStation(actual)).isTrue();
     }
@@ -40,7 +41,7 @@ public class SectionTest {
     @Test
     @DisplayName("isSameDownStation 테스트 - 실패")
     public void isSameUpStation2() {
-        TestStation actual = new TestStation("양평");
+        Station actual = new Station(2L, "양평");
 
         assertThat(section.isSameUpStation(actual)).isFalse();
     }
