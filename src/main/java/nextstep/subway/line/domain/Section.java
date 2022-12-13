@@ -85,4 +85,17 @@ public class Section {
         distance.minus(addSection.getDistance());
         this.downStation = addSection.upStation;
     }
+
+    public void disconnectDownSection(Section downSection) {
+        this.downStation = downSection.downStation;
+        this.distance.plus(downSection.distance);
+    }
+
+    public boolean hasUpStation(Station station) {
+        return upStation.equals(station);
+    }
+
+    public boolean hasDownStation(Station station) {
+        return downStation.equals(station);
+    }
 }
