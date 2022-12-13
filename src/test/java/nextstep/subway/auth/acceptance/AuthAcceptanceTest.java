@@ -63,7 +63,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 로그인_요청(NEW_EMAIL, PASSWORD);
 
         //then
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.FORBIDDEN.value());
     }
 
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
