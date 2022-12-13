@@ -19,7 +19,11 @@ public class Line extends BaseEntity {
     @OneToMany(mappedBy = "line", cascade = {CascadeType.PERSIST, CascadeType.MERGE}, orphanRemoval = true)
     private List<Section> sections = new ArrayList<>();
 
-    public Line() {
+    protected Line() {
+    }
+
+    public static Line of() {
+        return new Line();
     }
 
     public Line(String name, String color) {
