@@ -62,14 +62,12 @@ public class PathService {
     }
 
     private void setGraphEdge(List<Section> sections, WeightedMultigraph graph) {
-        sections.stream()
-                .forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation().getName()
+        sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation().getName()
                                                                     , section.getDownStation().getName())
                                                                     , section.getDistance()));
     }
 
     private void setGraphVertex(List<Station> stations, WeightedMultigraph graph) {
-        stations.stream()
-                .forEach(station ->  graph.addVertex(station.getName()));
+        stations.forEach(station ->  graph.addVertex(station.getName()));
     }
 }
