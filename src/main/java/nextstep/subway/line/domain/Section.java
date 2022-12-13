@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import java.util.stream.Stream;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -32,6 +33,19 @@ public class Section {
         this.upStation = upStation;
         this.downStation = downStation;
         this.distance = distance;
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        validateSection(upStation, downStation);
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
+    }
+
+    private static void validateSection(Station upStation, Station downStation) {
+        if (upStation.equals(downStation)) {
+            throw new IllegalArgumentException("상행선과 하행선이 동일할 수 없습니다.");
+        }
     }
 
     public Long getId() {
@@ -68,5 +82,23 @@ public class Section {
         }
         this.downStation = station;
         this.distance -= newDistance;
+    }
+
+    public void changeLine(Line line) {
+        this.line = line;
+    }
+
+    public Stream<Station> streamOfStation() {
+        return Stream.of(upStation, downStation);
+    }
+
+    public void connectUpStationToDownStation(Section addSection) {
+        updateUpStation(addSection.downStation, addSection.getDistance());
+        this.upStation = addSection.downStation;
+    }
+
+    public void connectDownStationToUpStation(Section addSection) {
+        updateDownStation(addSection.upStation, addSection.getDistance());
+        this.downStation = addSection.upStation;
     }
 }
