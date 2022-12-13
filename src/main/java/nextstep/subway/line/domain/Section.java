@@ -26,8 +26,7 @@ public class Section {
 
     private int distance;
 
-    public Section() {
-    }
+    protected Section() {}
 
     public Section(Station upStation, Station downStation, int distance) {
         this.upStation = upStation;
@@ -125,10 +124,6 @@ public class Section {
 
     public long getDownStationId() {
         return downStation.getId();
-    }
-
-    public boolean isSameSection(Section section) {
-        return isSameUpStation(section.getUpStation()) && isSameUpStation(section.getDownStation());
     }
 
     public boolean isSameUpStation(Section section) {

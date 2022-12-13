@@ -78,10 +78,12 @@ public class LineService {
     }
 
     public Line findLineById(Long id) {
-        return lineRepository.findById(id).orElseThrow(RuntimeException::new);
+        return lineRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException(ErrorCode.NO_MATCH_LINE_EXCEPTION.getErrorMessage()));
     }
 
+    @Transactional
     public void deleteLineById(Long id) {
-        lineRepository.deleteById(id);
+        lineRepository.deleteById(findLineById(id).getId());
     }
 }

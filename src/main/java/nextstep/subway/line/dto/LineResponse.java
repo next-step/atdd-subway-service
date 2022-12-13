@@ -28,19 +28,6 @@ public class LineResponse {
         this.modifiedDate = modifiedDate;
     }
 
-    public static LineResponse of(Line line, List<StationResponse> stations) {
-        return new LineResponse(
-                line.getId()
-                , line.getName()
-                , line.getColor()
-                , line.findSortedStations()
-                        .stream()
-                        .map(LineResponse::from)
-                        .collect(Collectors.toList())
-                , line.getCreatedDate()
-                , line.getModifiedDate());
-    }
-
     public static LineResponse from(Line line) {
         return new LineResponse(
                 line.getId()

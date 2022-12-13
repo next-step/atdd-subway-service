@@ -68,6 +68,68 @@ public class SectionsTest {
         });
     }
 
+    @Test
+    @DisplayName("상행 종점에 추가")
+    void addSectionEndPoint_up() {
+        // given
+        Section section = new Section(stationF, stationA, 5);
+        // when
+        sections.add(section);
+        int expectDistance = sections.asList().get(sections.asList().size() - 1).getDistance();
+        List<Station> actual = sections.getSortedStations();
+        // then
+        assertAll(() -> {
+            assertThat(actual.get(0).getName()).isEqualTo("F");
+            assertThat(expectDistance).isEqualTo(5);
+        });
+    }
+
+    @Test
+    @DisplayName("하행 종점에 추가")
+    void addSectionEndPoint_down() {
+        // given
+        Section section = new Section(stationE, stationF, 5);
+        // when
+        sections.add(section);
+        int expectDistance = sections.asList().get(sections.asList().size() - 1).getDistance();
+        List<Station> actual = sections.getSortedStations();
+        // then
+        assertAll(() -> {
+            assertThat(actual.get(actual.size() - 1).getName()).isEqualTo("F");
+            assertThat(expectDistance).isEqualTo(5);
+        });
+    }
+
+    @Test
+    @DisplayName("중간지점에 추가")
+    void addSectionIntermediate() {
+        // given
+        Section section = new Section(stationC, stationF, 6);
+        // when
+        sections.add(section);
+        Section sectionA = sections.asList().stream().filter(eachSection -> eachSection.isSameUpStation(stationC)).findFirst().get();
+        Section sectionB = sections.asList().stream().filter(eachSection -> eachSection.isSameUpStation(stationF)).findFirst().get();
+        // then
+        assertAll(() -> {
+            assertThat(sectionA.getDistance()).isEqualTo(6);
+            assertThat(sectionB.getDistance()).isEqualTo(4);
+        });
+    }
+
+    @Test
+    @DisplayName("section 추가 시 상하행역이 기존 Section과 모두 동일하면 예외 발생 - 하행종점")
+    void shouldExceptionWhenAddSameSection_endDownPoint() {
+        // when // then
+        assertThatThrownBy(() -> sections.add(new Section(stationD, stationE, 10))).isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @Test
+    @DisplayName("section 추가 시 상하행역이 기존 Section과 모두 동일하면 예외 발생 - 상행종점")
+    void shouldExceptionWhenAddSameSection_endUpPoint() {
+        // when // then
+        assertThatThrownBy(() -> sections.add(new Section(stationA, stationB, 10))).isInstanceOf(IllegalArgumentException.class);
+    }
+
     @DisplayName("section 추가 시 상하행역이 기존 Section과 모두 동일하면 예외 발생")
     @Test
     void shouldExceptionWhenUpDownStationAlreadyBeing() {
@@ -103,10 +165,6 @@ public class SectionsTest {
         // when
         sections.removeStation(stationD);
         List<Station> actual = sections.getSortedStations();
-
-        for (Station station : actual) {
-            System.out.println("station: " + station.getName());
-        }
 
         // then
         assertAll(() -> {
