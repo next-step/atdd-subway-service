@@ -43,4 +43,9 @@ public class PathService {
 	private Station station(long request) {
 		return stationService.findById(request);
 	}
+
+	public boolean isInvalidPath(Station source, Station target) {
+		PathNavigator navigator = pathNavigator();
+		return navigator.isInvalidPath(source, target);
+	}
 }

@@ -26,8 +26,25 @@ public class RestAssuredUtils {
 			.then().log().all();
 	}
 
+	public static ValidatableResponse get(final String url, final String accessToken) {
+		return requestSpecification
+			.auth().oauth2(accessToken)
+			.when()
+			.get(url)
+			.then().log().all();
+	}
+
 	public static <T> ValidatableResponse post(final String url, final T request) {
 		return requestSpecification
+			.body(request)
+			.when()
+			.post(url)
+			.then().log().all();
+	}
+
+	public static <T> ValidatableResponse post(final String url, final T request, String accessToken) {
+		return requestSpecification
+			.auth().oauth2(accessToken)
 			.body(request)
 			.when()
 			.post(url)
@@ -37,6 +54,14 @@ public class RestAssuredUtils {
 	public static ValidatableResponse delete(final String url) {
 		return requestSpecification
 			.when()
+			.delete(url)
+			.then().log().all();
+	}
+
+	public static ValidatableResponse delete(final String url, final String accessToken) {
+		return requestSpecification
+			.when()
+			.auth().oauth2(accessToken)
 			.delete(url)
 			.then().log().all();
 	}
@@ -53,4 +78,14 @@ public class RestAssuredUtils {
 			.put(url)
 			.then().log().all();
 	}
+
+	public static <T> ValidatableResponse put(final String url, final T updateRequest, String accessToken) {
+		return requestSpecification
+			.body(updateRequest)
+			.when()
+			.auth().oauth2(accessToken)
+			.put(url)
+			.then().log().all();
+	}
+
 }

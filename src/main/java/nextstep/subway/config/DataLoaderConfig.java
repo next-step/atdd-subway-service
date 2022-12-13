@@ -6,6 +6,8 @@ import org.springframework.stereotype.Component;
 
 import com.google.common.collect.Lists;
 
+import nextstep.subway.common.domain.Age;
+import nextstep.subway.common.domain.Email;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.line.domain.Color;
 import nextstep.subway.line.domain.Distance;
@@ -15,6 +17,7 @@ import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
+import nextstep.subway.member.domain.Password;
 import nextstep.subway.station.domain.Station;
 
 @Component
@@ -44,6 +47,10 @@ public class DataLoaderConfig implements CommandLineRunner {
 
 		lineRepository.saveAll(Lists.newArrayList(신분당선, 이호선, 삼호선));
 
-		memberRepository.save(new Member("probitanima11@gmail.com", "11", 10));
+		memberRepository.save(new Member(
+			Email.from("probitanima11@gmail.com"),
+			Password.from("11"),
+			Age.from(10))
+		);
 	}
 }
