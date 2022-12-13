@@ -1,19 +1,13 @@
 package nextstep.subway.line.domain;
 
-import static nextstep.subway.fare.domain.Fare.FREE;
-
 import java.util.Objects;
 import javax.persistence.Embeddable;
+import nextstep.subway.fare.domain.DistanceFarePolicy;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.IllegalDistanceException;
 
 @Embeddable
 public class Distance {
-
-    private static final int LONG_DISTANCE = 50;
-    private static final int LONG_DISTANCE_CHARGE_RANGE = 8;
-    private static final int MIDDLE_DISTANCE = 10;
-    private static final int MIDDLE_DISTANCE_CHARGE_RANGE = 5;
 
     private int distance;
 
@@ -41,29 +35,8 @@ public class Distance {
     }
 
     public Fare additionalFareByDistance() {
-        if (this.hasLongDistance()) {
-            int additionalDistance = distance - LONG_DISTANCE;
-            return new Fare(calculateFare(additionalDistance, LONG_DISTANCE_CHARGE_RANGE));
-        }
-
-        if (this.hasMiddleDistance()) {
-            int additionalDistance = distance - MIDDLE_DISTANCE;
-            return new Fare(calculateFare(additionalDistance, MIDDLE_DISTANCE_CHARGE_RANGE));
-        }
-
-        return FREE;
-    }
-
-    private int calculateFare(int additionalDistance, int additionalFare) {
-        return (int) ((Math.ceil((additionalDistance - 1) / additionalFare) + 1) * 100);
-    }
-
-    private boolean hasLongDistance() {
-        return this.distance > LONG_DISTANCE;
-    }
-
-    private boolean hasMiddleDistance() {
-        return this.distance > MIDDLE_DISTANCE;
+        DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.from(distance);
+        return distanceFarePolicy.apply(distance);
     }
 
     public int distance() {
