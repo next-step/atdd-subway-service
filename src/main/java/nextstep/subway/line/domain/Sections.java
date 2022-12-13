@@ -175,7 +175,7 @@ public class Sections {
     private List getRemoveSections(Station station) {
         return Arrays.asList(getSectionUpLineStation(station), getSectionDownLineStation(station))
                 .stream()
-                .filter(section -> !section.isPresent())
+                .filter(section -> section.isPresent())
                 .map(section -> section.get())
                 .collect(Collectors.toList());
     }

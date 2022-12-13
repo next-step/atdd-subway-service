@@ -127,9 +127,9 @@ class LineTest {
     @DisplayName("지하철 구간삭제 ( 성공 )")
     public void removeLineStationTest2() {
         Line line = lineRepository.getByName("신분당선");
-        Station 강남 = stationRepository.findByName("양재");
+        Station 양재 = stationRepository.findByName("양재");
 
-        line.removeStation(강남);
+        line.removeStation(양재);
 
         assertThat( line.getStations().stream().map(it -> it.getName()).collect(Collectors.toList()) ).containsExactly("강남", "양재시민의숲");
     }
