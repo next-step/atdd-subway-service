@@ -8,6 +8,7 @@ import nextstep.subway.line.domain.Distance;
 public class Fare implements Comparable<Fare> {
 
     public static final Fare FREE = new Fare(0);
+    public static final Fare YOUTH_DISCOUNT = new Fare(350);
     public static final Fare DEFAULT_FARE = new Fare(1250);
 
     private int fare;

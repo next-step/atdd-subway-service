@@ -1,14 +1,15 @@
 package nextstep.subway.fare.domain;
 
 import static nextstep.subway.fare.domain.Fare.FREE;
+import static nextstep.subway.fare.domain.Fare.YOUTH_DISCOUNT;
 
 import java.util.Arrays;
 import java.util.function.Function;
 
 public enum AgeFarePolicy {
     INFANT(0, 5, fare -> FREE),
-    CHILD(6, 12, fare -> fare.minus(new Fare(350)).discount(50)),
-    TEENAGER(13, 19, fare -> fare.minus(new Fare(350)).discount(20)),
+    CHILD(6, 12, fare -> fare.minus(YOUTH_DISCOUNT).discount(50)),
+    TEENAGER(13, 19, fare -> fare.minus(YOUTH_DISCOUNT).discount(20)),
     ADULT(20, Integer.MAX_VALUE, fare -> fare);
 
     private int startAge;
