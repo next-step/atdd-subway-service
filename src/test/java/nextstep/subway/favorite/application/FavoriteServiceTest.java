@@ -21,8 +21,7 @@ import java.util.stream.Collectors;
 
 import static nextstep.subway.favorite.domain.FavoriteFixture.*;
 import static nextstep.subway.member.domain.MemberFixture.회원;
-import static nextstep.subway.station.StationFixture.서울역;
-import static nextstep.subway.station.StationFixture.시청역;
+import static nextstep.subway.station.StationFixture.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -103,19 +102,21 @@ public class FavoriteServiceTest {
     @Test
     void 즐겨찾기_목록_조회_테스트() {
         // given
-        Member 회원 = 회원(1L, "member@email.com", "password", 20);
-        Favorite 즐겨찾기1 = 즐겨찾기(1L, 회원, 서울역().getId(), 시청역().getId());
-        Favorite 즐겨찾기2 = 즐겨찾기(2L, 회원, 서울역().getId(), 시청역().getId());
-        given(favoriteRepository.findByMemberId(회원.getId())).willReturn(Arrays.asList(즐겨찾기1, 즐겨찾기2));
+        Member 회원1 = 회원(1L, "member@email.com", "password", 20);
+        Member 회원2 = 회원(2L, "test@email.com", "password", 25);
+        Favorite 즐겨찾기1 = 즐겨찾기(1L, 회원1, 서울역().getId(), 남영역().getId());
+        Favorite 즐겨찾기2 = 즐겨찾기(2L, 회원2, 서울역().getId(), 시청역().getId());
+        Favorite 즐겨찾기3 = 즐겨찾기(3L, 회원2, 남영역().getId(), 서울역().getId());
+        given(favoriteRepository.findByMemberId(회원2.getId())).willReturn(Arrays.asList(즐겨찾기2, 즐겨찾기3));
         // when
-        List<FavoriteResponse> favoriteResponses = favoriteService.retrieveFavorites(회원.getId());
+        List<FavoriteResponse> favoriteResponses = favoriteService.retrieveFavorites(회원2.getId());
 
         // then
         assertAll(
                 () -> assertThat(favoriteResponses).hasSize(2),
                 () -> assertThat(favoriteResponses.stream()
                         .map(it -> it.getId())
-                        .collect(Collectors.toList())).containsExactly(즐겨찾기1.getId(), 즐겨찾기2.getId())
+                        .collect(Collectors.toList())).containsExactly(즐겨찾기2.getId(), 즐겨찾기3.getId())
         );
     }
 }
