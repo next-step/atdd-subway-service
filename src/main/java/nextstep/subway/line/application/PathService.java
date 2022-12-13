@@ -51,14 +51,14 @@ public class PathService {
         return shortestStations;
     }
 
-    private DijkstraShortestPath getShortestPath(List<Section> sections, List<Station> stations) {
+    private DijkstraShortestPath<String, DefaultWeightedEdge> getShortestPath(List<Section> sections, List<Station> stations) {
         WeightedMultigraph<String, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
+                = new WeightedMultigraph<>(DefaultWeightedEdge.class);
 
         setGraphVertex(stations, graph);
         setGraphEdge(sections, graph);
 
-        return new DijkstraShortestPath(graph);
+        return new DijkstraShortestPath<>(graph);
     }
 
     private void setGraphEdge(List<Section> sections, WeightedMultigraph graph) {
