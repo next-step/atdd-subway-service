@@ -11,9 +11,14 @@ public class LineChargeCalculator {
     private static int getMaxLineCost(Set<Line> lines) {
         int lineCost = 0;
         for (Line line : lines) {
-            if(lineCost < line.getCost()){
-                lineCost = line.getCost();
-            }
+            lineCost = getGreaterCost(lineCost, line);
+        }
+        return lineCost;
+    }
+
+    private static int getGreaterCost(int lineCost, Line line) {
+        if(lineCost < line.getCost()){
+            return line.getCost();
         }
         return lineCost;
     }
