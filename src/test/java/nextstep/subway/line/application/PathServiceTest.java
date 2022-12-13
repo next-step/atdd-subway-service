@@ -1,14 +1,12 @@
 package nextstep.subway.line.application;
 
 import static org.assertj.core.api.Assertions.*;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.line.application.PathService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.PathGraph;
 import nextstep.subway.line.domain.Section;
@@ -75,14 +73,13 @@ public class PathServiceTest{
                 .map(StationResponse::getName)
                 .collect(Collectors.toList());
         assertThat(path.getDistance()).isEqualTo(12);
-        assertThat(path.getCharge()).isEqualTo(1850);
         assertThat(stationNames).containsExactly(
                 "영등포구청역","여의도역","마포역","공덕역"
         );
     }
 
     @Test
-    @DisplayName("청소년 최단 경로 탐색")
+    @DisplayName("청소년 요금 조회")
     void pathWithTeenAge(){
         // given
         LoginMember loginMember = new LoginMember(999L, "byunsw4@naver.com", 15);
@@ -92,13 +89,62 @@ public class PathServiceTest{
         PathResponse path = pathService.path(station1.getId(), station4.getId(), loginMember);
 
         // then
-        List<String> stationNames = path.getStations().stream()
-                .map(StationResponse::getName)
-                .collect(Collectors.toList());
-        assertThat(path.getDistance()).isEqualTo(12);
         assertThat(path.getCharge()).isEqualTo(1200);
-        assertThat(stationNames).containsExactly(
-                "영등포구청역","여의도역","마포역","공덕역"
-        );
+    }
+
+    @Test
+    @DisplayName("어린이 요금 조회")
+    void pathWithChildren(){
+        // given
+        LoginMember loginMember = new LoginMember(999L, "byunsw4@naver.com", 8);
+
+        // when
+        PathService pathService = new PathService(stationRepository, sectionRepository, pathGraph);
+        PathResponse path = pathService.path(station1.getId(), station4.getId(), loginMember);
+
+        // then
+        assertThat(path.getCharge()).isEqualTo(750);
+    }
+
+    @Test
+    @DisplayName("일반 요금 조회")
+    void pathWithCharge(){
+        // given
+        LoginMember loginMember = new LoginMember(999L, "byunsw4@naver.com", 25);
+
+        // when
+        PathService pathService = new PathService(stationRepository, sectionRepository, pathGraph);
+        PathResponse path = pathService.path(station1.getId(), station4.getId(), loginMember);
+
+        // then
+        assertThat(path.getCharge()).isEqualTo(1850);
+    }
+
+    @Test
+    @DisplayName("유아 요금 조회 - 0원")
+    void pathWithBaby(){
+        // given
+        LoginMember loginMember = new LoginMember(999L, "byunsw4@naver.com", 3);
+
+        // when
+        PathService pathService = new PathService(stationRepository, sectionRepository, pathGraph);
+        PathResponse path = pathService.path(station1.getId(), station4.getId(), loginMember);
+
+        // then
+        assertThat(path.getCharge()).isEqualTo(0);
+    }
+
+    @Test
+    @DisplayName("노인 요금 조회 - 0원")
+    void pathWithOld(){
+        // given
+        LoginMember loginMember = new LoginMember(999L, "byunsw4@naver.com", 66);
+
+        // when
+        PathService pathService = new PathService(stationRepository, sectionRepository, pathGraph);
+        PathResponse path = pathService.path(station1.getId(), station4.getId(), loginMember);
+
+        // then
+        assertThat(path.getCharge()).isEqualTo(0);
     }
 }
