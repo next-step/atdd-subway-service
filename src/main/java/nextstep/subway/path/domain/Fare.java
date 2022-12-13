@@ -7,10 +7,6 @@ public class Fare {
 
     private int fare;
 
-    public Fare(Distance distance, SurCharge surCharge) {
-        calculateFare(distance, surCharge, 0);
-    }
-
     public Fare(Distance distance, SurCharge surCharge, int age) {
         calculateFare(distance, surCharge, age);
     }
