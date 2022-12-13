@@ -99,8 +99,8 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 로직 검증 - 외부 라이브러리를 검증하므로 가급적 실제 객체 사용
 - [x] Happy 케이스에 대한 부분 구현
 #### Step2 - 리뷰어 1차 리뷰사항
-- [ ] 삭제 - 주석처리 제거
-- [ ] 경고표시되는 소스 수정
-- [ ] 스트림 알고 사용하기. List일 경우, 제공해주는 forEach함수 존재
-- [ ] TestStation 제거
-- [ ] 외부 라이브러리의 종속성을 캡슐화
+- [x] 삭제 - 주석처리 제거
+- [x] 경고표시되는 소스 수정
+- [x] 스트림 알고 사용하기. List일 경우, 제공해주는 forEach함수 존재
+- [x] TestStation 제거
+- [x] 외부 라이브러리의 종속성을 캡슐화
