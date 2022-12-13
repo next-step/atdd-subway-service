@@ -3,10 +3,10 @@ package nextstep.subway.line.domain;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.domain.Name;
 
 @DisplayName("노선 테스트")
@@ -17,6 +17,13 @@ class LineTest {
 	void createLineTest() {
 		assertThatNoException()
 			.isThrownBy(() -> Line.of(Name.from("신분당선"), Color.from("RED"), mock(Sections.class)));
+	}
+
+	@Test
+	@DisplayName("요금을 포함한 노선 생성")
+	void createLineWithFareTest() {
+		Line line = Line.of(Name.from("신분당선"), Color.from("RED"), mock(Sections.class), Fare.from(1000));
+		assertThat(line.getExtraFare()).isEqualTo(1000);
 	}
 
 	@Test
@@ -52,8 +59,8 @@ class LineTest {
 		line.update(newName, newColor);
 
 		// then
-		Assertions.assertThat(line.getName()).isEqualTo(newName.toString());
-		Assertions.assertThat(line.getColor()).isEqualTo(newColor.toString());
+		assertThat(line.getName()).isEqualTo(newName.toString());
+		assertThat(line.getColor()).isEqualTo(newColor.toString());
 	}
 
 	@Test
