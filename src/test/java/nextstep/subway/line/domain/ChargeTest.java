@@ -51,9 +51,10 @@ public class ChargeTest {
         lines.add(new Line("2호선", "green", new Station("강남역"), new Station("신림역"), 50, 200));
         lines.add(new Line("5호선", "purple", new Station("신길역"), new Station("강동역"), 50, 500));
         lines.add(new Line("3호선", "purple", new Station("교대역"), new Station("일산역"), 50, 300));
+        Charge charge = new Charge(distance, lines);
 
         // when
-        Charge charge = new Charge(distance, lines, 18);
+        charge.discount(18);
 
         // then
         assertThat(charge.value()).isEqualTo(1920);
@@ -68,9 +69,10 @@ public class ChargeTest {
         lines.add(new Line("2호선", "green", new Station("강남역"), new Station("신림역"), 50, 200));
         lines.add(new Line("5호선", "purple", new Station("신길역"), new Station("강동역"), 50, 500));
         lines.add(new Line("3호선", "purple", new Station("교대역"), new Station("일산역"), 50, 300));
+        Charge charge = new Charge(distance, lines);
 
         // when
-        Charge charge = new Charge(distance, lines, 12);
+        charge.discount(10);
 
         // then
         assertThat(charge.value()).isEqualTo(1200);

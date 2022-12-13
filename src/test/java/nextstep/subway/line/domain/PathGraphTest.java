@@ -39,8 +39,5 @@ public class PathGraphTest {
         // then
         assertThat(list).containsExactly("암사역","천호역","몽촌토성역");
         assertThat(pathResult.getDistance()).isEqualTo(20);
-        assertThat(pathResult.getLines()).contains(
-                line
-        );
     }
 }

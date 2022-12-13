@@ -14,11 +14,6 @@ public class Charge {
         this.charge = chargeLineCost(chargeDistance(DEFAULT_CHARGE, distance), lines);
     }
 
-    public Charge(int distance, Set<Line> lines, int age) {
-        this(distance, lines);
-        this.charge = discountAge(this.charge, age);
-    }
-
     private int chargeDistance(int charge, int distance){
         return DistanceChargeCalculator.calculate(charge, distance);
     }
@@ -33,5 +28,9 @@ public class Charge {
 
     public int value() {
         return this.charge;
+    }
+
+    public void discount(int age) {
+        this.charge = discountAge(this.charge, age);
     }
 }

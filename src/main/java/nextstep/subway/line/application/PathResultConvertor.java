@@ -2,23 +2,13 @@ package nextstep.subway.line.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.auth.domain.LoginMember;
-import nextstep.subway.line.domain.Charge;
 import nextstep.subway.line.domain.PathResult;
 import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 
 public class PathResultConvertor {
     public static PathResponse convert(PathResult pathResult) {
-        Charge charge = new Charge(pathResult.getDistance(), pathResult.getLines());
-
-        return new PathResponse(getStationResponses(pathResult), pathResult.getDistance(), charge.value());
-    }
-
-    public static PathResponse convert(PathResult pathResult, LoginMember loginMember) {
-        Charge charge = new Charge(pathResult.getDistance(), pathResult.getLines(), loginMember.getAge());
-
-        return new PathResponse(getStationResponses(pathResult), pathResult.getDistance(), charge.value());
+        return new PathResponse(getStationResponses(pathResult), pathResult.getDistance(), pathResult.getChargeValue());
     }
 
     private static List<StationResponse> getStationResponses(PathResult pathResult) {

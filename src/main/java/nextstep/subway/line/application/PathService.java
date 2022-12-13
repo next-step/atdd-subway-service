@@ -32,8 +32,9 @@ public class PathService {
 
     private PathResponse getResponseWithCharge(PathResult pathResult, LoginMember loginMember){
         if(isLoggedIn(loginMember)){
-            return convert(pathResult, loginMember);
+            pathResult.discountCharge(loginMember.getAge());
         }
+
         return convert(pathResult);
     }
 

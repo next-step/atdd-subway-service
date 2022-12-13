@@ -8,12 +8,12 @@ public class PathResult {
     private List<Station> stations;
     private int distance;
 
-    private Set<Line> lines;
+    private Charge charge;
 
     public PathResult(List<Station> stations, int distance, Set<Line> lines) {
         this.stations = stations;
         this.distance = distance;
-        this.lines = lines;
+        this.charge = new Charge(distance, lines);
     }
 
     public List<Station> getStations() {
@@ -24,7 +24,15 @@ public class PathResult {
         return distance;
     }
 
-    public Set<Line> getLines() {
-        return lines;
+    public Charge getCharge() {
+        return charge;
+    }
+
+    public int getChargeValue() {
+        return getCharge().value();
+    }
+
+    public void discountCharge(int age) {
+        charge.discount(age);
     }
 }
