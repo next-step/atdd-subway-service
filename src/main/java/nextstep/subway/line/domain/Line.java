@@ -70,9 +70,16 @@ public class Line extends BaseEntity {
     public void removeLineStation(Station station) {
         Section upStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.UP_STATION);
         Section downStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.DOWN_STATION);
+        checkStationRemovable(upStationMatchSection, downStationMatchSection);
         sections.remove(upStationMatchSection);
         sections.remove(downStationMatchSection);
         unionSection(upStationMatchSection, downStationMatchSection);
+    }
+
+    private void checkStationRemovable(Section upStationMatchSection, Section downStationMatchSection) {
+        if (upStationMatchSection == null && downStationMatchSection == null) {
+            throw new RuntimeException("노선에 등록되지 않은 역입니다.");
+        }
     }
 
     private void unionSection(Section upStationMatchSection, Section downStationMatchSection) {
