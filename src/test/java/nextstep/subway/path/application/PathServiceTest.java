@@ -25,15 +25,12 @@ import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class PathServiceTest {
-
-    @InjectMocks
-    private PathService pathService;
-
     @Mock
     private LineRepository lineRepository;
-
     @Mock
     private StationService stationService;
+    @InjectMocks
+    private PathService pathService;
 
     private Line 신분당선;
     private Line 이호선;
@@ -130,5 +127,61 @@ class PathServiceTest {
 
         assertThatThrownBy(() -> pathService.findShortestPath(source, target, null))
                 .isInstanceOf(IllegalArgumentException.class);
+    }
+
+    @DisplayName("교대역 -> 강남역 -> 양재역 요금을 조회한다. (나이 없음)")
+    @Test
+    void 요금_조회() {
+        Long source = 1L;
+        Long target = 2L;
+        when(stationService.findStationById(source)).thenReturn(교대역);
+        when(stationService.findStationById(target)).thenReturn(양재역);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        PathResponse pathResponse = pathService.findShortestPath(source, target, null);
+
+        assertThat(pathResponse.getFare()).isEqualTo(2250);
+    }
+
+    @DisplayName("교대역 -> 강남역 -> 양재역 요금을 조회한다. (어린이 할인 추가)")
+    @Test
+    void 요금_조회_어린이_할인() {
+        Long source = 1L;
+        Long target = 2L;
+        when(stationService.findStationById(source)).thenReturn(교대역);
+        when(stationService.findStationById(target)).thenReturn(양재역);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        PathResponse pathResponse = pathService.findShortestPath(source, target, 10);
+
+        assertThat(pathResponse.getFare()).isEqualTo(1550);
+    }
+
+    @DisplayName("교대역 -> 강남역 -> 양재역 요금을 조회한다. (청소년 할인 추가)")
+    @Test
+    void 요금_조회_청소년_할인() {
+        Long source = 1L;
+        Long target = 2L;
+        when(stationService.findStationById(source)).thenReturn(교대역);
+        when(stationService.findStationById(target)).thenReturn(양재역);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        PathResponse pathResponse = pathService.findShortestPath(source, target, 18);
+
+        assertThat(pathResponse.getFare()).isEqualTo(1970);
+    }
+
+    @DisplayName("교대역 -> 강남역 -> 양재역 요금을 조회한다. (성인 할인 없음)")
+    @Test
+    void 요금_조회_성인_할인() {
+        Long source = 1L;
+        Long target = 2L;
+        when(stationService.findStationById(source)).thenReturn(교대역);
+        when(stationService.findStationById(target)).thenReturn(양재역);
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        PathResponse pathResponse = pathService.findShortestPath(source, target, 30);
+
+        assertThat(pathResponse.getFare()).isEqualTo(2250);
     }
 }
