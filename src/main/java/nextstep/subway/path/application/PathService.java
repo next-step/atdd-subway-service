@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
@@ -25,7 +26,7 @@ public class PathService {
         this.lineService = lineService;
     }
 
-    public PathResponse findBestPath(Long sourceId, Long targetId) {
+    public PathResponse findBestPath(LoginMember loginMember, Long sourceId, Long targetId) {
         Station source = findStationById(sourceId);
         Station target = findStationById(targetId);
         List<Line> lines = findAllLines();

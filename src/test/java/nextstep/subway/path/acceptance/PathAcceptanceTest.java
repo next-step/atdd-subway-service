@@ -66,7 +66,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("최단 경로를 조회한다.")
     @Test
     void 최단_경로_조회() {
-        ExtractableResponse<Response> response = 최단_경로_찾기(강남역, 남부터미널역);
+        ExtractableResponse<Response> response = 게스트_최단_경로_찾기(강남역, 남부터미널역);
         PathResponse pathResponse = response.as(PathResponse.class);
 
         assertAll(
@@ -81,7 +81,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 같은 경우의 최단 경로를 조회한다.")
     @Test
     void 동일역_간_최단_거리_찾기_테스트() {
-        ExtractableResponse<Response> response = 최단_경로_찾기(강남역, 강남역);
+        ExtractableResponse<Response> response = 게스트_최단_경로_찾기(강남역, 강남역);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -89,7 +89,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("출발역과 도착역이 연결되지 않은 경우의 최단 경로를 조회한다.")
     @Test
     void 연결되지_않은_역의_최단_거리_찾기_테스트() {
-        ExtractableResponse<Response> response = 최단_경로_찾기(강남역, 서울역);
+        ExtractableResponse<Response> response = 게스트_최단_경로_찾기(강남역, 서울역);
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
@@ -97,12 +97,22 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @DisplayName("등록되지 않은 역으로 최단 경로를 조회한다.")
     @Test
     void 등록되지_않은_역_최단_거리_찾기_테스트() {
-        ExtractableResponse<Response> response = 최단_경로_찾기(강남역, new StationResponse(100L, "간이역", null, null));
+        ExtractableResponse<Response> response = 게스트_최단_경로_찾기(강남역, new StationResponse(100L, "간이역", null, null));
 
         assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
-    public static ExtractableResponse<Response> 최단_경로_찾기(StationResponse source, StationResponse target) {
+    public static ExtractableResponse<Response> 로그인_회원_최단_경로_찾기(String token, StationResponse source, StationResponse target) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(token)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get(String.format("/paths?source=%d&target=%d", source.getId(), target.getId()))
+                .then().log().all()
+                .extract();
+    }
+
+    public static ExtractableResponse<Response> 게스트_최단_경로_찾기(StationResponse source, StationResponse target) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
