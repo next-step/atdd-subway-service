@@ -30,25 +30,24 @@ public class LineService {
     }
 
     public LineResponse saveLine(LineRequest request) {
+        Line line = request.toLine();
+        line.addSection(getSection(request));
+        Line persistLine = lineRepository.save(line);
+        return LineResponse.of(persistLine);
+    }
+
+    private Section getSection(LineRequest request) {
         Station upStation = stationService.findById(request.getUpStationId());
         Station downStation = stationService.findById(request.getDownStationId());
-        Line persistLine = lineRepository.save(new Line(request.getName(), request.getColor(), upStation, downStation, request.getDistance()));
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        return new Section(upStation, downStation, request.getDistance());
     }
 
     public List<LineResponse> findLines() {
-        List<Line> persistLines = lineRepository.findAll();
-        return persistLines.stream()
-                .map(line -> {
-                    List<StationResponse> stations = getStations(line).stream()
-                            .map(it -> StationResponse.of(it))
-                            .collect(Collectors.toList());
-                    return LineResponse.of(line, stations);
-                })
-                .collect(Collectors.toList());
+        List<Line> stations = lineRepository.findAll();
+
+        return stations.stream()
+            .map(LineResponse::of)
+            .collect(Collectors.toList());
     }
 
     public Line findLineById(Long id) {
@@ -57,11 +56,8 @@ public class LineService {
 
 
     public LineResponse findLineResponseById(Long id) {
-        Line persistLine = findLineById(id);
-        List<StationResponse> stations = getStations(persistLine).stream()
-                .map(it -> StationResponse.of(it))
-                .collect(Collectors.toList());
-        return LineResponse.of(persistLine, stations);
+        Line line = findLineById(id);
+        return LineResponse.of(line);
     }
 
     public void updateLine(Long id, LineRequest lineUpdateRequest) {
@@ -85,46 +81,5 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.deleteSection(station);
-    }
-
-
-    public List<Station> getStations(Line line) {
-        if (line.getSections().isEmpty()) {
-            return Arrays.asList();
-        }
-
-        List<Station> stations = new ArrayList<>();
-        Station downStation = findUpStation(line);
-        stations.add(downStation);
-
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getUpStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getDownStation();
-            stations.add(downStation);
-        }
-
-        return stations;
-    }
-
-    private Station findUpStation(Line line) {
-        Station downStation = line.getSections().get(0).getUpStation();
-        while (downStation != null) {
-            Station finalDownStation = downStation;
-            Optional<Section> nextLineStation = line.getSections().stream()
-                    .filter(it -> it.getDownStation() == finalDownStation)
-                    .findFirst();
-            if (!nextLineStation.isPresent()) {
-                break;
-            }
-            downStation = nextLineStation.get().getUpStation();
-        }
-
-        return downStation;
     }
 }
