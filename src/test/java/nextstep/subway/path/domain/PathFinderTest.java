@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -21,6 +22,7 @@ public class PathFinderTest {
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
+    private Lines lines;
 
     @BeforeEach
     void setUp() {
@@ -50,33 +52,34 @@ public class PathFinderTest {
                 .downStation(교대역)
                 .distance(12)
                 .build();
+        lines = new Lines(Arrays.asList(신분당선, 이호선, 삼호선));
     }
 
     @DisplayName("남부터미널역 -> 교대역 -> 강남역 -> 판교역 (12 + 7 + 5)")
     @Test
     void findShortestPathSuccess() {
-        Path path = PathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선), 남부터미널역, 판교역);
+        Path path = PathFinder.findShortestPath(lines, 남부터미널역, 판교역);
         assertThat(path.getDistance().value()).isEqualTo(24);
     }
 
     @DisplayName("지하철 노선 정보가 없으면 예외가 발생한다")
     @Test
     void findShortestPathFail01() {
-        assertThatThrownBy(() -> PathFinder.findShortestPath(Collections.emptyList(), 남부터미널역, 판교역))
+        assertThatThrownBy(() -> PathFinder.findShortestPath(new Lines(Collections.emptyList()), 남부터미널역, 판교역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("출발역과 도착역이 중복될 수 없습니다")
     @Test
     void findShortestPathFail02() {
-        assertThatThrownBy(() -> PathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선), 강남역, 강남역))
+        assertThatThrownBy(() -> PathFinder.findShortestPath(lines, 강남역, 강남역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("경로가 존재하지 않습니다")
     @Test
     void findShortestPathFail03() {
-        assertThatThrownBy(() -> PathFinder.findShortestPath(Arrays.asList(신분당선, 이호선, 삼호선), 강남역, 수원역))
+        assertThatThrownBy(() -> PathFinder.findShortestPath(lines, 강남역, 수원역))
                 .isInstanceOf(IllegalArgumentException.class);
     }
 }

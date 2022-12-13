@@ -1,9 +1,5 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.line.domain;
 
-import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Fare;
-import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -12,21 +8,20 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
-public class PathTest {
-    private Station 교대역;
+public class LinesTest {
     private Station 강남역;
     private Station 양재역;
+    private Station 교대역;
     private Line 신분당선;
     private Line 이호선;
     private Lines lines;
 
     @BeforeEach
     void setUp() {
-        교대역 = new Station("교대역");
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
+        교대역 = new Station("교대역");
         신분당선 = Line.builder()
                 .name("신분당선")
                 .color("red lighten-1")
@@ -40,30 +35,22 @@ public class PathTest {
                 .color("green lighten-1")
                 .upStation(교대역)
                 .downStation(강남역)
-                .distance(12)
+                .distance(10)
                 .addedFare(300)
                 .build();
         lines = new Lines(Arrays.asList(신분당선, 이호선));
     }
 
-    @DisplayName("경로를 생성한다.")
+    @DisplayName("컬렉션에서 노선의 존재여부")
     @Test
-    void 경로를_생성한다() {
-        Path path = Path.of(Distance.from(22), Arrays.asList(교대역, 강남역, 양재역), lines);
-
-        assertAll(() -> {
-            assertThat(path.getDistance()).isEqualTo(Distance.from(22));
-            assertThat(path.getStations()).hasSize(3);
-        });
+    void isEmpty() {
+        assertThat(lines.isEmpty()).isFalse();
     }
 
-    @DisplayName("경로의 요금을 계산한다.")
+    @DisplayName("컬렉션에서 노선의 존재여부")
     @Test
-    void 경로의_요금을_계산한다() {
-        Path path = Path.of(Distance.from(22), Arrays.asList(교대역, 강남역, 양재역), lines);
-        Fare fare = path.calculateFare(10);
-
-        // 1550 + 300 (거리 추가 요금) - 600 ((1550 - 350) / 2) (나이 할인)
-        assertThat(fare.value()).isEqualTo(1250);
+    void getMaxAddedFare() {
+        Fare maxAddedFare = lines.getMaxAddedFare();
+        assertThat(maxAddedFare.value()).isEqualTo(300);
     }
 }
