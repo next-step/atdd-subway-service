@@ -6,12 +6,12 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
@@ -141,8 +141,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
     }
 
     private void 경로_조회_졍렬됨(ExtractableResponse<Response> response, List<StationResponse> expectedStations) {
-        LineResponse line = response.as(LineResponse.class);
-        List<Long> stationIds = line.getStations().stream()
+        PathResponse pathResponse = response.as(PathResponse.class);
+        List<Long> stationIds = pathResponse.getStationResponseList().stream()
                 .map(it -> it.getId())
                 .collect(Collectors.toList());
 
@@ -156,7 +156,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private ExtractableResponse<Response> 경로_조회_요청(StationResponse startStation, StationResponse endStation) {
         return RestAssured
                 .given().log().all()
-                .accept(MediaType.APPLICATION_JSON_VALUE)
                 .when().get(String.format("/paths?source=%d&target=%d", startStation.getId(), endStation.getId()))
                 .then().log().all()
                 .extract();
