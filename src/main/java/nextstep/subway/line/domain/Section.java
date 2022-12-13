@@ -62,6 +62,14 @@ public class Section {
         return null;
     }
 
+    public boolean isStationMatchWithPositionOf(Station station, StationPosition stationPosition) {
+        return station.equals(getStationByPosition(stationPosition));
+    }
+
+    public int addDistanceOfSection(Section section) {
+        return this.distance + section.distance;
+    }
+
     public Long getId() {
         return id;
     }

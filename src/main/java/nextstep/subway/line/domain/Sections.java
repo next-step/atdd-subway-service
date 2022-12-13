@@ -27,11 +27,15 @@ public class Sections {
     }
 
     public void add(Section section) {
-        sections.add(section);
+        if (section != null) {
+            sections.add(section);
+        }
     }
 
     public void remove(Section section) {
-        sections.remove(section);
+        if (section != null) {
+            sections.remove(section);
+        }
     }
 
     public Station getFirstSectionDownStation() {

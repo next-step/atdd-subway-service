@@ -1,7 +1,6 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
-import java.util.Optional;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
 
@@ -81,22 +80,20 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
-        Optional<Section> upLineStation = sections.stream()
-                .filter(it -> it.getUpStation() == station)
-                .findFirst();
-        Optional<Section> downLineStation = sections.stream()
-                .filter(it -> it.getDownStation() == station)
-                .findFirst();
+        Section upStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.UP_STATION);
+        Section downStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.DOWN_STATION);
+        sections.remove(upStationMatchSection);
+        sections.remove(downStationMatchSection);
+        reAssignSection(upStationMatchSection, downStationMatchSection);
+    }
 
-        if (upLineStation.isPresent() && downLineStation.isPresent()) {
-            Station newUpStation = downLineStation.get().getUpStation();
-            Station newDownStation = upLineStation.get().getDownStation();
-            int newDistance = upLineStation.get().getDistance() + downLineStation.get().getDistance();
+    private void reAssignSection(Section upStationMatchSection, Section downStationMatchSection) {
+        if (upStationMatchSection != null && downStationMatchSection != null) {
+            Station newUpStation = downStationMatchSection.getUpStation();
+            Station newDownStation = upStationMatchSection.getDownStation();
+            int newDistance = upStationMatchSection.addDistanceOfSection(downStationMatchSection);
             sections.add(new Section(this, newUpStation, newDownStation, newDistance));
         }
-
-        upLineStation.ifPresent(it -> sections.remove(it));
-        downLineStation.ifPresent(it -> sections.remove(it));
     }
 
     public Long getId() {
