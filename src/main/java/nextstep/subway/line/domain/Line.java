@@ -55,6 +55,12 @@ public class Line extends BaseEntity {
         return stations;
     }
 
+    public void addSection(Section sectionToAdd) {
+        Stations stations = getStations();
+        sectionToAdd.validateSectionAddable(stations);
+        sections.addWithValidationAndReassign(sectionToAdd);
+    }
+
     public void checkLineStationRemovable() {
         if (sections.size() <= 1) {
             throw new RuntimeException();
@@ -66,10 +72,10 @@ public class Line extends BaseEntity {
         Section downStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.DOWN_STATION);
         sections.remove(upStationMatchSection);
         sections.remove(downStationMatchSection);
-        reAssignSection(upStationMatchSection, downStationMatchSection);
+        unionSection(upStationMatchSection, downStationMatchSection);
     }
 
-    private void reAssignSection(Section upStationMatchSection, Section downStationMatchSection) {
+    private void unionSection(Section upStationMatchSection, Section downStationMatchSection) {
         if (upStationMatchSection != null && downStationMatchSection != null) {
             Station newUpStation = downStationMatchSection.getUpStation();
             Station newDownStation = upStationMatchSection.getDownStation();

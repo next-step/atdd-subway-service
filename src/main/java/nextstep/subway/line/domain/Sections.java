@@ -38,6 +38,18 @@ public class Sections {
         }
     }
 
+    public void addWithValidationAndReassign(Section sectionToAdd) {
+        reAssignSection(sectionToAdd);
+        sections.add(sectionToAdd);
+    }
+
+    private void reAssignSection(Section sectionToAdd) {
+        sections.stream()
+                .filter(section -> section.matchSamePositionStation(sectionToAdd))
+                .findFirst()
+                .ifPresent(section -> section.splitSection(sectionToAdd));
+    }
+
     public Section getMatchSectionByPosition(Station station, StationPosition stationPosition) {
         return sections.stream()
                 .filter(section -> section.isStationMatchWithPositionOf(station, stationPosition))

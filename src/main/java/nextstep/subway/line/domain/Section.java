@@ -4,6 +4,7 @@ import java.util.Objects;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
+import nextstep.subway.station.domain.Stations;
 
 @Entity
 public class Section {
@@ -99,20 +100,56 @@ public class Section {
         return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, Distance newDistance) {
-        if (newDistance.compareTo(this.distance) >= 0) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance.subtract(newDistance);
+    public void validateSectionAddable(Stations stations) {
+        checkAlreadyExist(stations);
+        checkSectionAddable(stations);
     }
 
-    public void updateDownStation(Station station, Distance newDistance) {
-        if (newDistance.compareTo(this.distance) >= 0) {
+    private void checkAlreadyExist(Stations stations) {
+        boolean isUpStationExisted = stations.stream().anyMatch(station -> station == upStation);
+        boolean isDownStationExisted = stations.stream().anyMatch(station -> station == downStation);
+
+        if (isUpStationExisted && isDownStationExisted) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+    }
+
+    private void checkSectionAddable(Stations stations) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
+                stations.stream().noneMatch(it -> it == downStation)) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
+    }
+
+    public boolean matchSamePositionStation(Section section) {
+        if (this.upStation.equals(section.upStation)) {
+            return true;
+        }
+        if (this.downStation.equals(section.downStation)) {
+            return true;
+        }
+        return false;
+    }
+
+    public void splitSection(Section section) {
+        validateDistanceOfSectionToAdd(section);
+        if (this.upStation.equals(section.upStation)) {
+            this.upStation = section.downStation;
+        }
+        if (this.downStation.equals(section.downStation)) {
+            this.downStation = section.upStation;
+        }
+        this.distance.subtract(section.distance);
+    }
+
+    private void validateDistanceOfSectionToAdd(Section section) {
+        if (compareDistance(section) >= 0) {
             throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
         }
-        this.downStation = station;
-        this.distance.subtract(newDistance);
+    }
+
+    private int compareDistance(Section section) {
+        return section.distance.compareTo(this.distance);
     }
 
     @Override
