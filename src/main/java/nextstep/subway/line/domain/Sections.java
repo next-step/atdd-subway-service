@@ -167,7 +167,7 @@ public class Sections {
 	}
 
 	private void removeSection(Section sectionByUpStation, Section sectionByDownStation) {
-		SectionRemoverNew.remove(this, sectionByUpStation, sectionByDownStation);
+		SectionRemover.remove(this, sectionByUpStation, sectionByDownStation);
 	}
 
 	public void removeSection(Section section) {
