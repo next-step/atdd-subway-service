@@ -15,23 +15,22 @@ public class Distance {
         this.distance = distance;
     }
 
-    private void isValidDistance(Distance newDistance) {
-        if (this.distance <= newDistance.distance) {
-            throw new RuntimeException(ErrorMessage.EXCEEDED_DISTANCE.getMessage());
-        }
-    }
-
-    public int getDistance() {
-        return distance;
-    }
-
-    public void setDistance(int distance) {
-        this.distance = distance;
-    }
 
     public Distance subtract(Distance newDistance) {
         isValidDistance(newDistance);
-        return new Distance(this.distance - newDistance.getDistance());
+        return new Distance(this.distance - newDistance.distance);
     }
+
+    private void isValidDistance(Distance newDistance) {
+        if (this.distance <= newDistance.distance) {
+            throw new IllegalArgumentException(ErrorMessage.EXCEEDED_DISTANCE.getMessage());
+        }
+    }
+
+    public int getDistance(){
+        return this.distance;
+    }
+
+
 
 }
