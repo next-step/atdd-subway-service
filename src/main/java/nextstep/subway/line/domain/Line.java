@@ -26,6 +26,7 @@ public class Line extends BaseEntity {
     public Line() {}
 
     public Line(Builder builder) {
+        this.id = builder.id;
         this.name = builder.name;
         this.color = builder.color;
         this.sections.add(new Section(this, builder.upStation, builder.downStation, builder.distance));
@@ -139,6 +140,7 @@ public class Line extends BaseEntity {
     }
 
     public static class Builder {
+        private Long id;
         private String name;
         private String color;
         private Station upStation;
@@ -147,6 +149,11 @@ public class Line extends BaseEntity {
         private int addedFare;
 
         public Builder(){}
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
+        }
 
         public Builder name(String name) {
             this.name = name;
