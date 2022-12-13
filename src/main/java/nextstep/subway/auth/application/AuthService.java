@@ -4,7 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.exception.AuthorizationException;
-import nextstep.subway.auth.exception.NotValidAccessTokenException;
+import nextstep.subway.auth.exception.InValidAccessTokenException;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
 import nextstep.subway.auth.message.AuthMessage;
 import nextstep.subway.member.domain.Member;
@@ -42,7 +42,7 @@ public class AuthService {
 
     private void validateAccessToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new NotValidAccessTokenException(AuthMessage.AUTH_ERROR_TOKEN_IS_NOT_VALID.message());
+            throw new InValidAccessTokenException(AuthMessage.AUTH_ERROR_TOKEN_IS_NOT_VALID.message());
         }
     }
 }
