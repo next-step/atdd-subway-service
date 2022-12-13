@@ -50,12 +50,6 @@ public class Sections {
                 .ifPresent(section -> section.splitSection(sectionToAdd));
     }
 
-    public Section getMatchSectionByPosition(Station station, StationPosition stationPosition) {
-        return sections.stream()
-                .filter(section -> section.isStationMatchWithPositionOf(station, stationPosition))
-                .findFirst().orElse(null);
-    }
-
     public Station nextStationOf(Station station, StationPosition stationPosition) {
         Station downStation = null;
         Section nextSection = sections.stream()
@@ -76,6 +70,12 @@ public class Sections {
             nextUpstation = nextStationOf(finalUpStation, StationPosition.UP_STATION);
         }
         return finalUpStation;
+    }
+
+    public Section getMatchSectionByPosition(Station station, StationPosition stationPosition) {
+        return sections.stream()
+                .filter(section -> section.isStationMatchWithPositionOf(station, stationPosition))
+                .findFirst().orElse(null);
     }
 
     public List<Section> getSections() {

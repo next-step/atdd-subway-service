@@ -76,30 +76,6 @@ public class Section {
         return this.distance.add(section.distance);
     }
 
-    public Long getId() {
-        return id;
-    }
-
-    public Line getLine() {
-        return line;
-    }
-
-    public Station getUpStation() {
-        return upStation;
-    }
-
-    public Station getDownStation() {
-        return downStation;
-    }
-
-    public Distance getDistance() {
-        return distance;
-    }
-
-    public int getDistanceValue() {
-        return distance.getDistance();
-    }
-
     public void validateSectionAddable(Stations stations) {
         checkAlreadyExist(stations);
         checkSectionAddable(stations);
@@ -150,6 +126,30 @@ public class Section {
 
     private int compareDistance(Section section) {
         return section.distance.compareTo(this.distance);
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public Line getLine() {
+        return line;
+    }
+
+    public Station getUpStation() {
+        return upStation;
+    }
+
+    public Station getDownStation() {
+        return downStation;
+    }
+
+    public Distance getDistance() {
+        return distance;
+    }
+
+    public int getDistanceValue() {
+        return distance.getDistance();
     }
 
     @Override
