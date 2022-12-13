@@ -2,8 +2,6 @@ package nextstep.subway.line.domain;
 
 import java.util.Objects;
 import javax.persistence.Embeddable;
-import nextstep.subway.fare.domain.DistanceFarePolicy;
-import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.exception.IllegalDistanceException;
 
 @Embeddable
@@ -32,11 +30,6 @@ public class Distance {
 
     public Distance plus(Distance newDistance) {
         return new Distance(this.distance + newDistance.distance);
-    }
-
-    public Fare additionalFareByDistance() {
-        DistanceFarePolicy distanceFarePolicy = DistanceFarePolicy.from(distance);
-        return distanceFarePolicy.apply(distance);
     }
 
     public int distance() {
