@@ -51,15 +51,15 @@ public class Sections {
     }
 
     public Station nextStationOf(Station station, StationPosition stationPosition) {
-        Station downStation = null;
+        Station nextStation = null;
         Section nextSection = sections.stream()
                 .filter(section -> section.isStationOppositeOf(station, stationPosition))
                 .findFirst()
                 .orElse(null);
         if (nextSection != null) {
-            downStation = nextSection.getStationByPosition(stationPosition);
+            nextStation = nextSection.getStationByPosition(stationPosition);
         }
-        return downStation;
+        return nextStation;
     }
 
     public Station findFinalUpStation() {

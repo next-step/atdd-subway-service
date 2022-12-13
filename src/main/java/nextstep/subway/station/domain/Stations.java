@@ -19,4 +19,8 @@ public class Stations {
     public boolean isEmpty() {
         return stations.isEmpty();
     }
+
+    public boolean contains(Station station) {
+        return stations.stream().anyMatch(s -> s.equals(station));
+    }
 }

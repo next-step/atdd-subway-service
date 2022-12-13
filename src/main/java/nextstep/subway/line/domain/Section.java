@@ -1,9 +1,15 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
+import javax.persistence.CascadeType;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 import nextstep.subway.station.domain.Stations;
 
 @Entity
@@ -39,6 +45,14 @@ public class Section {
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this(line, upStation, downStation, new Distance(distance));
+    }
+
+    private boolean isUpStationEqual(Section section) {
+        return this.upStation.equals(section.upStation);
+    }
+
+    private boolean isDownStationEqual(Section section) {
+        return this.downStation.equals(section.downStation);
     }
 
     private StationPosition positionOfStation(Station station) {
@@ -82,26 +96,20 @@ public class Section {
     }
 
     private void checkAlreadyExist(Stations stations) {
-        boolean isUpStationExisted = stations.stream().anyMatch(station -> station == upStation);
-        boolean isDownStationExisted = stations.stream().anyMatch(station -> station == downStation);
-
-        if (isUpStationExisted && isDownStationExisted) {
+        if (stations.contains(upStation) && stations.contains(downStation)) {
             throw new RuntimeException("이미 등록된 구간 입니다.");
         }
     }
 
     private void checkSectionAddable(Stations stations) {
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) &&
-                stations.stream().noneMatch(it -> it == downStation)) {
+        if (!stations.isEmpty()
+                && !stations.contains(upStation) && !stations.contains(downStation)) {
             throw new RuntimeException("등록할 수 없는 구간 입니다.");
         }
     }
 
     public boolean matchSamePositionStation(Section section) {
-        if (this.upStation.equals(section.upStation)) {
-            return true;
-        }
-        if (this.downStation.equals(section.downStation)) {
+        if (isUpStationEqual(section) ||isDownStationEqual(section)) {
             return true;
         }
         return false;
@@ -109,10 +117,10 @@ public class Section {
 
     public void splitSection(Section section) {
         validateDistanceOfSectionToAdd(section);
-        if (this.upStation.equals(section.upStation)) {
+        if (isUpStationEqual(section)) {
             this.upStation = section.downStation;
         }
-        if (this.downStation.equals(section.downStation)) {
+        if (isDownStationEqual(section)) {
             this.downStation = section.upStation;
         }
         this.distance.subtract(section.distance);
