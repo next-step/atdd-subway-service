@@ -59,8 +59,8 @@ public class LineTest {
 
         Section 예상_새_구간 = new Section(신분당선, 양재역, 광교역, 20);
         assertAll(
-                () -> assertThat(신분당선.getSections()).doesNotContain(구간1, 구간2),
-                () -> assertThat(신분당선.getSections()).contains(예상_새_구간)
+                () -> assertThat(신분당선.getSections().getSections()).doesNotContain(구간1, 구간2),
+                () -> assertThat(신분당선.getSections().getSections()).contains(예상_새_구간)
         );
     }
 
@@ -75,8 +75,8 @@ public class LineTest {
 
         Section 예상_잔여_구간 = new Section(신분당선, 강남역, 양재역, 10);
         assertAll(
-                () -> assertThat(신분당선.getSections()).doesNotContain(구간1),
-                () -> assertThat(신분당선.getSections()).contains(예상_잔여_구간)
+                () -> assertThat(신분당선.getSections().getSections()).doesNotContain(구간1),
+                () -> assertThat(신분당선.getSections().getSections()).contains(예상_잔여_구간)
         );
     }
 
@@ -91,8 +91,8 @@ public class LineTest {
 
         Section 예상_잔여_구간 = new Section(신분당선, 강남역, 양재역, 10);
         assertAll(
-                () -> assertThat(신분당선.getSections()).doesNotContain(구간1),
-                () -> assertThat(신분당선.getSections()).contains(예상_잔여_구간)
+                () -> assertThat(신분당선.getSections().getSections()).doesNotContain(구간1),
+                () -> assertThat(신분당선.getSections().getSections()).contains(예상_잔여_구간)
         );
     }
 }
