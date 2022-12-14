@@ -83,10 +83,10 @@ public class PathFinderTest {
     @DisplayName("경로 중 최대 노선 추가요금을 조회한다.")
     @Test
     void 최단_경로_최대_노선_추가요금_조회_테스트() {
-        // when
+        // given
         PathFinder pathFinder = new PathFinder(lines);
+        // when
         Path path = pathFinder.findShortestPath(강남역, 남부터미널역);
-
         // then
         assertThat(path.getMaxSurCharge().value()).isEqualTo(1500);
     }
