@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.application.FareService;
 import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.Line;
@@ -31,7 +32,7 @@ public class PathService {
         this.fareService = fareService;
     }
 
-    public PathResponse getShortestDistance(long sourceStationId, long targetStationId) {
+    public PathResponse getShortestDistance(LoginMember member, long sourceStationId, long targetStationId) {
         Station sourceStation = stationRepository.findById(sourceStationId)
                 .orElseThrow(EntityNotFoundException::new);
         Station targetStation = stationRepository.findById(targetStationId)
@@ -40,7 +41,7 @@ public class PathService {
         List<Line> lines = lineRepository.findAllWithSections();
         PathFinder shortestPathFinder = new ShortestPathFinder(lines);
         Path path = shortestPathFinder.findPath(sourceStation, targetStation);
-        Fare fare = fareService.calculateFare(path);
+        Fare fare = fareService.calculateFare(member, path);
         return PathResponse.of(path, fare);
     }
 }

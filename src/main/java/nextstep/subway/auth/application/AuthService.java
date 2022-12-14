@@ -32,16 +32,25 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        validateAccessToken(credentials);
+    public LoginMember findMemberByToken(String credentials, boolean required) {
+        boolean isValidToken = jwtTokenProvider.validateToken(credentials);
+        validateAccessToken(required, isValidToken);
+
+        if (!isValidToken) {
+            return LoginMember.anonymous();
+        }
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(AuthorizationException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 
-    private void validateAccessToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
+    private void validateAccessToken(boolean required, boolean isValidToken) {
+        if(!required) {
+            return;
+        }
+
+        if (!isValidToken) {
             throw new InValidAccessTokenException(AuthMessage.AUTH_ERROR_TOKEN_IS_NOT_VALID.message());
         }
     }

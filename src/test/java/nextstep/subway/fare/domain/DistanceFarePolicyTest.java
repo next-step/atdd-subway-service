@@ -12,8 +12,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class DistanceFarePolicyTest {
 
-    @DisplayName("주어진 거리에 해당되는 초과 요금 정책 목록을 반환한다")
-    @ParameterizedTest(name = "[{0}km] 거리가 주어지면 [{1}] 초과 요금 정책 목록을 반환한다")
+    @DisplayName("주어진 거리에 해당되는 초과 요금 정책을 반환한다")
+    @ParameterizedTest(name = "[{0}km] 거리가 주어지면 [{1}] 초과 요금 정책을 반환한다")
     @MethodSource("provideDistanceAndOverFarePolicy")
     void find_over_fare_policy_with_distance(int distance, DistanceFarePolicy expectedFarePolicy) {
         // when
@@ -33,7 +33,7 @@ class DistanceFarePolicyTest {
     }
 
     @DisplayName("주어진 거리에 따른 초과 요금을 계산하여 반환한다")
-    @ParameterizedTest(name = "[{0}km] 거리가 주어지면 초과 요금 정책으로 계산 된 추가 요금[{1}원] 을 반환한다")
+    @ParameterizedTest(name = "[{0}km] 거리가 주어지면 초과 요금 정책으로 계산 된 추가 요금[{1}원]을 반환한다")
     @MethodSource("provideDistanceAndOverFare")
     void calculate_over_fare(int distance, Fare expectedFare) {
         // given

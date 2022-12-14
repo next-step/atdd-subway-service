@@ -15,6 +15,10 @@ public class LoginMember {
         this.age = age;
     }
 
+    public static LoginMember anonymous() {
+        return new LoginMember(null, null, Integer.MAX_VALUE);
+    }
+
     public Long getId() {
         return id;
     }

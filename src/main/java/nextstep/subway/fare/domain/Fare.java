@@ -52,6 +52,10 @@ public class Fare implements Comparable<Fare> {
         return new Fare(this.fare + other.fare);
     }
 
+    public Fare minus(Fare other) {
+        return new Fare(this.fare - other.fare);
+    }
+
     @Override
     public int compareTo(Fare other) {
         return this.fare.compareTo(other.fare);
@@ -75,5 +79,9 @@ public class Fare implements Comparable<Fare> {
     @Override
     public String toString() {
         return String.valueOf(fare);
+    }
+
+    public Fare discountByPercent(int percent) {
+        return new Fare(this.fare * (100 - percent) / 100);
     }
 }

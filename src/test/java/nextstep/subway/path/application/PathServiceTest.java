@@ -1,9 +1,10 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fare.application.FareService;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.fixture.LineFixture;
 import nextstep.subway.fixture.StationFixture;
-import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.StationRepository;
@@ -59,17 +60,17 @@ class PathServiceTest {
         given(stationRepository.findById(sourceStationId)).willReturn(Optional.of(StationFixture.강남역));
         given(stationRepository.findById(targetStationId)).willReturn(Optional.of(StationFixture.삼성역));
         given(lineRepository.findAllWithSections()).willReturn(Arrays.asList(LineFixture.이호선));
-        given(fareService.calculateFare(any())).willReturn(Fare.of(1_250));
+        given(fareService.calculateFare(any(), any())).willReturn(Fare.of(1_250));
 
         // when
-        PathResponse pathResponse = pathService.getShortestDistance(sourceStationId, targetStationId);
+        PathResponse pathResponse = pathService.getShortestDistance(LoginMember.anonymous(), sourceStationId, targetStationId);
 
         // then
         then(stationRepository).should(times(2)).findById(any());
         then(lineRepository).should(times(1)).findAllWithSections();
         assertAll(
-                () -> assertThat(getStationNames(pathResponse)).containsExactly("강남역", "교대역", "삼성역"),
-                () -> assertThat(pathResponse.getDistance()).isEqualTo(10),
+                () -> assertThat(getStationNames(pathResponse)).containsExactly("강남역", "삼성역"),
+                () -> assertThat(pathResponse.getDistance()).isEqualTo(5),
                 () -> assertThat(pathResponse.getFare()).isEqualTo(1_250)
         );
     }
