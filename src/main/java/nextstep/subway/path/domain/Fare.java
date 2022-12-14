@@ -4,13 +4,7 @@ import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.SurCharge;
 
 public class Fare {
-
     private static final int DEFAULT_FARE = 1250;
-    private static final int MIN_DISTANCE_STANDARD = 10;
-    private static final int MAX_DISTANCE_STANDARD = 50;
-    private static final int UNIT_DISTANCE_BETWEEN_TEN_AND_FIFTY = 5;
-    private static final int UNIT_DISTANCE_OVER_FIFTY = 8;
-
     private int fare;
 
     public Fare(Distance distance, SurCharge surCharge, int age) {
@@ -18,21 +12,25 @@ public class Fare {
     }
 
     private int calculateFare(Distance distance, SurCharge surCharge, int age) {
-        int fareByDistance = adjustFarePolicyByDistance(distance) + surCharge.value();
+        int fareByDistance = adjustFarePolicyByDistance(distance.value()) + surCharge.value();
         double discountFareByAge = adjustFarePolicyByAge(fareByDistance, age);
         return (int) discountFareByAge;
     }
 
-    private int adjustFarePolicyByDistance(Distance distance) {
+    private int adjustFarePolicyByDistance(int distance) {
         int fareByDistance = DEFAULT_FARE;
 
-        if (distance.value() > MIN_DISTANCE_STANDARD && distance.value() < MAX_DISTANCE_STANDARD) {
-            fareByDistance += calculateOverFare(distance.value()-MIN_DISTANCE_STANDARD, UNIT_DISTANCE_BETWEEN_TEN_AND_FIFTY);
+        if (distance > FarePolicyByDistance.POLICY_UNDER_FIFTY.getMinDistanceStandard()
+                && distance < FarePolicyByDistance.POLICY_OVER_FIFTY.getMinDistanceStandard()) {
+            fareByDistance += calculateOverFare(distance - FarePolicyByDistance.POLICY_UNDER_FIFTY.getMinDistanceStandard(),
+                    FarePolicyByDistance.POLICY_UNDER_FIFTY.getUnitDistanceForCharge());
         }
 
-        if (distance.value() >= MAX_DISTANCE_STANDARD) {
-            fareByDistance += calculateOverFare(MAX_DISTANCE_STANDARD - MIN_DISTANCE_STANDARD, UNIT_DISTANCE_BETWEEN_TEN_AND_FIFTY);
-            fareByDistance += calculateOverFare(distance.value()- MAX_DISTANCE_STANDARD, UNIT_DISTANCE_OVER_FIFTY);
+        if (distance >= FarePolicyByDistance.POLICY_OVER_FIFTY.getMinDistanceStandard()) {
+            fareByDistance += calculateOverFare(FarePolicyByDistance.POLICY_OVER_FIFTY.getMinDistanceStandard() - FarePolicyByDistance.POLICY_UNDER_FIFTY.getMinDistanceStandard(),
+                    FarePolicyByDistance.POLICY_UNDER_FIFTY.getUnitDistanceForCharge());
+            fareByDistance += calculateOverFare(distance - FarePolicyByDistance.POLICY_OVER_FIFTY.getMinDistanceStandard(),
+                    FarePolicyByDistance.POLICY_OVER_FIFTY.getUnitDistanceForCharge());
         }
 
         return fareByDistance;
