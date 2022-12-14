@@ -24,7 +24,13 @@ public class Section {
 
     private int distance;
 
-    public Section() {
+    protected Section() {
+    }
+
+    public Section(Station upStation, Station downStation, int distance) {
+        this.upStation = upStation;
+        this.downStation = downStation;
+        this.distance = distance;
     }
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
@@ -60,6 +66,14 @@ public class Section {
         }
         this.upStation = station;
         this.distance -= newDistance;
+    }
+
+    public boolean isSameDownStation(Station station) {
+        return this.downStation.isSameStation(station);
+    }
+
+    public boolean isSameUpStation(Station station) {
+        return this.upStation.isSameStation(station);
     }
 
     public void updateDownStation(Station station, int newDistance) {

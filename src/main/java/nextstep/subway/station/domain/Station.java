@@ -16,6 +16,11 @@ public class Station extends BaseEntity {
     public Station() {
     }
 
+    public Station(Long id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
     public Station(String name) {
         this.name = name;
     }
@@ -35,6 +40,10 @@ public class Station extends BaseEntity {
         Station station = (Station) o;
         return Objects.equals(id, station.id) &&
                 Objects.equals(name, station.name);
+    }
+
+    public boolean isSameStation(Station station) {
+        return this.equals(station);
     }
 
     @Override
