@@ -10,6 +10,7 @@ import org.jgrapht.graph.DefaultWeightedEdge;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
+import java.util.Objects;
 
 public class PathFinder {
     private static final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
@@ -28,8 +29,10 @@ public class PathFinder {
 
     public Path findShortPath(Station startStation, Station endStation) {
         isValidDuplicatedStation(startStation, endStation);
-        isValidExistStation(startStation, endStation);
+
         GraphPath<Station, DefaultWeightedEdge> path = dijkstraShortestPath.getPath(startStation, endStation);
+
+        isValidExistStation(startStation, endStation);
         return new Path(path.getVertexList(), (int) path.getWeight());
     }
 
