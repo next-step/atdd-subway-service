@@ -15,6 +15,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.Name;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
@@ -48,7 +49,7 @@ class PathServiceTest {
 		when(stationService.findById(도착지)).thenReturn(station(Name.from("양재역")));
 
 		// when
-		PathResponse response = pathService.findShortestPath(new PathRequest(출발지, 도착지));
+		PathResponse response = pathService.findShortestPath(LoginMember.guest(), new PathRequest(출발지, 도착지));
 
 		// then
 		assertAll(

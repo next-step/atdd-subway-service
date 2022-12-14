@@ -41,9 +41,7 @@ public class LineAcceptanceUtils {
 	}
 
 	private static ExtractableResponse<Response> 지하철_노선_생성(LineCreateRequest request) {
-		LineCreateRequest lineCreateRequest = new LineCreateRequest(
-			request.getName(), request.getColor(), request.getUpStationId(), request.getDownStationId(), request.getDistance());
-		return RestAssuredUtils.post(LINE_URL, lineCreateRequest).extract();
+		return RestAssuredUtils.post(LINE_URL, request).extract();
 	}
 
 	public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {

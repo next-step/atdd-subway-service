@@ -77,7 +77,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 		// then
 		assertAll(
 			() -> 최단_경로_조회됨(response),
-			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1650)
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1850)
 		);
 	}
 
@@ -94,7 +94,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 		// then
 		assertAll(
 			() -> 최단_경로_조회됨(response),
-			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 650)
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 750)
 		);
 	}
 
@@ -112,7 +112,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 		// then
 		assertAll(
 			() -> 최단_경로_조회됨(response),
-			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1040)
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1200)
 		);
 	}
 
@@ -120,12 +120,12 @@ class PathAcceptanceTest extends AcceptanceTest {
 	@DisplayName("비회원 최단 경로 조회")
 	void findShortestPathWithGuest() {
 		// when
-		ExtractableResponse<Response> response = 최단_경로_조회(null, 교대역.getId(), 양재역.getId());
+		ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 양재역.getId());
 
 		// then
 		assertAll(
 			() -> 최단_경로_조회됨(response),
-			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1650)
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1850)
 		);
 	}
 

@@ -2,10 +2,13 @@ package nextstep.subway.path.application;
 
 import org.springframework.stereotype.Service;
 
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathNavigator;
+import nextstep.subway.path.domain.TotalFareCalculator;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
@@ -22,10 +25,16 @@ public class PathService {
 		this.stationService = stationService;
 	}
 
-	public PathResponse findShortestPath(PathRequest request) {
+	public PathResponse findShortestPath(LoginMember member, PathRequest request) {
 		PathNavigator navigator = pathNavigator();
 		Path path = path(request, navigator);
-		return PathResponse.from(path);
+		Fare fare = fare(member, path);
+		return PathResponse.from(path, fare);
+	}
+
+	private Fare fare(LoginMember member, Path path) {
+		return TotalFareCalculator.of(member, path.distance(), path.sections())
+			.fare();
 	}
 
 	private Path path(PathRequest request, PathNavigator navigator) {

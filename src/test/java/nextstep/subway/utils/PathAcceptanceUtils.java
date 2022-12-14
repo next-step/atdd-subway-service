@@ -20,7 +20,14 @@ public class PathAcceptanceUtils {
 	private static final String PATHS_URL = "/paths";
 
 	public static ExtractableResponse<Response> 최단_경로_조회(Long sourceId, Long targetId) {
-		return 최단_경로_조회("token", sourceId, targetId);
+		return RestAssured.given().log().all()
+			.param("source", sourceId)
+			.param("target", targetId)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.get(PATHS_URL)
+			.then().log().all()
+			.extract();
 	}
 
 	public static ExtractableResponse<Response> 최단_경로_조회(String accessToken, Long sourceId, Long targetId) {

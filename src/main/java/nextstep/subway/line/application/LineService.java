@@ -107,8 +107,13 @@ public class LineService {
 	}
 
 	private Line savedLine(LineCreateRequest request) {
-		return Line.of(request.name(), request.color(),
-			Sections.from(section(request.getUpStationId(), request.getDownStationId(), request.getDistance())));
+		return Line.of(
+			request.name(),
+			request.color(),
+			Sections.from(section(request.getUpStationId(),
+					request.getDownStationId(),
+					request.getDistance())),
+			request.fare());
 	}
 
 	private LineResponse lineResponse(Line line) {
