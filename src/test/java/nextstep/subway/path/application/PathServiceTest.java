@@ -6,6 +6,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.SurCharge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -45,6 +46,11 @@ public class PathServiceTest {
     private Station 강남역;
     private Station 간이역;
 
+    private LoginMember 일반회원;
+    private LoginMember 어린이회원;
+    private LoginMember 청소년회원;
+    private LoginMember 비회원 = LoginMember.GUEST;
+
     @BeforeEach
     void setup() {
         교대역 = 교대역();
@@ -53,10 +59,14 @@ public class PathServiceTest {
         강남역 = 강남역();
         간이역 = 간이역();
 
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, new Distance(10));
-        이호선 = new Line("2호선", "Yellow-green", 교대역, 강남역, new Distance(10));
-        삼호선 = new Line("3호선", "Orange", 교대역, 양재역, new Distance(5));
+        신분당선 = new Line("신분당선", "red", 강남역, 양재역, new Distance(10), new SurCharge(900));
+        이호선 = new Line("2호선", "Yellow-green", 교대역, 강남역, new Distance(10), new SurCharge(200));
+        삼호선 = new Line("3호선", "Orange", 교대역, 양재역, new Distance(5), new SurCharge(300));
         삼호선.addLineStation(new Section(삼호선, 교대역, 남부터미널역, new Distance(3)));
+
+        일반회원 = new LoginMember(1L, "default@email.com", 20);
+        어린이회원 = new LoginMember(2L, "children@email.com", 7);
+        청소년회원 = new LoginMember(3L, "youth@email.com", 16);
     }
 
     @DisplayName("두 역의 최단 경로를 조회한다.")
@@ -105,5 +115,66 @@ public class PathServiceTest {
         assertThatThrownBy(
                 () -> pathService.findBestPath(LoginMember.GUEST, 강남역.getId(), 간이역.getId())
         ).isInstanceOf(InvalidDataException.class);
+    }
+
+    @DisplayName("일반회원 경로의 요금을 조회한다.")
+    @Test
+    void 일반회원_경로_요금_조회_테스트() {
+        // given
+        given(stationService.findById(2L)).willReturn(강남역);
+        given(stationService.findById(4L)).willReturn(남부터미널역);
+        given(lineService.findAllLines()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        // when
+        PathResponse pathResponse = pathService.findBestPath(일반회원, 강남역.getId(), 남부터미널역.getId());
+
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(2250);
+    }
+
+    @DisplayName("비회원 경로의 요금을 조회한다.")
+    @Test
+    void 비회원_경로_요금_조회_테스트() {
+        // given
+        given(stationService.findById(2L)).willReturn(강남역);
+        given(stationService.findById(4L)).willReturn(남부터미널역);
+        given(lineService.findAllLines()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        // when
+        PathResponse pathResponse = pathService.findBestPath(비회원, 강남역.getId(), 남부터미널역.getId());
+
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(2250);
+    }
+
+    @DisplayName("어린이회원 경로의 요금을 조회한다.")
+    @Test
+    void 어린이회원_경로_요금_조회_테스트() {
+        // given
+        given(stationService.findById(2L)).willReturn(강남역);
+        given(stationService.findById(4L)).willReturn(남부터미널역);
+        given(lineService.findAllLines()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        // when
+        PathResponse pathResponse = pathService.findBestPath(어린이회원, 강남역.getId(), 남부터미널역.getId());
+        System.out.println(pathResponse.getDistance());
+
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(950);
+    }
+
+    @DisplayName("청소년회원 경로의 요금을 조회한다.")
+    @Test
+    void 청소년회원_경로_요금_조회_테스트() {
+        // given
+        given(stationService.findById(2L)).willReturn(강남역);
+        given(stationService.findById(4L)).willReturn(남부터미널역);
+        given(lineService.findAllLines()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
+
+        // when
+        PathResponse pathResponse = pathService.findBestPath(청소년회원, 강남역.getId(), 남부터미널역.getId());
+
+        // then
+        assertThat(pathResponse.getFare()).isEqualTo(1520);
     }
 }
