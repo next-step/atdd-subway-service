@@ -35,4 +35,8 @@ public class Path {
     public Fare getFare() {
         return fare;
     }
+
+    public SurCharge getMaxSurCharge() {
+        return maxSurCharge;
+    }
 }
