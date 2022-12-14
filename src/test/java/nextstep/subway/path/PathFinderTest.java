@@ -81,4 +81,16 @@ public class PathFinderTest {
                 .hasMessage("출발역과 도착역이 같을 경우 최단 거리를 조회할 수 없습니다.");
     }
 
+    @DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우")
+    @Test
+    public void 최단경로조회_예외발생2() {
+        // given
+        PathFinder pathFinder = new PathFinder(Arrays.asList(삼호선, 이호선));
+        // when && then
+        assertThatThrownBy(
+                () -> pathFinder.findShortPath(교대역, 동작역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출발역 또는 도착역이 존재하지 않습니다.");
+    }
+
 }
