@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class PathFinderTest {
@@ -66,6 +67,18 @@ public class PathFinderTest {
                 () -> assertThat(path.getStations()).hasSize(2),
                 () -> assertThat(path.getDistance()).isEqualTo(5)
         );
+    }
+
+    @DisplayName("출발역과 도착역이 같은 경우 예외 발생")
+    @Test
+    public void 최단경로조회_예외발생1() {
+        // given
+        PathFinder pathFinder = new PathFinder(Arrays.asList(삼호선, 이호선));
+        // when && then
+        assertThatThrownBy(
+                () -> pathFinder.findShortPath(양재역, 양재역))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("출발역과 도착역이 같을 경우 최단 거리를 조회할 수 없습니다.");
     }
 
 }
