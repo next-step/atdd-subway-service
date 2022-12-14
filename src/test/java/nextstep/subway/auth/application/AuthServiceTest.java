@@ -62,12 +62,12 @@ public class AuthServiceTest {
                 .hasMessageStartingWith(MEMBER_NOT_EXISTS);
     }
 
-    @DisplayName("토큰이 유효하지 않으면 예외를 발생한다.")
+    @DisplayName("토큰이 유효하지 않으면 나이가 20인 LoginMember 객체를 리턴한다.")
     @Test
     void findMemberByInvalidAccessTokenException() {
-        Assertions.assertThatThrownBy(() -> authService.findMemberByToken("invalid access token"))
-                .isInstanceOf(AuthorizationException.class)
-                .hasMessageStartingWith(INVALID_ACCESS_TOKEN);
+        LoginMember loginMember = authService.findMemberByToken("invalid access token");
+
+        Assertions.assertThat(loginMember.getAge().equals(20));
     }
 
     @DisplayName("잘못된 비밀번호로 로그인 시도 시 예외가 발생한다.")

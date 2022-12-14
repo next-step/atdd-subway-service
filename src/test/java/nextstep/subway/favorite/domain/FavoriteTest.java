@@ -1,11 +1,9 @@
 package nextstep.subway.favorite.domain;
 
-import nextstep.subway.exception.FavoriteCreateException;
-import nextstep.subway.favorite.domain.Favorite;
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 import org.assertj.core.api.Assertions;
-import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -30,7 +28,7 @@ class FavoriteTest {
     @Test
     void createException1() {
         Assertions.assertThatThrownBy(() -> Favorite.of(null, sourceStation, targetStation))
-                .isInstanceOf(FavoriteCreateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(FAVORITE_NOT_CONTAIN_MEMBER);
     }
 
@@ -38,7 +36,7 @@ class FavoriteTest {
     @Test
     void createException2() {
         Assertions.assertThatThrownBy(() -> Favorite.of(member, null, targetStation))
-                .isInstanceOf(FavoriteCreateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(FAVORITE_NOT_CONTAIN_STATION);
     }
 
@@ -46,7 +44,7 @@ class FavoriteTest {
     @Test
     void createException3() {
         Assertions.assertThatThrownBy(() -> Favorite.of(member, sourceStation, null))
-                .isInstanceOf(FavoriteCreateException.class)
+                .isInstanceOf(BadRequestException.class)
                 .hasMessageStartingWith(FAVORITE_NOT_CONTAIN_STATION);
     }
 

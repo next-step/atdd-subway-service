@@ -33,11 +33,14 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException(INVALID_ACCESS_TOKEN);
+            // 비로그인 시 성인요금으로 간주
+            return new LoginMember(20);
+//            throw new AuthorizationException(INVALID_ACCESS_TOKEN);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email)
+                .orElseThrow(() -> new AuthorizationException(MEMBER_NOT_EXISTS));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

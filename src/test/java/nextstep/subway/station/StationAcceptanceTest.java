@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static nextstep.subway.station.StationAcceptanceStepTest.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("지하철역 관련 기능")
@@ -77,35 +78,6 @@ public class StationAcceptanceTest extends AcceptanceTest {
         return 지하철역_생성_요청(name);
     }
 
-    public static ExtractableResponse<Response> 지하철역_생성_요청(String name) {
-        StationRequest stationRequest = new StationRequest(name);
-
-        return RestAssured
-                .given().log().all()
-                .body(stationRequest)
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .when().post("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_목록_조회_요청() {
-        return RestAssured
-                .given().log().all()
-                .when().get("/stations")
-                .then().log().all()
-                .extract();
-    }
-
-    public static ExtractableResponse<Response> 지하철역_제거_요청(ExtractableResponse<Response> response) {
-        String uri = response.header("Location");
-
-        return RestAssured
-                .given().log().all()
-                .when().delete(uri)
-                .then().log().all()
-                .extract();
-    }
 
     public static void 지하철역_생성됨(ExtractableResponse response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());

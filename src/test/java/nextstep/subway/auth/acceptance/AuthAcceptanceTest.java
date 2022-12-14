@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import org.assertj.core.api.Assertions;
@@ -13,6 +14,9 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceStepTest.로그인_요청;
+import static nextstep.subway.member.MemberAcceptanceStepTest.내_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceStepTest.회원_생성을_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -92,23 +96,12 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         로그인_실패(response);
     }
 
-    @DisplayName("Bearer Auth 유효하지 않은 토큰")
+    @DisplayName("Bearer Auth 유효하지 않은 토큰으로 내 정보를 조회하면 나이가 20로 비로그인된다.")
     @Test
     void myInfoWithWrongBearerAuth() {
         ExtractableResponse<Response> response = 내_정보_조회_요청("invalid_access_token");
 
         내_정보_조회_실패(response);
-    }
-
-
-    public static ExtractableResponse<Response> 로그인_요청(TokenRequest tokenRequest) {
-        return RestAssured
-                .given().log().all()
-                .contentType(MediaType.APPLICATION_JSON_VALUE)
-                .body(tokenRequest)
-                .when().post("/login/token")
-                .then().log().all()
-                .extract();
     }
 
     public static void 로그인_됨(ExtractableResponse<Response> response) {

@@ -1,15 +1,13 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.exception.PathNotFoundException;
-import nextstep.subway.exception.StationNotFoundException;
+import nextstep.subway.exception.NotFoundException;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.path.dto.domain.PathFinder;
-import nextstep.subway.path.dto.PathResponse;
+import nextstep.subway.path.vo.Path;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -22,8 +20,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
-import java.util.stream.Collectors;
 
 import static nextstep.subway.utils.Message.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -97,21 +93,13 @@ class PathServiceTest {
     @DisplayName("출발역과 도착역 사이의 최단 경로를 조회한다.")
     @Test
     void findShortestPath() {
-        // 리턴값 지정
-        when(stationService.findStationById(1L)).thenReturn(양재역);
-        when(stationService.findStationById(2L)).thenReturn(서현역);
-        when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
+        PathFinder pathFinder = PathFinder.from(sections);
 
-        PathResponse response = pathService.findShortestPath(1L, 2L);
-
-        List<String> stationNames = response.getStations().stream()
-                .map(it -> it.getName())
-                .collect(Collectors.toList());
+        Path path = pathFinder.findAllStationsByStations(양재역, 서현역);
 
         assertAll(
-                () -> assertThat(response.getStations()).hasSize(3),
-                () -> assertThat(response.getDistance()).isEqualTo(10),
-                () -> assertThat(stationNames).containsExactly("양재역", "수서역", "서현역")
+                () -> assertThat(path.getStations()).containsExactly(양재역, 수서역, 서현역),
+                () -> assertThat(path.getDistance()).isEqualTo(10)
         );
     }
 
@@ -123,8 +111,8 @@ class PathServiceTest {
         when(stationService.findStationById(2L)).thenReturn(잠실역);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
-                .isInstanceOf(PathNotFoundException.class)
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L, 20))
+                .isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith(INVALID_CONNECTED_STATIONS);
     }
 
@@ -136,8 +124,8 @@ class PathServiceTest {
         when(stationService.findStationById(1L)).thenReturn(수서역);
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선, 분당선, 삼호선, 팔호선));
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L))
-                .isInstanceOf(PathNotFoundException.class)
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 1L, 20))
+                .isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith(INVALID_SAME_STATIONS);
 
     }
@@ -148,8 +136,8 @@ class PathServiceTest {
         when(stationService.findStationById(1L)).thenReturn(수서역);
         when(stationService.findStationById(2L)).thenReturn(null);
 
-        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L))
-                .isInstanceOf(StationNotFoundException.class)
+        Assertions.assertThatThrownBy(() -> pathService.findShortestPath(1L, 2L, 20))
+                .isInstanceOf(NotFoundException.class)
                 .hasMessageStartingWith(NOT_EXISTS_STATION);
     }
 

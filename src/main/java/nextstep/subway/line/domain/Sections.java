@@ -28,6 +28,10 @@ public class Sections {
         return new Sections(new ArrayList<>());
     }
 
+    public static Sections from(List<Section> sections) {
+        return new Sections(sections);
+    }
+
     public List<Section> getSections() { return Collections.unmodifiableList(sections); }
 
     public void add(Section section) {
@@ -147,6 +151,24 @@ public class Sections {
         }
     }
 
+    public Lines findLinesFrom(List<Station> stations) {
+        return Lines.of(sections.stream()
+                .filter(it -> stations.contains(it.getUpStation()) && stations.contains(it.getDownStation()))
+                .map(Section::getLine)
+                .distinct()
+                .collect(Collectors.toList()));
+    }
+
+    public LineFare findMaxLineFare() {
+        // Lines 조회 분리하지 않고, 구간에서 바로 Line 찾고 LineFare 찾기
+        return this.sections
+                .stream()
+                .map(s -> s.getFare())
+                .max(Comparator.comparing(it -> it))
+                .orElse(LineFare.zero());
+
+    }
+
     private void validSectionSize() {
         if (this.sections.size() <= 1) {
             throw new RuntimeException();
@@ -166,7 +188,4 @@ public class Sections {
     public int hashCode() {
         return Objects.hash(sections);
     }
-
-
-
 }

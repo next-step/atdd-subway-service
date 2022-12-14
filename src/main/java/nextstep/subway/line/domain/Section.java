@@ -1,11 +1,10 @@
 package nextstep.subway.line.domain;
 
-import nextstep.subway.exception.SectionValidException;
+import nextstep.subway.exception.BadRequestException;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
 import java.util.Objects;
-import java.util.stream.Stream;
 
 import static nextstep.subway.utils.Message.INVALID_OVER_SECTION_DISTANCE;
 
@@ -59,9 +58,13 @@ public class Section {
         return distance;
     }
 
+    public LineFare getFare() {
+        return line.getFare();
+    }
+
     public void updateUpStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new SectionValidException(INVALID_OVER_SECTION_DISTANCE);
+            throw new BadRequestException(INVALID_OVER_SECTION_DISTANCE);
         }
         this.upStation = station;
         this.distance -= newDistance;
@@ -69,7 +72,7 @@ public class Section {
 
     public void updateDownStation(Station station, int newDistance) {
         if (this.distance <= newDistance) {
-            throw new SectionValidException(INVALID_OVER_SECTION_DISTANCE);
+            throw new BadRequestException(INVALID_OVER_SECTION_DISTANCE);
         }
         this.downStation = station;
         this.distance -= newDistance;
