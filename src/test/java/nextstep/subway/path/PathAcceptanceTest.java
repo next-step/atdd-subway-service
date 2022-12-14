@@ -83,10 +83,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         수원역 = 지하철역_등록되어_있음("수원역").as(StationResponse.class);
         화서역 = 지하철역_등록되어_있음("화서역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재시민의숲.getId(), 40, 0)).as(LineResponse.class);
-        일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "blue", 수원역.getId(), 화서역.getId(), 20, 0)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 선릉역.getId(), 20, 0)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 고속터미널역.getId(), 양재역.getId(), 30,0 )).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재시민의숲.getId(), 40, 300)).as(LineResponse.class);
+        일호선 = 지하철_노선_등록되어_있음(new LineRequest("일호선", "blue", 수원역.getId(), 화서역.getId(), 10, 500)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 선릉역.getId(), 100, 0)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 고속터미널역.getId(), 양재역.getId(), 30, 1000)).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(삼호선, 고속터미널역, 교대역, 10);
         지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 5);
@@ -165,6 +165,125 @@ public class PathAcceptanceTest extends AcceptanceTest {
         상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.BAD_REQUEST);
     }
 
+    @Test
+    @DisplayName("1. 로그인 하지 않는 유저가 " +
+            "2. 추가 요금 부담구간이 없는 곳에서" +
+            "3. 거리는 10km 이하로 지하철을 탄다")
+    void notExtraFeeAndNoLoginAndNotPerKmFee() {
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청(교대역.getId(), 강남역.getId());
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        요금이_일치하는지_체크한다(결과, 1250);
+    }
+
+    @Test
+    @DisplayName("1. 로그인 하지 않는 유저가 " +
+            "2. 추가 요금 부담구간이 없는 곳에서" +
+            "3. 거리는 20km 지하철을 탄다")
+    void notExtraFeeAndNoLoginAnd20PerKmFee() {
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청(교대역.getId(), 역삼역.getId());
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        요금이_일치하는지_체크한다(결과, 1450);
+    }
+
+    @Test
+    @DisplayName("1. 로그인 하지 않는 유저가 " +
+            "2. 추가 요금 부담구간이 없는 곳에서" +
+            "3. 거리는 50km 이상 지하철을 탄다")
+    void notExtraFeeAndNoLoginAnd50PerKmFee() {
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청(교대역.getId(), 선릉역.getId());
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        요금이_일치하는지_체크한다(결과, 2750);
+    }
+
+    @Test
+    @DisplayName("1. 로그인 하지 않는 유저가 " +
+            "2. 추가 요금이 있는 구간에서" +
+            "3. 거리는 10km 이하로 지하철을 탄다")
+    void addExtraFeeAndNoLoginAndNotPerKmFee() {
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청(수원역.getId(), 화서역.getId());
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        요금이_일치하는지_체크한다(결과, 1750);
+    }
+
+    @Test
+    @DisplayName("1. 로그인 한 10살의 유저가 " +
+            "2. 추가 요금이 있는 구간에서" +
+            "3. 거리는 10km 이하로 지하철을 탄다")
+    void addExtraFeeAndLoginChildrenAndNotPerKmFee() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 10);
+        ExtractableResponse<Response> loginResponse = 로그인_요청을_한다(EMAIL, PASSWORD);
+        String accessToken = loginResponse.as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청_로그인시(수원역.getId(), 화서역.getId(), accessToken);
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        요금이_일치하는지_체크한다(결과, 700);
+    }
+
+    @Test
+    @DisplayName("1. 로그인 한 15살의 유저가 " +
+            "2. 추가 요금이 있는 구간에서" +
+            "3. 거리는 10km 이하로 지하철을 탄다")
+    void addExtraFeeAndLoginTeenagerAndNotPerKmFee() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 15);
+        ExtractableResponse<Response> loginResponse = 로그인_요청을_한다(EMAIL, PASSWORD);
+        String accessToken = loginResponse.as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청_로그인시(수원역.getId(), 화서역.getId(), accessToken);
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        요금이_일치하는지_체크한다(결과, 1120);
+    }
+
+    @Test
+    @DisplayName("1. 로그인 한 30살의 유저가 " +
+            "2. 추가 요금이 있는 구간에서" +
+            "3. 거리는 10km 이하로 지하철을 탄다")
+    void addExtraFeeAndLoginAdultAndNotPerKmFee() {
+        // given
+        회원_생성을_요청(EMAIL, PASSWORD, 30);
+        ExtractableResponse<Response> loginResponse = 로그인_요청을_한다(EMAIL, PASSWORD);
+        String accessToken = loginResponse.as(TokenResponse.class).getAccessToken();
+
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청_로그인시(수원역.getId(), 화서역.getId(), accessToken);
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        요금이_일치하는지_체크한다(결과, 1750);
+    }
+
+    @Test
+    @DisplayName("1. 로그인 하지 않는 유저가 " +
+            "2. 추가 요금 부담구간이 있는 두곳의 구간에서" +
+            "3. 거리는 10km 이하로 지하철을 탄다")
+    void addTwoExtraFeeAndNoLoginAndNotPerKmFee() {
+        // when
+        ExtractableResponse<Response> 결과 = 지하철_경로_조회_요청(고속터미널역.getId(), 양재시민의숲.getId());
+
+        // then
+        상태값이_기대값과_일치하는지_체크한다(결과, HttpStatus.OK);
+        요금이_일치하는지_체크한다(결과, 3050);
+    }
+
     private void 최단경로를_맞게_조회했는지_체크한다(ExtractableResponse<Response> response, List<Long> expectIds, int expectDistance) {
         List<Long> stationIds = response.jsonPath().getList("stations", StationResponse.class)
                 .stream().map(StationResponse::getId)
@@ -174,10 +293,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(stationIds).containsAll(expectIds);
         assertThat(distance).isEqualTo(expectDistance);
-    }
-
-    private void 상태값이_기대값과_일치하는지_체크한다(ExtractableResponse<Response> response, HttpStatus status) {
-        assertThat(response.statusCode()).isEqualTo(status.value());
     }
 
 
@@ -194,6 +309,14 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .when().get("/paths")
                 .then().log().all()
                 .extract();
+    }
+
+    private void 상태값이_기대값과_일치하는지_체크한다(ExtractableResponse<Response> response, HttpStatus status) {
+        assertThat(response.statusCode()).isEqualTo(status.value());
+    }
+
+    private void 요금이_일치하는지_체크한다(ExtractableResponse<Response> response, int fee) {
+        assertThat(response.jsonPath().getInt("fee")).isEqualTo(fee);
     }
 
     private ExtractableResponse<Response> 지하철_경로_조회_요청_로그인시(Long sourceId, Long targetId, String token) {

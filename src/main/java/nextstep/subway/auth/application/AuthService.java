@@ -37,12 +37,12 @@ public class AuthService {
 
         isTokenRequired(isRequired, isValidToken);
         if (!isValidToken) {
-            return LoginMember.ofByNotLogin();
+            return LoginMember.ofNotLogin();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NotFoundDataException(NOT_FOUND_MEMBER.getMessage()));
-        return LoginMember.ofByLogin(member.getId(), member.getEmail(), member.getAge());
+        return LoginMember.ofLogin(member.getId(), member.getEmail(), member.getAge());
     }
 
     private boolean isValidToken(String credentials) {

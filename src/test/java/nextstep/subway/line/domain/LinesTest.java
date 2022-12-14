@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.KmPerFeePolicy;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -23,7 +24,7 @@ class LinesTest {
     @DisplayName("최대 요금을 부담하는 구간의 요금을 구한다")
     void getMaxExtraFee() {
         List<Station> stations = Arrays.asList(stationA, stationB, stationC, stationD);
-        Integer result = Lines.from(Arrays.asList(일호선, 이호선)).getMaxExtraFee(stations);
+        Integer result = Lines.from(Arrays.asList(일호선, 이호선)).getPaidFee(stations, 100, new KmPerFeePolicy());
 
         assertThat(result).isEqualTo(1000);
     }

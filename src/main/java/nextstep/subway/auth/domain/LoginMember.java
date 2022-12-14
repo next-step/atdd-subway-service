@@ -19,11 +19,11 @@ public class LoginMember {
         this.memberType = memberType;
     }
 
-    public static LoginMember ofByLogin(Long id, String email, Age age) {
+    public static LoginMember ofLogin(Long id, String email, Age age) {
         return new LoginMember(id, email, age, MemberType.LOGIN);
     }
 
-    public static LoginMember ofByNotLogin() {
+    public static LoginMember ofNotLogin() {
         return new LoginMember(null, null, null, MemberType.NOT_LOGIN);
     }
 

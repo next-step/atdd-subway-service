@@ -7,14 +7,14 @@ public enum AgeType {
     CHILDREN(6, 12, 0.5), TEENAGER(13, 18, 0.2), ADULT(19, Integer.MAX_VALUE, 0), BABY(0, 5, 0),
     ;
 
-    private final int startAge;
-    public final int endAge;
+    private final Age startAge;
+    public final Age endAge;
 
     public final double discountPercent;
 
     AgeType(int startAge, int endAge, double discountPercent) {
-        this.startAge = startAge;
-        this.endAge = endAge;
+        this.startAge = Age.from(startAge);
+        this.endAge = Age.from(endAge);
         this.discountPercent = discountPercent;
     }
 
@@ -25,7 +25,7 @@ public enum AgeType {
     }
 
     private static boolean isBetweenAge(int age, AgeType ageType) {
-        return ageType.startAge <= age && ageType.endAge >= age;
+        return ageType.startAge.getAge() <= age && ageType.endAge.getAge() >= age;
     }
 
     public double getDiscountPercent() {

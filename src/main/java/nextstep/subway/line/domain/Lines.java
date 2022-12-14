@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.path.domain.FeeStrategy;
 import nextstep.subway.station.domain.Station;
 
 import java.util.Comparator;
@@ -19,16 +20,18 @@ public class Lines {
         return new Lines(lines);
     }
 
-    public Integer getMaxExtraFee(List<Station> stations) {
+    public int getPaidFee(List<Station> stations, int distance, FeeStrategy strategy) {
         List<Section> sections = getRelationSection(lines);
         List<Line> lines = getLineByContainStation(sections, stations);
+        int maxExtraFee  = getLineMaxFee(lines);
 
-        return getLineMaxFee(lines);
+        return strategy.calculate(distance) + maxExtraFee;
     }
+
 
     private Integer getLineMaxFee(List<Line> lines) {
         return lines.stream().max(Comparator.comparing(Line::getExtraFee))
-                .map(Line::getExtraFee).orElse(0);
+                .map(Line::getExtraFee).orElse(ExtraFee.ofZero().getExtraFee());
 
     }
 

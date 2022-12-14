@@ -49,9 +49,9 @@ class PathServiceTest {
     private Line 이호선 = Line.of("2호선", "green", 신도림역, 대림역, Distance.from(10), 0);
     private Line 칠호선 = Line.of("7호선", "deep-green", 가디역, 대림역, Distance.from(10), 0);
 
-    private LoginMember loginMember = LoginMember.ofByLogin(1L, "test@test.com", Age.from(10));
+    private LoginMember loginMember = LoginMember.ofLogin(1L, "test@test.com", Age.from(10));
 
-    private LoginMember notLoginMember = LoginMember.ofByNotLogin();
+    private LoginMember notLoginMember = LoginMember.ofNotLogin();
 
     /**
      * 지하철 노선도
