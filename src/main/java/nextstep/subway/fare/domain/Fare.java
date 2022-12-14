@@ -1,12 +1,13 @@
-package nextstep.subway.line.domain;
+package nextstep.subway.fare.domain;
 
-import nextstep.subway.line.message.FareMessage;
+import nextstep.subway.fare.message.FareMessage;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import java.util.Arrays;
 
 @Embeddable
-public class Fare {
+public class Fare implements Comparable<Fare> {
 
     public static final int ZERO = 0;
 
@@ -30,10 +31,30 @@ public class Fare {
         return new Fare(fare);
     }
 
+    public static Fare sum(Fare... others) {
+        int sumOtherFares = Arrays.stream(others)
+                .mapToInt(other -> other.fare)
+                .sum();
+        return new Fare(sumOtherFares);
+    }
+
     private void validateFare(int fare) {
         if(fare < ZERO) {
             throw new IllegalArgumentException(FareMessage.FARE_SHOULD_BE_MORE_THAN_ZERO.message());
         }
+    }
+
+    public int value() {
+        return this.fare;
+    }
+
+    public Fare plus(Fare other) {
+        return new Fare(this.fare + other.fare);
+    }
+
+    @Override
+    public int compareTo(Fare other) {
+        return this.fare.compareTo(other.fare);
     }
 
     @Override

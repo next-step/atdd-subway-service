@@ -56,10 +56,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         여의도역 = StationRestAssured.지하철역_등록되어_있음("여의도역").as(StationResponse.class);
         학동역 = StationRestAssured.지하철역_등록되어_있음("학동역").as(StationResponse.class);
 
-        LineCreateRequest 신분당선_생성_요청 = new LineCreateRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 700);
-        LineCreateRequest 이호선_생성_요청 = new LineCreateRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 0);
-        LineCreateRequest 삼호선_생성_요청 = new LineCreateRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 0);
-        LineCreateRequest 구호선_생성_요청 = new LineCreateRequest("구호선", "bg-red-600", 당산역.getId(), 여의도역.getId(), 5, 0);
+        LineCreateRequest 신분당선_생성_요청 = new LineCreateRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 13, 700);
+        LineCreateRequest 이호선_생성_요청 = new LineCreateRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 15, 0);
+        LineCreateRequest 삼호선_생성_요청 = new LineCreateRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 7, 0);
+        LineCreateRequest 구호선_생성_요청 = new LineCreateRequest("구호선", "bg-red-600", 당산역.getId(), 여의도역.getId(), 17, 0);
 
         신분당선 = LineRestAssured.지하철_노선_등록되어_있음(신분당선_생성_요청).as(LineResponse.class);
         이호선 = LineRestAssured.지하철_노선_등록되어_있음(이호선_생성_요청).as(LineResponse.class);
@@ -83,8 +83,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         JsonPath jsonPath = response.jsonPath();
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(jsonPath.getInt("distance")).isEqualTo(12),
-                () -> assertThat(jsonPath.getList("stations.name")).containsExactly("강남역", "양재역", "남부터미널역")
+                () -> assertThat(jsonPath.getInt("distance")).isEqualTo(17),
+                () -> assertThat(jsonPath.getList("stations.name")).containsExactly("강남역", "양재역", "남부터미널역"),
+                () -> assertThat(jsonPath.getInt("fare")).isEqualTo(2_150)
         );
     }
 
