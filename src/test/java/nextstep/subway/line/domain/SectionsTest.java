@@ -4,6 +4,7 @@ import static nextstep.subway.line.domain.StationFixture.강남역;
 import static nextstep.subway.line.domain.StationFixture.블루보틀역;
 import static nextstep.subway.line.domain.StationFixture.선릉역;
 import static nextstep.subway.line.domain.StationFixture.스타벅스역;
+import static nextstep.subway.line.domain.StationFixture.양재;
 import static nextstep.subway.line.domain.StationFixture.역삼역;
 
 import java.util.List;
@@ -96,5 +97,15 @@ class SectionsTest {
             .hasMessage("해당 정류장 제거시 구간이 모두 사라집니다.");
     }
 
+    @Test
+    void 구간_포함_여부_확인() {
+        //given
+        Sections sections = Sections
+            .of(new Section(null, 강남역, 역삼역, 4), new Section(null, 역삼역, 블루보틀역, 3));
+
+        //when
+        Assertions.assertThat(sections.contains(new Section(null, 강남역, 역삼역, 3))).isTrue();
+        Assertions.assertThat(sections.contains(new Section(null, 강남역, 양재, 4))).isFalse();
+    }
 
 }

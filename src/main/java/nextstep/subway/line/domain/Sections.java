@@ -13,8 +13,6 @@ import nextstep.subway.line.exception.InvalidRemoveException;
 import nextstep.subway.line.exception.NoRelateStationException;
 import nextstep.subway.line.exception.SectionAlreadyExistException;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
-import org.jgrapht.graph.WeightedMultigraph;
 
 @Embeddable
 public class Sections {
@@ -43,18 +41,26 @@ public class Sections {
         return stations;
     }
 
+    public List<Section> getSections() {
+        return sections;
+    }
+
     public void add(Line line, Station upStation, Station downStation, Distance distance) {
-        boolean isUpStationExisted = sections.stream().map(Section::getUpStation).anyMatch(it -> it == upStation);
-        boolean isDownStationExisted = sections.stream().map(Section::getDownStation).anyMatch(it -> it == downStation);
+        boolean isUpStationExisted = sections.stream().map(Section::getUpStation)
+            .anyMatch(it -> it == upStation);
+        boolean isDownStationExisted = sections.stream().map(Section::getDownStation)
+            .anyMatch(it -> it == downStation);
 
         validateNewSection(upStation, downStation, isUpStationExisted, isDownStationExisted);
 
-        updateBetweenSection(upStation, downStation, distance, isUpStationExisted, isDownStationExisted);
+        updateBetweenSection(upStation, downStation, distance, isUpStationExisted,
+            isDownStationExisted);
 
         sections.add(new Section(line, upStation, downStation, distance));
     }
 
-    private void updateBetweenSection(Station upStation, Station downStation, Distance distance, boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void updateBetweenSection(Station upStation, Station downStation, Distance distance,
+        boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted) {
             findFromUpStation(upStation)
                 .ifPresent(it -> it.updateUpStation(downStation, distance));
@@ -66,13 +72,15 @@ public class Sections {
         }
     }
 
-    private void validateNewSection(Station upStation, Station downStation, boolean isUpStationExisted, boolean isDownStationExisted) {
+    private void validateNewSection(Station upStation, Station downStation,
+        boolean isUpStationExisted, boolean isDownStationExisted) {
         if (isUpStationExisted && isDownStationExisted) {
             throw new SectionAlreadyExistException();
         }
 
         List<Station> stations = getStations();
-        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) && stations.stream().noneMatch(it -> it == downStation)) {
+        if (!stations.isEmpty() && stations.stream().noneMatch(it -> it == upStation) && stations
+            .stream().noneMatch(it -> it == downStation)) {
             throw new NoRelateStationException();
         }
     }
@@ -131,7 +139,7 @@ public class Sections {
             .findFirst();
     }
 
-    public void putEdgeWeight(WeightedMultigraph<Station, DefaultWeightedEdge> graph) {
-        sections.forEach(section -> section.putEdgeWeight(graph));
+    public boolean contains(Section section) {
+        return sections.contains(section);
     }
 }

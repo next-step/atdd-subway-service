@@ -9,7 +9,12 @@ public class Distance {
 
     private int distance;
 
-    protected Distance() {
+    public Distance() {
+
+    }
+
+    public Distance(double distance) {
+        this((int) distance);
     }
 
     public Distance(int distance) {

@@ -1,5 +1,8 @@
 package nextstep.subway.line.domain;
 
+import static nextstep.subway.fare.domain.Fare.FREE;
+
+import java.util.Collections;
 import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Embedded;
@@ -8,6 +11,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -19,6 +23,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    @Embedded
+    private Fare surcharge = FREE;
 
     @Embedded
     private Sections sections = new Sections();
@@ -33,20 +39,31 @@ public class Line extends BaseEntity {
 
     public Line(String name, String color, Station upStation, Station downStation,
         int distance) {
-        this(name, color, upStation, downStation, new Distance(distance));
+        this(name, color, upStation, downStation, new Distance(distance), FREE);
     }
 
     public Line(String name, String color, Station upStation, Station downStation,
-        Distance distance) {
+        int distance, Fare surcharge) {
+        this(name, color, upStation, downStation, new Distance(distance), surcharge);
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation,
+        Distance distance, Fare surcharge) {
         this.name = name;
         this.color = color;
         this.sections = Sections.of(new Section(this, upStation, downStation, distance));
+        this.surcharge = surcharge;
     }
 
-    public Line(String name, String color, List<Section> sections) {
+    public Line(String name, String color, Fare fare) {
+        this(name, color, Collections.emptyList(), fare);
+    }
+
+    public Line(String name, String color, List<Section> sections, Fare surcharge) {
         this.name = name;
         this.color = color;
         this.sections = new Sections(sections);
+        this.surcharge = surcharge;
     }
 
     public void update(Line line) {
@@ -74,11 +91,19 @@ public class Line extends BaseEntity {
         return sections;
     }
 
+    public Fare getSurcharge() {
+        return surcharge;
+    }
+
     public void addSection(Station upStation, Station downStation, Distance distance) {
         sections.add(this, upStation, downStation, distance);
     }
 
     public void removeStation(Station station) {
         sections.remove(this, station);
+    }
+
+    public boolean contains(Section section) {
+        return sections.contains(section);
     }
 }

@@ -22,7 +22,7 @@ public class AuthService {
 
     public TokenResponse login(TokenRequest request) {
         Member member = memberRepository.findByEmail(request.getEmail())
-            .orElseThrow(AuthorizationException::new);
+            .orElseThrow(() -> new AuthorizationException("아이디 또는 패스워드가 일치하지 않습니다"));
         member.checkPassword(request.getPassword());
 
         String token = jwtTokenProvider.createToken(request.getEmail());
