@@ -78,8 +78,8 @@ public class Sections {
     }
 
     public void deleteSection(Station station) {
-        validDeleteStation(station);
-        Section upSection = findUpStationSection(station).orElse(null);
+        validateDeleteStation(station);
+        Section upSection = findSectionByDownStation(station).orElse(null);
         Section downSection = findDownStationSection(station).orElse(null);
 
         if (upSection == null) {
@@ -90,7 +90,7 @@ public class Sections {
             deleteSection(upSection);
             return;
         }
-        upSection.disconnectDownSection(downSection);
+        upSection.mergeDownSection(downSection);
         deleteSection(downSection);
     }
 
@@ -98,7 +98,7 @@ public class Sections {
         sections.remove(upSection);
     }
 
-    private void validDeleteStation(Station station) {
+    private void validateDeleteStation(Station station) {
         if (sections.size() <= 1) {
             throw new IllegalArgumentException("지하철 구간이 1개인 경우 삭제할 수 없습니다.");
         }
@@ -108,7 +108,7 @@ public class Sections {
         }
     }
 
-    private Optional<Section> findUpStationSection(Station station) {
+    private Optional<Section> findSectionByDownStation(Station station) {
         return sections.stream()
             .filter(section -> section.hasDownStation(station))
             .findFirst();

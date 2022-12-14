@@ -86,7 +86,7 @@ public class Section {
         this.downStation = addSection.upStation;
     }
 
-    public void disconnectDownSection(Section downSection) {
+    public void mergeDownSection(Section downSection) {
         this.downStation = downSection.downStation;
         this.distance.plus(downSection.distance);
     }

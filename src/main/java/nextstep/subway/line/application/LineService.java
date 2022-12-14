@@ -42,6 +42,7 @@ public class LineService {
         return new Section(upStation, downStation, request.getDistance());
     }
 
+    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
         List<Line> stations = lineRepository.findAll();
 

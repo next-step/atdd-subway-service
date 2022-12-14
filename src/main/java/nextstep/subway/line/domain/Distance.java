@@ -18,23 +18,24 @@ public class Distance {
 
     private void validateDistance(int distance) {
         if (distance <= 0) {
-            throw new IllegalArgumentException("역의 거리는 양수를 입력해야합니다.");
+            throw new IllegalArgumentException("거리는 0보다 커야 합니다.");
         }
     }
 
-
-    public void minus(Distance distance) {
-        if (this.distance <= distance.getDistance()) {
-            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+    public Distance minus(Distance distance) {
+        try {
+            return Distance.from(this.distance - distance.distance);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("기존 노선의 거리보다 작거나 같을 수 없습니다.");
         }
-        this.distance -= distance.getDistance();
     }
 
-    public void plus(Distance distance) {
-        this.distance += distance.getDistance();
+    public Distance plus(Distance distance) {
+        return Distance.from(this.distance + distance.distance);
     }
 
-    public int getDistance() {
-        return distance;
+    public static Distance from(Integer distance) {
+        return new Distance(distance);
     }
+
 }
