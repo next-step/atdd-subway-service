@@ -22,18 +22,28 @@ public class Section {
     @JoinColumn(name = "down_station_id")
     private Station downStation;
 
-    private int distance;
+    @Embedded
+    private Distance distance;
 
-    public Section() {
-    }
+    public Section() {}
 
     public Section(Line line, Station upStation, Station downStation, int distance) {
         this.line = line;
         this.upStation = upStation;
         this.downStation = downStation;
-        this.distance = distance;
+        this.distance = new Distance(distance);
     }
 
+    public void updateUpStation(Station station, int newDistance) {
+        this.distance = this.distance.subtract(new Distance(newDistance));
+        this.upStation = station;
+
+    }
+
+    public void updateDownStation(Station station, int newDistance) {
+        this.distance = this.distance.subtract(new Distance(newDistance));
+        this.downStation = station;
+    }
     public Long getId() {
         return id;
     }
@@ -51,22 +61,7 @@ public class Section {
     }
 
     public int getDistance() {
-        return distance;
+        return distance.getDistance();
     }
 
-    public void updateUpStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.upStation = station;
-        this.distance -= newDistance;
-    }
-
-    public void updateDownStation(Station station, int newDistance) {
-        if (this.distance <= newDistance) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
-        }
-        this.downStation = station;
-        this.distance -= newDistance;
-    }
 }
