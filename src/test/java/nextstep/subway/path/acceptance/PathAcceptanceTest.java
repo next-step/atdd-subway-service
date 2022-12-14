@@ -1,4 +1,4 @@
-package nextstep.subway.path;
+package nextstep.subway.path.acceptance;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
@@ -72,7 +72,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
      */
     @DisplayName("출발역과 도착역 사이의 최단 경로 조회한다")
     @Test
-    void createLine() {
+    void findPath() {
         // when
         ExtractableResponse<Response> response = 지하철노선_최단경로_조회(교대역.getId(),양재역.getId());
 
