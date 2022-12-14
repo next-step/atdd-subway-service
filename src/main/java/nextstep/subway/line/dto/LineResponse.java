@@ -33,16 +33,12 @@ public class LineResponse {
             line.getId(),
             line.getName(),
             line.getColor(),
-            toList(line.stations()),
+            line.stations().stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList()),
             line.getCreatedDate(),
             line.getModifiedDate()
         );
-    }
-
-    private static List<StationResponse> toList(List<Station> stations) {
-        return stations.stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
     }
 
     public Long getId() {
