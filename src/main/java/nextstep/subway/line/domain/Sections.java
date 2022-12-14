@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.Assert;
 
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
@@ -184,6 +185,13 @@ public class Sections {
 		return from(mergedSections);
 	}
 
+	public Fare maxExtraFare() {
+		return sections.stream()
+			.map(Section::extraFare)
+			.max(Fare::compareTo)
+			.orElse(Fare.zero());
+	}
+
 	@Override
 	public boolean equals(Object o) {
 		if (this == o) {
@@ -200,4 +208,5 @@ public class Sections {
 	public int hashCode() {
 		return Objects.hashCode(sections);
 	}
+
 }

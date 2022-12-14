@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 
 import org.springframework.util.Assert;
 
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -84,6 +85,10 @@ public class Section {
 
 	public void updateLine(Line line) {
 		this.line = line;
+	}
+
+	public Fare extraFare() {
+		return line.extraFare();
 	}
 
 	public boolean isSameUpStation(Section newSection) {

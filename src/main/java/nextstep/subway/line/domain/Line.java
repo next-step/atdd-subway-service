@@ -124,4 +124,8 @@ public class Line extends BaseEntity {
     public void removeSection(Section sectionByUpStation, Section sectionByDownStation) {
         this.sections.remove(sectionByUpStation, sectionByDownStation);
     }
+
+    public Fare extraFare() {
+        return extraFare;
+    }
 }

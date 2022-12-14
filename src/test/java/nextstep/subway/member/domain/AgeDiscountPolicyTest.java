@@ -9,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.Age;
 import nextstep.subway.common.domain.Email;
+import nextstep.subway.common.domain.Fare;
 
 @DisplayName("나이 할인 정책 테스트")
 class AgeDiscountPolicyTest {
@@ -21,10 +22,10 @@ class AgeDiscountPolicyTest {
 		LoginMember loginMember = LoginMember.of(1L, Email.from("toddler@email.com"), Age.from(age));
 
 		// when
-		int fare = AgeDiscountPolicy.discountFare(loginMember, totalFare);
+		Fare fare = AgeDiscountPolicy.discountFare(loginMember, Fare.from(totalFare));
 
 		// then
-		assertThat(fare).isEqualTo(expected);
+		assertThat(fare).isEqualTo(Fare.from(expected));
 	}
 
 	@DisplayName("어린이 요금 테스트")
@@ -35,10 +36,10 @@ class AgeDiscountPolicyTest {
 		LoginMember loginMember = LoginMember.of(1L, Email.from("kids@email.com"), Age.from(age));
 
 		// when
-		int fare = AgeDiscountPolicy.discountFare(loginMember, totalFare);
+		Fare fare = AgeDiscountPolicy.discountFare(loginMember, Fare.from(totalFare));
 
 		// then
-		assertThat(fare).isEqualTo(expected);
+		assertThat(fare).isEqualTo(Fare.from(expected));
 	}
 
 	@DisplayName("청소년 요금 테스트")
@@ -49,10 +50,10 @@ class AgeDiscountPolicyTest {
 		LoginMember loginMember = LoginMember.of(1L, Email.from("teenager@email.com"), Age.from(age));
 
 		// when
-		int fare = AgeDiscountPolicy.discountFare(loginMember, totalFare);
+		Fare fare = AgeDiscountPolicy.discountFare(loginMember, Fare.from(totalFare));
 
 		// then
-		assertThat(fare).isEqualTo(expected);
+		assertThat(fare).isEqualTo(Fare.from(expected));
 	}
 
 	@DisplayName("성인 요금 테스트")
@@ -63,10 +64,10 @@ class AgeDiscountPolicyTest {
 		LoginMember loginMember = LoginMember.of(1L, Email.from("adult@test.com"), Age.from(age));
 
 		// when
-		int fare = AgeDiscountPolicy.discountFare(loginMember, totalFare);
+		Fare fare = AgeDiscountPolicy.discountFare(loginMember, Fare.from(totalFare));
 
 		// then
-		assertThat(fare).isEqualTo(expected);
+		assertThat(fare).isEqualTo(Fare.from(expected));
 	}
 
 	@DisplayName("비회원 요금 테스트")
@@ -77,9 +78,9 @@ class AgeDiscountPolicyTest {
 		LoginMember guest = LoginMember.guest();
 
 		// when
-		int fare = AgeDiscountPolicy.discountFare(guest, totalFare);
+		Fare fare = AgeDiscountPolicy.discountFare(guest, Fare.from(totalFare));
 
 		// then
-		assertThat(fare).isEqualTo(expected);
+		assertThat(fare).isEqualTo(Fare.from(expected));
 	}
 }

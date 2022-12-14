@@ -5,7 +5,7 @@ import javax.persistence.Embeddable;
 import io.jsonwebtoken.lang.Assert;
 
 @Embeddable
-public class Fare {
+public class Fare implements Comparable<Fare> {
 
 	private static final Fare ZERO = new Fare(0);
 
@@ -67,5 +67,14 @@ public class Fare {
 	@Override
 	public String toString() {
 		return "Fare{" + "value=" + value + '}';
+	}
+
+	@Override
+	public int compareTo(Fare target) {
+		return Integer.compare(this.value, target.value);
+	}
+
+	public Fare percentOf(double discountRate) {
+		return Fare.from((int)Math.ceil(this.value * discountRate));
 	}
 }

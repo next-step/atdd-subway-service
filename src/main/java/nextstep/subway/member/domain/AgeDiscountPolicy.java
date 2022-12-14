@@ -5,34 +5,30 @@ import java.util.function.UnaryOperator;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.domain.Age;
+import nextstep.subway.common.domain.Fare;
 
 public enum AgeDiscountPolicy {
 
-	TODDLER(age -> age < 6, totalFare -> 0),
+	TODDLER(age -> age < 6, totalFare -> Fare.zero()),
 	KIDS(age -> age >= 6 && age < 13, totalFare -> discount(totalFare, Rate.KIDS_DISCOUNT_RATE)),
 	TEENAGER(age -> age >= 13 && age < 19, totalFare -> discount(totalFare, Rate.TEENAGER_DISCOUNT_RATE)),
 	ADULT(age -> age >= 19, totalFare -> totalFare);
 
-	private static final int FIX_DISCOUNT_FARE = 350;
+	private static final Fare FIX_DISCOUNT_FARE = Fare.from(350);
 
 	private static class Rate {
 		private static final double KIDS_DISCOUNT_RATE = 0.5;
-		private static final double TEENAGER_DISCOUNT_RATE = 0.8;
+		private static final double TEENAGER_DISCOUNT_RATE = 0.2;
 	}
+	private final IntPredicate matcher;
+	private final UnaryOperator<Fare> expression;
 
-	private static int discount(Integer totalFare, double discountRate) {
-		return (int)Math.ceil((totalFare - FIX_DISCOUNT_FARE) * discountRate);
-	}
-
-	private final IntPredicate condition;
-	private final UnaryOperator<Integer> expression;
-
-	AgeDiscountPolicy(IntPredicate condition, UnaryOperator<Integer> expression) {
-		this.condition = condition;
+	AgeDiscountPolicy(IntPredicate matcher, UnaryOperator<Fare> expression) {
+		this.matcher = matcher;
 		this.expression = expression;
 	}
 
-	public static int discountFare(LoginMember member, int totalFare) {
+	public static Fare discountFare(LoginMember member, Fare totalFare) {
 		if (member.isGuest()) {
 			return totalFare;
 		}
@@ -40,15 +36,15 @@ public enum AgeDiscountPolicy {
 		return ageDiscountPolicy.expression.apply(totalFare);
 	}
 
+	private static Fare discount(Fare totalFare, double discountRate) {
+		return totalFare.subtract(FIX_DISCOUNT_FARE)
+			.percentOf(1 - discountRate);
+	}
+
 	private static AgeDiscountPolicy valueOf(Age age) {
 		return java.util.Arrays.stream(values())
-			.filter(category -> category.condition.test(age.value()))
+			.filter(category -> category.matcher.test(age.value()))
 			.findFirst()
 			.orElse(ADULT);
 	}
-
-	public int discount(int totalFare) {
-		return this.expression.apply(totalFare);
-	}
-
 }
