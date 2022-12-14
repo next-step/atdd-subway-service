@@ -1,12 +1,10 @@
 package nextstep.subway.member.ui;
 
-import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.AuthenticationPrincipal;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -62,8 +60,5 @@ public class MemberController {
         return ResponseEntity.noContent().build();
     }
 
-    @ExceptionHandler(AuthorizationException.class)
-    public ResponseEntity handleAuthorizationException(Exception e) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-    }
+
 }

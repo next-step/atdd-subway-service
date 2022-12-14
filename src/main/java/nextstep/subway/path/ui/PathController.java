@@ -1,14 +1,11 @@
 package nextstep.subway.path.ui;
 
 import nextstep.subway.line.dto.PathResponse;
-import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import nextstep.subway.path.application.PathService;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
-
-import java.net.URI;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 public class PathController {
@@ -24,14 +21,5 @@ public class PathController {
             @RequestParam("target") Long target) {
         PathResponse response = service.findShortestPath(source, target);
         return ResponseEntity.ok(response);
-    }
-
-    @ExceptionHandler({IllegalArgumentException.class})
-    public ResponseEntity handleIllegalArgsException(Exception e) {
-        return ResponseEntity.badRequest().build();
-    }
-    @ExceptionHandler({RuntimeException.class})
-    public ResponseEntity handleRuntimeException(Exception e) {
-        return ResponseEntity.badRequest().build();
     }
 }
