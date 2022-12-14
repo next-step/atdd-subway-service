@@ -11,7 +11,6 @@ public class Path {
     private List<Station> stations;
     private Distance distance;
     private SurCharge maxSurCharge;
-    private Fare fare;
 
     public Path(List<Station> stations, Distance distance, SurCharge maxSurCharge) {
         this.stations = stations;
@@ -19,23 +18,12 @@ public class Path {
         this.maxSurCharge = maxSurCharge;
     }
 
-    public Path calculatePathFare(int age) {
-        fare = new Fare(distance, maxSurCharge, age);
-        return this;
-    }
-
     public List<Station> getStations() {
         return stations;
     }
-
     public Distance getDistance() {
         return distance;
     }
-
-    public Fare getFare() {
-        return fare;
-    }
-
     public SurCharge getMaxSurCharge() {
         return maxSurCharge;
     }

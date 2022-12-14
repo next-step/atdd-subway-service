@@ -4,6 +4,7 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.domain.UserType;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.path.domain.Fare;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -35,11 +36,12 @@ public class PathService {
         Path path = pathFinder.findShortestPath(source, target);
 
         if (loginMember.getUserType() == UserType.GUEST) {
-            path = path.calculatePathFare(0);
-            return new PathResponse(path.getStations(), path.getDistance(), path.getFare());
+            Fare fare = new Fare(path.getDistance(), path.getMaxSurCharge(), 0);
+            return new PathResponse(path.getStations(), path.getDistance(), fare);
         }
-        path = path.calculatePathFare(loginMember.getAge());
-        return new PathResponse(path.getStations(), path.getDistance(), path.getFare());
+
+        Fare fare = new Fare(path.getDistance(), path.getMaxSurCharge(), loginMember.getAge());
+        return new PathResponse(path.getStations(), path.getDistance(), fare);
     }
 
     private Station findStationById(Long stationId) {

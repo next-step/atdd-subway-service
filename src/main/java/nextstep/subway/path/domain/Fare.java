@@ -26,7 +26,7 @@ public class Fare {
     private int adjustFarePolicyByDistance(Distance distance) {
         int fareByDistance = DEFAULT_FARE;
 
-        if (distance.value() < MAX_DISTANCE_STANDARD) {
+        if (distance.value() > MIN_DISTANCE_STANDARD && distance.value() < MAX_DISTANCE_STANDARD) {
             fareByDistance += calculateOverFare(distance.value()-MIN_DISTANCE_STANDARD, UNIT_DISTANCE_BETWEEN_TEN_AND_FIFTY);
         }
 
@@ -39,12 +39,13 @@ public class Fare {
     }
 
     private double adjustFarePolicyByAge(int fare, int age) {
-        if (age >= 6 && age < 13) {
-            return (fare - 350) * 0.5;
+        if (age >= DiscountPolicyByAge.CHILDREN_DISCOUNT.getMinAge()
+                && age <= DiscountPolicyByAge.CHILDREN_DISCOUNT.getMaxAge()) {
+            return (fare - DiscountPolicyByAge.CHILDREN_DISCOUNT.getDeduction()) * DiscountPolicyByAge.CHILDREN_DISCOUNT.getPriceRate();
         }
 
-        if (age >= 13 && age < 19) {
-            return (fare - 350) * 0.8;
+        if (age >= DiscountPolicyByAge.YOUTH_DISCOUNT.getMinAge() && age <= DiscountPolicyByAge.YOUTH_DISCOUNT.getMaxAge()) {
+            return (fare - DiscountPolicyByAge.YOUTH_DISCOUNT.getDeduction()) * DiscountPolicyByAge.YOUTH_DISCOUNT.getPriceRate();
         }
 
         return fare;
