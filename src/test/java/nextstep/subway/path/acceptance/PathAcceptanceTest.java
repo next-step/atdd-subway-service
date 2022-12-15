@@ -75,11 +75,11 @@ public class PathAcceptanceTest extends AcceptanceTest {
         섬역1 = 지하철역_등록되어_있음("섬역1").as(StationResponse.class);
         섬역2 = 지하철역_등록되어_있음("섬역2").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 1);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-700", 강남역, 종합운동장역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-800", 양재역, 남부터미널역, 1);
-        구호선 = 지하철_노선_등록되어_있음("구호선", "bg-red-900", 삼전역, 종합운동장역, 1);
-        지방노선 = 지하철_노선_등록되어_있음("지방노선", "bg-red-500", 섬역1, 섬역2, 1);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 1, 900);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-700", 강남역, 종합운동장역, 10, 0);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-800", 양재역, 남부터미널역, 1, 0);
+        구호선 = 지하철_노선_등록되어_있음("구호선", "bg-red-900", 삼전역, 종합운동장역, 1, 500);
+        지방노선 = 지하철_노선_등록되어_있음("지방노선", "bg-red-500", 섬역1, 섬역2, 1, 0);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 남부터미널역, 교대역, 100);
         지하철_노선에_지하철역_등록_요청(이호선, 잠실새내역, 종합운동장역, 10);
@@ -94,6 +94,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertThat(response.getStations().stream().map(station -> station.getId())).containsSequence(
             강남역.getId(), 종합운동장역.getId(), 삼전역.getId());
+        assertThat(response.getDistance()).isEqualTo(11);
+        assertThat(response.getFare()).isEqualTo(1750);
     }
 
     @DisplayName("최단 경로 조회 실패 - 출발역과 도착역이 같은 경우")
@@ -137,8 +139,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
     }
 
-    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    public static LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance, int lineFare) {
+        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, lineFare);
         return 지하철_노선_생성_요청(params).as(LineResponse.class);
     }
 }
