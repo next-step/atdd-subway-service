@@ -124,5 +124,4 @@ public class PathServiceTest {
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
-
 }
