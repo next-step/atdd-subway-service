@@ -37,4 +37,12 @@ public class SectionEdge extends DefaultWeightedEdge {
     protected Object getTarget() {
         return downStation;
     }
+
+    protected int getDistance() {
+        return distance;
+    }
+
+    protected int getLineFare() {
+        return lineFare;
+    }
 }

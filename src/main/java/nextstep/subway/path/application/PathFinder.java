@@ -1,14 +1,16 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.domain.SectionEdge;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.domain.Station;
-import org.jgrapht.graph.DefaultWeightedEdge;
+import org.jgrapht.GraphPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
 import java.util.List;
 
 public class PathFinder {
-    private final WeightedMultigraph<Station, DefaultWeightedEdge> graph;
+    private final WeightedMultigraph<Station, SectionEdge> graph;
     private PathFindAlgorithm algorithm;
 
     private PathFinder(List<Section> allSections, PathFindAlgorithm algorithm) {
@@ -17,13 +19,13 @@ public class PathFinder {
     }
 
 
-    private WeightedMultigraph<Station, DefaultWeightedEdge> makeGraph(final List<Section> allSections) {
-        WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
+    private WeightedMultigraph<Station, SectionEdge> makeGraph(final List<Section> allSections) {
+        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph<>(SectionEdge.class);
         allSections.forEach(
             section -> {
                 graph.addVertex(section.getUpStation());
                 graph.addVertex(section.getDownStation());
-                graph.setEdgeWeight(graph.addEdge(section.getUpStation(), section.getDownStation()), section.getDistance());
+                graph.addEdge(section.getUpStation(), section.getDownStation(), SectionEdge.of(section));
             }
         );
         return graph;
@@ -34,6 +36,11 @@ public class PathFinder {
     }
 
     public List<Station> find(Station departStation, Station destStation) {
-        return algorithm.findShortestPath(graph, departStation, destStation);
+        return algorithm.findShortestPathStations(graph, departStation, destStation);
+    }
+
+    public ShortestPath getShortestGraph(Station departStation, Station destStation) {
+        GraphPath<Station, SectionEdge> shortestPathGraph = algorithm.getShortestPathGraph(graph, departStation, destStation);
+        return ShortestPath.of(shortestPathGraph);
     }
 }
