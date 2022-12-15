@@ -13,6 +13,7 @@ import javax.persistence.OneToMany;
 
 import org.springframework.util.Assert;
 
+import nextstep.subway.common.domain.Fare;
 import nextstep.subway.common.exception.DuplicateDataException;
 import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.common.exception.NotFoundException;
@@ -167,7 +168,7 @@ public class Sections {
 	}
 
 	private void removeSection(Section sectionByUpStation, Section sectionByDownStation) {
-		SectionRemoverNew.remove(this, sectionByUpStation, sectionByDownStation);
+		SectionRemover.remove(this, sectionByUpStation, sectionByDownStation);
 	}
 
 	public void removeSection(Section section) {
@@ -182,6 +183,13 @@ public class Sections {
 		List<Section> mergedSections = new ArrayList<>(this.sections);
 		mergedSections.addAll(sections);
 		return from(mergedSections);
+	}
+
+	public Fare maxExtraFare() {
+		return sections.stream()
+			.map(Section::extraFare)
+			.max(Fare::compareTo)
+			.orElse(Fare.zero());
 	}
 
 	@Override
@@ -200,4 +208,5 @@ public class Sections {
 	public int hashCode() {
 		return Objects.hashCode(sections);
 	}
+
 }

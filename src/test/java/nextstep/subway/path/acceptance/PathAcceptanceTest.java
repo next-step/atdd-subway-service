@@ -1,6 +1,8 @@
 package nextstep.subway.path.acceptance;
 
+import static nextstep.subway.auth.application.AuthServiceTest.*;
 import static nextstep.subway.utils.LineAcceptanceUtils.*;
+import static nextstep.subway.utils.MemberAcceptanceUtils.*;
 import static nextstep.subway.utils.PathAcceptanceUtils.*;
 import static nextstep.subway.utils.SectionAcceptanceUtils.*;
 import static nextstep.subway.utils.StationAcceptanceUtils.*;
@@ -23,6 +25,7 @@ import nextstep.subway.line.dto.LineCreateRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.line.dto.SectionRequest;
 import nextstep.subway.station.dto.StationResponse;
+import nextstep.subway.utils.AuthAcceptanceUtils;
 
 @DisplayName("지하철 경로 조회")
 class PathAcceptanceTest extends AcceptanceTest {
@@ -53,7 +56,7 @@ class PathAcceptanceTest extends AcceptanceTest {
 
 		신분당선 = 지하철_노선_등록되어_있음(new LineCreateRequest("신분당선", "red", 강남역.getId(), 양재역.getId(), 10));
 		이호선 = 지하철_노선_등록되어_있음(new LineCreateRequest("이호선", "green", 교대역.getId(), 강남역.getId(), 10));
-		삼호선 = 지하철_노선_등록되어_있음(new LineCreateRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 15));
+		삼호선 = 지하철_노선_등록되어_있음(new LineCreateRequest("삼호선", "orange", 교대역.getId(), 양재역.getId(), 15, 500));
 
 		지하철_노선에_구간이_추가되어_있음(삼호선, new SectionRequest(교대역.getId(), 남부터미널역.getId(), 5));
 	}
@@ -62,6 +65,8 @@ class PathAcceptanceTest extends AcceptanceTest {
 	 * Scenario: 최단 경로 조회
 	 * When 최단 경로를 조회한다.
 	 * Then 최단 경로를 응답한다.
+	 * And 총 거리 정보를 응답한다.
+	 * And 지하철 이용 요금을 응답한다.
 	 */
 	@Test
 	@DisplayName("최단 경로를 조회")
@@ -72,7 +77,55 @@ class PathAcceptanceTest extends AcceptanceTest {
 		// then
 		assertAll(
 			() -> 최단_경로_조회됨(response),
-			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15)
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1850)
+		);
+	}
+
+	@Test
+	@DisplayName("어린이 이용자 최단 경로 조회")
+	void findShortestPathWithChildUser() {
+		// given
+		회원_생성을_요청(EMAIL, PASSWORD, 7);
+		String 어린이_이용자 = AuthAcceptanceUtils.로그인_완료되어_토큰_발급(EMAIL, PASSWORD);
+
+		// when
+		ExtractableResponse<Response> response = 최단_경로_조회(어린이_이용자, 교대역.getId(), 양재역.getId());
+
+		// then
+		assertAll(
+			() -> 최단_경로_조회됨(response),
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 750)
+		);
+	}
+
+	@Test
+	@DisplayName("청소년 이용자 최단 경로 조회")
+	void findShortestPathWithTeenagerUser() {
+		// given
+		String email = "teenager@email.com";
+		회원_생성을_요청(email, PASSWORD, 15);
+		String 청소년_이용자 = AuthAcceptanceUtils.로그인_완료되어_토큰_발급(email, PASSWORD);
+
+		// when
+		ExtractableResponse<Response> response = 최단_경로_조회(청소년_이용자, 교대역.getId(), 양재역.getId());
+
+		// then
+		assertAll(
+			() -> 최단_경로_조회됨(response),
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1200)
+		);
+	}
+
+		@Test
+	@DisplayName("비회원 최단 경로 조회")
+	void findShortestPathWithGuest() {
+		// when
+		ExtractableResponse<Response> response = 최단_경로_조회(교대역.getId(), 양재역.getId());
+
+		// then
+		assertAll(
+			() -> 최단_경로_조회됨(response),
+			() -> 지하철역_최단_경로_포함됨(response, Arrays.asList(교대역, 남부터미널역, 양재역), 15, 1850)
 		);
 	}
 

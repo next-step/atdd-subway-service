@@ -160,7 +160,7 @@ class FavoriteServiceTest {
 	}
 
 	private LoginMember 로그인_사용자() {
-		return new LoginMember(1L, Email.from(EMAIL), Age.from(AGE));
+		return LoginMember.of(1L, Email.from(EMAIL), Age.from(AGE));
 	}
 
 	private void 연결_경로_없음(Station source, Station target) {

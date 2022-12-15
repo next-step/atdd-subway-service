@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.time.temporal.ValueRange;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -24,7 +26,7 @@ public class Distance {
 	}
 
 	public static Distance from(double value) {
-		return new Distance((int) value);
+		return new Distance((int)value);
 	}
 
 	public int value() {
@@ -45,6 +47,18 @@ public class Distance {
 
 	public boolean lessOrEqual(Distance distance) {
 		return this.value <= distance.value;
+	}
+
+	public boolean isInClosedOpenRange(int start, int end) {
+		return ValueRange.of(start + 1, end).isValidIntValue(this.value);
+	}
+
+	public int ceilDivide(Distance step) {
+		return (int)Math.ceil((double)this.value / step.value);
+	}
+
+	public boolean lessThan(Distance target) {
+		return this.value < target.value;
 	}
 
 	@Override

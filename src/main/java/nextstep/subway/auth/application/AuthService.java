@@ -39,6 +39,6 @@ public class AuthService {
 		Member member = memberRepository.findByEmail(email).orElseThrow(
 			() -> new AuthorizationException(String.format("해당 이메일(%s) 이 존재하지 않습니다.", email))
 		);
-		return new LoginMember(member.getId(), member.email(), member.age());
+		return LoginMember.of(member.getId(), member.email(), member.age());
 	}
 }

@@ -30,11 +30,24 @@ public class PathAcceptanceUtils {
 			.extract();
 	}
 
+	public static ExtractableResponse<Response> 최단_경로_조회(String accessToken, Long sourceId, Long targetId) {
+		return RestAssured.given().log().all()
+			.auth().oauth2(accessToken)
+			.param("source", sourceId)
+			.param("target", targetId)
+			.contentType(MediaType.APPLICATION_JSON_VALUE)
+			.when()
+			.get(PATHS_URL)
+			.then().log().all()
+			.extract();
+	}
+
 	public static void 지하철역_최단_경로_포함됨(ExtractableResponse<Response> response,
-		List<StationResponse> expectedStations, int expectedDistance) {
+		List<StationResponse> expectedStations, int expectedDistance, int expectedFare) {
 		PathResponse path = response.as(PathResponse.class);
 		assertAll(
 			() -> assertThat(path.getDistance()).isEqualTo(expectedDistance),
+			() -> assertThat(path.getFare()).isEqualTo(expectedFare),
 			() -> assertThat(path.getStations()).hasSize(expectedStations.size()),
 			() -> assertThat(path.getStations())
 				.doesNotHaveDuplicates()
@@ -54,6 +67,5 @@ public class PathAcceptanceUtils {
 		assertThat(response.statusCode())
 			.isEqualTo(HttpStatus.OK.value());
 	}
-
 
 }
