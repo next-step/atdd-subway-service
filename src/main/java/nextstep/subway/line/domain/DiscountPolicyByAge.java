@@ -1,15 +1,18 @@
 package nextstep.subway.line.domain;
 
+import nextstep.subway.enums.ErrorMessage;
+
+import java.math.BigDecimal;
 import java.util.Arrays;
 
 public enum DiscountPolicyByAge {
-    나이_19세_이상(19, 100, 0),
-    나이_13세_이상_19세_미만(13, 18, 20),
-    나이_6세_이상_13세_미만(6, 12, 50),
-    나이_1세_이상_6세_미만(1, 5, 100),
+    BETWEEN_NINETEEN_HUNDRED(19, 100, 0),
+    BETWEEN_THIRTEEN_AND_EIGHTEEN(13, 18, 0.2),
+    BETWEEN_SIX_AND_TWELVE(6, 12, 0.5),
+    BETWEEN_ONE_AND_FIVE(1, 5, 1),
     ;
 
-    private static final int DEFAULT_DISCOUNT_FARE = 350;
+    private static final BigDecimal DEFAULT_DISCOUNT_FARE = BigDecimal.valueOf(350);
 
     private final int minAge;
     private final int maxAge;
@@ -21,22 +24,26 @@ public enum DiscountPolicyByAge {
         this.discountRate = discountRate;
     }
 
-    public static Fare calculate(int fare, int age) {
-        return Fare.from(Arrays.stream(values())
+    public static Fare calculate(Fare fare, int age) {
+        return Arrays.stream(values())
                 .filter(policy -> policy.checkAgeRange(age))
                 .findFirst()
-                .orElseThrow(IllegalArgumentException::new)
-                .discount(fare));
+                .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.INVALID_AGE_RANGE.getMessage()))
+                .discount(fare);
     }
 
     private boolean checkAgeRange(int age) {
         return this.minAge <= age && this.maxAge >= age;
     }
 
-    private int discount(int fare) {
+    private Fare discount(Fare fare) {
         if (this.discountRate == 0) {
             return fare;
         }
-        return fare - (int) ((fare - DEFAULT_DISCOUNT_FARE) * (this.discountRate / 100));
+        return Fare.from(
+                fare.value().subtract(fare.value()
+                        .subtract(DEFAULT_DISCOUNT_FARE)
+                        .multiply(BigDecimal.valueOf(discountRate))).intValue()
+        );
     }
 }

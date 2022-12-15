@@ -14,7 +14,7 @@ public class AddedFarePolicyByDistanceTest {
     @ValueSource(ints = {1, 10})
     void 거리가_10km_이하(int distance) {
         Fare calculate = AddedFarePolicyByDistance.calculate(distance);
-        assertThat(calculate).isEqualTo(Fare.from(1250));
+        assertThat(calculate.value().intValue()).isEqualTo(1250);
     }
 
     @DisplayName("거리가 10km 초과, 50km 이하인 경우 5km 마다 100원씩 추가된다.")
@@ -22,7 +22,7 @@ public class AddedFarePolicyByDistanceTest {
     @ValueSource(ints = {11, 15})
     void 거리가_10km_초과_50km_이하(int distance) {
         Fare calculate = AddedFarePolicyByDistance.calculate(distance);
-        assertThat(calculate).isEqualTo(Fare.from(1350));
+        assertThat(calculate.value().intValue()).isEqualTo(1350);
     }
 
     @DisplayName("거리가 50km 초과인 경우 8km 마다 100원씩 추가된다.")
@@ -30,6 +30,6 @@ public class AddedFarePolicyByDistanceTest {
     @ValueSource(ints = {51, 58})
     void 거리가_50km_초과(int distance) {
         Fare calculate = AddedFarePolicyByDistance.calculate(distance);
-        assertThat(calculate).isEqualTo(Fare.from(2150));
+        assertThat(calculate.value().intValue()).isEqualTo(2150);
     }
 }

@@ -1,7 +1,6 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.station.domain.Station;
@@ -49,21 +48,11 @@ public class PathTest {
     @DisplayName("경로를 생성한다.")
     @Test
     void 경로를_생성한다() {
-        Path path = Path.of(Distance.from(22), Arrays.asList(교대역, 강남역, 양재역), lines);
+        Path path = Path.of(Distance.from(22), Arrays.asList(교대역, 강남역, 양재역));
 
         assertAll(() -> {
             assertThat(path.getDistance()).isEqualTo(Distance.from(22));
             assertThat(path.getStations()).hasSize(3);
         });
-    }
-
-    @DisplayName("경로의 요금을 계산한다.")
-    @Test
-    void 경로의_요금을_계산한다() {
-        Path path = Path.of(Distance.from(22), Arrays.asList(교대역, 강남역, 양재역), lines);
-        Fare fare = path.calculateFare(10);
-
-        // 1550 + 300 (거리 추가 요금) - 600 ((1550 - 350) / 2) (나이 할인)
-        assertThat(fare.value()).isEqualTo(1250);
     }
 }

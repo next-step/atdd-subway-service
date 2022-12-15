@@ -25,11 +25,11 @@ public class Lines {
     public Fare getMaxAddedFare() {
         return this.lines.stream()
                 .map(Line::getAddedFare)
-                .max(Comparator.comparingInt(Fare::value))
+                .max(Comparator.comparing(Fare::value))
                 .orElseThrow(() -> new IllegalArgumentException(ErrorMessage.NOT_FOUND.getMessage()));
     }
 
-    public WeightedMultigraph<Station, Section> settingGraph(WeightedMultigraph<Station, Section> graph) {
+    public WeightedMultigraph<Station, Section> getGraph(WeightedMultigraph<Station, Section> graph) {
         this.lines.forEach(line -> {
             addVertex(graph, line);
             addEdgeAndSetEdgeWeight(graph, line);

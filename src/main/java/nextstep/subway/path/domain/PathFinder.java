@@ -2,7 +2,6 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
@@ -20,11 +19,11 @@ public class PathFinder {
                 .getPath(sourceStation, targetStation);
         validatePathExists(path);
 
-        return Path.of(Distance.from((int) path.getWeight()), path.getVertexList(), lines);
+        return Path.of(Distance.from((int) path.getWeight()), path.getVertexList());
     }
 
     private static WeightedMultigraph<Station, Section> getWeightedMultiGraph(Lines lines) {
-        return lines.settingGraph(new WeightedMultigraph<>(Section.class));
+        return lines.getGraph(new WeightedMultigraph<>(Section.class));
     }
 
     private static void validateLinesExists(Lines lines) {
@@ -43,17 +42,5 @@ public class PathFinder {
         if(Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException(ErrorMessage.NOT_FOUND_PATH.getMessage());
         }
-    }
-
-    private static void addVertex(WeightedMultigraph<Station, Section> graph, Line line) {
-        line.getStations().forEach(graph::addVertex);
-    }
-
-    private static void addEdgeAndSetEdgeWeight(WeightedMultigraph<Station, Section> graph, Line line) {
-        line.getSections().forEach(
-                section -> {
-                    graph.addEdge(section.getUpStation(), section.getDownStation(), section);
-                    graph.setEdgeWeight(section, section.getDistance().value());
-                });
     }
 }

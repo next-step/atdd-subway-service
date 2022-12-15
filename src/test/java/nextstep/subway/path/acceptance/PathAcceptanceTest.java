@@ -104,7 +104,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public static void 경로와_요금_조회됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses, Distance distance, Fare fare) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(distance.value());
-        assertThat(response.jsonPath().getInt("fare")).isEqualTo(fare.value());
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(fare.value().intValue());
 
         List<String> expected = response.jsonPath().getList("stations", StationResponse.class)
                 .stream()

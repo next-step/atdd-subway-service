@@ -140,7 +140,7 @@ class PathServiceTest {
 
         PathResponse pathResponse = pathService.findShortestPath(source, target, null);
 
-        assertThat(pathResponse.getFare()).isEqualTo(2250);
+        assertThat(pathResponse.getFare().intValue()).isEqualTo(2250);
     }
 
     @DisplayName("교대역 -> 강남역 -> 양재역 요금을 조회한다. (어린이 할인 추가)")
@@ -154,7 +154,7 @@ class PathServiceTest {
 
         PathResponse pathResponse = pathService.findShortestPath(source, target, 10);
 
-        assertThat(pathResponse.getFare()).isEqualTo(1550);
+        assertThat(pathResponse.getFare().intValue()).isEqualTo(1550);
     }
 
     @DisplayName("교대역 -> 강남역 -> 양재역 요금을 조회한다. (청소년 할인 추가)")
@@ -168,7 +168,7 @@ class PathServiceTest {
 
         PathResponse pathResponse = pathService.findShortestPath(source, target, 18);
 
-        assertThat(pathResponse.getFare()).isEqualTo(1970);
+        assertThat(pathResponse.getFare().intValue()).isEqualTo(1970);
     }
 
     @DisplayName("교대역 -> 강남역 -> 양재역 요금을 조회한다. (성인 할인 없음)")
@@ -182,6 +182,6 @@ class PathServiceTest {
 
         PathResponse pathResponse = pathService.findShortestPath(source, target, 30);
 
-        assertThat(pathResponse.getFare()).isEqualTo(2250);
+        assertThat(pathResponse.getFare().intValue()).isEqualTo(2250);
     }
 }

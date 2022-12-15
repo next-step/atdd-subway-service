@@ -47,10 +47,10 @@ public class LinesTest {
         assertThat(lines.isEmpty()).isFalse();
     }
 
-    @DisplayName("컬렉션에서 노선의 존재여부")
+    @DisplayName("노선의 가장 큰 추가요금을 찾는다.")
     @Test
     void getMaxAddedFare() {
         Fare maxAddedFare = lines.getMaxAddedFare();
-        assertThat(maxAddedFare.value()).isEqualTo(300);
+        assertThat(maxAddedFare.value().intValue()).isEqualTo(300);
     }
 }

@@ -1,7 +1,6 @@
 package nextstep.subway.path.application;
 
-import nextstep.subway.line.domain.LineRepository;
-import nextstep.subway.line.domain.Lines;
+import nextstep.subway.line.domain.*;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathResponse;
@@ -9,6 +8,8 @@ import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.Objects;
 
 @Service
 public class PathService {
@@ -27,6 +28,15 @@ public class PathService {
         Station targetStation = stationService.findStationById(target);
 
         Path path = PathFinder.findShortestPath(lines, sourceStation, targetStation);
-        return PathResponse.of(path, age);
+        return PathResponse.of(path, calculate(age, lines, path));
+    }
+
+    private Fare calculate(Integer age, Lines lines, Path path) {
+        Fare fare = AddedFarePolicyByDistance.calculate(path.getDistance().value());
+        if (Objects.nonNull(age)) {
+            fare = DiscountPolicyByAge.calculate(fare, age);
+        }
+        fare = fare.plus(lines.getMaxAddedFare());
+        return fare;
     }
 }
