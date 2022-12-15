@@ -27,13 +27,26 @@ public class PathFinder {
     }
 
     public Path findShortestPath(Station source, Station target) {
-        DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
-        List<Station> stations = dijkstraShortestPath.getPath(source, target).getVertexList();
-        int distance = (int) dijkstraShortestPath.getPath(source, target).getWeight();
-        return new Path(stations, distance);
+        validatePathFinder(source, target);
+        try {
+            DijkstraShortestPath dijkstraShortestPath = new DijkstraShortestPath(graph);
+            List<Station> stations = dijkstraShortestPath.getPath(source, target).getVertexList();
+            int distance = (int) dijkstraShortestPath.getPath(source, target).getWeight();
+            return new Path(stations, distance);
+        }
+        catch (RuntimeException e) {
+            throw new RuntimeException("왜안돼니");
+        }
     }
 
     public static PathFinder of(List<Section> allSections) {
         return new PathFinder(allSections);
     }
+
+    private void validatePathFinder(Station source, Station target) {
+        if (source == target) {
+            throw new RuntimeException("왜안돼니?");
+        }
+    }
+
 }

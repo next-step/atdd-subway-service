@@ -15,6 +15,7 @@ import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 
@@ -27,6 +28,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 마곡역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -43,6 +45,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        마곡역 = StationAcceptanceTest.지하철역_등록되어_있음("마곡역").as(StationResponse.class);
 
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
@@ -78,6 +81,26 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(5);
+    }
+
+    @DisplayName("출발역과 도착역이 같을 때 최단 경로 조회하면 실패한다")
+    @Test
+    void sameStationFindPath() {
+        // when
+        ExtractableResponse<Response> response = 지하철노선_최단경로_조회(교대역.getId(),교대역.getId());
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @DisplayName("출발역이 노선에 없을 최단 경로 조회하면 실패한다")
+    @Test
+    void nonStationFindPath() {
+        // when
+        ExtractableResponse<Response> response = 지하철노선_최단경로_조회(마곡역.getId(),교대역.getId());
+
+        // then
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static ExtractableResponse<Response> 지하철노선_최단경로_조회(Long sourceId, Long targetId){
