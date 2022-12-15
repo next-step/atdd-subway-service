@@ -26,7 +26,7 @@ public class PathResponse {
         this.distance = distance;
         this.fare = fare;
     }
-    
+
     public static PathResponse from(ShortestPath shortestGraph, int fare) {
         List<StationPathResponse> responses = getStationPathResponses(shortestGraph.getPath());
         return new PathResponse(responses, shortestGraph.getPathDistance(), fare);
@@ -42,5 +42,13 @@ public class PathResponse {
 
     public List<StationPathResponse> getStations() {
         return this.stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }
