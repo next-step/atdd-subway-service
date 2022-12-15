@@ -1,9 +1,11 @@
 package nextstep.subway.path.applicatipn;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.exception.NotValidDataException;
 import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -43,10 +45,13 @@ class PathServiceTest {
 
     private Station 수원역 = Station.from("수원역");
 
-    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30));
-    private Line 이호선 = Line.of("2호선", "green", 신도림역, 대림역, Distance.from(10));
-    private Line 칠호선 = Line.of("7호선", "deep-green", 가디역, 대림역, Distance.from(10));
+    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30), 0);
+    private Line 이호선 = Line.of("2호선", "green", 신도림역, 대림역, Distance.from(10), 0);
+    private Line 칠호선 = Line.of("7호선", "deep-green", 가디역, 대림역, Distance.from(10), 0);
 
+    private LoginMember loginMember = LoginMember.ofLogin(1L, "test@test.com", Age.from(10));
+
+    private LoginMember notLoginMember = LoginMember.ofNotLogin();
 
     /**
      * 지하철 노선도
@@ -67,7 +72,7 @@ class PathServiceTest {
         when(stationService.findStationById(sourceId, targetId)).thenReturn(SourceAndTargetStationDto.of(신도림역, 가디역));
         when(lineService.findAll()).thenReturn(Arrays.asList(일호선, 이호선, 칠호선));
 
-        PathResponse result = pathService.getPath(sourceId, targetId);
+        PathResponse result = pathService.getPath(sourceId, targetId, loginMember);
 
         List<Long> ids = result.getStations().stream().map(StationResponse::getId).collect(Collectors.toList());
         assertThat(result.getDistance()).isEqualTo(20);
@@ -83,7 +88,7 @@ class PathServiceTest {
         when(stationService.findStationById(sourceId, targetId)).thenReturn(SourceAndTargetStationDto.of(신도림역, 신도림역));
 
         assertThatThrownBy(() -> {
-            pathService.getPath(sourceId, targetId);
+            pathService.getPath(sourceId, targetId, loginMember);
         }).isInstanceOf(NotValidDataException.class)
                 .hasMessageContaining(IS_TARGET_ANS_SOURCE_SAME.getMessage());
     }

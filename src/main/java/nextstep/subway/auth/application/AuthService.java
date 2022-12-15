@@ -11,7 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_MEMBER;
-import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_STATION;
 
 @Service
 public class AuthService {
@@ -33,13 +32,26 @@ public class AuthService {
     }
 
     @Transactional(readOnly = true)
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException();
+    public LoginMember findMemberByToken(String credentials, boolean isRequired) {
+        boolean isValidToken = isValidToken(credentials);
+
+        isTokenRequired(isRequired, isValidToken);
+        if (!isValidToken) {
+            return LoginMember.ofNotLogin();
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email).orElseThrow(() -> new NotFoundDataException(NOT_FOUND_MEMBER.getMessage()));
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        return LoginMember.ofLogin(member.getId(), member.getEmail(), member.getAge());
+    }
+
+    private boolean isValidToken(String credentials) {
+        return jwtTokenProvider.validateToken(credentials);
+    }
+
+    private void isTokenRequired(boolean isRequired, boolean isValidToken) {
+        if (!isValidToken && isRequired) {
+            throw new AuthorizationException();
+        }
     }
 }

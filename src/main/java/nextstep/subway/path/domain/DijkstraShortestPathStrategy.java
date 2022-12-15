@@ -54,6 +54,7 @@ public class DijkstraShortestPathStrategy implements PathStrategy {
         GraphPath<Station, DefaultWeightedEdge> graphResult = dijkstraStrategy.getPath(source, target);
         validCheckConnectStation(graphResult);
 
+
         return PathFinder.from(graphResult);
     }
 

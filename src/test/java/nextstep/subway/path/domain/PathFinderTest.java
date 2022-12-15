@@ -3,14 +3,12 @@ package nextstep.subway.path.domain;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.station.domain.Station;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class PathFinderTest {
 
@@ -19,9 +17,9 @@ class PathFinderTest {
     private Station 가디역 = Station.from("가디역");
     private Station 대림역 = Station.from("대림역");
 
-    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30));
-    private Line 이호선 = Line.of("2호선", "green", 신도림역, 대림역, Distance.from(10));
-    private Line 칠호선 = Line.of("7호선", "deep-green", 가디역, 대림역, Distance.from(10));
+    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30), 0);
+    private Line 이호선 = Line.of("2호선", "green", 신도림역, 대림역, Distance.from(10), 0);
+    private Line 칠호선 = Line.of("7호선", "deep-green", 가디역, 대림역, Distance.from(10), 0);
 
 
     @Test

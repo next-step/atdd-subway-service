@@ -19,27 +19,34 @@ public class Line extends BaseEntity {
     @Embedded
     private final Sections sections = new Sections();
 
+    @Embedded
+    private ExtraFee extraFee = new ExtraFee();
+
     protected Line() {
     }
 
     private Line(Builder builder) {
         this.name = builder.name;
         this.color = builder.color;
+        this.extraFee = ExtraFee.from(builder.extraFee);
     }
 
-    private Line(String name, String color, Station upStation, Station downStation, Distance distance) {
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, ExtraFee extraFee) {
         this.name = name;
         this.color = color;
+        this.extraFee = extraFee;
         sections.addSection(this, upStation, downStation, distance);
     }
 
-    public static Line of(String name, String color, Station upStation, Station downStation, Distance distance) {
-        return new Line(name, color, upStation, downStation, distance);
+    public static Line of(String name, String color, Station upStation, Station downStation, Distance distance, int extraFee) {
+        return new Line(name, color, upStation, downStation, distance, ExtraFee.from(extraFee));
     }
 
     public static class Builder {
         private String name;
         private String color;
+
+        private int extraFee;
 
         public Builder() {
         }
@@ -51,6 +58,11 @@ public class Line extends BaseEntity {
 
         public Builder name(String name) {
             this.name = name;
+            return this;
+        }
+
+        public Builder extraFee(int extraFee) {
+            this.extraFee = extraFee;
             return this;
         }
 
@@ -99,6 +111,10 @@ public class Line extends BaseEntity {
 
     public List<Section> getSections() {
         return sections.getSections();
+    }
+
+    public int getExtraFee() {
+        return extraFee.getExtraFee();
     }
 }
 

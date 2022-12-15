@@ -10,6 +10,7 @@ import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Age;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -48,11 +49,11 @@ class FavoriteServiceTest {
 
     private Station 신도림역 = Station.from("신도림역");
     private Station 가디역 = Station.from("가디역");
-    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30));
+    private Line 일호선 = Line.of("1호선", "blue", 가디역, 신도림역, Distance.from(30), 0);
     private Member 유저 = new Member("test@test.com", "test", 20);
     private Favorite 즐겨찾기 = Favorite.of(신도림역, 가디역, 유저);
 
-    private LoginMember loginMember = new LoginMember(1L, "test@test.com", 20);
+    private LoginMember loginMember = LoginMember.ofLogin(1L, "test@test.com", Age.from(20));
 
     private FavoriteRequest favoriteRequest = new FavoriteRequest(1L, 2L);
 

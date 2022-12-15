@@ -2,6 +2,7 @@ package nextstep.subway.favorite.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.exception.NotFoundDataException;
+import nextstep.subway.exception.NotValidDataException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
@@ -9,6 +10,7 @@ import javax.persistence.*;
 import java.util.Objects;
 
 import static nextstep.subway.exception.type.NotFoundDataExceptionType.NOT_FOUND_STATION;
+import static nextstep.subway.exception.type.ValidExceptionType.NOT_CONNECT_STATION;
 
 @Entity
 public class Favorite extends BaseEntity {
@@ -39,16 +41,19 @@ public class Favorite extends BaseEntity {
 
     public static Favorite of(Station sourceStation, Station targetStation, Member member) {
         validationCheckIsExistStation(sourceStation, targetStation);
+        validationCheckIsSourceAndTargetSame(sourceStation, targetStation);
         
         return new Favorite(sourceStation, targetStation, member);
     }
 
-    private static void validationCheckIsExistStation(Station sourceStation, Station targetStation) {
-        if (Objects.isNull(sourceStation)) {
-            throw new NotFoundDataException(NOT_FOUND_STATION.getMessage());
+    private static void validationCheckIsSourceAndTargetSame(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new NotValidDataException(NOT_CONNECT_STATION.getMessage());
         }
+    }
 
-        if (Objects.isNull(targetStation)) {
+    private static void validationCheckIsExistStation(Station sourceStation, Station targetStation) {
+        if (Objects.isNull(sourceStation) || Objects.isNull(targetStation)) {
             throw new NotFoundDataException(NOT_FOUND_STATION.getMessage());
         }
     }
