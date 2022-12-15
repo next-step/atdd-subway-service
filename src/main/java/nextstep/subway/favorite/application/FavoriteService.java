@@ -17,11 +17,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional
 public class FavoriteService {
 
     private final String MESSAGE_FAVORITE_ENTITY_NOT_FOUND = "즐겨찾기가가 존재하지 않습니다";
-
 
     private FavoriteRepository favoriteRepository;
     private MemberService memberService;
@@ -42,7 +41,7 @@ public class FavoriteService {
         Long sourceStationId = favoriteRequest.getSourceId();
         Long targetStationId = favoriteRequest.getTargetId();
 
-        checkSourceTargetHasPath(sourceStationId, targetStationId);
+        checkSourceTargetHasPath(memberId, sourceStationId, targetStationId);
 
         Favorite favorite = saveFavoriteEntity(memberId, sourceStationId, targetStationId);
         return FavoriteResponse.of(favorite);
@@ -55,10 +54,11 @@ public class FavoriteService {
         return favoriteRepository.save(new Favorite(member, sourceStation, targetStation));
     }
 
-    private void checkSourceTargetHasPath(Long sourceStationId, Long targetStationId) {
-        pathService.findShortestPath(sourceStationId, targetStationId);
+    private void checkSourceTargetHasPath(Long memberId, Long sourceStationId, Long targetStationId) {
+        pathService.findShortestPath(memberId, sourceStationId, targetStationId);
     }
 
+    @Transactional(readOnly = true)
     public List<FavoriteResponse> findFavorites(Long memberId) {
         Member member = findMember(memberId);
         List<Favorite> favorites = favoriteRepository.findByMemberId(member.getId());

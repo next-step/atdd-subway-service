@@ -1,16 +1,17 @@
 package nextstep.subway.line.dto;
 
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.path.dto.StationPathResponse;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
-import java.nio.file.Path;
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponse {
 
     private List<StationPathResponse> stations;
+    private int distance;
+    private int fare;
 
     protected PathResponse() {
 
@@ -20,14 +21,34 @@ public class PathResponse {
         this.stations = stations;
     }
 
-    public static PathResponse from(List<Station> stationsInPath) {
-        List<StationPathResponse> collect = stationsInPath.stream()
-                .map(StationPathResponse::from)
-                .collect(Collectors.toList());
-        return new PathResponse(collect);
+    private PathResponse(List<StationPathResponse> stations, int distance, int fare) {
+        this.stations = stations;
+        this.distance = distance;
+        this.fare = fare;
     }
+
+    public static PathResponse from(ShortestPath shortestGraph, int fare) {
+        List<StationPathResponse> responses = getStationPathResponses(shortestGraph.getPath());
+        return new PathResponse(responses, shortestGraph.getPathDistance(), fare);
+    }
+
+    private static List<StationPathResponse> getStationPathResponses(List<Station> stationsInPath) {
+        List<StationPathResponse> collect = stationsInPath.stream()
+            .map(StationPathResponse::from)
+            .collect(Collectors.toList());
+        return collect;
+    }
+
 
     public List<StationPathResponse> getStations() {
         return this.stations;
+    }
+
+    public int getDistance() {
+        return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

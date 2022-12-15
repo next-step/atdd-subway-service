@@ -1,5 +1,6 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -18,17 +19,21 @@ class PathFinderTest {
     Station 종합운동장역 = new Station("종합운동장역");
     Station 잠실새내역 = new Station("잠실새내역");
 
+    Line line;
+
     List<Section> sections;
 
     PathFindAlgorithm dijkstraAlgorithm;
     KShortestPathFinder kShortestAlgorithm;
 
+
     @BeforeEach
     void setUp() {
+        line = new Line("노선", "색상", 삼전역, 종합운동장역, 5, 500);
         sections = Arrays.asList(
-            new Section(null, 삼전역, 종합운동장역, 5),
-            new Section(null, 종합운동장역, 잠실새내역, 5),
-            new Section(null, 삼전역, 잠실새내역, 2)
+            new Section(line, 삼전역, 종합운동장역, 5),
+            new Section(line, 종합운동장역, 잠실새내역, 5),
+            new Section(line, 삼전역, 잠실새내역, 2)
         );
         dijkstraAlgorithm = new DijkstraPathFinder();
         kShortestAlgorithm = new KShortestPathFinder();
@@ -56,8 +61,8 @@ class PathFinderTest {
         Station 동대문역 = new Station("동대문역");
         Station 충무로역 = new Station("충무로역");
         List<Section> notConnectedSections = Arrays.asList(
-            new Section(null, 삼전역, 종합운동장역, 5),
-            new Section(null, 동대문역, 충무로역, 5)
+            new Section(line, 삼전역, 종합운동장역, 5),
+            new Section(line, 동대문역, 충무로역, 5)
         );
 
         assertThatThrownBy(() -> PathFinder.of(notConnectedSections, dijkstraAlgorithm).find(삼전역, 충무로역))

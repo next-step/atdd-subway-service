@@ -1,8 +1,12 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.PathResponse;
+import nextstep.subway.member.application.MemberService;
+import nextstep.subway.member.domain.Member;
+import nextstep.subway.path.domain.ShortestPath;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
 import org.springframework.stereotype.Service;
@@ -20,22 +24,30 @@ public class PathService {
 
     private final StationService stationService;
     private final SectionRepository sectionRepository;
-
     private final PathFindAlgorithm pathFinder;
+    private final MemberService memberService;
 
 
-    public PathService(StationService stationService, SectionRepository sectionRepository, PathFindAlgorithm pathFinder) {
+    public PathService(StationService stationService, SectionRepository sectionRepository, PathFindAlgorithm pathFinder,
+                       MemberService memberService) {
         this.stationService = stationService;
         this.sectionRepository = sectionRepository;
         this.pathFinder = pathFinder;
+        this.memberService = memberService;
     }
 
-    public PathResponse findShortestPath(Long source, Long target) {
+    public PathResponse findShortestPath(Long loginId, Long source, Long target) {
         validateInput(source, target);
         Station departStation = stationService.findStationById(source);
         Station destStation = stationService.findStationById(target);
         List<Section> allSections = sectionRepository.findAll();
-        return PathResponse.from(PathFinder.of(allSections, pathFinder).find(departStation, destStation));
+        ShortestPath shortestGraph = PathFinder.of(allSections, this.pathFinder)
+            .getShortestGraph(departStation, destStation);
+
+        Member memberEntity = memberService.findMemberEntity(loginId);
+        int fare = FareCalculator.calculate(shortestGraph.getPathDistance(),
+            shortestGraph.getMaxLineFare(), memberEntity.getAge());
+        return PathResponse.from(shortestGraph, fare);
     }
 
     private static void validateInput(Long sourceStationId, Long targetStationId) {
@@ -46,5 +58,4 @@ public class PathService {
             throw new IllegalArgumentException(MESSAGE_SOURCE_TARGET_SHOULD_BE_DIFFERENT);
         }
     }
-
 }

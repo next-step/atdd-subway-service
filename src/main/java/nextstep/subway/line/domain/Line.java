@@ -2,7 +2,6 @@ package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.dto.StationResponse;
 
 import javax.persistence.*;
 import java.util.List;
@@ -18,18 +17,27 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
 
+    private int lineFare;
+
     public Line() {
     }
 
     public Line(String name, String color) {
         this.name = name;
         this.color = color;
+        this.lineFare = 0;
     }
 
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        addSection(upStation,downStation,distance);
+        addSection(upStation, downStation, distance);
+        this.lineFare = 0;
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int lineFare) {
+        this(name, color, upStation, downStation, distance);
+        this.lineFare = lineFare;
     }
 
     public void update(Line line) {
@@ -63,5 +71,9 @@ public class Line extends BaseEntity {
 
     public List<Station> getStation() {
         return this.sections.getStations();
+    }
+
+    public int getLineFare() {
+        return this.lineFare;
     }
 }
