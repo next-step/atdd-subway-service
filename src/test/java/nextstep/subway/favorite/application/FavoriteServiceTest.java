@@ -89,7 +89,6 @@ class FavoriteServiceTest {
         given(stationService.findStationById(강남역_아이디)).willReturn(강남역);
         given(stationService.findStationById(삼성역_아이디)).willReturn(삼성역);
         given(favoriteRepository.save(any())).willReturn(강남역_삼성역_즐겨찾기);
-        favoriteService.createFavorite(로그인된_회원, new FavoriteCreateRequest(강남역_아이디, 삼성역_아이디));
 
         // when
         favoriteService.createFavorite(로그인된_회원, new FavoriteCreateRequest(강남역_아이디, 삼성역_아이디));

@@ -59,7 +59,7 @@ public class AuthServiceTest {
         given(memberRepository.findByEmail(any())).willReturn(Optional.of(new Member(EMAIL, PASSWORD, AGE)));
 
         // when
-        LoginMember loginMember = authService.findMemberByToken("TOKEN");
+        LoginMember loginMember = authService.findMemberByToken("TOKEN", true);
 
         // then
         assertAll(

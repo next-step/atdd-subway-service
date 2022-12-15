@@ -41,8 +41,8 @@ class ShortestPathFinderTest {
 
         // then
         assertAll(
-                () -> assertThat(path.getDistance()).isEqualTo(new Distance(10)),
-                () -> assertThat(getStationNames(path)).containsExactly("신논현역", "삼성역", "교대역")
+                () -> assertThat(path.getDistance()).isEqualTo(new Distance(20)),
+                () -> assertThat(getStationNames(path)).containsExactly("신논현역", "강남역", "교대역")
         );
     }
 

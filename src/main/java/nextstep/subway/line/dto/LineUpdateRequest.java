@@ -5,10 +5,12 @@ import nextstep.subway.line.domain.Line;
 public class LineUpdateRequest {
     private final String name;
     private final String color;
+    private final int fare;
 
-    public LineUpdateRequest(String name, String color) {
+    public LineUpdateRequest(String name, String color, int fare) {
         this.name = name;
         this.color = color;
+        this.fare = fare;
     }
 
     public String getName() {
@@ -20,6 +22,6 @@ public class LineUpdateRequest {
     }
 
     public Line toLine() {
-        return new Line(name, color);
+        return new Line(name, color, fare);
     }
 }

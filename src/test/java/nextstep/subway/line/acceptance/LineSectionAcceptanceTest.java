@@ -38,7 +38,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         정자역 = StationRestAssured.지하철역_등록되어_있음("정자역").as(StationResponse.class);
         광교역 = StationRestAssured.지하철역_등록되어_있음("광교역").as(StationResponse.class);
 
-        LineCreateRequest lineRequest = new LineCreateRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10);
+        LineCreateRequest lineRequest = new LineCreateRequest("신분당선", "bg-red-600", 강남역.getId(), 광교역.getId(), 10, 700);
         신분당선 = LineRestAssured.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
     }
 

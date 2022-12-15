@@ -22,6 +22,12 @@ public class Sections {
         this.sectionItems = new ArrayList<>();
     }
 
+    public static Sections of(List<Section> sectionItems) {
+        Sections sections = new Sections();
+        sections.sectionItems.addAll(new ArrayList<>(sectionItems));
+        return sections;
+    }
+
     public void add(Section section) {
         if(this.sectionItems.isEmpty()) {
             this.sectionItems.add(section);

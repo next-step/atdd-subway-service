@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.fare.domain.AgeDiscountFarePolicy;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -13,6 +15,10 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public static LoginMember anonymous() {
+        return new LoginMember(null, null, AgeDiscountFarePolicy.NORMAL.endAge());
     }
 
     public Long getId() {
