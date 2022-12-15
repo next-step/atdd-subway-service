@@ -33,6 +33,10 @@ public enum AgeDiscountFarePolicy {
         return fare.minus(discountFare).discountByPercent(discountPercent);
     }
 
+    public int endAge() {
+        return this.endAge;
+    }
+
     private boolean isAssignable(int age) {
         return this.startAge <= age
                 && age <= this.endAge;
