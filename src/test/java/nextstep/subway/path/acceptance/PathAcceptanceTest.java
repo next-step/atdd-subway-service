@@ -77,7 +77,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철노선_최단경로_조회(교대역.getId(),양재역.getId());
 
         // then
-        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(8);
+        assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(5);
     }
 
     public static ExtractableResponse<Response> 지하철노선_최단경로_조회(Long sourceId, Long targetId){
