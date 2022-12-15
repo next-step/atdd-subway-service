@@ -1,20 +1,37 @@
-package nextstep.subway.path;
+package nextstep.subway.path.service;
 
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.line.domain.LineRepository;
+import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.junit.jupiter.api.Assertions.assertAll;
+import static org.mockito.Mockito.when;
 
-public class PathFinderTest {
+@DisplayName("지하철 최단 경로 조회 서비스 테스트")
+@ExtendWith(MockitoExtension.class)
+public class PathServiceTest {
+    @Mock
+    private LineRepository lineRepository;
+
+    @Mock
+    private StationRepository stationRepository;
+
+    @InjectMocks
+    private PathService pathService;
 
     private Line 신분당선;
     private Line 이호선;
@@ -26,7 +43,6 @@ public class PathFinderTest {
     private Station 남부터미널역;
     private Station 동작역;
     private Station 석촌역;
-
 
     /**
      * 교대역 -------- 2호선(10) ------ 강남역
@@ -41,7 +57,7 @@ public class PathFinderTest {
      */
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         강남역 = new Station("강남역");
         양재역 = new Station("양재역");
         교대역 = new Station("교대역");
@@ -55,53 +71,58 @@ public class PathFinderTest {
         구호선 = new Line("구호선", "bg-red-600", 동작역, 석촌역, 13);
     }
 
+
     @DisplayName("출발역과 도착역 사이 최단 경로 조회")
     @Test
     public void 최단경로조회() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(삼호선, 이호선));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(양재역));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
         // when
-        Path path = pathFinder.findShortPath(교대역, 양재역);
+        PathResponse response = pathService.findShortPath(1L, 2L);
         // then
         assertAll(
-                () -> assertThat(path.getStations()).hasSize(2),
-                () -> assertThat(path.getDistance()).isEqualTo(5)
+                () -> assertThat(response.getStations()).hasSize(2),
+                () -> assertThat(response.getDistance()).isEqualTo(5)
         );
     }
 
-    @DisplayName("출발역과 도착역이 같은 경우 예외 발생")
+    @DisplayName("출발역과 도착역이 같은 경우 예외발생")
     @Test
     public void 최단경로조회_예외발생1() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(삼호선, 이호선));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
         // when && then
-        assertThatThrownBy(
-                () -> pathFinder.findShortPath(양재역, 양재역))
+        assertThatThrownBy(() -> pathService.findShortPath(1L, 1l))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("출발역과 도착역이 같을 경우 최단 거리를 조회할 수 없습니다.");
     }
 
-    @DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우")
+    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 예외발생")
     @Test
-    public void 최단경로조회_예외발생2() {
+    public void 최단경로조회_에외발생2() {
         // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(삼호선, 이호선));
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(강남역));
+        when(stationRepository.findById(2L)).thenReturn(Optional.of(석촌역));
+        when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
         // when && then
-        assertThatThrownBy(
-                () -> pathFinder.findShortPath(교대역, 동작역))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("출발역 또는 도착역이 존재하지 않습니다.");
-    }
-
-    @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우")
-    @Test
-    public void 최단경로조회_예외발생3() {
-        // given
-        PathFinder pathFinder = new PathFinder(Arrays.asList(삼호선, 이호선));
-        // when && then
-        assertThatThrownBy(
-                () -> pathFinder.findShortPath(교대역, 동작역))
+        assertThatThrownBy(() -> pathService.findShortPath(1L, 2l))
                 .isInstanceOf(IllegalArgumentException.class);
     }
+
+    @DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우")
+    @Test
+    public void 최단경로조회_에외발생3() {
+        // given
+        when(stationRepository.findById(1L)).thenReturn(Optional.of(교대역));
+        when(stationRepository.findById(0L)).thenReturn(Optional.of(동작역));
+        // when && then
+        assertThatThrownBy(() -> pathService.findShortPath(1L, 0l))
+                .isInstanceOf(IllegalArgumentException.class);
+    }
+
 
 }
