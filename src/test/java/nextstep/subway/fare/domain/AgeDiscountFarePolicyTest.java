@@ -24,17 +24,19 @@ class AgeDiscountFarePolicyTest {
 
     private static Stream<Arguments> provideAgeDiscountFarePolicy() {
         return Stream.of(
+                Arguments.of(2, AgeDiscountFarePolicy.CHILDREN_FREE),
                 Arguments.of(6, AgeDiscountFarePolicy.CHILDREN),
                 Arguments.of(12, AgeDiscountFarePolicy.CHILDREN),
                 Arguments.of(13, AgeDiscountFarePolicy.TEENAGER),
                 Arguments.of(18, AgeDiscountFarePolicy.TEENAGER),
                 Arguments.of(19, AgeDiscountFarePolicy.NORMAL),
-                Arguments.of(22, AgeDiscountFarePolicy.NORMAL)
+                Arguments.of(22, AgeDiscountFarePolicy.NORMAL),
+                Arguments.of(66, AgeDiscountFarePolicy.NORMAL_FREE)
         );
     }
 
     @DisplayName("주어진 나이에 해당되는 할인 정책이 적용 된 요금을 계산하여 반환한다")
-    @ParameterizedTest(name = "[{0}] 나이가 주어지면 요금 할인 정책이 적용 된 요금 [{1}원]을 반환한다")
+    @ParameterizedTest(name = "[{0}] 나이가 주어지면 요금 할인 정책이 적용 된 요금 [{2}원]을 반환한다")
     @MethodSource("provideAgeAndDiscountFare")
     void calculate_discount_fare(int age, Fare fare, Fare expectedFare) {
         // given
@@ -49,6 +51,7 @@ class AgeDiscountFarePolicyTest {
 
     private static Stream<Arguments> provideAgeAndDiscountFare() {
         return Stream.of(
+                Arguments.of(2, Fare.of(1_250), Fare.zero()),
                 Arguments.of(6, Fare.of(1_250), Fare.of(450)),
                 Arguments.of(12, Fare.of(1_550), Fare.of(600)),
                 Arguments.of(12, Fare.of(2_150), Fare.of(900)),
@@ -57,7 +60,8 @@ class AgeDiscountFarePolicyTest {
                 Arguments.of(18, Fare.of(2_150), Fare.of(1_440)),
                 Arguments.of(19, Fare.of(1_250), Fare.of(1_250)),
                 Arguments.of(22, Fare.of(1_550), Fare.of(1_550)),
-                Arguments.of(22, Fare.of(2_150), Fare.of(2_150))
+                Arguments.of(22, Fare.of(2_150), Fare.of(2_150)),
+                Arguments.of(66, Fare.of(2_150), Fare.zero())
         );
     }
 }

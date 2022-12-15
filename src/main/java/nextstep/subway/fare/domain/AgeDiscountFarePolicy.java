@@ -3,9 +3,11 @@ package nextstep.subway.fare.domain;
 import java.util.Arrays;
 
 public enum AgeDiscountFarePolicy {
-    NORMAL(19, Integer.MAX_VALUE, 0, 0),
+    NORMAL_FREE(65, Integer.MAX_VALUE, 0, 100),
+    NORMAL(19, 64, 0, 0),
     TEENAGER(13, 18, 350, 20),
-    CHILDREN(6, 12, 350, 50)
+    CHILDREN(6, 12, 350, 50),
+    CHILDREN_FREE(1, 5, 0, 100);
     ;
 
     private final int startAge;
