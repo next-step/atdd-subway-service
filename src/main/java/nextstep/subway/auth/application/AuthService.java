@@ -12,6 +12,8 @@ import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Objects;
+
 @Service
 @Transactional(readOnly = true)
 public class AuthService {
@@ -33,24 +35,22 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials, boolean required) {
-        boolean isValidToken = jwtTokenProvider.validateToken(credentials);
-        validateAccessToken(required, isValidToken);
-
-        if (!isValidToken) {
+        if (isAnonymous(credentials) && !required) {
             return LoginMember.anonymous();
         }
+        validateAccessToken(credentials);
         String email = jwtTokenProvider.getPayload(credentials);
         Member member = memberRepository.findByEmail(email)
                 .orElseThrow(AuthorizationException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 
-    private void validateAccessToken(boolean required, boolean isValidToken) {
-        if(!required) {
-            return;
-        }
+    private boolean isAnonymous(String credentials) {
+        return Objects.isNull(credentials) || "null".equalsIgnoreCase(credentials);
+    }
 
-        if (!isValidToken) {
+    private void validateAccessToken(String credentials) {
+        if (!jwtTokenProvider.validateToken(credentials)) {
             throw new InValidAccessTokenException(AuthMessage.AUTH_ERROR_TOKEN_IS_NOT_VALID.message());
         }
     }
