@@ -23,7 +23,7 @@ public class PathController {
 
 	@GetMapping
 	public ResponseEntity<PathResponse> findShortestPath(
-		@AuthenticationPrincipal(required = false) LoginMember member,
+		@AuthenticationPrincipal(guestAllowed = true) LoginMember member,
 		PathRequest request
 	) {
 		PathResponse response = pathService.findShortestPath(member, request);

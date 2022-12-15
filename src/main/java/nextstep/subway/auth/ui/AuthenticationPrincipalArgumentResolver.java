@@ -46,6 +46,6 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
 	}
 
 	private boolean isGuest(String credentials, AuthenticationPrincipal authenticationPrincipal) {
-		return authenticationPrincipal != null && !authenticationPrincipal.required() && credentials == null;
+		return authenticationPrincipal != null && authenticationPrincipal.guestAllowed() && credentials == null;
 	}
 }
