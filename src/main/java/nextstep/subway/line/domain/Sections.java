@@ -1,5 +1,6 @@
 package nextstep.subway.line.domain;
 
+import com.google.common.collect.Lists;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,9 +17,24 @@ public class Sections {
     protected Sections() {
     }
 
+    public Sections(Section section) {
+        sections = Lists.newArrayList(section);
+    }
+
     public void add(Section section) {
+        validation(section);
         ifContainsStationAdd(section);
         sections.add(section);
+    }
+
+    private void validation(Section section) {
+        if (section.isExistsSections(getStations())) {
+            throw new RuntimeException("이미 등록된 구간 입니다.");
+        }
+
+        if (!section.checkAnyIncludeStation(getStations())) {
+            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+        }
     }
 
     private void ifContainsStationAdd(Section newSection) {

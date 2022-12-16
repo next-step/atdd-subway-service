@@ -9,9 +9,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.domain.StationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -44,7 +42,7 @@ public class LineServiceTest {
     }
     
     @Test
-    @DisplayName("기존 findLines 로직 검증")
+    @DisplayName("노선 목록을 조회하면 정상적으로 반한된다.")
     void getStationsTest() {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(신분당선));
         List<LineResponse> lineResponses = lineService.findLines();

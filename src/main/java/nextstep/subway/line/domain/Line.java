@@ -11,8 +11,10 @@ public class Line extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
     @Column(unique = true)
     private String name;
+
     private String color;
 
     @Embedded
@@ -29,7 +31,7 @@ public class Line extends BaseEntity {
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
-        sections.add(new Section(this, upStation, downStation, distance));
+        this.sections = new Sections(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
@@ -54,19 +56,7 @@ public class Line extends BaseEntity {
     }
 
     public void addSection(Section section) {
-        validation(section);
         sections.add(section);
-    }
-
-    private void validation(Section section) {
-        if (section.isExistsSections(getStations())) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
-        }
-
-        if (!section.checkAnyIncludeStation(getStations())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
-        }
-
     }
 
     public void removeStation(Station station) {

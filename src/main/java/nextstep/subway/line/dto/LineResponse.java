@@ -16,13 +16,15 @@ public class LineResponse {
     private LocalDateTime createdDate;
     private LocalDateTime modifiedDate;
 
-    public LineResponse(Long id, String name, String color, List<Station> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
+    private LineResponse(Long id, String name, String color, List<Station> stations, LocalDateTime createdDate, LocalDateTime modifiedDate) {
         this.id = id;
         this.name = name;
         this.color = color;
-        this.stations = stations.stream().map(StationResponse::of).collect(Collectors.toList());
         this.createdDate = createdDate;
         this.modifiedDate = modifiedDate;
+        this.stations = stations.stream()
+                .map(StationResponse::of)
+                .collect(Collectors.toList());
     }
 
     public static LineResponse of(Line line) {
