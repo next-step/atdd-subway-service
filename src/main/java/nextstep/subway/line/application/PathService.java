@@ -27,14 +27,40 @@ public class PathService {
     }
 
     public List<StationResponse> getShortestPath(final String sourceStationId, final String targetStationid) {
+        Optional<Station> sourceStation = stationRepository.findById(Long.valueOf(sourceStationId));
+        Optional<Station> targetStation = stationRepository.findById(Long.valueOf(targetStationid));
+
+        validCheckForSameStation(sourceStationId, targetStationid);
+        validCheckForExitStation(sourceStation, targetStation);
+
         List<Station> stations = stationRepository.findAll();
-        List<Section> sections = sectionRepository.findAll();
-        Station sourceStation = stationRepository.getById(Long.valueOf(sourceStationId));
-        Station targetStation = stationRepository.getById(Long.valueOf(targetStationid));
-        List<Station> shortestPath = getShortestPath(sections, stations)
-                            .getPath(sourceStation, targetStation)
-                            .getVertexList();
+        List<Station> shortestPath = getShortestPath(sourceStation.get(), targetStation.get(), stations);
         return getShortestPathResponse(stations, shortestPath);
+    }
+
+    private void validCheckForExitStation(final Optional sourceStation, final Optional targetStation) {
+        if (!sourceStation.isPresent() || !targetStation.isPresent()) throw new RuntimeException();
+    }
+
+    private void validCheckForSameStation(final String sourceStationId, final String targetStationId) {
+        if (sourceStationId.equals(targetStationId)) {
+            throw new RuntimeException();
+        }
+    }
+
+    List<Station> getShortestPath(Station sourceStation, Station targetStation, List<Station> stations) {
+        List<Section> sections = sectionRepository.findAll();
+        List<Station> shortestPath;
+
+        try {
+            shortestPath = getShortestPath(sections, stations)
+                    .getPath(sourceStation, targetStation)
+                    .getVertexList();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+        return shortestPath;
     }
 
     private DijkstraShortestPath<Station, SectionEdge> getShortestPath(List<Section> sections, List<Station> stations) {
