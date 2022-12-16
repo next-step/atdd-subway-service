@@ -29,7 +29,7 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
         AuthenticationPrincipal authenticationPrincipal = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
         if (!authenticationPrincipal.required() && credentials == null) {
-            return LoginMember.GUEST;
+            return new LoginMember();
         }
         return authService.findMemberByToken(credentials);
     }

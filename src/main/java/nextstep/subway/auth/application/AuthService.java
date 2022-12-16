@@ -4,7 +4,8 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.auth.infrastructure.JwtTokenProvider;
-import nextstep.subway.common.exception.InvalidDataException;
+import nextstep.subway.common.exception.AuthorizationException;
+import nextstep.subway.common.exception.NoSuchDataException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import org.springframework.stereotype.Service;
@@ -31,11 +32,11 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new InvalidDataException(INVALID_TOKEN);
+            throw new AuthorizationException(INVALID_TOKEN);
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email).orElseThrow(NoSuchDataException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

@@ -49,7 +49,7 @@ public class PathServiceTest {
     private LoginMember 일반회원;
     private LoginMember 어린이회원;
     private LoginMember 청소년회원;
-    private LoginMember 비회원 = LoginMember.GUEST;
+    private LoginMember 비회원;
 
     @BeforeEach
     void setup() {
@@ -67,6 +67,7 @@ public class PathServiceTest {
         일반회원 = new LoginMember(1L, "default@email.com", 20);
         어린이회원 = new LoginMember(2L, "children@email.com", 7);
         청소년회원 = new LoginMember(3L, "youth@email.com", 16);
+        비회원 = new LoginMember();
     }
 
     @DisplayName("두 역의 최단 경로를 조회한다.")
@@ -78,7 +79,7 @@ public class PathServiceTest {
         given(lineService.findAllLines()).willReturn(Arrays.asList(신분당선, 이호선, 삼호선));
 
         // when
-        PathResponse pathResponse = pathService.findBestPath(LoginMember.GUEST, 강남역.getId(), 남부터미널역.getId());
+        PathResponse pathResponse = pathService.findBestPath(비회원, 강남역.getId(), 남부터미널역.getId());
 
         // then
         assertAll(
@@ -99,7 +100,7 @@ public class PathServiceTest {
 
         // when & then
         assertThatThrownBy(
-                () -> pathService.findBestPath(LoginMember.GUEST, 강남역.getId(), 강남역.getId())
+                () -> pathService.findBestPath(비회원, 강남역.getId(), 강남역.getId())
         ).isInstanceOf(InvalidDataException.class);
     }
 
@@ -113,7 +114,7 @@ public class PathServiceTest {
 
         // when & then
         assertThatThrownBy(
-                () -> pathService.findBestPath(LoginMember.GUEST, 강남역.getId(), 간이역.getId())
+                () -> pathService.findBestPath(비회원, 강남역.getId(), 간이역.getId())
         ).isInstanceOf(InvalidDataException.class);
     }
 
