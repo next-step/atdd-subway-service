@@ -5,9 +5,10 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.line.domain.Distance;
+import nextstep.subway.line.domain.Fare;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
-import nextstep.subway.station.StationAcceptanceTest;
+import nextstep.subway.station.acceptance.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.function.Executable;
@@ -46,12 +47,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         수원역 = StationAcceptanceTest.지하철역_등록되어_있음("수원역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        신분당선 = 지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 150)).as(LineResponse.class);
+        이호선 = 지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 300)).as(LineResponse.class);
+        삼호선 = 지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 500)).as(LineResponse.class);
     }
 
-    @DisplayName("교대역 -> 양재역 -> 양재시민의숲 -> 판교역 (5 + 6 + 12)")
+    @DisplayName("교대역 -> 양재역 -> 양재시민의숲 -> 판교역 (5 + 6 + 12) / 요금 2050원")
     @Test
     void getShortestPath() {
         // given
@@ -62,7 +63,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> response = 지하철역_경로_조회(교대역.getId(), 판교역.getId());
 
         // then
-        최단_경로가_조회됨(response, Arrays.asList(교대역, 양재역, 양재시민의숲, 판교역), Distance.from(23));
+        경로와_요금_조회됨(response, Arrays.asList(교대역, 양재역, 양재시민의숲, 판교역), Distance.from(23), Fare.from(2050));
     }
 
     /**
@@ -74,6 +75,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *   Scenario: 출발역과 도착역 사이 최단 경로 조회
      *     When 지하철 경로 조회 요청
      *     Then 최단 경로 조회됨
+     *     And 총 거리도 함께 응답함
+     *     And ** 지하철 이용 요금도 함께 응답함 **
      *     When 출발역과 도착역이 연결 안된 경우
      *     Then 경로 조회 실패됨
      *     When 출발역과 도착역이 같은 경우
@@ -83,7 +86,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @TestFactory
     Stream<DynamicTest> getPath() {
         return Stream.of(
-                dynamicTest("지하철 경로 조회 요청", 경로_조회_성공(강남역.getId(), 양재역.getId())),
+                dynamicTest("지하철 경로 조회 요청하면 총 거리도 조회된다.", 경로와_요금_조회_성공(강남역.getId(), 양재역.getId())),
                 dynamicTest("출발역과 도착역이 연결 안된 경우", 경로_조회_실패(강남역.getId(), 수원역.getId())),
                 dynamicTest("출발역과 도착역이 같은 경우", 경로_조회_실패(강남역.getId(), 강남역.getId()))
         );
@@ -98,9 +101,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public static void 최단_경로가_조회됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses, Distance distance) {
+    public static void 경로와_요금_조회됨(ExtractableResponse<Response> response, List<StationResponse> stationResponses, Distance distance, Fare fare) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         assertThat(response.jsonPath().getInt("distance")).isEqualTo(distance.value());
+        assertThat(response.jsonPath().getInt("fare")).isEqualTo(fare.value().intValue());
 
         List<String> expected = response.jsonPath().getList("stations", StationResponse.class)
                 .stream()
@@ -114,10 +118,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         assertThat(expected).containsExactlyElementsOf(result);
     }
 
-    private Executable 경로_조회_성공(Long source, Long target) {
+    private Executable 경로와_요금_조회_성공(Long source, Long target) {
         return () -> {
             ExtractableResponse<Response> response = 지하철역_경로_조회(source, target);
-            최단_경로가_조회됨(response, Arrays.asList(강남역, 양재역), Distance.from(10));
+            경로와_요금_조회됨(response, Arrays.asList(강남역, 양재역), Distance.from(10), Fare.from(1750));
         };
     }
 

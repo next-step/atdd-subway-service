@@ -2,18 +2,17 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.enums.ErrorMessage;
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
 
-import java.util.List;
 import java.util.Objects;
 
 public class PathFinder {
-    public static Path findShortestPath(List<Line> lines, Station sourceStation, Station targetStation) {
+    public static Path findShortestPath(Lines lines, Station sourceStation, Station targetStation) {
         validateLinesExists(lines);
         validateEqualStations(sourceStation, targetStation);
         GraphPath<Station, Section> path = new DijkstraShortestPath<>(getWeightedMultiGraph(lines))
@@ -23,16 +22,11 @@ public class PathFinder {
         return Path.of(Distance.from((int) path.getWeight()), path.getVertexList());
     }
 
-    private static WeightedMultigraph<Station, Section> getWeightedMultiGraph(List<Line> lines) {
-        WeightedMultigraph<Station, Section> graph = new WeightedMultigraph<>(Section.class);
-        lines.forEach(line -> {
-            addVertex(graph, line);
-            addEdgeAndSetEdgeWeight(graph, line);
-        });
-        return graph;
+    private static WeightedMultigraph<Station, Section> getWeightedMultiGraph(Lines lines) {
+        return lines.getGraph(new WeightedMultigraph<>(Section.class));
     }
 
-    private static void validateLinesExists(List<Line> lines) {
+    private static void validateLinesExists(Lines lines) {
         if (Objects.isNull(lines) || lines.isEmpty()) {
             throw new IllegalArgumentException(ErrorMessage.NOT_FOUND.getMessage());
         }
@@ -48,17 +42,5 @@ public class PathFinder {
         if(Objects.isNull(shortestPath)) {
             throw new IllegalArgumentException(ErrorMessage.NOT_FOUND_PATH.getMessage());
         }
-    }
-
-    private static void addVertex(WeightedMultigraph<Station, Section> graph, Line line) {
-        line.getStations().forEach(graph::addVertex);
-    }
-
-    private static void addEdgeAndSetEdgeWeight(WeightedMultigraph<Station, Section> graph, Line line) {
-        line.getSections().forEach(
-                section -> {
-                    graph.addEdge(section.getUpStation(), section.getDownStation(), section);
-                    graph.setEdgeWeight(section, section.getDistance().value());
-                });
     }
 }

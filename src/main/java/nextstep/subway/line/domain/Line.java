@@ -20,14 +20,17 @@ public class Line extends BaseEntity {
     private String color;
     @Embedded
     private Sections sections = new Sections();
+    @Embedded
+    private Fare addedFare;
 
-    public Line() {
-    }
+    public Line() {}
 
     public Line(Builder builder) {
+        this.id = builder.id;
         this.name = builder.name;
         this.color = builder.color;
         this.sections.add(new Section(this, builder.upStation, builder.downStation, builder.distance));
+        this.addedFare = Fare.from(builder.addedFare);
     }
 
     public void update(String name, String color) {
@@ -128,18 +131,28 @@ public class Line extends BaseEntity {
         return sections.getStations();
     }
 
+    public Fare getAddedFare() {
+        return addedFare;
+    }
+
     public static Builder builder() {
         return new Builder();
     }
 
     public static class Builder {
+        private Long id;
         private String name;
         private String color;
         private Station upStation;
         private Station downStation;
         private int distance;
+        private int addedFare;
 
-        public Builder(){
+        public Builder(){}
+
+        public Builder id(Long id) {
+            this.id = id;
+            return this;
         }
 
         public Builder name(String name) {
@@ -167,8 +180,23 @@ public class Line extends BaseEntity {
             return this;
         }
 
+        public Builder addedFare(int addedFare) {
+            this.addedFare = addedFare;
+            return this;
+        }
+
         public Line build() {
             return new Line(this);
         }
+    }
+
+    @Override
+    public String toString() {
+        return "Line{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", color='" + color + '\'' +
+                ", addedFare=" + addedFare +
+                '}';
     }
 }

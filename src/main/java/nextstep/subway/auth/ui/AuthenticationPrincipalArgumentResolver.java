@@ -11,8 +11,10 @@ import org.springframework.web.method.support.ModelAndViewContainer;
 
 import javax.servlet.http.HttpServletRequest;
 
+import static nextstep.subway.auth.domain.LoginMember.noneLoginMember;
+
 public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArgumentResolver {
-    private AuthService authService;
+    private final AuthService authService;
 
     public AuthenticationPrincipalArgumentResolver(AuthService authService) {
         this.authService = authService;
@@ -26,6 +28,18 @@ public class AuthenticationPrincipalArgumentResolver implements HandlerMethodArg
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) {
         String credentials = AuthorizationExtractor.extract(webRequest.getNativeRequest(HttpServletRequest.class));
+        AuthenticationPrincipal parameterAnnotation = parameter.getParameterAnnotation(AuthenticationPrincipal.class);
+        if(isNotLogin(credentials, parameterAnnotation.required())) {
+            return noneLoginMember();
+        }
         return authService.findMemberByToken(credentials);
+    }
+
+    private static boolean isNotLogin(String credentials, boolean credentialRequired) {
+        return !credentialRequired && isEmpty(credentials);
+    }
+
+    private static boolean isEmpty(String credentials) {
+        return credentials == null || credentials.isEmpty();
     }
 }

@@ -8,10 +8,10 @@ import nextstep.subway.member.application.MemberService;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
@@ -24,23 +24,17 @@ import static org.assertj.core.api.Assertions.assertThatIllegalArgumentException
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.when;
 
+@DisplayName("즐겨찾기 서비스 관련 테스트")
 @ExtendWith(MockitoExtension.class)
 public class FavoriteServiceTest {
-    private FavoriteService favoriteService;
-
     @Mock
     private MemberService memberService;
-
     @Mock
     private StationService stationService;
-
     @Mock
     private FavoriteRepository favoriteRepository;
-
-    @BeforeEach
-    void setUp() {
-        favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
-    }
+    @InjectMocks
+    private FavoriteService favoriteService;
 
     @DisplayName("즐겨찾기 추가할 사용자는 반드시 존재해야 한다.")
     @Test
