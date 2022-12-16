@@ -107,6 +107,6 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ## Step3 - 구간 추가 기능
 #### Step2 - 리뷰어 리뷰사항
-- [ ] 외부 라이브러를 상속받은 만큼 메시지 던져보기
-- [ ] 예외 테스트도 추가적으로 작성
+- [x] 외부 라이브러리를 상속받은 만큼 메시지 던져보기
+- [x] 예외 테스트도 추가적으로 작성
 
