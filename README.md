@@ -104,3 +104,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 스트림 알고 사용하기. List일 경우, 제공해주는 forEach함수 존재
 - [x] TestStation 제거
 - [x] 외부 라이브러리의 종속성을 캡슐화
+
+## Step3 - 구간 추가 기능
+#### Step2 - 리뷰어 리뷰사항
+- [ ] 외부 라이브러를 상속받은 만큼 메시지 던져보기
+- [ ] 예외 테스트도 추가적으로 작성
+
