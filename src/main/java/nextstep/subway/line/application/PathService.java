@@ -8,7 +8,6 @@ import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.SectionEdge;
 import nextstep.subway.utils.SubwayGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +37,15 @@ public class PathService {
         return getShortestPathResponse(stations, shortestPath);
     }
 
+    private DijkstraShortestPath<Station, SectionEdge> getShortestPath(List<Section> sections, List<Station> stations) {
+        SubwayGraph<Station, SectionEdge> graph = new SubwayGraph<>(SectionEdge.class);
+
+        graph.addGraphVertex(stations);
+        graph.addEdgeWeight(sections);
+
+        return new DijkstraShortestPath<>(graph);
+    }
+
     private List<StationResponse> getShortestPathResponse(List<Station> stations, List<Station> shortestPath) {
         List<StationResponse> shortestStations = new ArrayList<>();
 
@@ -50,25 +58,5 @@ public class PathService {
         }
 
         return shortestStations;
-    }
-
-    private DijkstraShortestPath<Station, SectionEdge> getShortestPath(List<Section> sections, List<Station> stations) {
-        SubwayGraph<Station, SectionEdge> graph
-                = new SubwayGraph<>(SectionEdge.class);
-
-        setGraphVertex(stations, graph);
-        setGraphEdge(sections, graph);
-
-        return new DijkstraShortestPath<>(graph);
-    }
-
-    private void setGraphEdge(List<Section> sections, SubwayGraph graph) {
-        sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation()
-                                                                    , section.getDownStation())
-                                                                    , section.getDistance()));
-    }
-
-    private void setGraphVertex(List<Station> stations, WeightedMultigraph graph) {
-        stations.forEach(station ->  graph.addVertex(station));
     }
 }
