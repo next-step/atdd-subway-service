@@ -20,7 +20,7 @@ public class LineFixture {
         return 일호선;
     }
 
-    public static Line 노선(Long id, String name, String color, Station source, Station target, Distance distance, SurCharge surCharge) {
+    public static Line 노선(Long id, String name, String color, Station source, Station target, Distance distance, Surcharge surCharge) {
         Line 노선 = new Line(name, color, source, target, distance, surCharge);
         ReflectionTestUtils.setField(노선, "id", id);
         return 노선;

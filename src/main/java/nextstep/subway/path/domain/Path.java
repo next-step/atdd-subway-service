@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.SurCharge;
+import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -10,12 +10,12 @@ public class Path {
 
     private List<Station> stations;
     private Distance distance;
-    private SurCharge maxSurCharge;
+    private Surcharge maxSurcharge;
 
-    public Path(List<Station> stations, Distance distance, SurCharge maxSurCharge) {
+    public Path(List<Station> stations, Distance distance, Surcharge maxSurcharge) {
         this.stations = stations;
         this.distance = distance;
-        this.maxSurCharge = maxSurCharge;
+        this.maxSurcharge = maxSurcharge;
     }
 
     public List<Station> getStations() {
@@ -24,7 +24,7 @@ public class Path {
     public Distance getDistance() {
         return distance;
     }
-    public SurCharge getMaxSurCharge() {
-        return maxSurCharge;
+    public Surcharge getMaxSurcharge() {
+        return maxSurcharge;
     }
 }

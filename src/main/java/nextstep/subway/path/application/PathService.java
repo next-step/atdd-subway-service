@@ -36,11 +36,11 @@ public class PathService {
         Path path = pathFinder.findShortestPath(source, target);
 
         if (loginMember.getUserType() == UserType.GUEST) {
-            Fare fare = new Fare(path.getDistance(), path.getMaxSurCharge(), 0);
+            Fare fare = new Fare(path.getDistance(), path.getMaxSurcharge(), 0);
             return new PathResponse(path.getStations(), path.getDistance(), fare);
         }
 
-        Fare fare = new Fare(path.getDistance(), path.getMaxSurCharge(), loginMember.getAge());
+        Fare fare = new Fare(path.getDistance(), path.getMaxSurcharge(), loginMember.getAge());
         return new PathResponse(path.getStations(), path.getDistance(), fare);
     }
 

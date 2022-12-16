@@ -18,7 +18,7 @@ public class Line extends BaseEntity {
     @Embedded
     private Sections sections = new Sections();
     @Embedded
-    private SurCharge surCharge = new SurCharge();
+    private Surcharge surcharge = new Surcharge();
 
     public Line() {
     }
@@ -34,17 +34,17 @@ public class Line extends BaseEntity {
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, Distance distance, SurCharge surCharge) {
+    public Line(String name, String color, Station upStation, Station downStation, Distance distance, Surcharge surcharge) {
         this.name = name;
         this.color = color;
-        this.surCharge = surCharge;
+        this.surcharge = surcharge;
         sections.add(new Section(this, upStation, downStation, distance));
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
-        this.surCharge = line.getSurCharge();
+        this.surcharge = line.getSurcharge();
     }
 
     public List<Station> getStations() {
@@ -75,7 +75,7 @@ public class Line extends BaseEntity {
         return color;
     }
 
-    public SurCharge getSurCharge() {
-        return surCharge;
+    public Surcharge getSurcharge() {
+        return surcharge;
     }
 }

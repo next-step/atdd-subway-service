@@ -1,18 +1,18 @@
 package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
-import nextstep.subway.line.domain.SurCharge;
+import nextstep.subway.line.domain.Surcharge;
 
 public class Fare {
     private static final int DEFAULT_FARE = 1250;
     private int fare;
 
-    public Fare(Distance distance, SurCharge surCharge, int age) {
-        fare = calculateFare(distance, surCharge, age);
+    public Fare(Distance distance, Surcharge surcharge, int age) {
+        fare = calculateFare(distance, surcharge, age);
     }
 
-    private int calculateFare(Distance distance, SurCharge surCharge, int age) {
-        int fareByDistance = adjustFarePolicyByDistance(distance.value()) + surCharge.value();
+    private int calculateFare(Distance distance, Surcharge surcharge, int age) {
+        int fareByDistance = adjustFarePolicyByDistance(distance.value()) + surcharge.value();
         double discountFareByAge = adjustFarePolicyByAge(fareByDistance, age);
         return (int) discountFareByAge;
     }

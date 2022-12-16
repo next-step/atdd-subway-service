@@ -6,7 +6,7 @@ import nextstep.subway.line.application.LineService;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SurCharge;
+import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
@@ -59,9 +59,9 @@ public class PathServiceTest {
         강남역 = 강남역();
         간이역 = 간이역();
 
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, new Distance(10), new SurCharge(900));
-        이호선 = new Line("2호선", "Yellow-green", 교대역, 강남역, new Distance(10), new SurCharge(200));
-        삼호선 = new Line("3호선", "Orange", 교대역, 양재역, new Distance(5), new SurCharge(300));
+        신분당선 = new Line("신분당선", "red", 강남역, 양재역, new Distance(10), new Surcharge(900));
+        이호선 = new Line("2호선", "Yellow-green", 교대역, 강남역, new Distance(10), new Surcharge(200));
+        삼호선 = new Line("3호선", "Orange", 교대역, 양재역, new Distance(5), new Surcharge(300));
         삼호선.addLineStation(new Section(삼호선, 교대역, 남부터미널역, new Distance(3)));
 
         일반회원 = new LoginMember(1L, "default@email.com", 20);

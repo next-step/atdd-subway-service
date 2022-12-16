@@ -4,7 +4,7 @@ import nextstep.subway.common.exception.InvalidDataException;
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SurCharge;
+import nextstep.subway.line.domain.Surcharge;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -44,9 +44,9 @@ public class PathFinderTest {
         강남역 = 강남역();
         당산역 = 당산역();
 
-        신분당선 = new Line("신분당선", "red", 강남역, 양재역, new Distance(10), new SurCharge(1500));
-        이호선 = new Line("2호선", "Yellow-green", 교대역, 강남역, new Distance(10), new SurCharge(300));
-        삼호선 = new Line("3호선", "Orange", 교대역, 양재역, new Distance(5), new SurCharge(500));
+        신분당선 = new Line("신분당선", "red", 강남역, 양재역, new Distance(10), new Surcharge(1500));
+        이호선 = new Line("2호선", "Yellow-green", 교대역, 강남역, new Distance(10), new Surcharge(300));
+        삼호선 = new Line("3호선", "Orange", 교대역, 양재역, new Distance(5), new Surcharge(500));
         삼호선.addLineStation(new Section(삼호선, 교대역, 남부터미널역, new Distance(3)));
 
         lines.add(삼호선);
@@ -88,6 +88,6 @@ public class PathFinderTest {
         // when
         Path path = pathFinder.findShortestPath(강남역, 남부터미널역);
         // then
-        assertThat(path.getMaxSurCharge().value()).isEqualTo(1500);
+        assertThat(path.getMaxSurcharge().value()).isEqualTo(1500);
     }
 }
