@@ -22,20 +22,24 @@ public class Distance {
         }
     }
 
-
-    public void minus(int distance) {
-        if (this.distance <= distance) {
-            throw new IllegalArgumentException("기존 노선의 거리보다 작거나 같을 수 없습니다.");
-        }
-        this.distance -= distance;
+    public Distance subtract(Distance distance) {
+        return Distance.from(this.distance - distance.distance);
     }
 
-    public void plus(int distance) {
-        this.distance += distance;
+    public Distance add(Distance distance) {
+        return Distance.from(this.distance + distance.distance);
+    }
+
+    public static Distance from(Integer distance) {
+        return new Distance(distance);
     }
 
     public int value() {
         return distance;
+    }
+
+    public boolean isOverDistance(int distance) {
+        return this.distance <= distance;
     }
 
 }

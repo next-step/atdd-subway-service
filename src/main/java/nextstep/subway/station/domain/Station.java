@@ -27,4 +27,7 @@ public class Station extends BaseEntity {
     public String getName() {
         return name;
     }
+    public boolean isSameStation(Station compareStation) {
+        return Objects.equals(this, compareStation);
+    }
 }
