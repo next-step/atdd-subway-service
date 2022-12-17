@@ -52,20 +52,19 @@ public class MemberController {
     }
 
     @PutMapping("/members/me")
-    public ResponseEntity<MemberResponse> updateMemberOfMine(LoginMember loginMember, @RequestBody MemberRequest param) {
+    public ResponseEntity<MemberResponse> updateMemberOfMine(@AuthenticationPrincipal LoginMember loginMember, @RequestBody MemberRequest param) {
         memberService.updateMember(loginMember.getId(), param);
         return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/members/me")
-    public ResponseEntity<MemberResponse> deleteMemberOfMine(LoginMember loginMember) {
+    public ResponseEntity<MemberResponse> deleteMemberOfMine(@AuthenticationPrincipal LoginMember loginMember) {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
 
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity handleIllegalArgsException(RuntimeException e) {
-
         return ResponseEntity.badRequest().build();
     }
 }
