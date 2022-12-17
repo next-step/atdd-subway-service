@@ -79,8 +79,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         assertAll(
             () -> assertThat(지하철_경로_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value()),
-            () -> assertThat(지하철_경로_조회_응답.as(PathResponse.class).getDistance()).isEqualTo(5)
-
+            () -> assertThat(지하철_경로_조회_응답.as(PathResponse.class).getDistance()).isEqualTo(5),
+            () -> assertThat(지하철_경로_조회_응답.as(PathResponse.class).getStations().size()).isEqualTo(3)
         );
     }
 

@@ -49,6 +49,4 @@ public class PathService {
 
         return PathResponse.of(stations, (int) distance);
     }
-
-
 }
