@@ -17,7 +17,7 @@ public class SectionsTest {
     private Line 신분당선;
 
     @BeforeEach
-    public void setUp() {
+    void setUp() {
         // given
         강남역 = new Station("강남역");
         광교역 = new Station("광교역");

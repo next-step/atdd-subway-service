@@ -16,14 +16,13 @@ public class PathResponse {
     }
 
     public static PathResponse from(List<Station> stations, int distance) {
-        return new PathResponse(
-                stations.stream()
-                        .map(eachStation -> StationResponse.of(eachStation))
-                        .collect(Collectors.toList()), distance);
+        return new PathResponse(stationsResponse(stations), distance);
     }
 
-    public List<StationResponse> getStations() {
-        return stations;
+    private static List<StationResponse> stationsResponse(List<Station> stations) {
+        return stations.stream()
+                .map(eachStation -> StationResponse.of(eachStation))
+                .collect(Collectors.toList());
     }
 
     public int getDistance() {
