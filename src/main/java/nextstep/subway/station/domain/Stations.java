@@ -12,6 +12,10 @@ public class Stations {
         stations.add(downStation);
     }
 
+    public void addAll(List<Station> stations) {
+        this.stations.addAll(stations);
+    }
+
     public Stream<Station> stream() {
         return stations.stream();
     }
