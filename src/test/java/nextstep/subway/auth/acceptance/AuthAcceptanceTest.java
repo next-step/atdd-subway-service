@@ -17,7 +17,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 @DisplayName("로그인 인증 기능 인수 테스트")
 public class AuthAcceptanceTest extends AcceptanceTest {
-    private TokenRequest tokenRequest;
+    public static final String EMAIL = "diqksrk123@naver.com";
+    public static final String PASSWORD = "1234";
     private String LONG_TOKEN_INFO = "1234";
     private String LONG_MEMBER_URI = "/members/1";
 
@@ -25,8 +26,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @BeforeEach
     public void setUp() {
         super.setUp();
-        회원_등록됨("diqksrk123@naver.com", "1234");
-        회원_생성을_요청(tokenRequest.getEmail(), tokenRequest.getPassword() , AGE);
+        회원_생성을_요청(EMAIL, PASSWORD , AGE);
     }
 
     /**
@@ -37,12 +37,14 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("로그인 테스트")
     @Test
     void loginTest() {
-        TokenResponse tokenResponse = 로그인_요청됨();
+        TokenResponse tokenResponse = 로그인_요청됨(EMAIL, PASSWORD);
 
         로그인_확인됨(tokenResponse);
     }
 
-    private TokenResponse 로그인_요청됨() {
+    public static TokenResponse 로그인_요청됨(String email, String password) {
+        TokenRequest tokenRequest = new TokenRequest(email, password);
+
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -53,11 +55,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract().as(TokenResponse.class);
     }
 
-    private void 회원_등록됨(String id, String password) {
-        tokenRequest = new TokenRequest(id, password);
-    }
-
-    private void 로그인_확인됨(TokenResponse tokenResponse) {
+    public static void 로그인_확인됨(TokenResponse tokenResponse) {
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 
@@ -69,11 +67,11 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth을 통한 정보 조회")
     @Test
     void myInfoWithBearerAuth() {
-        TokenResponse tokenResponse = 로그인_요청됨();
+        TokenResponse tokenResponse = 로그인_요청됨(EMAIL, PASSWORD);
 
         ExtractableResponse<Response> response = 토큰_회원정보_조회_요청(tokenResponse);
 
-        회원_정보_조회됨(response, tokenRequest.getEmail(), AGE);
+        회원_정보_조회됨(response, EMAIL, AGE);
     }
 
     private ExtractableResponse<Response> 토큰_회원정보_조회_요청(TokenResponse tokenResponse) {
