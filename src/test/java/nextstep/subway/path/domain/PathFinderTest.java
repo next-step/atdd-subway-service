@@ -45,12 +45,12 @@ class PathFinderTest {
         노선목록 = Arrays.asList(신분당선, _2호선, _3호선);
 
         구간 = new Section(_3호선, 교대역, 남부터미널역, 3);
-        _3호선.getSections().add(구간);
+        _3호선.addSection(구간);
     }
 
     @DisplayName("환승하지 않는 지하철 경로 조회")
     @Test
-    void 경로_조회() {
+    void 환승_없는_경로_조회() {
         //3호선 교대역 - 남부터미널역 - 양재역
         List<Station> expected = Arrays.asList(교대역, 남부터미널역, 양재역);
         assertThat(PathFinder.findPath(노선목록, 교대역, 양재역).getStations()).containsExactlyElementsOf(expected);
@@ -58,7 +58,7 @@ class PathFinderTest {
 
     @DisplayName("환승하는 지하철 경로 조회")
     @Test
-    void 환승_필요_경로_조회() {
+    void 환승하는_경로_조회() {
         //남부터미널역(3호선) - 양재역(환승) - 강남역(2호선)
         List<Station> expected = Arrays.asList(남부터미널역, 양재역, 강남역);
         assertThat(PathFinder.findPath(노선목록, 남부터미널역, 강남역).getStations()).containsExactlyElementsOf(expected);
@@ -79,10 +79,10 @@ class PathFinderTest {
         Station 고속터미널역 = new Station("고속터미널역");
         Station 봉은사역 = new Station("봉은사역");
         Line _9호선 = new Line("9호선", "brown", 고속터미널역, 봉은사역, 60);
-        노선목록.add(_9호선);
+        List<Line> 노선목록2 = Arrays.asList(신분당선, _2호선, _3호선, _9호선);
 
         assertThatThrownBy(
-                () -> PathFinder.findPath(노선목록, 남부터미널역, 봉은사역)
+                () -> PathFinder.findPath(노선목록2, 남부터미널역, 봉은사역)
         ).isInstanceOf(RuntimeException.class)
                 .hasMessageMatching("출발역과 도착역이 연결되어있지 않습니다.");
     }
