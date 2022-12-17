@@ -23,6 +23,7 @@ public class Section {
     @JoinColumn(name = "down_station_id", foreignKey = @ForeignKey(name = "fk_section_down_station"))
     private Station downStation;
 
+    @Embedded
     private Distance distance;
 
     protected Section() {

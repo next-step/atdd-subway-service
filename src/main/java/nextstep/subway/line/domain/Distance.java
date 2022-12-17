@@ -38,4 +38,8 @@ public class Distance {
         return new Distance(distance);
     }
 
+    public int value() {
+        return distance;
+    }
+
 }

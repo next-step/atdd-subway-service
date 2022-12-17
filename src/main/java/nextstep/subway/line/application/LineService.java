@@ -37,8 +37,8 @@ public class LineService {
     }
 
     private Section getSection(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         return new Section(upStation, downStation, request.getDistance());
     }
 
@@ -82,5 +82,9 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.deleteSection(station);
+    }
+
+    public List<Line> findLineAll() {
+        return lineRepository.findAll();
     }
 }
