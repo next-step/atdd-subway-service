@@ -123,7 +123,7 @@ public class Section {
         if (isDownStationEqual(section)) {
             this.downStation = section.upStation;
         }
-        this.distance.subtract(section.distance);
+        this.distance = this.distance.subtract(section.distance);
     }
 
     private void validateDistanceOfSectionToAdd(Section section) {

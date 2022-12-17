@@ -21,8 +21,8 @@ public class Distance implements Comparable<Distance> {
         return new Distance(this.distance + distance.distance);
     }
 
-    public void subtract(Distance distanceToSubtract) {
-        distance -= distanceToSubtract.distance;
+    public Distance subtract(Distance distanceToSubtract) {
+        return new Distance(this.distance - distanceToSubtract.distance);
     }
 
     public int getDistance() {
