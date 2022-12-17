@@ -43,16 +43,7 @@ public class Line extends BaseEntity {
     }
 
     public Stations getStations() {
-        if (sections.isEmpty()) {
-            return new Stations();
-        }
-        Stations stations = new Stations();
-        Station downStation = sections.findFinalUpStation();
-        while (downStation != null) {
-            stations.add(downStation);
-            downStation = sections.nextStationOf(downStation, StationPosition.DOWN_STATION);
-        }
-        return stations;
+        return sections.getStations();
     }
 
     public void addSection(Section sectionToAdd) {

@@ -7,6 +7,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.Stations;
 
 @Embeddable
 public class Sections {
@@ -48,6 +49,19 @@ public class Sections {
                 .filter(section -> section.matchSamePositionStation(sectionToAdd))
                 .findFirst()
                 .ifPresent(section -> section.splitSection(sectionToAdd));
+    }
+
+    public Stations getStations() {
+        if (sections.isEmpty()) {
+            return new Stations();
+        }
+        Stations stations = new Stations();
+        Station downStation = findFinalUpStation();
+        while (downStation != null) {
+            stations.add(downStation);
+            downStation = nextStationOf(downStation, StationPosition.DOWN_STATION);
+        }
+        return stations;
     }
 
     public Station nextStationOf(Station station, StationPosition stationPosition) {
