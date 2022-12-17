@@ -51,7 +51,7 @@ public class Favorite {
 
     private static void checkStationIsNotNull(Station station) {
         if (station == null) {
-            throw new IllegalArgumentException(ErrorCode.NO_EXISTS_MEMBER_IN_STATION.getErrorMessage());
+            throw new IllegalArgumentException(ErrorCode.NO_EXISTS_STATION_IN_FAVORITE.getErrorMessage());
         }
     }
 

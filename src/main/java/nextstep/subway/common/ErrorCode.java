@@ -14,8 +14,9 @@ public enum ErrorCode {
     INVALID_PASSWORD("[ERROR] 비밀번호가 일치하지 않습니다."),
     INVALID_TOKEN("[ERROR] 유효하지 않은 토큰입니다."),
     NO_EXISTS_MEMBER("[ERROR] 존재하지 않은 회원입니다."),
+    NO_EXISTS_FAVORITE("[ERROR] 요청한 즐겨찾기 정보는 없습니다."),
     NO_EXISTS_MEMBER_IN_FAVORITE("[ERROR] 즐겨찾기에 회원정보가 없습니다."),
-    NO_EXISTS_MEMBER_IN_STATION("[ERROR] 즐겨찾기에 역정보가 없습니다.");
+    NO_EXISTS_STATION_IN_FAVORITE("[ERROR] 즐겨찾기에 역정보가 없습니다.");
 
     private final String errorMessage;
     ErrorCode(String errorMessage) {
