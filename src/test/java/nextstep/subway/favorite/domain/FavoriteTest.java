@@ -23,7 +23,7 @@ public class FavoriteTest {
     @DisplayName("즐겨찾기 생성 시 회원이 없으면 예외가 발생한다.")
     @Test
     void createException1() {
-        Assertions.assertThatThrownBy(() -> Favorite.of(null, sourceStation, targetStation))
+        Assertions.assertThatThrownBy(() -> Favorite.from(null, sourceStation, targetStation))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith(ErrorCode.NO_EXISTS_MEMBER_IN_FAVORITE.getErrorMessage());
     }
@@ -31,7 +31,7 @@ public class FavoriteTest {
     @DisplayName("즐겨찾기 생성 시 출발역이 없으면 예외가 발생한다.")
     @Test
     void createException2() {
-        Assertions.assertThatThrownBy(() -> Favorite.of(member, null, targetStation))
+        Assertions.assertThatThrownBy(() -> Favorite.from(member, null, targetStation))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith(ErrorCode.NO_EXISTS_STATION_IN_FAVORITE.getErrorMessage());
     }
@@ -39,7 +39,7 @@ public class FavoriteTest {
     @DisplayName("즐겨찾기 생성 시 도착역이 없으면 예외가 발생한다.")
     @Test
     void createException3() {
-        Assertions.assertThatThrownBy(() -> Favorite.of(member, sourceStation, null))
+        Assertions.assertThatThrownBy(() -> Favorite.from(member, sourceStation, null))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageStartingWith(ErrorCode.NO_EXISTS_STATION_IN_FAVORITE.getErrorMessage());
     }
@@ -47,7 +47,7 @@ public class FavoriteTest {
     @DisplayName("즐겨찾기를 생성한다.")
     @Test
     void create() {
-        Favorite favorite = Favorite.of(member, sourceStation, targetStation);
+        Favorite favorite = Favorite.from(member, sourceStation, targetStation);
 
         Assertions.assertThat(favorite).isNotNull();
     }
