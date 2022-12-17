@@ -1,13 +1,11 @@
 package nextstep.subway.path;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import java.util.List;
+import java.util.Arrays;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,13 +14,14 @@ import org.junit.jupiter.api.Test;
 public class PathAcceptanceTest extends PathAcceptanceTestFixture {
 
     /**
-     * Given 한 개의 노선에 두 역이 등록되어 있고
+     * Given 한 개의 노선에 2개 이상 역이 등록되어 있고
      * When 두 역을 출발지와 도착지로 지정하여 경로를 조회하면
      * Then 경로가 조회된다
      */
     @DisplayName("환승하지 않는 지하철 경로 조회")
     @Test
     void 환승_불필요_경로_조회() {
+        // Given
         //3호선 교대역 - 남부터미널역 - 양재역
 
         // When
@@ -33,13 +32,7 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
 
         // Then
         PathResponse pathResponse = 경로응답(response);
-        //assertThat(pathResponse.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
-        List<StationResponse> stationResponses = pathResponse.getStations();
-        assertAll(
-                () -> assertThat(stationResponses.get(0).getName()).isEqualTo("교대역"),
-                () -> assertThat(stationResponses.get(1).getName()).isEqualTo("남부터미널역"),
-                () -> assertThat(stationResponses.get(2).getName()).isEqualTo("양재역")
-        );
+        assertThat(pathResponse.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
     }
 
     /**
