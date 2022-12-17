@@ -4,12 +4,14 @@ import nextstep.subway.common.ErrorCode;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
+import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+@Entity
 public class Favorite {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,8 +29,7 @@ public class Favorite {
     @JoinColumn(name = "target_station_id", nullable = false)
     private Station targetStation;
 
-    protected Favorite() {
-    }
+    protected Favorite() {}
 
     private Favorite(Member member, Station sourceStation, Station targetStation) {
         this.member = member;
@@ -36,7 +37,7 @@ public class Favorite {
         this.targetStation = targetStation;
     }
 
-    public static Favorite of(Member member, Station sourceStation, Station targetStation) {
+    public static Favorite from(Member member, Station sourceStation, Station targetStation) {
         checkMemberIsExists(member);
         checkStationIsNotNull(sourceStation);
         checkStationIsNotNull(targetStation);

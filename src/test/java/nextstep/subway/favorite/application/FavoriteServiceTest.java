@@ -9,8 +9,6 @@ import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
-import org.assertj.core.api.Assertions;
-import org.codehaus.groovy.control.messages.ExceptionMessage;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -60,7 +58,7 @@ public class FavoriteServiceTest {
         when(stationRepository.findById(1L)).thenReturn(Optional.of(sourceStation));
         when(stationRepository.findById(2L)).thenReturn(Optional.of(targetStation));
         when(memberRepository.findById(any())).thenReturn(Optional.of(member));
-        when(favoriteRepository.save(any())).thenReturn(Favorite.of(member, sourceStation, targetStation));
+        when(favoriteRepository.save(any())).thenReturn(Favorite.from(member, sourceStation, targetStation));
 
         Favorite favorite = favoriteService.create(1L, new FavoriteRequest(1L, 2L));
 
@@ -107,7 +105,7 @@ public class FavoriteServiceTest {
     @Test
     void showFavoriteList() {
         List<Favorite> favorites = new ArrayList<>();
-        favorites.add(Favorite.of(member, sourceStation, targetStation));
+        favorites.add(Favorite.from(member, sourceStation, targetStation));
 
         when(favoriteRepository.findByMemberId(any())).thenReturn(favorites);
         List<FavoriteResponse> results = favoriteService.findAllFavorites(1L);
