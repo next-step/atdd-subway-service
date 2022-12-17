@@ -58,7 +58,7 @@ class PathFinderTest {
 
         // then
         assertAll(
-            () -> assertThat(shortestPath.getDistance()).isEqualTo(8),
+            () -> assertThat(shortestPath.getDistance()).isEqualTo(5),
             () -> assertThat(shortestPath.getStations().size()).isEqualTo(3)
         );
     }

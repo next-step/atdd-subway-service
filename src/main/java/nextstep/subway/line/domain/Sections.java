@@ -21,15 +21,16 @@ public class Sections {
     }
 
     public void addSection(Section section) {
-        if (!sections.isEmpty()) {
-            validateStations(section);
-            ifConnectedUpStation(section);
-            ifConnectedDownStation(section);
-        }
+        validateStations(section);
+        ifConnectedUpStation(section);
+        ifConnectedDownStation(section);
         sections.add(section);
     }
 
     private void validateStations(Section section) {
+        if (sections.isEmpty()) {
+            return;
+        }
         boolean isExistsUpStation = containUpStation(section);
         boolean isExistsDownStation = containDownStation(section);
         if (isExistsUpStation && isExistsDownStation) {

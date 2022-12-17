@@ -78,18 +78,18 @@ public class Section {
     }
 
     public void connectUpStationToDownStation(Section addSection) {
-        distance.minus(addSection.getDistance());
+        distance.minus(addSection.getDistance().value());
         this.upStation = addSection.downStation;
     }
 
     public void connectDownStationToUpStation(Section addSection) {
-        distance.minus(addSection.getDistance());
+        distance.minus(addSection.getDistance().value());
         this.downStation = addSection.upStation;
     }
 
     public void mergeDownSection(Section downSection) {
         this.downStation = downSection.downStation;
-        this.distance.plus(downSection.distance);
+        this.distance.plus(downSection.distance.value());
     }
 
     public boolean hasUpStation(Station station) {
@@ -99,4 +99,5 @@ public class Section {
     public boolean hasDownStation(Station station) {
         return downStation.equals(station);
     }
+
 }
