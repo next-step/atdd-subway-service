@@ -13,6 +13,6 @@ public enum StationPosition {
     }
 
     public boolean isOpposite(StationPosition stationPosition) {
-        return stationPosition != null & this != stationPosition;
+        return stationPosition != null && this != stationPosition;
     }
 }
