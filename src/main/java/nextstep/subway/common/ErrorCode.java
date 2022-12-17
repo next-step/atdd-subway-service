@@ -11,7 +11,9 @@ public enum ErrorCode {
     NO_MATCH_LINE_EXCEPTION("[ERROR] 일치하는 LINE이 없습니다."),
     SOURCE_AND_TARGET_EQUAL("[ERROR] 출발역과 도착역이 일치합니다."),
     SOURCE_NOT_CONNECTED_TO_TARGET("[ERROR] 출발역과 도착역이 연결되어 있지 않습니다."),
-    INVALID_TOKEN("[ERROR] 유효하지 않은 토큰입니다.");
+    INVALID_PASSWORD("[ERROR] 비밀번호가 일치하지 않습니다."),
+    INVALID_TOKEN("[ERROR] 유효하지 않은 토큰입니다."),
+    NO_EXISTS_MEMBER("[ERROR] 존재하지 않은 회원입니다.");
 
     private final String errorMessage;
     ErrorCode(String errorMessage) {
