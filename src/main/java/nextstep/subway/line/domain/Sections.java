@@ -64,7 +64,10 @@ public class Sections {
 
     public Station findFinalUpStation() {
         Station finalUpStation = null;
-        Station nextUpstation = sections.get(0).getDownStation();
+        Station nextUpstation = null;
+        if (!sections.isEmpty()) {
+            nextUpstation = sections.get(0).getDownStation();
+        }
         while (nextUpstation != null) {
             finalUpStation = nextUpstation;
             nextUpstation = nextStationOf(finalUpStation, StationPosition.UP_STATION);
