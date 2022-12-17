@@ -23,4 +23,8 @@ public class Stations {
     public boolean contains(Station station) {
         return stations.stream().anyMatch(s -> s.equals(station));
     }
+
+    public List<Station> getStations() {
+        return stations;
+    }
 }
