@@ -54,11 +54,11 @@ class PathFinderTest {
     @Test
     void shortest_path() {
         // when
-        Path shortestPath = pathFinder.getShortestPath(교대역, 양재역);
+        Path shortestPath = pathFinder.getShortestPath(양재역, 교대역);
 
         // then
         assertAll(
-            () -> assertThat(shortestPath.getDistance()).isEqualTo(5),
+            () -> assertThat(shortestPath.getDistance()).isEqualTo(8),
             () -> assertThat(shortestPath.getStations().size()).isEqualTo(3)
         );
     }

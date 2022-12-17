@@ -9,10 +9,6 @@ public class PathStationResponse {
     private String name;
     private LocalDateTime createdAt;
 
-    public static PathStationResponse of(Station station) {
-        return new PathStationResponse(station.getId(), station.getName(), station.getCreatedDate());
-    }
-
     private PathStationResponse() {
     }
 
@@ -20,6 +16,10 @@ public class PathStationResponse {
         this.id = id;
         this.name = name;
         this.createdAt = createdAt;
+    }
+
+    public static PathStationResponse of(Station station) {
+        return new PathStationResponse(station.getId(), station.getName(), station.getCreatedDate());
     }
 
     public Long getId() {
