@@ -67,7 +67,7 @@ public class Section {
 
     public boolean isStationOppositeOf(Station station, StationPosition stationPosition) {
         if (stationPosition == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("판단 기준 StationPosition 누락");
         }
         return stationPosition.isOpposite(positionOfStation(station));
     }

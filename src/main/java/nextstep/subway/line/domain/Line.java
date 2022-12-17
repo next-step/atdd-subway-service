@@ -63,7 +63,7 @@ public class Line extends BaseEntity {
 
     public void checkLineStationRemovable() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("구간이 2개 이상 등록되어 있을 때에만 제거할 수 있습니다.");
         }
     }
 
