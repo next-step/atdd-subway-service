@@ -16,7 +16,8 @@ public class PathResponse {
                 .collect(Collectors.toList()));
     }
 
-    public PathResponse() {}
+    public PathResponse() {
+    }
 
     private PathResponse(List<StationResponse> stations) {
         this.stations = stations;

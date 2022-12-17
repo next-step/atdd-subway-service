@@ -109,7 +109,7 @@ public class Section {
     }
 
     public boolean matchSamePositionStation(Section section) {
-        if (isUpStationEqual(section) ||isDownStationEqual(section)) {
+        if (isUpStationEqual(section) || isDownStationEqual(section)) {
             return true;
         }
         return false;
