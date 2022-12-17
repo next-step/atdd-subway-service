@@ -136,8 +136,8 @@ public class Sections {
         final Optional<Section> optionalPrevSection = findPrevSection(station);
         final Optional<Section> optionalNextSection = findNextSection(station);
 
-        optionalPrevSection.map(prevSection ->
-            optionalNextSection.map(nextSection -> values.add(createSection(line, prevSection, nextSection))));
+        optionalPrevSection.map(prevSection -> optionalNextSection.map(nextSection ->
+                values.add(createSection(line, prevSection, nextSection))));
         optionalPrevSection.map(values::remove);
         optionalNextSection.map(values::remove);
     }
