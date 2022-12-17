@@ -95,25 +95,29 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     Stream<DynamicTest> manageFavorites() {
         final ExtractableResponse<Response>[] readResponse = new ExtractableResponse[]{new RestAssuredResponseImpl()};
         return Stream.of(
-                dynamicTest("", () -> {
+                dynamicTest("즐겨찾기 생성", () -> {
                     ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 홍대입구역.getId(), 왕십리역.getId());
                     즐겨찾기_생성됨(createResponse);
                 }),
-                dynamicTest("", () -> {
+                dynamicTest("즐겨찾기 생성", () -> {
                     ExtractableResponse<Response> createResponse = 즐겨찾기_생성_요청(accessToken, 홍대입구역.getId(), 용산역.getId());
                     즐겨찾기_생성됨(createResponse);
                 }),
-                dynamicTest("", () -> {
+                dynamicTest("즐겨찾기 목록 조회", () -> {
                     readResponse[0] = 즐겨찾기_목록_조회_요청(accessToken);
-                    즐겨찾기_목록_조회됨(readResponse[0], 홍대입구역.getId(), 왕십리역.getId());
+                    즐겨찾기_목록_조회됨(readResponse[0], 홍대입구역.getId(), 왕십리역.getId(), 0, 2);
                 }),
-                dynamicTest("", () -> {
-                    readResponse[1] = 즐겨찾기_목록_조회_요청(accessToken);
-                    즐겨찾기_목록_조회됨(readResponse[1], 홍대입구역.getId(), 용산역.getId());
+                dynamicTest("즐겨찾기 목록 조회", () -> {
+                    readResponse[0] = 즐겨찾기_목록_조회_요청(accessToken);
+                    즐겨찾기_목록_조회됨(readResponse[0], 홍대입구역.getId(), 용산역.getId(), 1, 2);
                 }),
-                dynamicTest("", () -> {
+                dynamicTest("즐겨찾기 삭제 요청", () -> {
                     ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, readResponse[0].as(FavoriteResponse[].class)[0].getId());
                     즐겨찾기_삭제됨(deleteResponse);
+                }),
+                dynamicTest("즐겨찾기 목록 조회", () -> {
+                    readResponse[0] = 즐겨찾기_목록_조회_요청(accessToken);
+                    즐겨찾기_목록_조회됨(readResponse[0], 홍대입구역.getId(), 용산역.getId(), 0, 1);
                 })
         );
     }
@@ -122,13 +126,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
     }
 
-    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, Long source, Long target) {
+    private void 즐겨찾기_목록_조회됨(ExtractableResponse<Response> response, Long source, Long target, int index, int size) {
         List<FavoriteResponse> favorites = Arrays.asList(response.as(FavoriteResponse[].class));
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
-                () -> assertThat(favorites).hasSize(1),
-                () -> assertThat(favorites.get(0).getSource().getId()).isEqualTo(source),
-                () -> assertThat(favorites.get(0).getTarget().getId()).isEqualTo(target)
+                () -> assertThat(favorites).hasSize(size),
+                () -> assertThat(favorites.get(index).getSource().getId()).isEqualTo(source),
+                () -> assertThat(favorites.get(index).getTarget().getId()).isEqualTo(target)
         );
     }
 
