@@ -76,23 +76,23 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### TODO
 
-[ ] Refactor LineService 
+[x] Refactor LineService 
 
   - addLineStation
-    - [ ] 단위테스트
-    - [ ] Refactor
+    - [x] 단위테스트
+    - [x] Refactor
 
-  - getStations()
-    - [ ] 단위테스트
-    - [ ] Refactor
+  - getStations
+    - [x] 단위테스트
+    - [x] Refactor
     
   - removeLineStation
-    - [ ] 단위테스트
-    - [ ] Refactor
+    - [x] 단위테스트
+    - [x] Refactor
 
-[ ] Refactor LineSectionAcceptanceTest 
+[x] Refactor LineSectionAcceptanceTest 
 
-  - [ ] Add Scenario Test
+  - [x] Add Scenario Test
 
 
 
