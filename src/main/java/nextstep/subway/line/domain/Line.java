@@ -68,6 +68,7 @@ public class Line extends BaseEntity {
     }
 
     public void removeLineStation(Station station) {
+        checkLineStationRemovable();
         Section upStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.UP_STATION);
         Section downStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.DOWN_STATION);
         checkStationRemovable(upStationMatchSection, downStationMatchSection);
