@@ -51,6 +51,11 @@ public class LineSectionAcceptanceTestFixture extends AcceptanceTest {
                 .extract();
     }
 
+    public static void 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation,
+            StationResponse downStation, int distance) {
+        지하철_노선에_지하철역_등록_요청(line, upStation, downStation, distance);
+    }
+
     public static void 지하철_노선에_지하철역_등록됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }

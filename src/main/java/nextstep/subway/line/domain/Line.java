@@ -1,10 +1,14 @@
 package nextstep.subway.line.domain;
 
 import java.util.Objects;
+import javax.persistence.Column;
+import javax.persistence.Embedded;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.station.domain.Station;
-
-import javax.persistence.*;
 import nextstep.subway.station.domain.Stations;
 
 @Entity
@@ -43,16 +47,7 @@ public class Line extends BaseEntity {
     }
 
     public Stations getStations() {
-        if (sections.isEmpty()) {
-            return new Stations();
-        }
-        Stations stations = new Stations();
-        Station downStation = sections.findFinalUpStation();
-        while (downStation != null) {
-            stations.add(downStation);
-            downStation = sections.nextStationOf(downStation, StationPosition.DOWN_STATION);
-        }
-        return stations;
+        return sections.getStations();
     }
 
     public void addSection(Section sectionToAdd) {
@@ -63,11 +58,12 @@ public class Line extends BaseEntity {
 
     public void checkLineStationRemovable() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new RuntimeException("구간이 2개 이상 등록되어 있을 때에만 제거할 수 있습니다.");
         }
     }
 
     public void removeLineStation(Station station) {
+        checkLineStationRemovable();
         Section upStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.UP_STATION);
         Section downStationMatchSection = sections.getMatchSectionByPosition(station, StationPosition.DOWN_STATION);
         checkStationRemovable(upStationMatchSection, downStationMatchSection);

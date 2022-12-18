@@ -67,7 +67,7 @@ public class Section {
 
     public boolean isStationOppositeOf(Station station, StationPosition stationPosition) {
         if (stationPosition == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException("판단 기준 StationPosition 누락");
         }
         return stationPosition.isOpposite(positionOfStation(station));
     }
@@ -109,7 +109,7 @@ public class Section {
     }
 
     public boolean matchSamePositionStation(Section section) {
-        if (isUpStationEqual(section) ||isDownStationEqual(section)) {
+        if (isUpStationEqual(section) || isDownStationEqual(section)) {
             return true;
         }
         return false;
@@ -123,7 +123,7 @@ public class Section {
         if (isDownStationEqual(section)) {
             this.downStation = section.upStation;
         }
-        this.distance.subtract(section.distance);
+        this.distance = this.distance.subtract(section.distance);
     }
 
     private void validateDistanceOfSectionToAdd(Section section) {
