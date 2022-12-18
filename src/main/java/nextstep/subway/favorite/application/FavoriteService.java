@@ -14,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,7 +41,7 @@ public class FavoriteService {
         return FavoriteResponse.of(savedFavorite);
     }
 
-    public List<FavoriteResponse> findFavoriteById(LoginMember loginMember) {
+    public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
         Member member = memberRepository.findById(loginMember.getId())
                 .orElseThrow(RuntimeException::new);
 
@@ -51,5 +50,12 @@ public class FavoriteService {
         return favorite.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
+    }
+
+    public void deleteFavorite(Long id, LoginMember loginMember) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(RuntimeException::new);
+
+        favoriteRepository.deleteById(id);
     }
 }

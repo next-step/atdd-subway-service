@@ -24,6 +24,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청됨;
+import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
@@ -32,11 +33,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private LineResponse 신분당선;
     private StationResponse 강남역;
     private StationResponse 양재역;
+    private StationResponse 양재시민의역;
     private TokenResponse tokenResponse;
     private FavoriteRequest favoriteRequest;
 
-    public static String source = "1";
-    public static String target = "2";
+    public static String SOURCE = "1";
+    public static String TARGET = "2";
 
     @Override
     @BeforeEach
@@ -44,14 +46,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         super.setUp();
         강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        양재시민의역 = StationAcceptanceTest.지하철역_등록되어_있음("양재시민의역").as(StationResponse.class);
 
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
+        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의역, 3);
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         tokenResponse = 로그인_요청됨(EMAIL, PASSWORD);
-        favoriteRequest = new FavoriteRequest(source, target);
+        favoriteRequest = new FavoriteRequest(SOURCE, TARGET);
     }
 
     @Test
@@ -64,6 +68,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         즐겨찾기_조회_검증됨(response);
         즐겨찾기_조회_포함됨(response, Arrays.asList(createResponse));
 
+        ExtractableResponse<Response> updateResponse = 즐겨찾기_정보_삭제_요청(createResponse, tokenResponse);
+        즐겨찾기_정보_삭제됨(updateResponse);
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_정보_삭제_요청(ExtractableResponse<Response> response, TokenResponse tokenResponse) {
+        String uri = response.header("Location");
+
+        return RestAssured.given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().delete(uri)
+                .then().log().all()
+                .extract();
+    }
+
+    public static void 즐겨찾기_정보_삭제됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
     private ExtractableResponse<Response> 즐겨찾기_생성됨(FavoriteRequest favoriteRequest) {

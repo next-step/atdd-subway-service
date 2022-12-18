@@ -21,8 +21,8 @@ import java.util.Optional;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.EMAIL;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.PASSWORD;
 import static nextstep.subway.auth.application.AuthServiceTest.AGE;
-import static nextstep.subway.favorite.FavoriteAcceptanceTest.source;
-import static nextstep.subway.favorite.FavoriteAcceptanceTest.target;
+import static nextstep.subway.favorite.FavoriteAcceptanceTest.SOURCE;
+import static nextstep.subway.favorite.FavoriteAcceptanceTest.TARGET;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.lenient;
@@ -47,7 +47,7 @@ class FavoriteServiceTest {
         강남역 = new Station(1L, "강남역");
         양재역 = new Station(2L, "양재역");
 
-        favoriteRequest = new FavoriteRequest(source, target);
+        favoriteRequest = new FavoriteRequest(SOURCE, TARGET);
         loginMember = new LoginMember(1L, EMAIL, AGE);
         member = new Member(1L, EMAIL, PASSWORD, AGE);
     }
