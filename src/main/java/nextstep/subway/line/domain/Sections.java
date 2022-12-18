@@ -18,10 +18,6 @@ public class Sections {
 
     protected Sections() {}
 
-    public List<Section> getValues() {
-        return this.sections;
-    }
-
     private void checkValidationForEmptySections() {
         if (this.sections.size() <= 1) {
             throw new RuntimeException();

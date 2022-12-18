@@ -8,9 +8,11 @@ import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import java.util.Arrays;
@@ -30,6 +32,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 양재역;
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
+    private StationResponse 노량진역;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -46,6 +49,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        노량진역 = StationAcceptanceTest.지하철역_등록되어_있음("노량진역").as(StationResponse.class);
 
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
@@ -69,7 +73,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("최적경로 조회")
     void getShortestPath() {
-        Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨();
+        Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨(3L, 2L);
 
         // Assert를 이용해 요청을 보내고
         ExtractableResponse<Response> extract = 지하철역_최적경로_조회(params);
@@ -78,15 +82,64 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철노선_최적경로_응답됨(extract);
     }
 
-    private Map 지하철노선_최적경로_조회_세팅됨() {
+    /**
+     * Given 출발역과 도착역을 받으면
+     * When 다익스트라 알고리즘으로 최적의 경우를 구한후
+     * Then 최적의 경로를 돌려준다.
+     */
+    @Test
+    @DisplayName("최적경로 조회 - 출발역과 도착역이 같은 경우 실패 테스트")
+    void getShortestPath2() {
+        Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨(3L, 3L);
+
+        ExtractableResponse<Response> response = 지하철역_최적경로_조회(params);
+
+        지하철_최적_경로_조회_실패됨(response);
+    }
+
+    /**
+     * Given 출발역과 도착역을 받으면
+     * When 다익스트라 알고리즘으로 최적의 경우를 구한후
+     * Then 최적의 경로를 돌려준다.
+     */
+    @Test
+    @DisplayName("최적경로 조회 - 출발역과 도착역이 연결이 되지 않은 경우 실패 테스트")
+    void getShortestPath3() {
+        Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨(3L, 5L);
+
+        ExtractableResponse<Response> response = 지하철역_최적경로_조회(params);
+
+        지하철_최적_경로_조회_실패됨(response);
+    }
+
+    /**
+     * Given 출발역과 도착역을 받으면
+     * When 다익스트라 알고리즘으로 최적의 경우를 구한후
+     * Then 최적의 경로를 돌려준다.
+     */
+    @Test
+    @DisplayName("최적경로 조회 - 존재하지 않은 출발역이나 도착역을 조회할 경우 실패 테스트")
+    void getShortestPath4() {
+        Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨(3L, 10L);
+
+        ExtractableResponse<Response> response = 지하철역_최적경로_조회(params);
+
+        지하철_최적_경로_조회_실패됨(response);
+    }
+
+    private Map 지하철노선_최적경로_조회_세팅됨(Long source, Long target) {
         Map params = new HashMap<>();
-        params.put("source", 3);
-        params.put("target", 2);
+        params.put("source", source);
+        params.put("target", target);
         return params;
     }
 
     private static void 지하철노선_최적경로_응답됨(ExtractableResponse<Response> extract) {
         assertThat(extract.jsonPath().getList("name").containsAll(Arrays.asList("교대역", "남부터미널역", "양재역"))).isTrue();
+    }
+
+    public static void 지하철_최적_경로_조회_실패됨(ExtractableResponse<Response> response) {
+        Assertions.assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     private static ExtractableResponse<Response> 지하철역_최적경로_조회(Map<String, Integer> params) {

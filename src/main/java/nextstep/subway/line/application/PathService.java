@@ -8,7 +8,6 @@ import nextstep.subway.station.dto.StationResponse;
 import nextstep.subway.utils.SectionEdge;
 import nextstep.subway.utils.SubwayGraph;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
-import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,14 +27,49 @@ public class PathService {
     }
 
     public List<StationResponse> getShortestPath(final String sourceStationId, final String targetStationid) {
+        Optional<Station> sourceStation = stationRepository.findById(Long.valueOf(sourceStationId));
+        Optional<Station> targetStation = stationRepository.findById(Long.valueOf(targetStationid));
+
+        validCheckForSameStation(sourceStationId, targetStationid);
+        validCheckForExitStation(sourceStation, targetStation);
+
         List<Station> stations = stationRepository.findAll();
-        List<Section> sections = sectionRepository.findAll();
-        Station sourceStation = stationRepository.getById(Long.valueOf(sourceStationId));
-        Station targetStation = stationRepository.getById(Long.valueOf(targetStationid));
-        List<Station> shortestPath = getShortestPath(sections, stations)
-                            .getPath(sourceStation, targetStation)
-                            .getVertexList();
+        List<Station> shortestPath = getShortestPath(sourceStation.get(), targetStation.get(), stations);
         return getShortestPathResponse(stations, shortestPath);
+    }
+
+    private void validCheckForExitStation(final Optional sourceStation, final Optional targetStation) {
+        if (!sourceStation.isPresent() || !targetStation.isPresent()) throw new RuntimeException();
+    }
+
+    private void validCheckForSameStation(final String sourceStationId, final String targetStationId) {
+        if (sourceStationId.equals(targetStationId)) {
+            throw new RuntimeException();
+        }
+    }
+
+    List<Station> getShortestPath(Station sourceStation, Station targetStation, List<Station> stations) {
+        List<Section> sections = sectionRepository.findAll();
+        List<Station> shortestPath;
+
+        try {
+            shortestPath = getShortestPath(sections, stations)
+                    .getPath(sourceStation, targetStation)
+                    .getVertexList();
+        } catch (Exception e) {
+            throw new RuntimeException();
+        }
+
+        return shortestPath;
+    }
+
+    private DijkstraShortestPath<Station, SectionEdge> getShortestPath(List<Section> sections, List<Station> stations) {
+        SubwayGraph<Station, SectionEdge> graph = new SubwayGraph<>(SectionEdge.class);
+
+        graph.addGraphVertex(stations);
+        graph.addEdgeWeight(sections);
+
+        return new DijkstraShortestPath<>(graph);
     }
 
     private List<StationResponse> getShortestPathResponse(List<Station> stations, List<Station> shortestPath) {
@@ -50,25 +84,5 @@ public class PathService {
         }
 
         return shortestStations;
-    }
-
-    private DijkstraShortestPath<Station, SectionEdge> getShortestPath(List<Section> sections, List<Station> stations) {
-        SubwayGraph<Station, SectionEdge> graph
-                = new SubwayGraph<>(SectionEdge.class);
-
-        setGraphVertex(stations, graph);
-        setGraphEdge(sections, graph);
-
-        return new DijkstraShortestPath<>(graph);
-    }
-
-    private void setGraphEdge(List<Section> sections, SubwayGraph graph) {
-        sections.forEach(section -> graph.setEdgeWeight(graph.addEdge(section.getUpStation()
-                                                                    , section.getDownStation())
-                                                                    , section.getDistance()));
-    }
-
-    private void setGraphVertex(List<Station> stations, WeightedMultigraph graph) {
-        stations.forEach(station ->  graph.addVertex(station));
     }
 }
