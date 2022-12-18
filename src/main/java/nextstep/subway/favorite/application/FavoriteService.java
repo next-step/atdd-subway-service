@@ -12,7 +12,10 @@ import nextstep.subway.station.domain.StationRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class FavoriteService {
@@ -28,17 +31,25 @@ public class FavoriteService {
     }
 
     public FavoriteResponse createFavorite(FavoriteRequest favoriteRequest, LoginMember loginMember) {
-        Optional<Station> sourceStation = stationRepository.findById(Long.valueOf(favoriteRequest.getSource()));
-        Optional<Station> targetStation = stationRepository.findById(Long.valueOf(favoriteRequest.getTarget()));
-        Optional<Member> member = memberRepository.findById(loginMember.getId());
+        Station sourceStation = stationRepository.findById(Long.valueOf(favoriteRequest.getSource()))
+                .orElseThrow(RuntimeException::new);
+        Station targetStation = stationRepository.findById(Long.valueOf(favoriteRequest.getTarget()))
+                .orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(RuntimeException::new);
 
-        validCheckForExistStation(sourceStation, targetStation);
-
-        Favorite savedFavorite = favoriteRepository.save(new Favorite(sourceStation.get(), targetStation.get(), member.get()));
+        Favorite savedFavorite = favoriteRepository.save(new Favorite(sourceStation, targetStation, member));
         return FavoriteResponse.of(savedFavorite);
     }
 
-    private void validCheckForExistStation(Optional<Station> sourceStation, Optional<Station> targetStation) {
-        if (!sourceStation.isPresent() || !targetStation.isPresent()) throw new RuntimeException();
+    public List<FavoriteResponse> findFavoriteById(LoginMember loginMember) {
+        Member member = memberRepository.findById(loginMember.getId())
+                .orElseThrow(RuntimeException::new);
+
+        List<Favorite> favorite = favoriteRepository.findByMember(member)
+                .orElseGet(ArrayList::new);
+        return favorite.stream()
+                .map(FavoriteResponse::of)
+                .collect(Collectors.toList());
     }
 }

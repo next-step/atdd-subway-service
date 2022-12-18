@@ -6,16 +6,22 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.favorite.dto.FavoriteRequest;
+import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청됨;
 import static nextstep.subway.member.MemberAcceptanceTest.*;
@@ -27,6 +33,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     private StationResponse 강남역;
     private StationResponse 양재역;
     private TokenResponse tokenResponse;
+    private FavoriteRequest favoriteRequest;
 
     public static String source = "1";
     public static String target = "2";
@@ -41,22 +48,25 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
-        ExtractableResponse<Response> createResponse = 회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
 
         tokenResponse = 로그인_요청됨(EMAIL, PASSWORD);
+        favoriteRequest = new FavoriteRequest(source, target);
     }
 
     @Test
-    @DisplayName("즐겨찾기 생성을 요청 테스트")
-    void createFavoriteTest() {
-        FavoriteRequest favoriteRequest = new FavoriteRequest(source, target);
+    @DisplayName("즐겨찾기를 관리한다")
+    void manageFavorite() {
+        ExtractableResponse<Response> createResponse = 즐겨찾기_생성됨(favoriteRequest);
+        즐겨찾기_생성_검증됨(createResponse);
 
-        ExtractableResponse<Response> response = 즐겨찾기_조회됨(favoriteRequest);
+        ExtractableResponse<Response> response = 즐겨찾기_조회됨();
+        즐겨찾기_조회_검증됨(response);
+        즐겨찾기_조회_포함됨(response, Arrays.asList(createResponse));
 
-        즐겨찾기_생성_검증됨(response);
     }
 
-    private ExtractableResponse<Response> 즐겨찾기_조회됨(FavoriteRequest favoriteRequest) {
+    private ExtractableResponse<Response> 즐겨찾기_생성됨(FavoriteRequest favoriteRequest) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(tokenResponse.getAccessToken())
@@ -69,5 +79,31 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     private void 즐겨찾기_생성_검증됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    private ExtractableResponse<Response> 즐겨찾기_조회됨() {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("/favorites")
+                .then().log().all()
+                .extract();
+    }
+
+    private void 즐겨찾기_조회_검증됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
+    }
+
+    public static void 즐겨찾기_조회_포함됨(ExtractableResponse<Response> response, List<ExtractableResponse<Response>> createdResponses) {
+        List<Long> expectedLineIds = createdResponses.stream()
+                .map(it -> Long.parseLong(it.header("Location").split("/")[1]))
+                .collect(Collectors.toList());
+
+        List<Long> resultLineIds = response.jsonPath().getList(".", FavoriteResponse.class).stream()
+                .map(FavoriteResponse::getId)
+                .collect(Collectors.toList());
+
+        Assertions.assertThat(resultLineIds).containsAll(expectedLineIds);
     }
 }
