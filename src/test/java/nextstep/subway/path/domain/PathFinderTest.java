@@ -18,12 +18,14 @@ class PathFinderTest {
     private Line 신분당선;
     private Line 이호선;
     private Line 삼호선;
+    private Line 일호선;
     private Station 강남역;
     private Station 양재역;
     private Station 교대역;
     private Station 남부터미널역;
     private Station 구로디지털단지역;
     private Station 왕십리역;
+   private Station 신도림역;
 
     private PathFinder pathFinder;
 
@@ -33,6 +35,8 @@ class PathFinderTest {
      * *3호선*                   *신분당선*
      * |                        |
      * 남부터미널역  --- *3호선* ---   양재
+     *
+     * 왕십리역 --- *1호선*--- 신도림역
      */
     @BeforeEach
     public void setUp() {
@@ -43,10 +47,12 @@ class PathFinderTest {
         남부터미널역 = new Station("남부터미널역");
         구로디지털단지역 = new Station("구로디지털단지역");
         왕십리역 = new Station("왕십리역");
+        신도림역 = new Station("왕십리역");
 
         신분당선 = new Line("신분당선", "bg-red-300", 강남역, 양재역, 10);
         이호선 = new Line("이호선", "bg-yellow-420", 교대역, 강남역, 10);
         삼호선 = new Line("삼호선", "bg-green-500", 교대역, 양재역, 5);
+        일호선 = new Line("일호선", "bg-green-500", 왕십리역, 신도림역, 5);
         삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
 
         pathFinder = new PathFinder(Arrays.asList(신분당선, 이호선, 삼호선));
