@@ -104,15 +104,6 @@ public class Section {
         return Stream.of(upStation, downStation);
     }
 
-    public void connectUpStationToDownStation(Section addSection) {
-        distance.subtract(addSection.getDistance());
-        this.upStation = addSection.downStation;
-    }
-
-    public void connectDownStationToUpStation(Section addSection) {
-        distance.subtract(addSection.getDistance());
-        this.downStation = addSection.upStation;
-    }
 
     public void mergeDownSection(Section downSection) {
         this.downStation = downSection.downStation;

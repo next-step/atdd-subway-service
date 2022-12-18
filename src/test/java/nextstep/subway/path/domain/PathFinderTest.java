@@ -23,6 +23,7 @@ class PathFinderTest {
     private Station 교대역;
     private Station 남부터미널역;
     private Station 구로디지털단지역;
+    private Station 왕십리역;
 
     private PathFinder pathFinder;
 
@@ -41,6 +42,7 @@ class PathFinderTest {
         교대역 = new Station("교대역");
         남부터미널역 = new Station("남부터미널역");
         구로디지털단지역 = new Station("구로디지털단지역");
+        왕십리역 = new Station("왕십리역");
 
         신분당선 = new Line("신분당선", "bg-red-300", 강남역, 양재역, 10);
         이호선 = new Line("이호선", "bg-yellow-420", 교대역, 강남역, 10);
@@ -77,6 +79,15 @@ class PathFinderTest {
     void not_connected_station_line() {
         // when && then
         assertThatThrownBy(() -> pathFinder.getShortestPath(강남역, 구로디지털단지역))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessage("출발역과 도착역은 서로 연결이 되어있어야 최단 경로를 조회할 수 있습니다.");
+    }
+
+    @DisplayName("두 개의 역이 모두 그래프에 존재하는데, 경로를 찾을 수 없는 경우에 대한 테스트")
+    @Test
+    void not_find_station_line() {
+        // when && then
+        assertThatThrownBy(() -> pathFinder.getShortestPath(강남역, 왕십리역))
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessage("출발역과 도착역은 서로 연결이 되어있어야 최단 경로를 조회할 수 있습니다.");
     }
