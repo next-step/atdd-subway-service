@@ -104,7 +104,7 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 
 ### TODO
 
-[ ] 인수테스트 작성
+[x] 인수테스트 작성
   Background:
   - Given 지하철역 등록되어 있음
   - AND 지하철 노선 등록되어 있음
@@ -113,23 +113,21 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - WHEN 지하철 출발역에서 도착역 최단경로 조회
   - THEN 지하철 출발역에서 도착역 최단경로 목록 조회됨
 
-[ ] 기능 구현 (Outside In) 및 단위 테스트 작성
+[x] 기능 구현 (Outside In) 및 단위 테스트 작성
 
-- [ ] PathController
+- [x] PathController
 
-- [ ] PathService
+- [x] PathService
 
-- [ ] PathRepo(Optional)
+- [x] PathDomainModel
 
-- [ ] PathDomainModel
+- [x] 예외 상황 
 
-- [ ] 예외 상황 
+  - [x] 출발역과 도착역이 같은 경우
 
-  - [ ] 출발역과 도착역이 같은 경우
+  - [x] 출발역과 도착역이 연결이 되어 있지 않은 경우
 
-  - [ ] 출발역과 도착역이 연결이 되어 있지 않은 경우
-
-  - [ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우
+  - [x] 존재하지 않은 출발역이나 도착역을 조회 할 경우
 
 ### Hint
 - 컨트롤러 레이어 구현 이후 서비스 레이어 구현 시 서비스 테스트 우선 작성 후 기능 구현
