@@ -1,5 +1,6 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.member.MemberAcceptanceTest.토큰_회원정보_조회_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_정보_조회됨;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
@@ -98,7 +99,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
         회원_정보_조회_안됨(response);
     }
 
-    private static ExtractableResponse<Response> 로그인_요청(String email, String password) {
+    public static ExtractableResponse<Response> 로그인_요청(String email, String password) {
         TokenRequest tokenRequest = new TokenRequest(email, password);
 
         return RestAssured
@@ -110,7 +111,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    private static void 로그인_성공(TokenResponse tokenResponse) {
+    public static void 로그인_성공(TokenResponse tokenResponse) {
         assertThat(tokenResponse.getAccessToken()).isNotBlank();
     }
 
@@ -119,7 +120,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private TokenResponse 잘못된_토큰정보_생성() {
+    public static TokenResponse 잘못된_토큰정보_생성() {
         return new TokenResponse(WRONG_TOKEN);
     }
 
@@ -129,13 +130,5 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private static ExtractableResponse<Response> 토큰_회원정보_조회_요청(TokenResponse tokenResponse) {
-        return RestAssured.given().log().all()
-                .auth().oauth2(tokenResponse.getAccessToken())
-                .accept(MediaType.APPLICATION_JSON_VALUE)
-                .when().get("/members/me")
-                .then().log().all()
-                .extract();
-    }
 
 }
