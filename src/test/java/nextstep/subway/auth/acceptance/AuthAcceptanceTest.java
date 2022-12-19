@@ -73,7 +73,7 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     }
 
 
-    private static void 로그인_성공(ExtractableResponse<Response> response) {
+    public static void 로그인_성공(ExtractableResponse<Response> response) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
                 () -> assertThat(response.as(TokenResponse.class).getAccessToken()).isNotBlank()
