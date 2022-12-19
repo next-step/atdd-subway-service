@@ -75,8 +75,7 @@ public class PathFinderTest {
         // when && then
         assertThatThrownBy(
                 () -> pathFinder.findShortPath(양재역, 양재역))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("출발역과 도착역이 같을 경우 최단 거리를 조회할 수 없습니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("존재하지 않는 출발역이나 도착역을 조회 할 경우")
@@ -97,8 +96,7 @@ public class PathFinderTest {
         PathFinder pathFinder = new PathFinder(Arrays.asList(삼호선, 이호선));
         // when && then
         assertThatThrownBy(
-                () -> pathFinder.findShortPath(교대역, 동작역))
-                .isInstanceOf(IllegalArgumentException.class);
+                () -> pathFinder.findShortPath(교대역, 동작역));
     }
 
 }
