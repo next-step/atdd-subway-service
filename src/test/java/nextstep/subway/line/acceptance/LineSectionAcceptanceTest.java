@@ -67,7 +67,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         assertAll("지하철 구간 관리 기능 인수 테스트",
             () -> {
                 assertAll("지하철 구간 등록 요청후 조회시, 해당 구간이 등록되고, 조회 할수 있어야 한다",
-                    () -> 지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3)),
+                    () -> 지하철_노선에_지하철역_등록됨(지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 3)),
                     () -> 지하철_노선에_지하철역_순서_정렬됨(지하철_노선_조회_요청(신분당선), Arrays.asList(강남역, 양재역, 광교역))
                 );
             },
@@ -84,7 +84,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection() {
         // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 3);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 3);
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
@@ -96,8 +96,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSection2() {
         // when
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 강남역, 5);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 2);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 정자역, 강남역, 5);
 
         // then
         ExtractableResponse<Response> response = 지하철_노선_조회_요청(신분당선);
@@ -109,7 +109,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithSameStation() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 광교역, 3);
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 광교역, 3);
 
         // then
         지하철_노선에_지하철역_등록_실패됨(response);
@@ -119,7 +119,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void addLineSectionWithNoStation() {
         // when
-        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록_요청(신분당선, 정자역, 양재역, 3);
+        ExtractableResponse<Response> response = 지하철_노선에_지하철역_등록되어_있음(신분당선, 정자역, 양재역, 3);
 
         // then
         지하철_노선에_지하철역_등록_실패됨(response);
@@ -129,8 +129,8 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
     @Test
     void removeLineSection1() {
         // given
-        지하철_노선에_지하철역_등록_요청(신분당선, 강남역, 양재역, 2);
-        지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 정자역, 2);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 2);
+        지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 정자역, 2);
 
         // when
         ExtractableResponse<Response> removeResponse = 지하철_노선에_지하철역_제외_요청(신분당선, 양재역);
@@ -151,7 +151,7 @@ public class LineSectionAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_제외_실패됨(removeResponse);
     }
 
-    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록_요청(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
+    public static ExtractableResponse<Response> 지하철_노선에_지하철역_등록되어_있음(LineResponse line, StationResponse upStation, StationResponse downStation, int distance) {
         SectionRequest sectionRequest = new SectionRequest(upStation.getId(), downStation.getId(), distance);
 
         return RestAssured
