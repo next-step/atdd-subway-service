@@ -95,7 +95,44 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
   - [x] Add Scenario Test
 
 
+## 🚀 2단계 - 경로 조회 기능
 
+### Requirment
 
+- 최단 경로 조회 인수 테스트 만들기
+- 최단 경로 조회 기능 구현하기
 
- 
+### TODO
+
+[ ] 인수테스트 작성
+  Background:
+  - Given 지하철역 등록되어 있음
+  - AND 지하철 노선 등록되어 있음
+  - AND 지하철 노선에 지하철 역 등록되어 있음
+  Scenario : Happy Case
+  - WHEN 지하철 출발역에서 도착역 최단경로 조회
+  - THEN 지하철 출발역에서 도착역 최단경로 목록 조회됨
+
+[ ] 기능 구현 (Outside In) 및 단위 테스트 작성
+
+- [ ] PathController
+
+- [ ] PathService
+
+- [ ] PathRepo(Optional)
+
+- [ ] PathDomainModel
+
+- [ ] 예외 상황 
+
+  - [ ] 출발역과 도착역이 같은 경우
+
+  - [ ] 출발역과 도착역이 연결이 되어 있지 않은 경우
+
+  - [ ] 존재하지 않은 출발역이나 도착역을 조회 할 경우
+
+### Hint
+- 컨트롤러 레이어 구현 이후 서비스 레이어 구현 시 서비스 테스트 우선 작성 후 기능 구현
+- 서비스 테스트 내부에서 도메인들간의 로직의 흐름을 검증, 이 때 사용되는 도메인은 mock 객체를 활용
+- 외부 라이브러리를 활용한 로직을 검증할 때는 가급적 실제 객체를 활용
+- Happy 케이스에 대한 부분만 구현( Side 케이스에 대한 구현은 다음 단계에서 진행)
