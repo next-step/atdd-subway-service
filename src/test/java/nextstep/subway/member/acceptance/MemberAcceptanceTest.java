@@ -1,4 +1,4 @@
-package nextstep.subway.member;
+package nextstep.subway.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -6,6 +6,7 @@ import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
@@ -20,6 +21,13 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     public static final String NEW_PASSWORD = "newpassword";
     public static final int AGE = 20;
     public static final int NEW_AGE = 21;
+
+    private MemberRequest 정상회원_등록_요청;
+
+    @BeforeEach
+    void setup() {
+        정상회원_등록_요청 = new MemberRequest(EMAIL, PASSWORD, AGE);
+    }
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
