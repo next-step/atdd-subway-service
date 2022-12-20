@@ -1,17 +1,12 @@
 package nextstep.subway.member;
 
-import io.restassured.RestAssured;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.토큰_값;
+
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
-import nextstep.subway.AcceptanceTest;
 import nextstep.subway.member.dto.MemberRequest;
-import nextstep.subway.member.dto.MemberResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
-
-import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends MemberAcceptanceTestFixture {
 
@@ -56,6 +51,9 @@ public class MemberAcceptanceTest extends MemberAcceptanceTestFixture {
      *     When 나의 정보 수정 요청
      *     Then 나의 정보 수정됨
      *
+     *     When 수정된 나의 정보 조회 요청
+     *     Then 수정된 나의 정보 조회됨
+     *
      *     When 나의 정보 삭제 요청
      *     Then 나의 정보 삭제됨
      */
@@ -71,10 +69,16 @@ public class MemberAcceptanceTest extends MemberAcceptanceTestFixture {
         ExtractableResponse<Response> response2 = 나의_정보_수정_요청(myAccessToken, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
         // Then 나의 정보 수정됨
         나의_정보_수정됨(response2);
+        String myNewAccessToken = 토큰_값(response2);
+
+        // When 수정된 나의 정보 조회 요청
+        ExtractableResponse<Response> response3 = 나의_정보_조회_요청(myNewAccessToken);
+        // Then 수정된 나의 정보 조회됨
+        나의_정보_조회됨(response3, NEW_EMAIL, NEW_AGE);
 
         // When 나의 정보 삭제 요청
-        ExtractableResponse<Response> response3 = 나의_정보_삭제_요청(myAccessToken);
+        ExtractableResponse<Response> response4 = 나의_정보_삭제_요청(myNewAccessToken);
         // Then 나의 정보 삭제됨
-        나의_정보_삭제됨(response3);
+        나의_정보_삭제됨(response4);
     }
 }

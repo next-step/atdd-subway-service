@@ -45,7 +45,6 @@ public class MemberAcceptanceTestFixture extends AcceptanceTest {
         LineResponse 신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
         지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 4);
         지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 정자역, 6);
-        지하철_노선에_지하철역_등록되어_있음(신분당선, 정자역, 광교역, 5);
 
         회원_등록되어_있음(EMAIL, PASSWORD, 20);
         myAccessToken = 토큰_값(토큰_생성되어_있음(new TokenRequest(EMAIL, PASSWORD)));
