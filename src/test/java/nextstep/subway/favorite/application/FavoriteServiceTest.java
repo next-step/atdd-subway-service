@@ -4,6 +4,7 @@ import static nextstep.subway.auth.application.AuthServiceTest.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.List;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -51,6 +52,24 @@ public class FavoriteServiceTest {
         // then
         assertThat(favorite.getSource().getName()).isEqualTo("강남역");
         assertThat(favorite.getTarget().getName()).isEqualTo("양재역");
+    }
+
+    @DisplayName("즐겨찾기를 조회한다.")
+    @Test
+    void 즐겨찾기를_조회한다() {
+        // given
+        Station 강남역 = new Station("강남역");
+        Station 양재역 = new Station("양재역");
+        Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
+        사용자.addFavorite(강남역, 양재역);
+
+        when(memberService.findMemberById(1L)).thenReturn(사용자);
+
+        // when
+        List<FavoriteResponse> favorites = favoriteService.findFavorites(1L);
+
+        // then
+        assertThat(favorites).hasSize(1);
     }
 
 }

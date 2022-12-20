@@ -1,5 +1,6 @@
 package nextstep.subway.favorite.application;
 
+import java.util.List;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -29,5 +30,11 @@ public class FavoriteService {
         Station target = stationService.findStationById(request.getTarget());
 
         return FavoriteResponse.from(member.addFavorite(source, target));
+    }
+
+    @Transactional(readOnly = true)
+    public List<FavoriteResponse> findFavorites(Long memberId) {
+        Member member = memberService.findMemberById(memberId);
+        return member.getFavorites().toResponses();
     }
 }

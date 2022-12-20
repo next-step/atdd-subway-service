@@ -68,4 +68,8 @@ public class Member extends BaseEntity {
 
         return favorite;
     }
+
+    public Favorites getFavorites() {
+        return favorites;
+    }
 }

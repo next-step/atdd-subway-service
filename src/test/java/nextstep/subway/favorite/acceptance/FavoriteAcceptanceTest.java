@@ -67,6 +67,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(accessToken, FavoriteRequest.of(강남역.getId(), 양재역.getId()));
         // then: 즐겨찾기 생성됨
         즐겨찾기_추가_성공(createResponse);
+        // when: 즐겨찾기 목록 조회 요청
+        ExtractableResponse<Response> getResponse = 즐겨찾기_조회_요청(accessToken);
+        // then: 즐겨찾기 생성됨
+        즐겨찾기_조회_성공(getResponse);
 
     }
 
