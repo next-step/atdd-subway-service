@@ -24,6 +24,15 @@ public class StationResponse {
         this.modifiedDate = modifiedDate;
     }
 
+    public static StationResponse from(Station station) {
+        return new StationResponse(
+                station.getId(),
+                station.getName(),
+                station.getCreatedDate(),
+                station.getModifiedDate()
+        );
+    }
+
     public Long getId() {
         return id;
     }

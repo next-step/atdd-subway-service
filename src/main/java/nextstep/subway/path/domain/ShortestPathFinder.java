@@ -18,6 +18,14 @@ public class ShortestPathFinder implements PathFinder{
         return new ShortestPathFinder(sections);
     }
 
+    private ShortestPathFinder(List<Section> sections) {
+        sections.forEach(eachSection -> {
+            addVertex(eachSection.getUpStation());
+            addVertex(eachSection.getDownStation());
+            graph.setEdgeWeight(graph.addEdge(eachSection.getUpStation(), eachSection.getDownStation()), eachSection.getDistance());
+        });
+    }
+
     @Override
     public List<Station> findAllStationsInTheShortestPath(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(sourceStation, targetStation);
@@ -28,14 +36,6 @@ public class ShortestPathFinder implements PathFinder{
     public int findTheShortestPathDistance(Station sourceStation, Station targetStation) {
         GraphPath<Station, DefaultWeightedEdge> path = getShortestPath(sourceStation, targetStation);
         return (int) path.getWeight();
-    }
-
-    private ShortestPathFinder(List<Section> sections) {
-        sections.forEach(eachSection -> {
-            addVertex(eachSection.getUpStation());
-            addVertex(eachSection.getDownStation());
-            graph.setEdgeWeight(graph.addEdge(eachSection.getUpStation(), eachSection.getDownStation()), eachSection.getDistance());
-        });
     }
 
     private void addVertex(Station station) {

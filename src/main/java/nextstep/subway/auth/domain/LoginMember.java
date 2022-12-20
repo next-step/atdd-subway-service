@@ -1,5 +1,7 @@
 package nextstep.subway.auth.domain;
 
+import java.util.Objects;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -24,5 +26,18 @@ public class LoginMember {
 
     public Integer getAge() {
         return age;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        LoginMember that = (LoginMember) o;
+        return Objects.equals(id, that.id) && Objects.equals(email, that.email);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, email);
     }
 }
