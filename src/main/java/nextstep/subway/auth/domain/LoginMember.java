@@ -25,9 +25,6 @@ public class LoginMember {
     }
 
     public Integer getAge() {
-        if (age == null) {
-            age = new Integer(0);
-        }
         return age;
     }
 

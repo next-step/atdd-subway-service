@@ -2,58 +2,82 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.line.domain.Distance;
 import nextstep.subway.line.domain.Surcharge;
+import nextstep.subway.path.domain.policy.discount.AdultDiscount;
+import nextstep.subway.path.domain.policy.discount.ChildDiscount;
+import nextstep.subway.path.domain.policy.discount.DiscountPolicy;
+import nextstep.subway.path.domain.policy.discount.YouthDiscount;
 
 public class Fare {
+    private static final String CAN_NOT_CHARGE_EXCEPTION = "6세 미만은 요금을 부과하지 않습니다.";
     private static final int DEFAULT_FARE = 1250;
-    private int fare;
+    private static final int MIN_DISTANCE_STANDARD = 10;
+    private static final int MAX_DISTANCE_STANDARD = 50;
+    private static final int BETWEEN_TEN_AND_FIFTY_EXTRA_DISTANCE_PER = 5;
+    private static final int OVER_FIFTY_EXTRA_DISTANCE_PER = 8;
+    private static final int CHILD_MIN_AGE = 6;
+    private static final int CHILD_MAX_AGE = 12;
+    private static final int YOUTH_MIN_AGE = 13;
+    private static final int YOUTH_MAX_AGE = 19;
 
-    public Fare(Distance distance, Surcharge surcharge, int age) {
-        fare = calculateFare(distance, surcharge, age);
+    private Integer age;
+    private Distance distance;
+    private Surcharge surcharge;
+    DiscountPolicy discountPolicy;
+
+    public Fare(Distance distance, Surcharge surcharge, Integer age) {
+        this.age = age;
+        this.distance = distance;
+        this.surcharge = surcharge;
+
+        injectDiscountPolicy();
     }
 
-    private int calculateFare(Distance distance, Surcharge surcharge, int age) {
-        int fareByDistance = adjustFarePolicyByDistance(distance.value()) + surcharge.value();
-        double discountFareByAge = adjustFarePolicyByAge(fareByDistance, age);
-        return (int) discountFareByAge;
+    private void injectDiscountPolicy() {
+        if (age == null) {
+            discountPolicy = new AdultDiscount();
+            return;
+        }
+
+        if (age < CHILD_MIN_AGE) {
+            throw new IllegalArgumentException(CAN_NOT_CHARGE_EXCEPTION);
+        }
+
+        if (age >= CHILD_MIN_AGE && age <= CHILD_MAX_AGE) {
+            discountPolicy = new ChildDiscount();
+            return;
+        }
+
+        if (age >= YOUTH_MIN_AGE && age <= YOUTH_MAX_AGE) {
+            discountPolicy = new YouthDiscount();
+            return;
+        }
+
+        discountPolicy = new AdultDiscount();
     }
 
     private int adjustFarePolicyByDistance(int distance) {
+
         int fareByDistance = DEFAULT_FARE;
 
-        if (distance > FarePolicyByDistance.POLICY_UNDER_FIFTY.getMinDistanceStandard()
-                && distance < FarePolicyByDistance.POLICY_OVER_FIFTY.getMinDistanceStandard()) {
-            fareByDistance += calculateOverFare(distance - FarePolicyByDistance.POLICY_UNDER_FIFTY.getMinDistanceStandard(),
-                    FarePolicyByDistance.POLICY_UNDER_FIFTY.getUnitDistanceForCharge());
+        if (distance > MIN_DISTANCE_STANDARD && distance < MAX_DISTANCE_STANDARD) {
+            fareByDistance += calculateFareByDistance(distance - MIN_DISTANCE_STANDARD, BETWEEN_TEN_AND_FIFTY_EXTRA_DISTANCE_PER);
         }
 
-        if (distance >= FarePolicyByDistance.POLICY_OVER_FIFTY.getMinDistanceStandard()) {
-            fareByDistance += calculateOverFare(FarePolicyByDistance.POLICY_OVER_FIFTY.getMinDistanceStandard() - FarePolicyByDistance.POLICY_UNDER_FIFTY.getMinDistanceStandard(),
-                    FarePolicyByDistance.POLICY_UNDER_FIFTY.getUnitDistanceForCharge());
-            fareByDistance += calculateOverFare(distance - FarePolicyByDistance.POLICY_OVER_FIFTY.getMinDistanceStandard(),
-                    FarePolicyByDistance.POLICY_OVER_FIFTY.getUnitDistanceForCharge());
+        if (distance >= MAX_DISTANCE_STANDARD) {
+            fareByDistance += calculateFareByDistance(MAX_DISTANCE_STANDARD - MIN_DISTANCE_STANDARD, BETWEEN_TEN_AND_FIFTY_EXTRA_DISTANCE_PER);
+            fareByDistance += calculateFareByDistance(distance - MAX_DISTANCE_STANDARD, OVER_FIFTY_EXTRA_DISTANCE_PER);
         }
 
         return fareByDistance;
     }
 
-    private double adjustFarePolicyByAge(int fare, int age) {
-        if (age >= DiscountPolicyByAge.CHILDREN_DISCOUNT.getMinAge()
-                && age <= DiscountPolicyByAge.CHILDREN_DISCOUNT.getMaxAge()) {
-            return (fare - DiscountPolicyByAge.CHILDREN_DISCOUNT.getDeduction()) * DiscountPolicyByAge.CHILDREN_DISCOUNT.getPriceRate();
-        }
-
-        if (age >= DiscountPolicyByAge.YOUTH_DISCOUNT.getMinAge() && age <= DiscountPolicyByAge.YOUTH_DISCOUNT.getMaxAge()) {
-            return (fare - DiscountPolicyByAge.YOUTH_DISCOUNT.getDeduction()) * DiscountPolicyByAge.YOUTH_DISCOUNT.getPriceRate();
-        }
-
-        return fare;
-    }
-
-    private int calculateOverFare(int distance, int standard) {
-        return (int) ((Math.ceil((distance - 1) / standard) + 1) * 100);
+    public int calculateFareByDistance(int distance, int extraDistancePer) {
+        return (int) ((Math.ceil((distance - 1) / extraDistancePer) + 1) * 100);
     }
 
     public int value() {
-        return fare;
+        int fareByDistance = adjustFarePolicyByDistance(distance.value()) + surcharge.value();
+        double discountFareByAge = discountPolicy.discount(fareByDistance);
+        return (int) discountFareByAge;
     }
 }
