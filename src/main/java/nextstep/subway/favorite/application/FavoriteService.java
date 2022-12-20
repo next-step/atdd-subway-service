@@ -24,6 +24,7 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
     }
 
+    @Transactional
     public FavoriteResponse createFavorite(LoginMember loginMember, FavoriteCreateRequest request) {
 
         Station sourceStation = stationRepository.findById(request.getSource())
@@ -41,6 +42,7 @@ public class FavoriteService {
                 favoriteRepository.findByMemberId(loginMember.getId()));
     }
 
+    @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
         loginMember.checkValidLoginMember();
         Favorite favorite = favoriteRepository.getById(id);
