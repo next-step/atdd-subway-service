@@ -69,3 +69,9 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 3. 로직을 옮기기
     * 기존 로직을 지우지 말고 새로운 로직을 만들어 수행
     * 정상 동작 확인 후 기존 로직 제거
+
+### 2단계 - 경로 조회 기능
+
+1. 요구사항
+   - [X] 최단 경로 조회 인수 테스트 만들기
+   - [X] 최단 경로 조회 기능 구현하기

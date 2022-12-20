@@ -81,7 +81,7 @@ class LineTest {
         // when && then
         assertThatThrownBy(() -> 지하철_2호선.addSection(신림_강남_구간))
             .isInstanceOf(IllegalArgumentException.class)
-            .hasMessage("기존 노선의 거리보다 작거나 같을 수 없습니다.");
+            .hasMessage("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
     }
 
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import java.util.Collection;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -37,8 +38,8 @@ public class LineService {
     }
 
     private Section getSection(LineRequest request) {
-        Station upStation = stationService.findById(request.getUpStationId());
-        Station downStation = stationService.findById(request.getDownStationId());
+        Station upStation = stationService.findStationById(request.getUpStationId());
+        Station downStation = stationService.findStationById(request.getDownStationId());
         return new Section(upStation, downStation, request.getDistance());
     }
 
@@ -82,5 +83,18 @@ public class LineService {
         Line line = findLineById(lineId);
         Station station = stationService.findStationById(stationId);
         line.deleteSection(station);
+    }
+
+    public List<Line> findLineAll() {
+        return lineRepository.findAll();
+    }
+
+    public List<Section> findSections() {
+        return lineRepository.findAll()
+            .stream()
+            .map(Line::getSections)
+            .flatMap(Collection::stream)
+            .distinct()
+            .collect(Collectors.toList());
     }
 }

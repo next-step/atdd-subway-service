@@ -1,5 +1,7 @@
 package nextstep.subway.line.domain;
 
+import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -7,6 +9,7 @@ import java.util.stream.Stream;
 
 @Entity
 public class Section {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -23,6 +26,7 @@ public class Section {
     @JoinColumn(name = "down_station_id", foreignKey = @ForeignKey(name = "fk_section_down_station"))
     private Station downStation;
 
+    @Embedded
     private Distance distance;
 
     protected Section() {
@@ -72,23 +76,40 @@ public class Section {
         this.line = line;
     }
 
+    public boolean isSameUpStationBySection(Section section) {
+        return upStation.isSameStation(section.getUpStation());
+    }
+
+    public boolean isSameDownStationBySection(Section section) {
+        return downStation.isSameStation(section.getDownStation());
+    }
+
+    public void updateUpStation(Section newSection) {
+        validCheckIsOverDistance(newSection.distance.value());
+        this.distance = this.distance.subtract(newSection.distance);
+        this.upStation = newSection.downStation;
+    }
+
+    public void updateDownStation(Section newSection) {
+        validCheckIsOverDistance(newSection.distance.value());
+        this.distance = this.distance.subtract(newSection.distance);
+        this.downStation = newSection.upStation;
+    }
+
+    private void validCheckIsOverDistance(int checkTargetDistance) {
+        if (distance.isOverDistance(checkTargetDistance)) {
+            throw new IllegalArgumentException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+        }
+    }
+
     public Stream<Station> streamOfStation() {
         return Stream.of(upStation, downStation);
     }
 
-    public void connectUpStationToDownStation(Section addSection) {
-        distance.minus(addSection.getDistance());
-        this.upStation = addSection.downStation;
-    }
-
-    public void connectDownStationToUpStation(Section addSection) {
-        distance.minus(addSection.getDistance());
-        this.downStation = addSection.upStation;
-    }
 
     public void mergeDownSection(Section downSection) {
         this.downStation = downSection.downStation;
-        this.distance.plus(downSection.distance);
+        this.distance.add(downSection.distance);
     }
 
     public boolean hasUpStation(Station station) {
@@ -98,4 +119,9 @@ public class Section {
     public boolean hasDownStation(Station station) {
         return downStation.equals(station);
     }
+
+    public List<Station> getStations() {
+        return Arrays.asList(upStation, downStation);
+    }
+
 }

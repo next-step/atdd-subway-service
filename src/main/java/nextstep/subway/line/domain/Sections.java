@@ -20,16 +20,26 @@ public class Sections {
         return sections;
     }
 
-    public void addSection(Section section) {
-        if (!sections.isEmpty()) {
-            validateStations(section);
-            ifConnectedUpStation(section);
-            ifConnectedDownStation(section);
-        }
-        sections.add(section);
+    public void addSection(Section addSection) {
+        validateStations(addSection);
+        Optional<Section> upSection = findUpSection(addSection);
+        Optional<Section> downSection = findDownSection(addSection);
+
+        upSection.ifPresent(section -> section.updateUpStation(addSection));
+        downSection.ifPresent(section -> section.updateDownStation(addSection));
+        sections.add(addSection);
+    }
+    private Optional<Section> findUpSection(Section addSection) {
+        return sections.stream().filter(addSection::isSameUpStationBySection).findFirst();
     }
 
+    private Optional<Section> findDownSection(Section addSection) {
+        return sections.stream().filter(addSection::isSameDownStationBySection).findFirst();
+    }
     private void validateStations(Section section) {
+        if (sections.isEmpty()) {
+            return;
+        }
         boolean isExistsUpStation = containUpStation(section);
         boolean isExistsDownStation = containDownStation(section);
         if (isExistsUpStation && isExistsDownStation) {
@@ -55,26 +65,6 @@ public class Sections {
             .flatMap(Section::streamOfStation)
             .distinct()
             .collect(Collectors.toList());
-    }
-
-    private void ifConnectedUpStation(Section addSection) {
-        sections.forEach(section -> checkConnectedUpStation(addSection, section));
-    }
-
-    private void checkConnectedUpStation(Section addSection, Section section) {
-        if (section.getUpStation().equals(addSection.getUpStation())) {
-            section.connectUpStationToDownStation(addSection);
-        }
-    }
-
-    private void ifConnectedDownStation(Section addSection) {
-        sections.forEach(section -> checkConnectedDownStation(addSection, section));
-    }
-
-    private void checkConnectedDownStation(Section addSection, Section section) {
-        if (section.getDownStation().equals(addSection.getDownStation())) {
-            section.connectDownStationToUpStation(addSection);
-        }
     }
 
     public void deleteSection(Station station) {
