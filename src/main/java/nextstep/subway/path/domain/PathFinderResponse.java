@@ -3,11 +3,11 @@ package nextstep.subway.path.domain;
 import java.util.List;
 import nextstep.subway.station.domain.Station;
 
-public final class ShortestPath {
+public final class PathFinderResponse {
     private final List<Station> stations;
     private final int distance;
 
-    public ShortestPath(List<Station> stations, int distance) {
+    public PathFinderResponse(List<Station> stations, int distance) {
         this.stations = stations;
         this.distance = distance;
     }

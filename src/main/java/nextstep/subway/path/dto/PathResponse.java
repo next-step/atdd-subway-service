@@ -1,7 +1,7 @@
 package nextstep.subway.path.dto;
 
 import java.util.List;
-import nextstep.subway.path.domain.ShortestPath;
+import nextstep.subway.path.domain.PathFinderResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -17,8 +17,9 @@ public class PathResponse {
         this.distance = distance;
     }
 
-    public static PathResponse from(ShortestPath shortestPath) {
-        return new PathResponse(StationResponse.of(shortestPath.getStations()), shortestPath.getDistance());
+    public static PathResponse from(PathFinderResponse pathFinderResponse) {
+        return new PathResponse(StationResponse.of(
+            pathFinderResponse.getStations()), pathFinderResponse.getDistance());
     }
 
     public static PathResponse from(List<Station> stations, int totalDistance) {

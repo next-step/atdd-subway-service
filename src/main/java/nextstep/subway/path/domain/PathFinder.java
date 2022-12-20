@@ -19,14 +19,10 @@ public class PathFinder {
     public static final String STATION_NOT_FOUND = "존재하지 않는 역입니다.";
     public static final String NOT_CONNECTED_SOURCE_TARGET = "출발역과 도착역이 연결되어 있지 않습니다.";
 
-    public ShortestPath findShortestPath(
-        List<Line> lines,
-        Station sourceStation,
-        Station targetStation
-    ) {
-        validateNonEqualSourceTarget(sourceStation, targetStation);
+    public PathFinderResponse findShortestPath(PathFinderRequest request) {
+        validateNonEqualSourceTarget(request.getSource(), request.getTarget());
 
-        return findShortestPath(createGraph(lines), sourceStation, targetStation);
+        return findShortestPath(createGraph(request.getLines()), request.getSource(), request.getTarget());
     }
 
     private void validateNonEqualSourceTarget(Station sourceStation, Station targetStation) {
@@ -62,7 +58,7 @@ public class PathFinder {
             .collect(Collectors.toList());
     }
 
-    private static ShortestPath findShortestPath(
+    private static PathFinderResponse findShortestPath(
         WeightedGraph<Station, DefaultWeightedEdge> graph,
         Station sourceStation,
         Station targetStation
@@ -73,7 +69,7 @@ public class PathFinder {
 
         validateNonNullPath(path);
 
-        return new ShortestPath(path.getVertexList(), (int) path.getWeight());
+        return new PathFinderResponse(path.getVertexList(), (int) path.getWeight());
     }
 
     private static void validateGraphContainsSourceAndTarget(
@@ -91,4 +87,5 @@ public class PathFinder {
             throw new IllegalPathException(NOT_CONNECTED_SOURCE_TARGET);
         }
     }
+
 }

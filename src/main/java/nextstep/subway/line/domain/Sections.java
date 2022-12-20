@@ -179,7 +179,7 @@ public class Sections {
             line,
             prevSection.getUpStation(),
             nextSection.getDownStation(),
-            prevSection.addDistance(nextSection));
+            prevSection.getDistance().plus(nextSection.getDistance()));
     }
 
 }

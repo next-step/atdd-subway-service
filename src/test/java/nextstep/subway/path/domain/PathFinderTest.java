@@ -50,33 +50,33 @@ class PathFinderTest {
 
     @Test
     void 출발역과_도착역이_같을경우_에러() {
-        assertThatThrownBy(() -> pathFinder.findShortestPath(List.of(신분당선, 이호선, 삼호선), 강남역, 강남역))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(PathFinderRequest.from(List.of(신분당선, 이호선, 삼호선), 강남역, 강남역)))
             .isInstanceOf(IllegalPathException.class)
             .hasMessageContaining("출발역과 도착역이 동일합니다.");
     }
 
     @Test
     void 출발역과_도착역이_연결되지않을경우_에러() {
-        assertThatThrownBy(() -> pathFinder.findShortestPath(List.of(신분당선, 일호선, 이호선, 삼호선), 강남역, 종각역))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(PathFinderRequest.from(List.of(신분당선, 일호선, 이호선, 삼호선), 강남역, 종각역)))
             .isInstanceOf(IllegalPathException.class)
             .hasMessageContaining("출발역과 도착역이 연결되어 있지 않습니다.");
     }
 
     @Test
     void 출발역_또는_도착역이_노선목록에_존재하지않는경우_에러() {
-        assertThatThrownBy(() -> pathFinder.findShortestPath(List.of(신분당선), 시청역, 종각역))
+        assertThatThrownBy(() -> pathFinder.findShortestPath(PathFinderRequest.from(List.of(신분당선), 시청역, 종각역)))
             .isInstanceOf(IllegalPathException.class)
             .hasMessageContaining("존재하지 않는 역입니다.");
     }
 
     @Test
     void 출발역과_도착역이_노선목록에_존재하는경우_최단경로반환() {
-        ShortestPath result = pathFinder.findShortestPath(List.of(신분당선, 이호선, 삼호선), 강남역, 남부터미널역);
+        PathFinderResponse result = pathFinder.findShortestPath(PathFinderRequest.from(List.of(신분당선, 이호선, 삼호선), 강남역, 남부터미널역));
         assertShortestPathOrderAndDistance(result, List.of(강남역, 양재역, 남부터미널역), 12);
     }
 
     private void assertShortestPathOrderAndDistance(
-        ShortestPath result,
+        PathFinderResponse result,
         List<Station> expectedStations,
         int expectedTotalDistance
     ) {

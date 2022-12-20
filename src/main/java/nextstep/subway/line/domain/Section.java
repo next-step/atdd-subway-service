@@ -103,9 +103,4 @@ public class Section {
     public boolean equalDownStation(Section section) {
         return Objects.equals(downStation, section.getDownStation());
     }
-
-    public Distance addDistance(Section section) {
-        return distance.plus(section.distance);
-    }
-
 }
