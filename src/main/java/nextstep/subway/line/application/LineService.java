@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import java.util.Collection;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
@@ -86,5 +87,14 @@ public class LineService {
 
     public List<Line> findLineAll() {
         return lineRepository.findAll();
+    }
+
+    public List<Section> findSections() {
+        return lineRepository.findAll()
+            .stream()
+            .map(Line::getSections)
+            .flatMap(Collection::stream)
+            .distinct()
+            .collect(Collectors.toList());
     }
 }

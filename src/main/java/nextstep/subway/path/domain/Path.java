@@ -15,6 +15,10 @@ public class Path {
         this.distance = distance;
     }
 
+    public static Path of(List<Station> stations, int distance) {
+        return new Path(stations, distance);
+    }
+
     public List<Station> getStations() {
         return stations;
     }
