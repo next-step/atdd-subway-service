@@ -8,6 +8,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.constants.ErrorMessages;
 import nextstep.subway.station.domain.Station;
 
 @Entity
@@ -31,7 +33,36 @@ public class Favorite {
     public Favorite() {
     }
 
+    private Favorite(Long memberId, Station sourceStation, Station targetStation) {
+        this.memberId = memberId;
+        this.sourceStation = sourceStation;
+        this.targetStation = targetStation;
+    }
+
+    public static Favorite create(LoginMember loginMember, Station sourceStation, Station targetStation) {
+        validateMemberExist(loginMember);
+        return new Favorite(loginMember.getId(), sourceStation, targetStation);
+    }
+
+    private static void validateMemberExist(LoginMember loginMember) {
+        if (loginMember == null || loginMember.getId() == null) {
+            throw new IllegalArgumentException(ErrorMessages.UNAUTHORIZED_MEMBER_REQUESTED_FAVORITE_CREATION);
+        }
+    }
+
     public Long getId() {
         return id;
+    }
+
+    public Long getMemberId() {
+        return memberId;
+    }
+
+    public Station getSourceStation() {
+        return sourceStation;
+    }
+
+    public Station getTargetStation() {
+        return targetStation;
     }
 }
