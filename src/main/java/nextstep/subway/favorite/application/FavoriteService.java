@@ -42,6 +42,8 @@ public class FavoriteService {
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        //
+        loginMember.checkValidLoginMember();
+        Favorite favorite = favoriteRepository.getById(id);
+        favoriteRepository.delete(favorite);
     }
 }
