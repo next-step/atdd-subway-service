@@ -66,7 +66,8 @@ public class MemberAcceptanceTest extends MemberAcceptanceTestFixture {
         나의_정보_조회됨(response, EMAIL, AGE);
 
         // When 나의 정보 수정 요청
-        ExtractableResponse<Response> response2 = 나의_정보_수정_요청(myAccessToken, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+        ExtractableResponse<Response> response2 = 나의_정보_수정_요청(myAccessToken,
+                new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
         // Then 나의 정보 수정됨
         나의_정보_수정됨(response2);
         String myNewAccessToken = 토큰_값(response2);

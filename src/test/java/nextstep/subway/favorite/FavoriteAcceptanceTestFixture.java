@@ -1,7 +1,7 @@
 package nextstep.subway.favorite;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.토큰_값;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_되어_있음;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.토큰_값;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestFixture.지하철_노선에_지하철역_등록되어_있음;
 import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -53,7 +53,8 @@ public class FavoriteAcceptanceTestFixture extends AcceptanceTest {
         myAccessToken = 토큰_값(로그인_되어_있음(new TokenRequest(EMAIL, PASSWORD)));
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, FavoriteCreateRequest favoriteCreateRequest) {
+    public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken,
+            FavoriteCreateRequest favoriteCreateRequest) {
         return RestAssured
                 .given().log().all()
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +65,8 @@ public class FavoriteAcceptanceTestFixture extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_등록되어_있음(String accessToken, FavoriteCreateRequest favoriteCreateRequest) {
+    public static ExtractableResponse<Response> 즐겨찾기_등록되어_있음(String accessToken,
+            FavoriteCreateRequest favoriteCreateRequest) {
         return 즐겨찾기_생성_요청(accessToken, favoriteCreateRequest);
     }
 

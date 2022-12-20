@@ -1,8 +1,17 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.*;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.즐겨찾기_등록되어_있음;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.즐겨찾기_목록;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.즐겨찾기_삭제_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.즐겨찾기_생성_요청;
+import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.즐겨찾기_정보_조회_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestFixture.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.MemberAcceptanceTestFixture.*;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_삭제_실패;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_삭제_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_수정_실패;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_수정_요청;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_조회_실패;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_조회_요청;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
@@ -64,12 +73,13 @@ public class AuthAcceptanceTest extends AuthAcceptanceTestFixture {
         String notValidToken = "@@@@@";
 
         // When 유효하지 않은 토큰 사용하여 나의 정보 조회 요청하면
-        ExtractableResponse<Response> response1 =  나의_정보_조회_요청(notValidToken);
+        ExtractableResponse<Response> response1 = 나의_정보_조회_요청(notValidToken);
         // Then 나의 정보 조회에 실패한다
         나의_정보_조회_실패(response1);
 
         // When 유효하지 않은 토큰 사용하여 나의 정보 수정 요청하면
-        ExtractableResponse<Response> response2 = 나의_정보_수정_요청(notValidToken, new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
+        ExtractableResponse<Response> response2 = 나의_정보_수정_요청(notValidToken,
+                new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
         // Then 나의 정보 수정에 실패한다
         나의_정보_수정_실패(response2);
 
@@ -116,7 +126,7 @@ public class AuthAcceptanceTest extends AuthAcceptanceTestFixture {
 
         // When 유효하지 않은 토큰 사용하여 즐겨찾기 생성 요청하면
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(강남역.getId(), 정자역.getId());
-        ExtractableResponse<Response> response =  즐겨찾기_생성_요청(notValidToken, favoriteCreateRequest);
+        ExtractableResponse<Response> response = 즐겨찾기_생성_요청(notValidToken, favoriteCreateRequest);
         // Then 즐겨찾기 생성에 실패한다
         토큰_인증_실패함(response);
 

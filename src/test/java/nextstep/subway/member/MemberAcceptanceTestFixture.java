@@ -1,7 +1,7 @@
 package nextstep.subway.member;
 
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.토큰_값;
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_되어_있음;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.토큰_값;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestFixture.지하철_노선에_지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -77,7 +77,8 @@ public class MemberAcceptanceTestFixture extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email, String password, Integer age) {
+    public static ExtractableResponse<Response> 회원_정보_수정_요청(ExtractableResponse<Response> response, String email,
+            String password, Integer age) {
         String uri = response.header("Location");
         MemberRequest memberRequest = new MemberRequest(email, password, age);
 

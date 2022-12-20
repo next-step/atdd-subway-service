@@ -23,7 +23,7 @@ public class FavoriteResponse {
     public static FavoriteResponse from(Favorite favorite) {
         return new FavoriteResponse(favorite.getId()
                 , StationResponse.of(favorite.getSourceStation())
-                ,StationResponse.of(favorite.getTargetStation()));
+                , StationResponse.of(favorite.getTargetStation()));
     }
 
     public static List<FavoriteResponse> getFavoriteResponsesFrom(List<Favorite> favorites) {
