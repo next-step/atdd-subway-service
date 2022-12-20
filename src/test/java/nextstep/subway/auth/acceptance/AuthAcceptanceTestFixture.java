@@ -39,7 +39,7 @@ public class AuthAcceptanceTestFixture extends AcceptanceTest {
                 .extract();
     }
 
-    public static ExtractableResponse<Response> 토큰_생성되어_있음(TokenRequest request) {
+    public static ExtractableResponse<Response> 로그인_되어_있음(TokenRequest request) {
         return 토큰_생성_요청(request);
     }
 

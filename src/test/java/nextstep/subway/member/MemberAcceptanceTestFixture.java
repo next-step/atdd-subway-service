@@ -1,7 +1,7 @@
 package nextstep.subway.member;
 
 import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.토큰_값;
-import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.토큰_생성되어_있음;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_되어_있음;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestFixture.지하철_노선에_지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -46,8 +46,8 @@ public class MemberAcceptanceTestFixture extends AcceptanceTest {
         지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 4);
         지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 정자역, 6);
 
-        회원_등록되어_있음(EMAIL, PASSWORD, 20);
-        myAccessToken = 토큰_값(토큰_생성되어_있음(new TokenRequest(EMAIL, PASSWORD)));
+        회원_등록되어_있음(EMAIL, PASSWORD, AGE);
+        myAccessToken = 토큰_값(로그인_되어_있음(new TokenRequest(EMAIL, PASSWORD)));
     }
 
     public static ExtractableResponse<Response> 회원_생성을_요청(String email, String password, Integer age) {
@@ -148,6 +148,7 @@ public class MemberAcceptanceTestFixture extends AcceptanceTest {
     }
 
     public static void 나의_정보_조회됨(ExtractableResponse<Response> response, String email, int age) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
         MemberResponse memberResponse = response.as(MemberResponse.class);
         assertThat(memberResponse.getId()).isNotNull();
         assertThat(memberResponse.getEmail()).isEqualTo(email);
