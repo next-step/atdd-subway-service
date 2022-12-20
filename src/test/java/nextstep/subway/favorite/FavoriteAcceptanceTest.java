@@ -72,13 +72,6 @@ public class FavoriteAcceptanceTest extends FavoriteAcceptanceTestFixture {
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(myAccessToken, favoriteCreateRequest);
         // Then 즐겨찾기 생성됨
         즐겨찾기_생성됨(response);
-        FavoriteResponse 생성된_즐겨찾기 = 즐겨찾기_정보(response);
-        StationResponse 생성된_즐겨찾기_출발역 = 생성된_즐겨찾기.getSource();
-        StationResponse 생성된_즐겨찾기_도착역 = 생성된_즐겨찾기.getTarget();
-        assertAll(
-                () -> assertThat(생성된_즐겨찾기_출발역.getId()).isEqualTo(favoriteCreateRequest.getSource()),
-                () -> assertThat(생성된_즐겨찾기_도착역.getId()).isEqualTo(favoriteCreateRequest.getTarget())
-        );
     }
 
     @DisplayName("즐겨찾기를 조회한다")

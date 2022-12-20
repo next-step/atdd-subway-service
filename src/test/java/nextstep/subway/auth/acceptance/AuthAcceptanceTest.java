@@ -121,12 +121,11 @@ public class AuthAcceptanceTest extends AuthAcceptanceTestFixture {
         // When 유효하지 않은 토큰 사용하여 즐겨찾기 조회 요청하면
         response = 즐겨찾기_정보_조회_요청(notValidToken);
         // Then 즐겨찾기 조회에 실패한다
-        즐겨찾기_조회_실패(response);
+        토큰_인증_실패함(response);
 
         // When 유효하지 않은 토큰 사용하여 즐겨찾기 삭제 요청하면
         response = 즐겨찾기_삭제_요청(notValidToken, 생성된_즐겨찾기.getId());
         // Then 즐겨찾기 삭제에 실패한다
-        즐겨찾기_삭제_실패(response);
+        토큰_인증_실패함(response);
     }
-
 }
