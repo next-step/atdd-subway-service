@@ -80,7 +80,7 @@ public class Line extends BaseEntity {
         return stations;
     }
 
-    private Station findUpStation() {
+    public Station findUpStation() {
         Station downStation = sections.get(0).getUpStation();
         while (downStation != null) {
             Station finalDownStation = downStation;
