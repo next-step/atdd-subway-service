@@ -23,10 +23,6 @@ public class PathResponse {
         this.stations = stations;
     }
 
-    public void add(StationResponse station) {
-        stations.add(station);
-    }
-
     public List<StationResponse> getStations() {
         return stations;
     }
