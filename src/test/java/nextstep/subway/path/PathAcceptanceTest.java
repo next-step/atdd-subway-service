@@ -60,10 +60,19 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setup() {
         super.setUp();
 
-        setUpStation();
-        setUpLine();
-        setUpLineSection();
+        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        동작역 = StationAcceptanceTest.지하철역_등록되어_있음("동작역").as(StationResponse.class);
+        석촌역 = StationAcceptanceTest.지하철역_등록되어_있음("석촌역").as(StationResponse.class);
+        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
+        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
+        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
+        구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("구호선", "bg-red-600", 동작역.getId(), 석촌역.getId(), 13)).as(LineResponse.class);
+        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분단성", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
+
+        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
     }
 
     @DisplayName("출발역과 도착역 사이 최단 경로 조회")
@@ -102,26 +111,6 @@ public class PathAcceptanceTest extends AcceptanceTest {
         최단_경로_조회_실패_검증(response.statusCode(), HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
-    @Test
-    public void getDijkstraShortestPath() {
-        WeightedMultigraph<String, DefaultWeightedEdge> graph
-                = new WeightedMultigraph(DefaultWeightedEdge.class);
-        graph.addVertex("v1");
-        graph.addVertex("v2");
-        graph.addVertex("v3");
-        graph.setEdgeWeight(graph.addEdge("v1", "v2"), 2);
-        graph.setEdgeWeight(graph.addEdge("v2", "v3"), 2);
-        graph.setEdgeWeight(graph.addEdge("v1", "v3"), 100);
-
-        DijkstraShortestPath dijkstraShortestPath
-                = new DijkstraShortestPath(graph);
-        List<String> shortestPath
-                = dijkstraShortestPath.getPath("v3", "v1").getVertexList();
-
-        최단_경로_조회_실패_검증(shortestPath.size(), 3);
-    }
-
-
     private static void 최단경로_조회_검증(ExtractableResponse<Response> response, int distance) {
         assertAll(
                 () -> assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value()),
@@ -147,23 +136,4 @@ public class PathAcceptanceTest extends AcceptanceTest {
                 .extract();
     }
 
-    public void setUpLineSection() {
-        LineSectionAcceptanceTest.지하철_노선에_지하철역_등록되어_있음(삼호선, 교대역, 남부터미널역, 3);
-    }
-
-    public void setUpStation() {
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        동작역 = StationAcceptanceTest.지하철역_등록되어_있음("동작역").as(StationResponse.class);
-        석촌역 = StationAcceptanceTest.지하철역_등록되어_있음("석촌역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
-    }
-
-    public void setUpLine() {
-        이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10)).as(LineResponse.class);
-        삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5)).as(LineResponse.class);
-        구호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("구호선", "bg-red-600", 동작역.getId(), 석촌역.getId(), 13)).as(LineResponse.class);
-        신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(new LineRequest("신분단성", "bg-red-600", 강남역.getId(), 양재역.getId(), 10)).as(LineResponse.class);
-    }
 }

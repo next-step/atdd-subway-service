@@ -97,8 +97,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(Arrays.asList(삼호선, 이호선));
         // when && then
         assertThatThrownBy(() -> pathService.findShortPath(1L, 1l))
-                .isInstanceOf(IllegalArgumentException.class)
-                .hasMessage("출발역과 도착역이 같을 경우 최단 거리를 조회할 수 없습니다.");
+                .isInstanceOf(IllegalArgumentException.class);
     }
 
     @DisplayName("출발역과 도착역이 연결이 되어 있지 않은 경우 예외발생")
