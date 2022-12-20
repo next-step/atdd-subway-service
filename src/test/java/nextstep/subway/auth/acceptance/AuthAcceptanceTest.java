@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertAll;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
+import java.util.List;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.favorite.dto.FavoriteCreateRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
@@ -110,7 +111,8 @@ public class AuthAcceptanceTest extends AuthAcceptanceTestFixture {
         지하철_노선에_지하철역_등록되어_있음(신분당선, 강남역, 양재역, 4);
         지하철_노선에_지하철역_등록되어_있음(신분당선, 양재역, 정자역, 6);
         String myAccessToken = 토큰_값(로그인_되어_있음(new TokenRequest(EMAIL, PASSWORD)));
-        FavoriteResponse 생성된_즐겨찾기 = 즐겨찾기_등록되어_있음(myAccessToken, new FavoriteCreateRequest(광교역.getId(), 양재역.getId()));
+        즐겨찾기_등록되어_있음(myAccessToken, new FavoriteCreateRequest(광교역.getId(), 양재역.getId()));
+        List<FavoriteResponse> 조회된_즐겨찾기_목록 = 즐겨찾기_목록(즐겨찾기_정보_조회_요청(myAccessToken));
 
         // When 유효하지 않은 토큰 사용하여 즐겨찾기 생성 요청하면
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(강남역.getId(), 정자역.getId());
@@ -124,7 +126,7 @@ public class AuthAcceptanceTest extends AuthAcceptanceTestFixture {
         토큰_인증_실패함(response);
 
         // When 유효하지 않은 토큰 사용하여 즐겨찾기 삭제 요청하면
-        response = 즐겨찾기_삭제_요청(notValidToken, 생성된_즐겨찾기.getId());
+        response = 즐겨찾기_삭제_요청(notValidToken, 조회된_즐겨찾기_목록.get(0).getId());
         // Then 즐겨찾기 삭제에 실패한다
         토큰_인증_실패함(response);
     }

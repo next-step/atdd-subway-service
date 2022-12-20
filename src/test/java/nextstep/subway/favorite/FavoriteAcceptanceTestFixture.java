@@ -64,8 +64,8 @@ public class FavoriteAcceptanceTestFixture extends AcceptanceTest {
                 .extract();
     }
 
-    public static FavoriteResponse 즐겨찾기_등록되어_있음(String accessToken, FavoriteCreateRequest favoriteCreateRequest) {
-        return 즐겨찾기_정보(즐겨찾기_생성_요청(accessToken, favoriteCreateRequest));
+    public static ExtractableResponse<Response> 즐겨찾기_등록되어_있음(String accessToken, FavoriteCreateRequest favoriteCreateRequest) {
+        return 즐겨찾기_생성_요청(accessToken, favoriteCreateRequest);
     }
 
     public static void 즐겨찾기_생성됨(ExtractableResponse<Response> response) {
