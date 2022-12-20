@@ -9,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.constants.ErrorMessages;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -67,7 +68,7 @@ public class Section {
 
     public boolean isStationOppositeOf(Station station, StationPosition stationPosition) {
         if (stationPosition == null) {
-            throw new IllegalArgumentException("판단 기준 StationPosition 누락");
+            throw new IllegalArgumentException(ErrorMessages.STATION_POSITION_NEEDED);
         }
         return stationPosition.isOpposite(positionOfStation(station));
     }
@@ -97,14 +98,14 @@ public class Section {
 
     private void checkAlreadyExist(Stations stations) {
         if (stations.contains(upStation) && stations.contains(downStation)) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new IllegalArgumentException(ErrorMessages.LINE_STATION_ALREADY_EXIST);
         }
     }
 
     private void checkSectionAddable(Stations stations) {
         if (!stations.isEmpty()
                 && !stations.contains(upStation) && !stations.contains(downStation)) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new IllegalArgumentException(ErrorMessages.NO_STATION_MATCH);
         }
     }
 
@@ -128,7 +129,7 @@ public class Section {
 
     private void validateDistanceOfSectionToAdd(Section section) {
         if (compareDistance(section) >= 0) {
-            throw new RuntimeException("역과 역 사이의 거리보다 좁은 거리를 입력해주세요");
+            throw new IllegalArgumentException(ErrorMessages.LINE_STATION_DISTANCE_TOO_LONG);
         }
     }
 
