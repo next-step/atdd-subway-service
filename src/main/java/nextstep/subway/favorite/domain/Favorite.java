@@ -42,12 +42,13 @@ public class Favorite extends BaseEntity {
     public void validateDuplicate(List<Favorite> favorites) {
 
         boolean isDuplicated = favorites.stream()
-                .anyMatch(favorite -> this.sourceId == favorite.getSourceId() && this.targetId == favorite.getTargetId());
+                .anyMatch(favorite -> this.sourceId.equals(favorite.getSourceId()) && this.targetId.equals(favorite.getTargetId()));
 
         if (isDuplicated) {
             throw new InvalidDataException(FAVORITE_ALREADY_EXITS_EXCEPTION);
         }
     }
+
     public Long getId() {
         return id;
     }

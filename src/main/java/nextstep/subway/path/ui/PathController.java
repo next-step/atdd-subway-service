@@ -1,9 +1,8 @@
 package nextstep.subway.path.ui;
 
-import nextstep.subway.common.exception.InvalidDataException;
-import nextstep.subway.common.exception.NoSuchDataException;
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.path.application.PathService;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -17,7 +16,8 @@ public class PathController {
     }
 
     @GetMapping
-    public ResponseEntity findBestPath(@RequestParam(name = "source") Long sourceId, @RequestParam(name = "target") Long targetId) {
-        return ResponseEntity.ok(pathService.findBestPath(sourceId, targetId));
+    public ResponseEntity findBestPath(@AuthenticationPrincipal(required = false) LoginMember loginMember,
+                                       @RequestParam(name = "source") Long sourceId, @RequestParam(name = "target") Long targetId) {
+        return ResponseEntity.ok(pathService.findBestPath(loginMember, sourceId, targetId));
     }
 }
