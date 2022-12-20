@@ -55,6 +55,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *   Scenario: 즐겨찾기를 관리
      *     When 즐겨찾기 생성을 요청
      *     Then 즐겨찾기 생성됨
+     *     When 동일 즐겨찾기 중복 생성을 요청
+     *     Then 즐겨찾기 생성 실패됨
      *     When 즐겨찾기 목록 조회 요청
      *     Then 즐겨찾기 목록 조회됨
      *     When 즐겨찾기 삭제 요청
@@ -67,6 +69,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(accessToken, FavoriteRequest.of(강남역.getId(), 양재역.getId()));
         // then: 즐겨찾기 생성됨
         즐겨찾기_추가_성공(createResponse);
+        // when: 즐겨찾기 중복 생성을 요청
+        ExtractableResponse<Response> recreateResponse = 즐겨찾기_추가_요청(accessToken, FavoriteRequest.of(강남역.getId(), 양재역.getId()));
+        // then: 즐겨찾기 생성됨
+        즐겨찾기_추가_실패(recreateResponse);
         // when: 즐겨찾기 목록 조회 요청
         ExtractableResponse<Response> getResponse = 즐겨찾기_조회_요청(accessToken);
         // then: 즐겨찾기 생성됨
@@ -105,6 +111,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_추가_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.CREATED.value());
+    }
+
+    public static void 즐겨찾기_추가_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
     public static void 즐겨찾기_조회_성공(ExtractableResponse<Response> response) {

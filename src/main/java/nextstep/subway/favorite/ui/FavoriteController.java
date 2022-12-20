@@ -29,4 +29,9 @@ public class FavoriteController {
         List<FavoriteResponse> favorites = favoriteService.findFavorites(loginMember.getId());
         return ResponseEntity.ok().body(favorites);
     }
+
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity handleIllegalArgsException(RuntimeException e) {
+        return ResponseEntity.badRequest().build();
+    }
 }

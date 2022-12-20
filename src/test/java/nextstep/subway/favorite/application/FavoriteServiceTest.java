@@ -31,10 +31,16 @@ public class FavoriteServiceTest {
 
     @Mock
     private FavoriteRepository favoriteRepository;
+    
+    private Station 강남역;
+    private Station 양재역;
+
 
     @BeforeEach
     void setUp() {
         favoriteService = new FavoriteService(memberService, stationService, favoriteRepository);
+        강남역 = new Station("강남역");
+        양재역 = new Station("양재역");
     }
 
 
@@ -43,8 +49,8 @@ public class FavoriteServiceTest {
     void 즐겨찾기를_생성한다() {
         // given
         when(memberService.findMemberById(1L)).thenReturn(new Member(EMAIL, PASSWORD, AGE));
-        when(stationService.findStationById(1L)).thenReturn(new Station("강남역"));
-        when(stationService.findStationById(2L)).thenReturn(new Station("양재역"));
+        when(stationService.findStationById(1L)).thenReturn(강남역);
+        when(stationService.findStationById(2L)).thenReturn(양재역);
 
         // when
         FavoriteResponse favorite = favoriteService.createFavorite(1L, FavoriteRequest.of(1L, 2L));
@@ -58,8 +64,6 @@ public class FavoriteServiceTest {
     @Test
     void 즐겨찾기를_조회한다() {
         // given
-        Station 강남역 = new Station("강남역");
-        Station 양재역 = new Station("양재역");
         Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
         사용자.addFavorite(강남역, 양재역);
 
