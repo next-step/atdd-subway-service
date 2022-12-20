@@ -57,7 +57,7 @@ public class Line extends BaseEntity {
         sections.addWithValidationAndReassign(sectionToAdd);
     }
 
-    public void checkLineStationRemovable() {
+    private void checkLineStationRemovable() {
         if (sections.size() <= 1) {
             throw new RuntimeException(ErrorMessages.LAST_LINE_STATION_CANNOT_BE_DELETED);
         }
