@@ -1,5 +1,8 @@
 package nextstep.subway.auth.domain;
 
+import nextstep.subway.auth.application.AuthorizationException;
+import nextstep.subway.constants.ErrorMessages;
+
 public class LoginMember {
     private Long id;
     private String email;
@@ -12,6 +15,16 @@ public class LoginMember {
         this.id = id;
         this.email = email;
         this.age = age;
+    }
+
+    public boolean isEmpty() {
+        return (id == null);
+    }
+
+    public void checkValidLoginMember() {
+        if (isEmpty()) {
+            throw new AuthorizationException(ErrorMessages.UNAUTHORIZED_MEMBER_REQUESTED_FAVORITE_CREATION);
+        }
     }
 
     public Long getId() {

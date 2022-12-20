@@ -10,7 +10,7 @@ public class Distance implements Comparable<Distance> {
     @Column(nullable = false)
     private int distance;
 
-    private Distance() {
+    protected Distance() {
     }
 
     public Distance(int distance) {
