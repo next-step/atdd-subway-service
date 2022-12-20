@@ -61,6 +61,8 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
      *     Then 즐겨찾기 목록 조회됨
      *     When 즐겨찾기 삭제 요청
      *     Then 즐겨찾기 삭제됨
+     *     When 존재하지 않는 즐겨찾기 삭제 요청
+     *     Then 즐겨찾기 삭제 실패
      */
     @DisplayName("즐겨찾기를 추가, 조회, 삭제한다")
     @Test
@@ -77,11 +79,21 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> getResponse = 즐겨찾기_조회_요청(accessToken);
         // then: 즐겨찾기 생성됨
         즐겨찾기_조회_성공(getResponse);
+
+        // when: 자신의 것이 아닌 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> noAuthDeleteResponse = 즐겨찾기_삭제_요청("fakeToken", 1L);
+        // then: 즐겨찾기 삭제 실패
+        즐겨찾기_삭제_실패(noAuthDeleteResponse);
+
         // when: 즐겨찾기 삭제 요청
         List<StationResponse> stationResponses = getResponse.jsonPath().get();
         ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, 1L);
         // then: 즐겨찾기 삭제됨
         즐겨찾기_삭제_성공(deleteResponse);
+        // when: 존재하지 않는 즐겨찾기 삭제 요청
+        ExtractableResponse<Response> reDeleteResponse = 즐겨찾기_삭제_요청(accessToken, 1L);
+        // then: 즐겨찾기 삭제 실패
+        즐겨찾기_삭제_실패(reDeleteResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, FavoriteRequest params) {
@@ -129,6 +141,10 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
 
     public static void 즐겨찾기_삭제_성공(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static void 즐겨찾기_삭제_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
     }
 
 }
