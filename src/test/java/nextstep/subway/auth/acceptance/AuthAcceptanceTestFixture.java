@@ -54,4 +54,8 @@ public class AuthAcceptanceTestFixture extends AcceptanceTest {
     public static void 토큰_생성_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
+
+    public static void 토큰_인증_실패함(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
+    }
 }

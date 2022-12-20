@@ -116,7 +116,7 @@ public class AuthAcceptanceTest extends AuthAcceptanceTestFixture {
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(강남역.getId(), 정자역.getId());
         ExtractableResponse<Response> response =  즐겨찾기_생성_요청(notValidToken, favoriteCreateRequest);
         // Then 즐겨찾기 생성에 실패한다
-        즐겨찾기_생성_실패(response);
+        토큰_인증_실패함(response);
 
         // When 유효하지 않은 토큰 사용하여 즐겨찾기 조회 요청하면
         response = 즐겨찾기_정보_조회_요청(notValidToken);

@@ -47,7 +47,7 @@ public class FavoriteController {
     }
 
     @ExceptionHandler({DataIntegrityViolationException.class, IllegalArgumentException.class})
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+    public ResponseEntity handleIllegalArgsException() {
         return ResponseEntity.badRequest().build();
     }
 }

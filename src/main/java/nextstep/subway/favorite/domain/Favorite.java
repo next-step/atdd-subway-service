@@ -8,6 +8,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import nextstep.subway.auth.application.AuthorizationException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.constants.ErrorMessages;
 import nextstep.subway.station.domain.Station;
@@ -46,7 +47,7 @@ public class Favorite {
 
     private static void validateMemberExist(LoginMember loginMember) {
         if (loginMember == null || loginMember.getId() == null) {
-            throw new IllegalArgumentException(ErrorMessages.UNAUTHORIZED_MEMBER_REQUESTED_FAVORITE_CREATION);
+            throw new AuthorizationException(ErrorMessages.UNAUTHORIZED_MEMBER_REQUESTED_FAVORITE_CREATION);
         }
     }
 
