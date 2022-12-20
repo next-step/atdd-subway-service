@@ -138,4 +138,39 @@ public class Line extends BaseEntity {
     private boolean isExisted(Station station) {
         return getStations().stream().anyMatch(it -> it == station);
     }
+
+    public void removeLineStation(Long lineId, Long stationId) {
+        if (sections.size() <= 1) {
+            throw new IllegalArgumentException("역을 제거할 수 없습니다.");
+        }
+
+        Optional<Section> upLineStation = findUpStation(stationId);
+        Optional<Section> downLineStation = findDownStation(stationId);
+
+        if (upLineStation.isPresent() && downLineStation.isPresent()) {
+            createSection(upLineStation.get(), downLineStation.get());
+        }
+
+        upLineStation.ifPresent(it -> sections.remove(it));
+        downLineStation.ifPresent(it -> sections.remove(it));
+    }
+
+    private void createSection(Section upLineStation, Section downLineStation) {
+        Station newUpStation = downLineStation.getUpStation();
+        Station newDownStation = upLineStation.getDownStation();
+        int newDistance = upLineStation.getDistance() + downLineStation.getDistance();
+        sections.add(new Section(this, newUpStation, newDownStation, newDistance));
+    }
+
+    private Optional<Section> findDownStation(Long stationId) {
+        return sections.stream()
+                .filter(it -> it.equalsDownStation(stationId))
+                .findFirst();
+    }
+
+    private Optional<Section> findUpStation(Long stationId) {
+        return sections.stream()
+                .filter(it -> it.equalsUpStation(stationId))
+                .findFirst();
+    }
 }
