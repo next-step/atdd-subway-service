@@ -1,6 +1,5 @@
 package nextstep.subway.favorite.application;
 
-import java.util.ArrayList;
 import java.util.List;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.constants.ErrorMessages;
@@ -37,7 +36,9 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        return new ArrayList<>();
+        loginMember.checkValidLoginMember();
+        return FavoriteResponse.getFavoriteResponsesFrom(
+                favoriteRepository.findByMemberId(loginMember.getId()));
     }
 
     public void deleteFavorite(LoginMember loginMember, Long id) {
