@@ -139,7 +139,7 @@ public class Line extends BaseEntity {
         return getStations().stream().anyMatch(it -> it == station);
     }
 
-    public void removeLineStation(Long lineId, Long stationId) {
+    public void removeLineStation(Long stationId) {
         if (sections.size() <= 1) {
             throw new IllegalArgumentException("역을 제거할 수 없습니다.");
         }
