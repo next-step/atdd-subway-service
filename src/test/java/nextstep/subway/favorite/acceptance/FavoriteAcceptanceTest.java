@@ -10,6 +10,7 @@ import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.List;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.favorite.dto.FavoriteRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -63,11 +64,13 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     @Test
     void manageMyInfo() {
         // when: 즐겨찾기 생성을 요청
-        ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(accessToken, 신분당선);
+        ExtractableResponse<Response> createResponse = 즐겨찾기_추가_요청(accessToken, FavoriteRequest.of(강남역.getId(), 양재역.getId()));
+        // then: 즐겨찾기 생성됨
+        즐겨찾기_추가_성공(createResponse);
 
     }
 
-    public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, LineResponse params) {
+    public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, FavoriteRequest params) {
         return RestAssured
                 .given().log().all()
                 .auth().oauth2(accessToken)
