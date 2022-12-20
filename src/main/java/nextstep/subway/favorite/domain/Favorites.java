@@ -28,4 +28,8 @@ public class Favorites {
                 .map(FavoriteResponse::from)
                 .collect(Collectors.toList());
     }
+
+    public void remove(Favorite favorite) {
+        this.favorites.remove(favorite);
+    }
 }

@@ -77,7 +77,11 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         ExtractableResponse<Response> getResponse = 즐겨찾기_조회_요청(accessToken);
         // then: 즐겨찾기 생성됨
         즐겨찾기_조회_성공(getResponse);
-
+        // when: 즐겨찾기 삭제 요청
+        List<StationResponse> stationResponses = getResponse.jsonPath().get();
+        ExtractableResponse<Response> deleteResponse = 즐겨찾기_삭제_요청(accessToken, 1L);
+        // then: 즐겨찾기 삭제됨
+        즐겨찾기_삭제_성공(deleteResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, FavoriteRequest params) {

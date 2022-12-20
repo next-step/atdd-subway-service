@@ -30,6 +30,12 @@ public class FavoriteController {
         return ResponseEntity.ok().body(favorites);
     }
 
+    @DeleteMapping("/favorites/{favoriteId}")
+    public ResponseEntity<Void> deleteFavorite(@AuthenticationPrincipal LoginMember loginMember, @PathVariable Long favoriteId) {
+        favoriteService.deleteFavorite(loginMember.getId(), favoriteId);
+        return ResponseEntity.noContent().build();
+    }
+
     @ExceptionHandler(RuntimeException.class)
     public ResponseEntity handleIllegalArgsException(RuntimeException e) {
         return ResponseEntity.badRequest().build();

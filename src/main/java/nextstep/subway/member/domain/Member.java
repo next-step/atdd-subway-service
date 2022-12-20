@@ -72,4 +72,15 @@ public class Member extends BaseEntity {
     public Favorites getFavorites() {
         return favorites;
     }
+
+    public void removeFavorite(Favorite favorite) {
+        verifyFavorite(favorite);
+        this.favorites.remove(favorite);
+    }
+
+    private void verifyFavorite(Favorite favorite) {
+        if (!this.equals(favorite.getMember())) {
+            throw new AuthorizationException();
+        }
+    }
 }
