@@ -69,10 +69,6 @@ public class Member extends BaseEntity {
         return favorite;
     }
 
-    public Favorites getFavorites() {
-        return favorites;
-    }
-
     public void removeFavorite(Favorite favorite) {
         verifyFavorite(favorite);
         this.favorites.remove(favorite);
