@@ -47,13 +47,16 @@ public class LineService {
         lineRepository.deleteById(id);
     }
 
-    @Transactional(readOnly = true)
     public List<LineResponse> findLines() {
-        final List<LineResponse> result = lineRepository.findAll()
+        return Collections.unmodifiableList(findLinesAsDomainEntity()
             .stream()
             .map(LineResponse::from)
-            .collect(Collectors.toList());
-        return Collections.unmodifiableList(result);
+            .collect(Collectors.toList()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<Line> findLinesAsDomainEntity() {
+        return Collections.unmodifiableList(lineRepository.findAll());
     }
 
     public LineResponse findLineById(Long id) {

@@ -26,7 +26,9 @@ class LineTest {
     @DisplayName("노선에 등록 되어있지 않은 역은 제거할 수 없다")
     @Test
     void removeLineStation_notExistsLine() {
-        line.removeLineStation(new Station("수원역"));
+        assertThatThrownBy(() -> line.removeLineStation(new Station("수원역")))
+            .isInstanceOf(CannotRemoveSectionException.class)
+            .hasMessageContaining("지울 수 없는 구간 입니다");
 
         assertThat(line.getStations()).containsExactly(head, middle, tail);
     }
