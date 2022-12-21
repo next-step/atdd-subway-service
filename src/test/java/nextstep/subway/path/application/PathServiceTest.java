@@ -45,7 +45,7 @@ public class PathServiceTest {
 
         양재역 = new Station(1L, "양재역");
         교대역 = new Station(2L, "교대역");
-        삼호선 = new Line("3호선", "bg-orange-600", 양재역, 교대역, 10);
+        삼호선 = new Line("3호선", "bg-orange-600", 양재역, 교대역, 11);
 
         전체노션 = Arrays.asList(삼호선);
     }
@@ -60,6 +60,7 @@ public class PathServiceTest {
         when(lineRepository.findAll()).thenReturn(전체노션);
 
         PathResponse pathResponse = pathService.findPath(pathRequest);
-        assertThat(pathResponse.getDistance()).isEqualTo(10);
+        assertThat(pathResponse.getDistance()).isEqualTo(11);
+        assertThat(pathResponse.getFare()).isEqualTo(1350);
     }
 }
