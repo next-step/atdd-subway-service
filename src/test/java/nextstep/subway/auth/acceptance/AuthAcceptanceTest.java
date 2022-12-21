@@ -1,5 +1,7 @@
 package nextstep.subway.auth.acceptance;
 
+import static nextstep.subway.member.MemberAcceptanceTest.내_회원_정보_조회_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.내_회원_정보_조회_응답_실패;
 import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
@@ -59,6 +61,10 @@ public class AuthAcceptanceTest extends AcceptanceTest {
     @DisplayName("Bearer Auth 유효하지 않은 토큰")
     @Test
     void myInfoWithWrongBearerAuth() {
+        // when
+        ExtractableResponse<Response> 내_회원_정보_조회_응답 = 내_회원_정보_조회_요청("invalid_access_token");
+        // then
+        내_회원_정보_조회_응답_실패(내_회원_정보_조회_응답);
     }
 
     public static ExtractableResponse<Response> 로그인_요청(TokenRequest 토큰_정보) {
