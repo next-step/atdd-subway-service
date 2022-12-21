@@ -3,7 +3,6 @@ package nextstep.subway.path.ui;
 import nextstep.subway.path.application.PathService;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -25,8 +24,8 @@ public class PathController {
         return ResponseEntity.ok(pathResponse);
     }
 
-    @ExceptionHandler(DataIntegrityViolationException.class)
-    public ResponseEntity handleIllegalArgsException(DataIntegrityViolationException e) {
+    @ExceptionHandler(RuntimeException.class)
+    public ResponseEntity handleIllegalArgsException(RuntimeException e) {
         return ResponseEntity.badRequest().build();
     }
 

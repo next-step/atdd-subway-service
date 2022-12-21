@@ -1,38 +1,36 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
-import nextstep.subway.line.domain.Section;
-import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.Path;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.dto.PathRequest;
 import nextstep.subway.path.dto.PathResponse;
-import nextstep.subway.station.application.StationService;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.domain.StationRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @Transactional(readOnly = true)
 public class PathService {
-    private final StationService stationService;
-    private final SectionRepository sectionRepository;
+    private final StationRepository stationRepository;
+    private final LineRepository lineRepository;
 
-    public PathService(StationService stationService, SectionRepository sectionRepository) {
-        this.stationService = stationService;
-        this.sectionRepository = sectionRepository;
+    public PathService(StationRepository stationRepository, LineRepository lineRepository) {
+        this.stationRepository = stationRepository;
+        this.lineRepository = lineRepository;
     }
 
     public PathResponse findPath(PathRequest request) {
-        Station source = stationService.findStationById(request.getSource());
-        Station target = stationService.findStationById(request.getTarget());
-
-        List<Section> allSections = sectionRepository.findAll();
+        List<Line> allSections = lineRepository.findAll();
         PathFinder pathFinder = PathFinder.of(allSections);
 
-        Path path = pathFinder.findShortestPath(source, target);
+        Path path = pathFinder.findShortestPath(request.getSource(), request.getTarget());
+        List<Station> stations = stationRepository.findAllById(path.getStationIds());
 
-        return PathResponse.from(path.getStations(), path.getDistance());
+        return PathResponse.from(stations, path.getDistance());
     }
 
 }
