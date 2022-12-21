@@ -25,6 +25,12 @@ public class FavoriteResponse {
         return new FavoriteResponse(favorite.getId(), StationResponse.from(favorite.getSourceStation()), StationResponse.from(favorite.getTargetStation()));
     }
 
+    public static List<FavoriteResponse> toList(List<Favorite> favorites) {
+        return favorites.stream()
+            .map(FavoriteResponse::from)
+            .collect(Collectors.toList());
+    }
+
     public Long getId() {
         return id;
     }
