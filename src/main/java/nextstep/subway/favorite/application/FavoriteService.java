@@ -44,4 +44,9 @@ public class FavoriteService {
     public List<FavoriteResponse> findFavoritesByMemberId(Long memberId) {
         return FavoriteResponse.toList(favoriteRepository.findByMemberId(memberId));
     }
+
+    @Transactional
+    public void deleteById(Long favoriteId) {
+        favoriteRepository.deleteById(favoriteId);
+    }
 }

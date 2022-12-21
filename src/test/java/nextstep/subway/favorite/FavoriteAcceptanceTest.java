@@ -85,12 +85,23 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // then
         즐겨찾기_생성됨(즐겨찾기_생성_응답);
 
-        // Given
+        // given
         즐겨찾기_생성_요청(로그인_성공_토큰_값, 강남역, 잠실역);
         // when
-        ExtractableResponse<Response> 즐겨찾기_조회_응답 = 즐겨찾기_목록_조회_요청(로그인_성공_토큰_값);
+        ExtractableResponse<Response> 즐겨찾기_목록_조회_응답 = 즐겨찾기_목록_조회_요청(로그인_성공_토큰_값);
         // then
-        즐겨찾기_목록_조회_요청됨(즐겨찾기_조회_응답);
+        즐겨찾기_목록_조회_요청됨(즐겨찾기_목록_조회_응답);
+
+        // given
+        Long 즐겨찾기_목록_첫번째_응답 = 즐겨찾기_목록_첫번째_요청(즐겨찾기_목록_조회_응답);
+        // when
+        ExtractableResponse<Response> 즐겨찾기_삭제_응답 = 즐겨찾기_삭제_요청(로그인_성공_토큰_값, 즐겨찾기_목록_첫번째_응답);
+        // then
+        즐겨찾기_삭제_요청됨(즐겨찾기_삭제_응답);
+    }
+
+    private static Long 즐겨찾기_목록_첫번째_요청(ExtractableResponse<Response> 즐겨찾기_목록_조회_응답) {
+        return 즐겨찾기_목록_조회_응답.jsonPath().getList("id", Long.class).get(0);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_생성_요청(String accessToken, Long source, Long target) {
@@ -122,5 +133,16 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
             () -> assertThat(즐겨찾기_조회_응답.jsonPath().getList("target.name")).containsExactly("강남역", "잠실역"),
             () -> assertThat(즐겨찾기_조회_응답.statusCode()).isEqualTo(HttpStatus.OK.value())
         );
+    }
+
+    public static ExtractableResponse<Response> 즐겨찾기_삭제_요청(String accessToken, Long favoriteId) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .when().delete("/favorites/{favoriteId}", favoriteId)
+            .then().log().all().extract();
+    }
+
+    public static void 즐겨찾기_삭제_요청됨(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 }
