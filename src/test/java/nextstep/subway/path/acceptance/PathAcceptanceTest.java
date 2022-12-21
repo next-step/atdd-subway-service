@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.station.StationAcceptanceTest.지하철역_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -46,10 +47,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
     public void setUp() {
         super.setUp();
 
-        강남역 = StationAcceptanceTest.지하철역_등록되어_있음("강남역").as(StationResponse.class);
-        양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
-        교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
-        남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
+        강남역 = 지하철역_등록되어_있음("강남역").as(StationResponse.class);
+        양재역 = 지하철역_등록되어_있음("양재역").as(StationResponse.class);
+        교대역 = 지하철역_등록되어_있음("교대역").as(StationResponse.class);
+        남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
 
         LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 10);
