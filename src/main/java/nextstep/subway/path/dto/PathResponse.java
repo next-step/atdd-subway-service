@@ -1,6 +1,6 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.fare.domain.DistanceFarePolicy;
+import nextstep.subway.path.domain.Path;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 
@@ -18,9 +18,9 @@ public class PathResponse {
         this.fare = fare;
     }
 
-    public static PathResponse from(List<Station> stations, int distance) {
+    public static PathResponse from(List<Station> stations, Path path ) {
 
-        return new PathResponse(stationsResponse(stations), distance, DistanceFarePolicy.calculate(distance).value());
+        return new PathResponse(stationsResponse(stations), path.getDistance(), path.calculate().value());
     }
 
     private static List<StationResponse> stationsResponse(List<Station> stations) {
