@@ -18,18 +18,11 @@ public class Fare {
 
     public Fare(PathDistance pathDistance) {
         fare = (double) 1250;
-        if (checkMinimumFareDistanceExceeded()) {
-            fare += calculateOverFare(pathDistance);
-        }
-    }
-
-    public boolean checkMinimumFareDistanceExceeded() {
-        return fare > 10;
+        fare += calculateOverFare(pathDistance);
     }
 
     private int calculateOverFare(PathDistance pathDistance) {
         int overFareFactor = pathDistance.getOverFareFactor();
-
         return overFareFactor * 100;
     }
 

@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class PathDistance {
 
+    private static final int OVER_FARE_NOT_CHARGED_MIN_DISTANCE = 10;
     private int pathDistance;
 
     public PathDistance(int pathDistance) {
@@ -11,19 +12,10 @@ public class PathDistance {
     }
 
     public int getOverFareFactor() {
-        int overDistance = 0;
-        int criterion = 1;
-
-        if (pathDistance > 10) {
-            overDistance = pathDistance - 10;
-            criterion = 5;
-        }
-        if (pathDistance > 50) {
-            overDistance = pathDistance - 10;
-            criterion = 8;
-        }
-
-        return (int)(Math.ceil((overDistance - 1) / criterion) + 1);
+        OverFareCriterion overFareCriterion = OverFareCriterion.checkDistanceOver(pathDistance);
+        int overDistance = pathDistance - OVER_FARE_NOT_CHARGED_MIN_DISTANCE;
+        int criterion = overFareCriterion.getCriterionDistance();
+        return (int) (Math.ceil((overDistance - 1) / criterion) + 1);
     }
 
     public int getPathDistance() {
