@@ -29,7 +29,7 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials, boolean compulsoriness) {
         validateTokenIfCompulsory(credentials, compulsoriness);
-        if (isCredentialValid(credentials, compulsoriness)) {
+        if (!isCredentialValid(credentials)) {
             return LoginMember.emptyLoginMember();
         }
         String email = jwtTokenProvider.getPayload(credentials);
@@ -47,8 +47,8 @@ public class AuthService {
         }
     }
 
-    private boolean isCredentialValid(String credentials, boolean compulsoriness) {
-        return credentials == null && !compulsoriness;
+    private boolean isCredentialValid(String credentials) {
+        return credentials != null && !credentials.isEmpty();
     }
 
     private boolean isMemberExist(Member member, boolean compulsoriness) {
