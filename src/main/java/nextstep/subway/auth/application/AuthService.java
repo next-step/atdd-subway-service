@@ -28,19 +28,30 @@ public class AuthService {
     }
 
     public LoginMember findMemberByToken(String credentials, boolean compulsoriness) {
+        validateTokenIfCompulsory(credentials, compulsoriness);
+        if (isCredentialValid(credentials, compulsoriness)) {
+            return LoginMember.emptyLoginMember();
+        }
+        String email = jwtTokenProvider.getPayload(credentials);
+        Member member = memberRepository.findByEmail(email).orElse(null);
+        if (isMemberExist(member, compulsoriness)) {
+            return LoginMember.emptyLoginMember();
+        }
+        return LoginMember.from(member);
+    }
+
+    private void validateTokenIfCompulsory(String credentials, boolean compulsoriness) {
         if (compulsoriness && !jwtTokenProvider.validateToken(credentials)) {
             throw new AuthorizationException(
                     ErrorMessages.UNAUTHORIZED_MEMBER_REQUESTED_FAVORITE_CREATION);
         }
-        if (credentials == null && !compulsoriness) {
-            return LoginMember.emptyLoginMember();
-        }
-        String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email)
-                .orElse(null);
-        if (member == null && !compulsoriness) {
-            return LoginMember.emptyLoginMember();
-        }
-        return LoginMember.from(member);
+    }
+
+    private boolean isCredentialValid(String credentials, boolean compulsoriness) {
+        return credentials == null && !compulsoriness;
+    }
+
+    private boolean isMemberExist(Member member, boolean compulsoriness) {
+        return member == null && !compulsoriness;
     }
 }
