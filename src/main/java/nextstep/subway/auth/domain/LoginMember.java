@@ -2,7 +2,7 @@ package nextstep.subway.auth.domain;
 
 public class LoginMember {
 
-    public final static LoginMember GUEST = new LoginMember(null, "guest@email.com", 0);
+    public final static LoginMember GUEST = new LoginMember(null, "guest@email.com", 20);
 
     private Long id;
     private String email;

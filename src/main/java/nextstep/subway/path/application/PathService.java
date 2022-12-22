@@ -1,9 +1,9 @@
 package nextstep.subway.path.application;
 
 import nextstep.subway.auth.domain.LoginMember;
+import nextstep.subway.fare.AgeDiscount;
 import nextstep.subway.fare.DistanceFare;
 import nextstep.subway.fare.FarePolicy;
-import nextstep.subway.fare.discount.AgeDiscount;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.domain.PathFinder;
@@ -14,8 +14,6 @@ import org.springframework.stereotype.Service;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.List;
-
-import static nextstep.subway.fare.discount.AgeDiscount.create;
 
 @Service
 public class PathService {
@@ -37,8 +35,8 @@ public class PathService {
 
         PathFinder pathFinder = new PathFinder(source, target, findLines);
         int distanceFare = new DistanceFare(pathFinder.findDistance()).calculate();
-        AgeDiscount ageDiscount = create(member.getAge());
-        int fare = FarePolicy.of(distanceFare, pathFinder.findLineFare(), ageDiscount.getDeductionFare(), ageDiscount.getDiscountRate()).calculate();
+        AgeDiscount ageDiscount = AgeDiscount.create(member.getAge());
+        int fare = FarePolicy.of(distanceFare, pathFinder.findLineFare(), ageDiscount.getDeductionFare(), ageDiscount.getRate()).calculate();
         return new PathResponse(pathFinder, fare);
     }
 }
