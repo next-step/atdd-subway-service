@@ -16,11 +16,11 @@ public class AuthAcceptanceTestFixture extends AcceptanceTest {
 
     public static final String EMAIL = "email@email.com";
     public static final String PASSWORD = "password";
-    public static final int AGE = 20;
+    static final int AGE = 20;
 
-    public static final String NEW_EMAIL = "newemail@email.com";
-    public static final String NEW_PASSWORD = "newpassword";
-    public static final int NEW_AGE = 21;
+    static final String NEW_EMAIL = "newemail@email.com";
+    static final String NEW_PASSWORD = "newpassword";
+    static final int NEW_AGE = 21;
 
     @BeforeEach
     public void setUp() {
@@ -55,7 +55,7 @@ public class AuthAcceptanceTestFixture extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static void 토큰_인증_실패함(ExtractableResponse<Response> response) {
+    public static void 인증_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

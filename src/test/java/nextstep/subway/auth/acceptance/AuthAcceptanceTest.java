@@ -6,11 +6,8 @@ import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.즐겨찾�
 import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.즐겨찾기_생성_요청;
 import static nextstep.subway.favorite.FavoriteAcceptanceTestFixture.즐겨찾기_정보_조회_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTestFixture.지하철_노선에_지하철역_등록되어_있음;
-import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_삭제_실패;
 import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_삭제_요청;
-import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_수정_실패;
 import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_수정_요청;
-import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_조회_실패;
 import static nextstep.subway.member.MemberAcceptanceTestFixture.나의_정보_조회_요청;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
@@ -75,18 +72,18 @@ public class AuthAcceptanceTest extends AuthAcceptanceTestFixture {
         // When 유효하지 않은 토큰 사용하여 나의 정보 조회 요청하면
         ExtractableResponse<Response> response1 = 나의_정보_조회_요청(notValidToken);
         // Then 나의 정보 조회에 실패한다
-        나의_정보_조회_실패(response1);
+        인증_실패함(response1);
 
         // When 유효하지 않은 토큰 사용하여 나의 정보 수정 요청하면
         ExtractableResponse<Response> response2 = 나의_정보_수정_요청(notValidToken,
                 new MemberRequest(NEW_EMAIL, NEW_PASSWORD, NEW_AGE));
         // Then 나의 정보 수정에 실패한다
-        나의_정보_수정_실패(response2);
+        인증_실패함(response2);
 
         // When 유효하지 않은 토큰 사용하여 나의 정보 삭제 요청하면
         ExtractableResponse<Response> response3 = 나의_정보_삭제_요청(notValidToken);
         // Then 나의 정보 삭제에 실패한다
-        나의_정보_삭제_실패(response3);
+        인증_실패함(response3);
     }
 
     /**
@@ -128,16 +125,16 @@ public class AuthAcceptanceTest extends AuthAcceptanceTestFixture {
         FavoriteCreateRequest favoriteCreateRequest = new FavoriteCreateRequest(강남역.getId(), 정자역.getId());
         ExtractableResponse<Response> response = 즐겨찾기_생성_요청(notValidToken, favoriteCreateRequest);
         // Then 즐겨찾기 생성에 실패한다
-        토큰_인증_실패함(response);
+        인증_실패함(response);
 
         // When 유효하지 않은 토큰 사용하여 즐겨찾기 조회 요청하면
         response = 즐겨찾기_정보_조회_요청(notValidToken);
         // Then 즐겨찾기 조회에 실패한다
-        토큰_인증_실패함(response);
+        인증_실패함(response);
 
         // When 유효하지 않은 토큰 사용하여 즐겨찾기 삭제 요청하면
         response = 즐겨찾기_삭제_요청(notValidToken, 조회된_즐겨찾기_목록.get(0).getId());
         // Then 즐겨찾기 삭제에 실패한다
-        토큰_인증_실패함(response);
+        인증_실패함(response);
     }
 }

@@ -1,5 +1,6 @@
 package nextstep.subway.auth.application;
 
+import nextstep.subway.auth.constants.AuthErrorMessages;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.auth.dto.TokenResponse;
@@ -26,13 +27,31 @@ public class AuthService {
         return new TokenResponse(token);
     }
 
-    public LoginMember findMemberByToken(String credentials) {
-        if (!jwtTokenProvider.validateToken(credentials)) {
-            return new LoginMember();
+    public LoginMember findMemberByToken(String credentials, boolean compulsoriness) {
+        validateTokenIfCompulsory(credentials, compulsoriness);
+        if (!isCredentialValid(credentials)) {
+            return LoginMember.emptyLoginMember();
         }
-
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
-        return new LoginMember(member.getId(), member.getEmail(), member.getAge());
+        Member member = memberRepository.findByEmail(email).orElse(null);
+        if (isMemberExist(member, compulsoriness)) {
+            return LoginMember.emptyLoginMember();
+        }
+        return LoginMember.from(member);
+    }
+
+    private void validateTokenIfCompulsory(String credentials, boolean compulsoriness) {
+        if (compulsoriness && !jwtTokenProvider.validateToken(credentials)) {
+            throw new AuthorizationException(
+                    AuthErrorMessages.UNAUTHORIZED_MEMBER_REQUESTED_FAVORITE_CREATION);
+        }
+    }
+
+    private boolean isCredentialValid(String credentials) {
+        return credentials != null && !credentials.isEmpty();
+    }
+
+    private boolean isMemberExist(Member member, boolean compulsoriness) {
+        return member == null && !compulsoriness;
     }
 }

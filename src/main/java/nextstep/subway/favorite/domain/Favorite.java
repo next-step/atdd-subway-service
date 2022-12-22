@@ -39,12 +39,7 @@ public class Favorite {
     }
 
     public static Favorite create(LoginMember loginMember, Station sourceStation, Station targetStation) {
-        validateMemberExist(loginMember);
         return new Favorite(loginMember.getId(), sourceStation, targetStation);
-    }
-
-    private static void validateMemberExist(LoginMember loginMember) {
-        loginMember.checkValidLoginMember();
     }
 
     public Long getId() {

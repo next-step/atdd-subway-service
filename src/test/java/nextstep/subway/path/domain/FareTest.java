@@ -1,0 +1,24 @@
+package nextstep.subway.path.domain;
+
+import static org.assertj.core.api.Assertions.assertThat;
+
+import nextstep.subway.auth.domain.LoginMember;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
+
+public class FareTest {
+
+    @DisplayName("연령별 요금 할인 적용")
+    @ParameterizedTest
+    @CsvSource({"12,500", "15,800", "20,1350"})
+    void 연령별_요금_할인_적용(int input, double expected) {
+        // 청소년: 13세 이상~19세 미만 -350 공제 후 20% 할인
+        // 어린이: 6세 이상~ 13세 미만 -350 공제 후 50% 할인
+        Fare originalFare = new Fare(1350);
+        LoginMember loginMember = new LoginMember(1L, "email@email.com", input);
+        Fare discountedFare = originalFare.applyAgeDiscount(loginMember);
+
+        assertThat(discountedFare.getFare()).isEqualTo(expected);
+    }
+}

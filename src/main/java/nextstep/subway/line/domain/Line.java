@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
-import nextstep.subway.constants.ErrorMessages;
+import nextstep.subway.line.constants.LineErrorMessages;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -20,6 +20,8 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
+    @Embedded
+    private ExtraFare extraFare;
 
     @Embedded
     private Sections sections = new Sections();
@@ -32,7 +34,23 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, Distance distance) {
+    private Line(String name, String color, ExtraFare extraFare, Station upStation, Station downStation,
+            Distance distance) {
+        this.name = name;
+        this.color = color;
+        this.extraFare = extraFare;
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Double extraFare, Station upStation, Station downStation, int distance) {
+        this(name, color, new ExtraFare(extraFare), upStation, downStation, new Distance(distance));
+    }
+
+    public Line(String name, String color, double extraFare, Station upStation, Station downStation, int distance) {
+        this(name, color, new ExtraFare(extraFare), upStation, downStation, new Distance(distance));
+    }
+
+    private Line(String name, String color, Station upStation, Station downStation, Distance distance) {
         this.name = name;
         this.color = color;
         sections.add(new Section(this, upStation, downStation, distance));
@@ -59,7 +77,7 @@ public class Line extends BaseEntity {
 
     private void checkLineStationRemovable() {
         if (sections.size() <= 1) {
-            throw new RuntimeException(ErrorMessages.LAST_LINE_STATION_CANNOT_BE_DELETED);
+            throw new RuntimeException(LineErrorMessages.LAST_LINE_STATION_CANNOT_BE_DELETED);
         }
     }
 
@@ -75,7 +93,8 @@ public class Line extends BaseEntity {
 
     private void checkStationRemovable(Section upStationMatchSection, Section downStationMatchSection) {
         if (upStationMatchSection == null && downStationMatchSection == null) {
-            throw new IllegalArgumentException(ErrorMessages.STATION_DOES_NOT_EXIST);
+            throw new IllegalArgumentException(
+                    LineErrorMessages.CANNOT_ADD_LINE_STATION_IF_BOTH_DOES_NOT_EXIST_IN_LINE);
         }
     }
 
@@ -98,6 +117,10 @@ public class Line extends BaseEntity {
 
     public String getColor() {
         return color;
+    }
+
+    public ExtraFare getExtraFare() {
+        return extraFare;
     }
 
     public Sections getSections() {
