@@ -12,8 +12,11 @@ public class PathDistance {
     }
 
     public int getOverFareFactor() {
+        int overDistance = 0;
         OverFareCriterion overFareCriterion = OverFareCriterion.checkDistanceOver(pathDistance);
-        int overDistance = pathDistance - OVER_FARE_NOT_CHARGED_MIN_DISTANCE;
+        if (overFareCriterion != OverFareCriterion.DISTANCE_NOT_OVER) {
+            overDistance = pathDistance - OVER_FARE_NOT_CHARGED_MIN_DISTANCE;
+        }
         int criterion = overFareCriterion.getCriterionDistance();
         return (int) (Math.ceil((overDistance - 1) / criterion) + 1);
     }
