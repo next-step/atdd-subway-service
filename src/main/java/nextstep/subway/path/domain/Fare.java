@@ -1,10 +1,16 @@
 package nextstep.subway.path.domain;
 
+import static nextstep.subway.path.domain.DiscountByAgeCriterion.checkDiscountByAgeCriterion;
+
 import java.util.Objects;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.ExtraFare;
 
 public class Fare {
+
+    public static final int DO_NOT_DISCOUNT = 0;
+    public static final double DEFAULT_DISCOUNT_ZERO = 0.0;
+    private static final Double DEFAULT_DISCOUNT_AMOUNT = 350.0;
 
     private Double fare;
 
@@ -30,10 +36,6 @@ public class Fare {
         return new Fare(this.fare - fareToSubtract.fare);
     }
 
-    public Fare subtract(double fareToSubtract) {
-        return this.subtract(new Fare(fareToSubtract));
-    }
-
     public Fare applyAgeDiscount(LoginMember loginMember) {
         Integer age = loginMember.getAge();
         Fare fareToDiscount = new Fare();
@@ -44,17 +46,16 @@ public class Fare {
     }
 
     public Fare getDiscountFareByAge(Integer age) {
-        if (age >= 6 && age < 13) {
-            return discountByPercentage(50);
-        }
-        if (age >= 13 && age < 19) {
-            return discountByPercentage(20);
-        }
-        return new Fare();
+        DiscountByAgeCriterion discountByAgeCriterion = checkDiscountByAgeCriterion(age);
+        return calculateDiscountFareByFactor(discountByAgeCriterion.getDiscountFactor());
     }
 
-    private Fare discountByPercentage(int percentage) {
-        return new Fare(350 + Math.floor((fare - 350) * percentage / 100));
+    private Fare calculateDiscountFareByFactor(double factor) {
+        Double defaultDiscountAmount = DEFAULT_DISCOUNT_AMOUNT;
+        if (factor == DO_NOT_DISCOUNT) {
+            defaultDiscountAmount = DEFAULT_DISCOUNT_ZERO;
+        }
+        return new Fare(defaultDiscountAmount + Math.floor((fare - defaultDiscountAmount) * factor));
     }
 
     public Fare add(ExtraFare extraFare) {

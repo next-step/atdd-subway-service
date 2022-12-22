@@ -13,4 +13,5 @@ public class ErrorMessages {
     public static final String AUTH_PRINCIPAL_MISSING = "인증정보가 누락 되어있습니다.";
     public static final String LOGIN_MEMBER_FIELD_MISSING = "로그인 사용자 정보가 불완전합니다.";
     public static final String CANNOT_CHECK_OVER_DISTANCE = "초과 요금 기준 확인에 실패하였습니다.";
+    public static final String CANNOT_CHECK_DISCOUNT_CRITERION_BY_AGE = "연령에 따른 할인 정보 확인에 실패하였습니다.";
 }
