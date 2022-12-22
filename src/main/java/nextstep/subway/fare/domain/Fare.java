@@ -30,6 +30,14 @@ public class Fare {
         return new Fare(this.fare + addFare.value());
     }
 
+    public Fare minus(Fare minusFare) {
+        return new Fare(this.fare - minusFare.value());
+    }
+    public Fare multiply(Double rate) {
+        return new Fare((int)(this.fare * rate));
+    }
+
+
     public int value() {
         return fare;
     }

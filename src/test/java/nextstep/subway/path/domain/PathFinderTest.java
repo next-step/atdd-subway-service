@@ -80,10 +80,20 @@ public class PathFinderTest {
     @Test
     void 경로의_요금을_계산한다() {
         Path path = PathFinder.of(전체노선).findShortestPath(교대역, 양재역);
-        Fare fare = path.calculate();
+        Fare fare = path.calculate(null);
 
         // 1250 + 500 (거리 추가 요금)
         assertThat(fare.value()).isEqualTo(1750);
+    }
+
+    @DisplayName("어린이 요금을 계산한다.")
+    @Test
+    void 어린이_요금을_계산한다() {
+        Path path = PathFinder.of(전체노선).findShortestPath(교대역, 양재역);
+        Fare fare = path.calculate(12);
+
+        // 1250 - ((1250 - 350) * 0.5) + 500 (거리 추가 요금)
+        assertThat(fare.value()).isEqualTo(1300);
     }
 
 }
