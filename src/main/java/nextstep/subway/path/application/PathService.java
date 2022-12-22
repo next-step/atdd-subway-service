@@ -1,6 +1,7 @@
 package nextstep.subway.path.application;
 
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.constants.ErrorMessages;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
@@ -26,7 +27,7 @@ public class PathService {
         this.stationRepository = stationRepository;
     }
 
-    public PathResponse findPath(Long source, Long target) {
+    public PathResponse findPath(LoginMember loginMember, Long source, Long target) {
         List<Line> lines = lineRepository.findAll();
         Station sourceStation = stationRepository.findById(source)
                 .orElseThrow(() -> new RuntimeException(ErrorMessages.STATION_DOES_NOT_EXIST));
@@ -34,7 +35,7 @@ public class PathService {
                 .orElseThrow(() -> new RuntimeException(ErrorMessages.STATION_DOES_NOT_EXIST));
 
         GraphPath<Station, StationEdge> path = PathFinder.findPath(lines, sourceStation, targetStation);
-        PathInfo pathInfo = PathInfoCalculator.calculatePathInfo(path, lines);
+        PathInfo pathInfo = PathInfoCalculator.calculatePathInfo(loginMember, path, lines);
         return PathResponse.of(path, pathInfo);
     }
 }

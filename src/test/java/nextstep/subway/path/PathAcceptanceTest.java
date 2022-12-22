@@ -1,10 +1,16 @@
 package nextstep.subway.path;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.EMAIL;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.PASSWORD;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.로그인_되어_있음;
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTestFixture.토큰_값;
+import static nextstep.subway.member.MemberAcceptanceTestFixture.회원_등록되어_있음;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import java.util.Arrays;
+import nextstep.subway.auth.dto.TokenRequest;
 import nextstep.subway.line.acceptance.LineAcceptanceTest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
@@ -13,6 +19,8 @@ import nextstep.subway.station.StationAcceptanceTest;
 import nextstep.subway.station.dto.StationResponse;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 
 @DisplayName("지하철 경로 조회")
@@ -20,10 +28,10 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
 
     /**
      * Given 한 개의 노선에 2개 이상 역이 등록되어 있고
-     * When 두 역을 출발지와 도착지로 지정하여 경로를 조회하면
-     * Then 경로가 조회된다
-     * And 총 거리가 조회된다
-     * And 지하철 이용 요금이 조회된다
+     * When  두 역을 출발지와 도착지로 지정하여 경로를 조회하면
+     * Then  경로가 조회된다
+     * And   총 거리가 조회된다
+     * And   지하철 이용 요금이 조회된다
      */
     @DisplayName("환승하지 않는 지하철 경로 조회")
     @Test
@@ -46,10 +54,10 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
 
     /**
      * Given 환승역이 존재하는 2개의 노선에 환승역이 아닌 역이 각각 등록되어있고
-     * When 환승역이 아닌 두 역을 출발역과 도착역으로 지정하여 경로를 조회하면
-     * Then 경로가 조회된다
-     * And 총 거리가 조회된다
-     * And 지하철 이용 요금이 조회된다
+     * When  환승역이 아닌 두 역을 출발역과 도착역으로 지정하여 경로를 조회하면
+     * Then  경로가 조회된다
+     * And   총 거리가 조회된다
+     * And   지하철 이용 요금이 조회된다
      */
     @DisplayName("환승하는 지하철 경로 조회")
     @Test
@@ -71,6 +79,36 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
     }
 
     /**
+     * Given 환승역이 존재하는 2개의 노선에 환승역이 아닌 역이 각각 등록되어있고
+     * And   로그인되어 있을때
+     * When  환승역이 아닌 두 역을 출발역과 도착역으로 지정하여 경로를 조회하면
+     * Then  경로가 조회된다
+     * And   총 거리가 조회된다
+     * And   연령에 따른 할인이 적용된 지하철 이용 요금이 조회된다
+     */
+    @DisplayName("로그인한 상태에서 경로 조회 시 연령에 따른 할인이 적용된 요금이 조회된다")
+    @ParameterizedTest
+    @CsvSource({"10,950", "15,1520"})
+    void 로그인_상태에서_경로_조회_시_요금_할인_적용(int input, double expected) {
+        // Given
+        //남부터미널역(3호선) -2- 양재역(환승) -10- 강남역(2호선)
+        회원_등록되어_있음(EMAIL, PASSWORD, input);
+        String accessToken = 토큰_값(로그인_되어_있음(new TokenRequest(EMAIL, PASSWORD)));
+
+        // When
+        ExtractableResponse<Response> response = 경로_조회_요청(남부터미널역.getId(), 강남역.getId(), accessToken);
+
+        // Then
+        경로_조회됨(response);
+
+        // Then
+        PathResponse pathResponse = 경로응답(response);
+        assertThat(pathResponse.getStations()).containsExactlyElementsOf(Arrays.asList(남부터미널역, 양재역, 강남역));
+        assertThat(pathResponse.getPathDistance()).isEqualTo(12);
+        assertThat(pathResponse.getFare()).isEqualTo((expected));
+    }
+
+    /**
      * 예외 케이스
      * When 출발역과 도착역을 같게 지정하고 경로를 조회하면
      * Then 경로 조회에 실패한다
@@ -89,7 +127,7 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
      * 예외 케이스
      * Given 연결되지 않은 두 역이 있고
      * When  두 역을 각각 출발지와 도착지로 지정하고 경로를 조회하면
-     * Then 경로 조회에 실패한다
+     * Then  경로 조회에 실패한다
      */
     @DisplayName("연결되지 않은 두 역의 경로 조회 요청")
     @Test
@@ -111,7 +149,7 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
     /**
      * 예외 케이스
      * When  존재하지 않는 역을 출발지 또는 도착지로 지정하고 경로를 조회하면
-     * Then 경로 조회에 실패한다
+     * Then  경로 조회에 실패한다
      */
     @DisplayName("존재하지 않는 역을 출발지/도착지로 지정한 경로 조회 요청")
     @Test

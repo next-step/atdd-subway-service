@@ -65,6 +65,16 @@ public class PathAcceptanceTestFixture extends AcceptanceTest {
                 .extract();
     }
 
+    public static ExtractableResponse<Response> 경로_조회_요청(Long source, Long target, String accessToken) {
+        return RestAssured
+                .given().log().all()
+                .auth().oauth2(accessToken)
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .when().get("paths?source={source}&target={target}", source, target)
+                .then().log().all()
+                .extract();
+    }
+
     public static void 경로_조회됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.OK.value());
     }

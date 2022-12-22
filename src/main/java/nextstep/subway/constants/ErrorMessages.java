@@ -10,4 +10,6 @@ public class ErrorMessages {
     public static final String LINE_STATION_DISTANCE_TOO_LONG = "역과 역 사이의 거리보다 좁은 거리를 입력해주세요";
     public static final String SOURCE_TARGET_CANNOT_BE_SAME = "출발역과 도착역이 같은 경로는 조회할 수 없습니다.";
     public static final String CANNOT_FIND_ANY_PATH = "출발역과 도착역이 연결되어있지 않습니다.";
+    public static final String AUTH_PRINCIPAL_MISSING = "인증정보가 누락 되어있습니다.";
+    public static final String LOGIN_MEMBER_FIELD_MISSING = "로그인 사용자 정보가 불완전합니다.";
 }

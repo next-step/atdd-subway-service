@@ -37,14 +37,12 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavorites(LoginMember loginMember) {
-        loginMember.checkValidLoginMember();
         return FavoriteResponse.getFavoriteResponsesFrom(
                 favoriteRepository.findByMemberId(loginMember.getId()));
     }
 
     @Transactional
     public void deleteFavorite(LoginMember loginMember, Long id) {
-        loginMember.checkValidLoginMember();
         Favorite favorite = favoriteRepository.getById(id);
         favoriteRepository.delete(favorite);
     }

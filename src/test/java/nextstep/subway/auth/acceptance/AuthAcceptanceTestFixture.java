@@ -55,7 +55,7 @@ public class AuthAcceptanceTestFixture extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
-    public static void 토큰_인증_실패함(ExtractableResponse<Response> response) {
+    public static void 인증_실패함(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

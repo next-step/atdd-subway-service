@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.junit.jupiter.api.BeforeEach;
@@ -26,7 +27,8 @@ public class FareTest extends PathTestFixture {
         // 청소년: 13세 이상~19세 미만 -350 공제 후 20% 할인
         // 어린이: 6세 이상~ 13세 미만 -350 공제 후 50% 할인
         Fare originalFare = new Fare(1350);
-        Fare discountedFare = originalFare.applyAgeDiscount(input);
+        LoginMember loginMember = new LoginMember(1L, "email@email.com", input);
+        Fare discountedFare = originalFare.applyAgeDiscount(loginMember);
 
         assertThat(discountedFare.getFare()).isEqualTo(expected);
     }
