@@ -8,10 +8,10 @@ import javax.persistence.Embeddable;
 public class ExtraFare {
 
     @Column
-    private double extraFare;
+    private Double extraFare;
 
     public ExtraFare() {
-        extraFare = 0;
+        extraFare = (double) 0;
     }
 
     public ExtraFare(double extraFare) {

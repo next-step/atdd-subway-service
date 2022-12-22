@@ -4,10 +4,10 @@ import java.util.Objects;
 
 public class Fare {
 
-    private double fare;
+    private Double fare;
 
     protected Fare() {
-        this.fare = 0;
+        this.fare = (double) 0;
     }
 
     public Fare(double fare) {
@@ -15,7 +15,7 @@ public class Fare {
     }
 
     public Fare(PathDistance pathDistance) {
-        fare = 1250;
+        fare = (double) 1250;
         if (checkMinimumFareDistanceExceeded()) {
             fare += calculateOverFare(pathDistance);
         }
@@ -53,7 +53,7 @@ public class Fare {
         return new Fare(350 + Math.floor((fare - 350) * percentage / 100));
     }
 
-    public double getFare() {
+    public Double getFare() {
         return fare;
     }
 

@@ -10,6 +10,10 @@ public class PathResponse {
 
     private List<StationResponse> stations = new ArrayList<>();
 
+    private int pathDistance;
+
+    private double fare;
+
     public static PathResponse from(Stations pathStations) {
         return new PathResponse(pathStations.stream()
                 .map(StationResponse::of)
@@ -25,5 +29,13 @@ public class PathResponse {
 
     public List<StationResponse> getStations() {
         return stations;
+    }
+
+    public int getPathDistance() {
+        return pathDistance;
+    }
+
+    public double getFare() {
+        return fare;
     }
 }
