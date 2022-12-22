@@ -48,7 +48,7 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
         // Then
         PathResponse pathResponse = 경로응답(response);
         assertThat(pathResponse.getStations()).containsExactlyElementsOf(Arrays.asList(교대역, 남부터미널역, 양재역));
-        assertThat(pathResponse.getPathDistance()).isEqualTo(5);
+        assertThat(pathResponse.getDistance()).isEqualTo(5);
         assertThat(pathResponse.getFare()).isEqualTo(1250 + 500); // 거리에 따른 기본요금 + 노선별 추가요금
     }
 
@@ -74,7 +74,7 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
         // Then
         PathResponse pathResponse = 경로응답(response);
         assertThat(pathResponse.getStations()).containsExactlyElementsOf(Arrays.asList(남부터미널역, 양재역, 강남역));
-        assertThat(pathResponse.getPathDistance()).isEqualTo(12);
+        assertThat(pathResponse.getDistance()).isEqualTo(12);
         assertThat(pathResponse.getFare()).isEqualTo(1350 + 900); // 거리에 따른 기본요금 + 노선별 추가요금
     }
 
@@ -104,7 +104,7 @@ public class PathAcceptanceTest extends PathAcceptanceTestFixture {
         // Then
         PathResponse pathResponse = 경로응답(response);
         assertThat(pathResponse.getStations()).containsExactlyElementsOf(Arrays.asList(남부터미널역, 양재역, 강남역));
-        assertThat(pathResponse.getPathDistance()).isEqualTo(12);
+        assertThat(pathResponse.getDistance()).isEqualTo(12);
         assertThat(pathResponse.getFare()).isEqualTo((expected));
     }
 

@@ -14,7 +14,7 @@ public class PathResponse {
 
     private List<StationResponse> stations = new ArrayList<>();
 
-    private int pathDistance;
+    private int distance;
 
     private double fare;
 
@@ -31,9 +31,9 @@ public class PathResponse {
         this.stations = stations;
     }
 
-    public PathResponse(List<StationResponse> stations, int pathDistance, double fare) {
+    public PathResponse(List<StationResponse> stations, int distance, double fare) {
         this.stations = stations;
-        this.pathDistance = pathDistance;
+        this.distance = distance;
         this.fare = fare;
     }
 
@@ -50,8 +50,8 @@ public class PathResponse {
         return stations;
     }
 
-    public int getPathDistance() {
-        return pathDistance;
+    public int getDistance() {
+        return distance;
     }
 
     public double getFare() {
