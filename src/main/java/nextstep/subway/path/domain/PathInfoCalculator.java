@@ -13,40 +13,40 @@ import org.jgrapht.GraphPath;
 public class PathInfoCalculator {
 
     public static PathInfo calculatePathInfo(LoginMember loginMember, GraphPath<Station, StationEdge> path, List<Line> lines) {
-        // 거리 계산
-        PathDistance pathDistance = sumOfEdgeDistance(path, lines);
-        // 거리에 따른 기본요금 계산
-        Fare minimumFare = calculateMinimumFare(pathDistance);
-        // 노선 추가요금 계산하여 합산
-        Fare extraFareAddedFare = minimumFare.add(getHighstExtraFareOfLines(path));
-        // 연령에 따른 할인 적용
-        Fare finalFare = extraFareAddedFare.applyAgeDiscount(loginMember);
+        PathDistance pathDistance = sumOfEdgeDistance(path); // 경로 거리 계산
+        Fare minimumFare = calculateMinimumFare(pathDistance); // 거리에 따른 기본요금 계산
+        Fare extraFareAddedFare = minimumFare.add(getHighstExtraFareOfLines(path)); // 노선 추가요금 계산하여 합산
+        Fare finalFare = extraFareAddedFare.applyAgeDiscount(loginMember); // 연령에 따른 할인 적용
         return new PathInfo(pathDistance, finalFare);
     }
 
-    public static PathDistance sumOfEdgeDistance(GraphPath<Station, StationEdge> path, List<Line> lines) {
+    protected static PathDistance sumOfEdgeDistance(GraphPath<Station, StationEdge> path) {
         int weight = (int)Math.floor(path.getWeight());
         return new PathDistance(weight);
     }
 
-    public static Fare calculateMinimumFare(PathDistance pathDistance) {
+    protected static Fare calculateMinimumFare(PathDistance pathDistance) {
         return new Fare(pathDistance);
     }
 
-    public static ExtraFare getHighstExtraFareOfLines(GraphPath<Station, StationEdge> path) {
+    protected static ExtraFare getHighstExtraFareOfLines(GraphPath<Station, StationEdge> path) {
         List<StationEdge> edges = path.getEdgeList();
+        List<Line> linesInPath = getInvolvedLines(edges);
+        return getMaxExtraFareOfLines(linesInPath);
+    }
 
-        List<Line> linesInPath = edges.stream()
+    private static List<Line> getInvolvedLines(List<StationEdge> edges) {
+        return edges.stream()
                 .map(StationEdge::getSection)
                 .map(Section::getLine)
                 .collect(Collectors.toList());
+    }
 
-        ExtraFare maxExtraFare = linesInPath.stream()
+    private static ExtraFare getMaxExtraFareOfLines(List<Line> linesInPath) {
+        return linesInPath.stream()
                 .map(Line::getExtraFare)
                 .filter(Objects::nonNull)
                 .max(ExtraFare::comparTo)
                 .orElse(new ExtraFare());
-
-        return maxExtraFare;
     }
 }

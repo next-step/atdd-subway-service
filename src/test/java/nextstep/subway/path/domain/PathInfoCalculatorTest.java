@@ -26,7 +26,7 @@ public class PathInfoCalculatorTest extends PathTestFixture {
     @Test
     void 경로_총_거리_계산() {
         // (강남-양재 10) + (양재-남부터미널 2) = 12
-        PathDistance pathDistance = PathInfoCalculator.sumOfEdgeDistance(경로, 노선목록);
+        PathDistance pathDistance = PathInfoCalculator.sumOfEdgeDistance(경로);
 
         assertThat(pathDistance.getPathDistance()).isEqualTo(12);
     }
