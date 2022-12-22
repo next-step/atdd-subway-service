@@ -33,7 +33,7 @@ public class PathInfoCalculatorTest extends PathTestFixture {
 
     @DisplayName("거리에 따른 기본요금 계산")
     @ParameterizedTest
-    @CsvSource({"12,1350", "16,1450", "51,1850"})
+    @CsvSource({"10,1250", "12,1350", "16,1450", "51,1850"})
     void 기본요금_계산(int input, double expected) {
         // 거리 : 12 -> 1,250 + 100 = 1,350
         // 거리 : 16 -> 1,250 + 200 = 1,450
