@@ -23,6 +23,15 @@ public class PathFinder {
         return getStationsFromPath(path);
     }
 
+    public static GraphPath<Station, StationEdge> findPath2(List<Line> lines, Station source, Station target) {
+        checkSourceTargetNotMatch(source, target);
+        WeightedMultigraph<Station, StationEdge> graph = createStationGraph(lines);
+
+        DijkstraShortestPath<Station, StationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
+
+        return dijkstraShortestPath.getPath(source, target);
+    }
+
     private static void checkSourceTargetNotMatch(Station source, Station target) {
         if (source.equals(target)) {
             throw new IllegalArgumentException(ErrorMessages.SOURCE_TARGET_CANNOT_BE_SAME);

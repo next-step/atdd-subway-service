@@ -10,6 +10,22 @@ public class PathDistance {
         this.pathDistance = pathDistance;
     }
 
+    public int getOverFareFactor() {
+        int overDistance = 0;
+        int criterion = 1;
+
+        if (pathDistance > 10) {
+            overDistance = pathDistance - 10;
+            criterion = 5;
+        }
+        if (pathDistance > 50) {
+            overDistance = pathDistance - 10;
+            criterion = 8;
+        }
+
+        return (int)(Math.ceil((overDistance - 1) / criterion) + 1);
+    }
+
     public int getPathDistance() {
         return pathDistance;
     }

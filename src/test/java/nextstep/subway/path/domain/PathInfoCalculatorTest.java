@@ -22,7 +22,8 @@ public class PathInfoCalculatorTest extends PathTestFixture {
     public void setUp() {
         super.setUp();
 
-        경로 = PathFinder.findPath(노선목록, 강남역, 남부터미널역);
+        //경로 = PathFinder.findPath(노선목록, 강남역, 남부터미널역);
+        경로 = PathFinder.findPath2(노선목록, 강남역, 남부터미널역);
     }
 
     @DisplayName("경로에 포함된 구간들 거리 합 계산")
