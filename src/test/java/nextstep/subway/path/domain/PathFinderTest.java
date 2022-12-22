@@ -17,7 +17,7 @@ class PathFinderTest extends PathTestFixture {
     void 환승_없는_경로_조회() {
         //3호선 교대역 - 남부터미널역 - 양재역
         List<Station> expected = Arrays.asList(교대역, 남부터미널역, 양재역);
-        assertThat(PathFinder.findPath(노선목록, 교대역, 양재역).getStations()).containsExactlyElementsOf(expected);
+        assertThat(PathFinder.findPath(노선목록, 교대역, 양재역).getVertexList()).containsExactlyElementsOf(expected);
     }
 
     @DisplayName("환승하는 지하철 경로 조회")
@@ -25,14 +25,14 @@ class PathFinderTest extends PathTestFixture {
     void 환승하는_경로_조회() {
         //남부터미널역(3호선) - 양재역(환승) - 강남역(2호선)
         List<Station> expected = Arrays.asList(남부터미널역, 양재역, 강남역);
-        assertThat(PathFinder.findPath(노선목록, 남부터미널역, 강남역).getStations()).containsExactlyElementsOf(expected);
+        assertThat(PathFinder.findPath(노선목록, 남부터미널역, 강남역).getVertexList()).containsExactlyElementsOf(expected);
     }
 
     @DisplayName("출발역과 도착역이 같은 경로 조회 시 예외처리")
     @Test
     void 출발역과_도착역이_같은_경로_조회() {
         assertThatThrownBy(
-                () -> PathFinder.findPath(노선목록, 강남역, 강남역).getStations()
+                () -> PathFinder.findPath(노선목록, 강남역, 강남역).getVertexList()
         ).isInstanceOf(RuntimeException.class)
                 .hasMessageMatching("출발역과 도착역이 같은 경로는 조회할 수 없습니다.");
     }

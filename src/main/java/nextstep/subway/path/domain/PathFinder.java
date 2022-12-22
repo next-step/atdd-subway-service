@@ -12,24 +12,13 @@ import org.jgrapht.graph.WeightedMultigraph;
 
 public class PathFinder {
 
-    public static Stations findPath(List<Line> lines, Station source, Station target) {
+    public static GraphPath<Station, StationEdge> findPath(List<Line> lines, Station source, Station target) {
         checkSourceTargetNotMatch(source, target);
         WeightedMultigraph<Station, StationEdge> graph = createStationGraph(lines);
-
         DijkstraShortestPath<Station, StationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
         GraphPath<Station, StationEdge> path = dijkstraShortestPath.getPath(source, target);
         checkPathExist(path);
-
-        return getStationsFromPath(path);
-    }
-
-    public static GraphPath<Station, StationEdge> findPath2(List<Line> lines, Station source, Station target) {
-        checkSourceTargetNotMatch(source, target);
-        WeightedMultigraph<Station, StationEdge> graph = createStationGraph(lines);
-
-        DijkstraShortestPath<Station, StationEdge> dijkstraShortestPath = new DijkstraShortestPath<>(graph);
-
-        return dijkstraShortestPath.getPath(source, target);
+        return path;
     }
 
     private static void checkSourceTargetNotMatch(Station source, Station target) {
@@ -68,11 +57,5 @@ public class PathFinder {
         if (path == null) {
             throw new RuntimeException(ErrorMessages.CANNOT_FIND_ANY_PATH);
         }
-    }
-
-    private static Stations getStationsFromPath(GraphPath<Station, StationEdge> path) {
-        Stations stations = new Stations();
-        stations.addAll(path.getVertexList());
-        return stations;
     }
 }

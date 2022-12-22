@@ -8,20 +8,21 @@ import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
-import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class PathInfoCalculator {
 
-    public static PathInfo calculatePathInfo(GraphPath<Station, DefaultWeightedEdge> path, List<Line> lines) {
+    public static PathInfo calculatePathInfo(GraphPath<Station, StationEdge> path, List<Line> lines) {
+
         // 거리 계산
-
+        PathDistance pathDistance = sumOfEdgeDistance(path, lines);
         // 거리에 따른 기본요금 계산
-
+        Fare minimumFare = calculateMinimumFare(pathDistance);
         // 노선 추가요금 계산하여 합산
-
+        Fare extraFareAddedFare = minimumFare.add(getHighstExtraFareOfLines(path));
         // 연령에 따른 할인 적용
 
-        return null;
+        return new PathInfo(pathDistance, extraFareAddedFare);
+        //return new PathInfo(pathDistance, finalFare);
     }
 
     public static PathDistance sumOfEdgeDistance(GraphPath<Station, StationEdge> path, List<Line> lines) {
@@ -48,10 +49,5 @@ public class PathInfoCalculator {
                 .orElse(new ExtraFare());
 
         return maxExtraFare;
-    }
-
-    public static Fare applyAgeDiscount(Integer age, Fare originalFare) {
-        Fare fareToDiscount = originalFare.getDiscountFareByAge(age);
-        return originalFare.subtract(fareToDiscount);
     }
 }

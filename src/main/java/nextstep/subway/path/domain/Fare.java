@@ -1,6 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.Objects;
+import nextstep.subway.line.domain.ExtraFare;
 
 public class Fare {
 
@@ -39,12 +40,17 @@ public class Fare {
         return this.subtract(new Fare(fareToSubtract));
     }
 
+    public Fare applyAgeDiscount(Integer age) {
+        Fare fareToDiscount = getDiscountFareByAge(age);
+        return this.subtract(fareToDiscount);
+    }
+
     public Fare getDiscountFareByAge(Integer age) {
         if (age >= 6 && age < 13) {
-            return this.discountByPercentage(50);
+            return discountByPercentage(50);
         }
         if (age >= 13 && age < 19) {
-            return this.discountByPercentage(20);
+            return discountByPercentage(20);
         }
         return new Fare();
     }
@@ -72,5 +78,9 @@ public class Fare {
     @Override
     public int hashCode() {
         return Objects.hash(fare);
+    }
+
+    public Fare add(ExtraFare extraFare) {
+        return new Fare(fare + extraFare.getExtraFare());
     }
 }

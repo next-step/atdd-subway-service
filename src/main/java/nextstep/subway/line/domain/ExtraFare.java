@@ -14,7 +14,7 @@ public class ExtraFare {
         extraFare = (double) 0;
     }
 
-    public ExtraFare(double extraFare) {
+    public ExtraFare(Double extraFare) {
         this.extraFare = extraFare;
     }
 
