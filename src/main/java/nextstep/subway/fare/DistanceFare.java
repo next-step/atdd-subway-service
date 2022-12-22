@@ -1,6 +1,6 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare;
 
-public class Fare {
+public class DistanceFare {
 
     public static final int DEFAULT_FARE = 1250;
     public static final int OVER_FARE_FIRST_APPLY_DISTANCE = 10;
@@ -8,9 +8,10 @@ public class Fare {
     public static final int OVER_FARE = 100;
     public static final int OVER_FARE_FIRST_PER_RANGE = 5;
     public static final int OVER_FARE_SECOND_PER_RANGE = 8;
+
     private final int distance;
 
-    public Fare(int distance) {
+    public DistanceFare(int distance) {
         this.distance = distance;
     }
 

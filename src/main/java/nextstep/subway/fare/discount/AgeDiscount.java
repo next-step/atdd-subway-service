@@ -1,4 +1,4 @@
-package nextstep.subway.path.domain.discount;
+package nextstep.subway.fare.discount;
 
 public abstract class AgeDiscount {
 
@@ -6,23 +6,21 @@ public abstract class AgeDiscount {
     public static final int TEENAGER_END_AGE = 18;
     public static final int CHILDREN_START_AGE = 6;
     public static final int CHILDREN_END_AGE = 12;
-    private final int fare;
 
-    public AgeDiscount(int fare) {
-        this.fare = fare;
+    public AgeDiscount() {
     }
 
-    public static AgeDiscount create(int fare, int age) {
+    public static AgeDiscount create(int age) {
 
         if (isTeenager(age)) {
-            return new Teenager(fare);
+            return new Teenager();
         }
 
         if (isChildren(age)) {
-            return new Children(fare);
+            return new Children();
         }
 
-        return new Default(fare);
+        return new Default();
     }
 
     private static boolean isChildren(int age) {
@@ -33,9 +31,7 @@ public abstract class AgeDiscount {
         return age >= TEENAGER_START_AGE && age <= TEENAGER_END_AGE;
     }
 
-    public abstract int discount();
+    public abstract int getDeductionFare();
 
-    public int getFare() {
-        return this.fare;
-    }
+    public abstract double getDiscountRate();
 }
