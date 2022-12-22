@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.constants.ErrorMessages;
+import nextstep.subway.path.constants.PathErrorMessages;
 
 public enum OverFareCriterion {
     DISTANCE_NOT_OVER(0, 1),
@@ -25,7 +25,7 @@ public enum OverFareCriterion {
                 .sorted(Comparator.reverseOrder())
                 .filter(overFareCriterion -> pathDistance > overFareCriterion.pathDistance)
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.CANNOT_CHECK_OVER_DISTANCE));
+                .orElseThrow(() -> new IllegalArgumentException(PathErrorMessages.CANNOT_CHECK_OVER_DISTANCE));
     }
 
     public int getPathDistance() {

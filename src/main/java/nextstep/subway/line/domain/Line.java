@@ -8,8 +8,9 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
-import nextstep.subway.constants.ErrorMessages;
+import nextstep.subway.line.constants.LineErrorMessages;
 import nextstep.subway.station.domain.Station;
+import nextstep.subway.station.constants.StationErrorMessages;
 import nextstep.subway.station.domain.Stations;
 
 @Entity
@@ -76,7 +77,7 @@ public class Line extends BaseEntity {
 
     private void checkLineStationRemovable() {
         if (sections.size() <= 1) {
-            throw new RuntimeException(ErrorMessages.LAST_LINE_STATION_CANNOT_BE_DELETED);
+            throw new RuntimeException(LineErrorMessages.LAST_LINE_STATION_CANNOT_BE_DELETED);
         }
     }
 
@@ -92,7 +93,7 @@ public class Line extends BaseEntity {
 
     private void checkStationRemovable(Section upStationMatchSection, Section downStationMatchSection) {
         if (upStationMatchSection == null && downStationMatchSection == null) {
-            throw new IllegalArgumentException(ErrorMessages.STATION_DOES_NOT_EXIST);
+            throw new IllegalArgumentException(LineErrorMessages.CANNOT_ADD_LINE_STATION_IF_BOTH_DOES_NOT_EXIST_IN_LINE);
         }
     }
 

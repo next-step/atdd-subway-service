@@ -9,7 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import nextstep.subway.constants.ErrorMessages;
+import nextstep.subway.line.constants.LineErrorMessages;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 
@@ -68,7 +68,7 @@ public class Section {
 
     public boolean isStationOppositeOf(Station station, StationPosition stationPosition) {
         if (stationPosition == null) {
-            throw new IllegalArgumentException(ErrorMessages.STATION_POSITION_NEEDED);
+            throw new IllegalArgumentException(LineErrorMessages.STATION_POSITION_NEEDED);
         }
         return stationPosition.isOpposite(positionOfStation(station));
     }
@@ -98,14 +98,14 @@ public class Section {
 
     private void checkAlreadyExist(Stations stations) {
         if (stations.contains(upStation) && stations.contains(downStation)) {
-            throw new IllegalArgumentException(ErrorMessages.LINE_STATION_ALREADY_EXIST);
+            throw new IllegalArgumentException(LineErrorMessages.LINE_STATION_ALREADY_EXIST);
         }
     }
 
     private void checkSectionAddable(Stations stations) {
         if (!stations.isEmpty()
                 && !stations.contains(upStation) && !stations.contains(downStation)) {
-            throw new IllegalArgumentException(ErrorMessages.NO_STATION_MATCH);
+            throw new IllegalArgumentException(LineErrorMessages.NO_STATION_MATCH);
         }
     }
 
@@ -129,7 +129,7 @@ public class Section {
 
     private void validateDistanceOfSectionToAdd(Section section) {
         if (compareDistance(section) >= 0) {
-            throw new IllegalArgumentException(ErrorMessages.LINE_STATION_DISTANCE_TOO_LONG);
+            throw new IllegalArgumentException(LineErrorMessages.LINE_STATION_DISTANCE_TOO_LONG);
         }
     }
 

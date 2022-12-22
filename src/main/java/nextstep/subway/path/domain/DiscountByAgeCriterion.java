@@ -4,7 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
-import nextstep.subway.constants.ErrorMessages;
+import nextstep.subway.path.constants.PathErrorMessages;
 
 public enum DiscountByAgeCriterion {
 
@@ -30,7 +30,7 @@ public enum DiscountByAgeCriterion {
                         -> age >= discountByAgeCriterion.minAge
                         && (discountByAgeCriterion.maxAge == null || age < discountByAgeCriterion.maxAge))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(ErrorMessages.CANNOT_CHECK_DISCOUNT_CRITERION_BY_AGE));
+                .orElseThrow(() -> new IllegalArgumentException(PathErrorMessages.CANNOT_CHECK_DISCOUNT_CRITERION_BY_AGE));
     }
 
     public double getDiscountFactor() {

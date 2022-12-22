@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import nextstep.subway.constants.ErrorMessages;
+import nextstep.subway.path.constants.PathErrorMessages;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
@@ -23,7 +23,7 @@ public class PathFinder {
 
     private static void checkSourceTargetNotMatch(Station source, Station target) {
         if (source.equals(target)) {
-            throw new IllegalArgumentException(ErrorMessages.SOURCE_TARGET_CANNOT_BE_SAME);
+            throw new IllegalArgumentException(PathErrorMessages.SOURCE_TARGET_CANNOT_BE_SAME);
         }
     }
 
@@ -55,7 +55,7 @@ public class PathFinder {
 
     private static void checkPathExist(GraphPath<Station, StationEdge> path) {
         if (path == null) {
-            throw new RuntimeException(ErrorMessages.CANNOT_FIND_ANY_PATH);
+            throw new RuntimeException(PathErrorMessages.CANNOT_FIND_ANY_PATH);
         }
     }
 }

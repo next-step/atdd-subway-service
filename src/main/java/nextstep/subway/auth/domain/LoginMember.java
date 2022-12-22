@@ -1,7 +1,7 @@
 package nextstep.subway.auth.domain;
 
 import nextstep.subway.auth.application.AuthorizationException;
-import nextstep.subway.constants.ErrorMessages;
+import nextstep.subway.auth.constants.AuthErrorMessages;
 import nextstep.subway.member.domain.Member;
 
 public class LoginMember {
@@ -28,14 +28,14 @@ public class LoginMember {
     public static LoginMember from(Member member) {
         if (member == null) {
             throw new AuthorizationException(
-                    ErrorMessages.UNAUTHORIZED_MEMBER_REQUESTED_FAVORITE_CREATION);
+                    AuthErrorMessages.UNAUTHORIZED_MEMBER_REQUESTED_FAVORITE_CREATION);
         }
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 
     private void checkFieldNotMissing(Long id, String email, Integer age) {
         if (id == null || email == null || age == null) {
-            throw new AuthorizationException(ErrorMessages.LOGIN_MEMBER_FIELD_MISSING);
+            throw new AuthorizationException(AuthErrorMessages.LOGIN_MEMBER_FIELD_MISSING);
         }
     }
 
