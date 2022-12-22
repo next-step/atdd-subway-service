@@ -4,7 +4,7 @@ import nextstep.subway.line.domain.Section;
 import org.jgrapht.graph.DefaultWeightedEdge;
 
 public class StationEdge extends DefaultWeightedEdge {
-    
+
     private Section section;
 
     public StationEdge(Section section) {

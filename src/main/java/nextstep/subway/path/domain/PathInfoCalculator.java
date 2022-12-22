@@ -12,7 +12,8 @@ import org.jgrapht.GraphPath;
 
 public class PathInfoCalculator {
 
-    public static PathInfo calculatePathInfo(LoginMember loginMember, GraphPath<Station, StationEdge> path, List<Line> lines) {
+    public static PathInfo calculatePathInfo(LoginMember loginMember, GraphPath<Station, StationEdge> path,
+            List<Line> lines) {
         PathDistance pathDistance = sumOfEdgeDistance(path); // 경로 거리 계산
         Fare minimumFare = calculateMinimumFare(pathDistance); // 거리에 따른 기본요금 계산
         Fare extraFareAddedFare = minimumFare.add(getHighstExtraFareOfLines(path)); // 노선 추가요금 계산하여 합산
@@ -21,7 +22,7 @@ public class PathInfoCalculator {
     }
 
     protected static PathDistance sumOfEdgeDistance(GraphPath<Station, StationEdge> path) {
-        int weight = (int)Math.floor(path.getWeight());
+        int weight = (int) Math.floor(path.getWeight());
         return new PathDistance(weight);
     }
 

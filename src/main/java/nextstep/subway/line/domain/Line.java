@@ -10,7 +10,6 @@ import javax.persistence.Id;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.line.constants.LineErrorMessages;
 import nextstep.subway.station.domain.Station;
-import nextstep.subway.station.constants.StationErrorMessages;
 import nextstep.subway.station.domain.Stations;
 
 @Entity
@@ -35,7 +34,8 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    private Line(String name, String color, ExtraFare extraFare, Station upStation, Station downStation, Distance distance) {
+    private Line(String name, String color, ExtraFare extraFare, Station upStation, Station downStation,
+            Distance distance) {
         this.name = name;
         this.color = color;
         this.extraFare = extraFare;
@@ -93,7 +93,8 @@ public class Line extends BaseEntity {
 
     private void checkStationRemovable(Section upStationMatchSection, Section downStationMatchSection) {
         if (upStationMatchSection == null && downStationMatchSection == null) {
-            throw new IllegalArgumentException(LineErrorMessages.CANNOT_ADD_LINE_STATION_IF_BOTH_DOES_NOT_EXIST_IN_LINE);
+            throw new IllegalArgumentException(
+                    LineErrorMessages.CANNOT_ADD_LINE_STATION_IF_BOTH_DOES_NOT_EXIST_IN_LINE);
         }
     }
 

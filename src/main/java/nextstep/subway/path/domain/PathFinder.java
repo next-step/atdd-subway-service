@@ -1,9 +1,9 @@
 package nextstep.subway.path.domain;
 
 import java.util.List;
-import nextstep.subway.path.constants.PathErrorMessages;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Sections;
+import nextstep.subway.path.constants.PathErrorMessages;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.Stations;
 import org.jgrapht.GraphPath;

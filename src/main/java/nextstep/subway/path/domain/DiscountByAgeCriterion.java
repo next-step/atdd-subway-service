@@ -30,7 +30,8 @@ public enum DiscountByAgeCriterion {
                         -> age >= discountByAgeCriterion.minAge
                         && (discountByAgeCriterion.maxAge == null || age < discountByAgeCriterion.maxAge))
                 .findFirst()
-                .orElseThrow(() -> new IllegalArgumentException(PathErrorMessages.CANNOT_CHECK_DISCOUNT_CRITERION_BY_AGE));
+                .orElseThrow(
+                        () -> new IllegalArgumentException(PathErrorMessages.CANNOT_CHECK_DISCOUNT_CRITERION_BY_AGE));
     }
 
     public double getDiscountFactor() {
