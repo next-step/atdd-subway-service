@@ -10,15 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
-public class FareTest extends PathTestFixture {
-
-    private GraphPath<Station, StationEdge> 경로;
-
-    @BeforeEach
-    public void setUp() {
-        super.setUp();
-        경로 = PathFinder.findPath(노선목록, 강남역, 남부터미널역);
-    }
+public class FareTest {
 
     @DisplayName("연령별 요금 할인 적용")
     @ParameterizedTest
