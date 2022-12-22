@@ -44,13 +44,13 @@ public class PathAcceptanceTestFixture extends AcceptanceTest {
         교대역 = StationAcceptanceTest.지하철역_등록되어_있음("교대역").as(StationResponse.class);
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 900, 강남역.getId(), 양재역.getId(), 10);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         lineRequest = new LineRequest("2호선", "bg-green-600", 교대역.getId(), 강남역.getId(), 10);
         _2호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
-        lineRequest = new LineRequest("3호선", "bg-orange-600", 교대역.getId(), 양재역.getId(), 5);
+        lineRequest = new LineRequest("3호선", "bg-orange-600", 500, 교대역.getId(), 양재역.getId(), 5);
         _3호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록되어_있음(_3호선, 교대역, 남부터미널역, 3);
