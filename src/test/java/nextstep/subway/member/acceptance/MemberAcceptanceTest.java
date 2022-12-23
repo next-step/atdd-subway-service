@@ -1,4 +1,4 @@
-package nextstep.subway.member;
+package nextstep.subway.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -14,12 +14,12 @@ import org.springframework.http.MediaType;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class MemberAcceptanceTest extends AcceptanceTest {
-    public static final String EMAIL = "email@email.com";
-    public static final String PASSWORD = "password";
-    public static final String NEW_EMAIL = "newemail@email.com";
-    public static final String NEW_PASSWORD = "newpassword";
-    public static final int AGE = 20;
-    public static final int NEW_AGE = 21;
+    private static final String EMAIL = "email@email.com";
+    private static final String PASSWORD = "password";
+    private static final String NEW_EMAIL = "newemail@email.com";
+    private static final String NEW_PASSWORD = "newpassword";
+    private static final int AGE = 20;
+    private static final int NEW_AGE = 21;
 
     @DisplayName("회원 정보를 관리한다.")
     @Test
@@ -113,5 +113,18 @@ public class MemberAcceptanceTest extends AcceptanceTest {
 
     public static void 회원_삭제됨(ExtractableResponse<Response> response) {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
+    }
+
+    public static ExtractableResponse<Response> 내_회원_정보_조회_요청(String accessToken) {
+        return RestAssured.given().log().all()
+            .auth().oauth2(accessToken)
+            .accept(MediaType.APPLICATION_JSON_VALUE)
+            .when().get("/members/me")
+            .then().log().all()
+            .extract();
+    }
+
+    public static void 내_회원_정보_조회_응답_실패(ExtractableResponse<Response> 내_회원_정보_조회_응답) {
+        assertThat(내_회원_정보_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }
