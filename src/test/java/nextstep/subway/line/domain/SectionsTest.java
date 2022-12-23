@@ -29,7 +29,7 @@ class SectionsTest {
     @DisplayName("지하철 구간에 상행역을 등록할 수 있다.")
     void registration_of_subway_up_station() {
         // given
-        Line 지하철_2호선 = new Line("2호선", "green", 강남역, 잠실역, 10);
+        Line 지하철_2호선 = new Line("2호선", "green", 강남역, 잠실역, 10, 200);
         Section 신림_강남_구간 = new Section(신림역, 강남역, 10);
 
         // when
@@ -46,7 +46,7 @@ class SectionsTest {
     @DisplayName("지하철 구간에 하행역을 등록할 수 있다.")
     void registration_of_subway_down_station() {
         // given
-        Line 지하철_2호선 = new Line("2호선", "green", 강남역, 잠실역, 10);
+        Line 지하철_2호선 = new Line("2호선", "green", 강남역, 잠실역, 10, 200);
         Section 잠심_왕십리_구간 = new Section(잠실역, 삼성역, 10);
 
         // when

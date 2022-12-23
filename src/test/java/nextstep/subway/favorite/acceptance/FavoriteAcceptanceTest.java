@@ -54,7 +54,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         잠실역 = 지하철역_등록되어_있음("잠실역").as(StationResponse.class).getId();
         왕십리역 = 지하철역_등록되어_있음("왕십리역").as(StationResponse.class).getId();
 
-        LineRequest lineRequest = new LineRequest("이호선", "bg-green-600", 신림역, 왕십리역, 10);
+        LineRequest lineRequest = new LineRequest("이호선", "bg-green-600", 신림역, 왕십리역, 10,200);
         이호선 = 지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class).getId();
 
         회원_생성을_요청(EMAIL, PASSWORD, AGE);

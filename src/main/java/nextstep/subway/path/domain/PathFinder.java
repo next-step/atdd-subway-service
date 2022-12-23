@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.stream.Collectors;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.path.enums.DistanceFare;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -23,7 +24,7 @@ public class PathFinder {
         GraphPath<Station, DefaultWeightedEdge> resultPath = dijkstraShortestPath.getPath(
             sourceStation, targetStation);
         validCheckPath(resultPath);
-        return Path.of(resultPath.getVertexList(), (int) resultPath.getWeight());
+        return Path.of(resultPath.getVertexList(), (int) resultPath.getWeight(), DistanceFare.calculateDistanceFare((int) resultPath.getWeight()));
     }
 
     private DijkstraShortestPath<Station, DefaultWeightedEdge> createDijkstraPath(

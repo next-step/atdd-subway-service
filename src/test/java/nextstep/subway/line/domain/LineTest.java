@@ -29,7 +29,7 @@ class LineTest {
     @DisplayName("지하철 중간 구간을 삭제 할 수 있다.")
     void line_mid_delete() {
         // given
-        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 강남역, 10);
+        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 강남역, 10, 200);
         Section 강남_잠실_구간 = new Section(강남역, 잠실역, 10);
         지하철_2호선.addSection(강남_잠실_구간);
 
@@ -47,7 +47,7 @@ class LineTest {
     @DisplayName("상행역과 하행역이 이미 노선에 모두 등록되어 있다면 추가할 수 없다.")
     void up_down_station_enroll() {
         // given
-        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 강남역, 10);
+        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 강남역, 10, 200);
         Section 강남_잠실_구간 = new Section(강남역, 잠실역, 10);
         지하철_2호선.addSection(강남_잠실_구간);
 
@@ -62,7 +62,7 @@ class LineTest {
     @DisplayName("상행역과 하행역이 둘 중 하나도 포함되어 있지 않으면 구간을 추가할 수 없다.")
     void no_exist_up_down_station() {
         // given
-        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 강남역, 10);
+        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 강남역, 10, 200);
         Section 잠실_왕십리_구간 = new Section(잠실역, 삼성역, 10);
 
         // when && then
@@ -75,7 +75,7 @@ class LineTest {
     @DisplayName("지하철노선 길이보다 큰 구역은 추가할 수 없다.")
     void add_impossible_over_distance_section() {
         // given
-        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 잠실역, 10);
+        Line 지하철_2호선 = new Line("2호선", "green", 신림역, 잠실역, 10, 200);
         Section 신림_강남_구간 = new Section(신림역, 강남역, 10);
 
         // when && then

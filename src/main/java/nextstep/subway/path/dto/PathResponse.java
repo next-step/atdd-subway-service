@@ -1,6 +1,7 @@
 package nextstep.subway.path.dto;
 
 import nextstep.subway.path.domain.Path;
+import nextstep.subway.path.enums.DistanceFare;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -12,17 +13,24 @@ public class PathResponse {
 
     private int distance;
 
+    private int fare;
+
     private PathResponse() {
 
     }
 
-    public PathResponse(List<PathStationResponse> stations, int distance) {
+    public PathResponse(List<PathStationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
     public static PathResponse of(Path path) {
-        return new PathResponse(toList(path.getStations()), path.getDistance());
+        return new PathResponse(
+            toList(path.getStations()),
+            path.getDistance(),
+            DistanceFare.calculateDistanceFare(path.getDistance())
+        );
     }
 
     private static List<PathStationResponse> toList(List<Station> stations) {

@@ -53,13 +53,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = 지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
 
 
-        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 10);
+        LineRequest 신분당선_요청 = new LineRequest("신분당선", "bg-red-300", 강남역.getId(), 양재역.getId(), 10, 1000);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(신분당선_요청).as(LineResponse.class);
 
-        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-yellow-420", 교대역.getId(), 강남역.getId(), 10);
+        LineRequest 이호선_요청 = new LineRequest("이호선", "bg-yellow-420", 교대역.getId(), 강남역.getId(), 10, 1000);
         이호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(이호선_요청).as(LineResponse.class);
 
-        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-green-500", 교대역.getId(), 양재역.getId(), 5);
+        LineRequest 삼호선_요청 = new LineRequest("삼호선", "bg-green-500", 교대역.getId(), 양재역.getId(), 5, 1000);
         삼호선 = LineAcceptanceTest.지하철_노선_등록되어_있음(삼호선_요청).as(LineResponse.class);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
