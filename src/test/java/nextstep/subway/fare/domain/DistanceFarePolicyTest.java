@@ -5,7 +5,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import org.junit.jupiter.api.DisplayName;
 
 @DisplayName("거리별 추가 요금 계산")
-public class DistanceFarePolicyTest {
+class DistanceFarePolicyTest {
     private Fare 기본요금;
 
     @DisplayName("거리가 10km 이하인 경우 기본요금만 나온다.")

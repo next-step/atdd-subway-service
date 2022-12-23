@@ -6,9 +6,9 @@ import java.util.function.Function;
 import java.util.stream.Collectors;
 
 public enum DistanceFarePolicy {
-    over50km(50, distance -> (int) ((Math.ceil((distance - 1) / 8) + 1) * 100)),
-    over10km_under50km(10, distance -> (int) ((Math.ceil((distance - 1) / 5) + 1) * 100)),
-    under10km(0, distance -> 1250);
+    OVER_50KM(50, distance -> (int) ((Math.ceil((distance - 1) / 8) + 1) * 100)),
+    OVER_10KM_UNDER50KM(10, distance -> (int) ((Math.ceil((distance - 1) / 5) + 1) * 100)),
+    UNDER10KM(0, distance -> 1250);
 
     private final int distance;
     private final Function<Integer, Integer> expression;

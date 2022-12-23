@@ -8,7 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("지하철 요금 도메인 단위테스트")
-public class FareTest {
+class FareTest {
     private Fare 기본요금;
 
     @BeforeEach

@@ -2,6 +2,7 @@ package nextstep.subway.favorite.application;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import nextstep.subway.exception.SubwayException;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
 import nextstep.subway.favorite.dto.FavoriteRequest;
@@ -49,7 +50,7 @@ public class FavoriteService {
     public void deleteFavorite(Long memberId, Long favoriteId) {
         Member member = memberService.findMemberById(memberId);
         Favorite favorite = favoriteRepository.findById(favoriteId)
-                .orElseThrow(() -> new IllegalArgumentException(HttpStatus.NOT_FOUND.toString()));
+                .orElseThrow(() -> new SubwayException(HttpStatus.NOT_FOUND, "삭제할 즐겨찾기를 찾을 수 없습니다."));
 
         member.removeFavorite(favorite);
     }

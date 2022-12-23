@@ -7,7 +7,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 @DisplayName("할인 정책 단위테스트")
-public class DiscountFarePolicyTest {
+class DiscountFarePolicyTest {
     
     @DisplayName("청소년인 경우 운임에서 350원을 공제한 금액의 20% 할인된다.")
     @Test

@@ -3,10 +3,10 @@ package nextstep.subway.fare.domain;
 import java.util.Arrays;
 
 public enum DiscountFarePolicy {
-    over19(19,999,0),
-    over13_under18(13, 18, 0.2),
-    over6_under12(6, 12, 0.5),
-    under5(1,5,1);
+    OVER_19(19,999,0),
+    OVER_13_UNDER_18(13, 18, 0.2),
+    OVER_6_UNDER_12(6, 12, 0.5),
+    UNDER_5(1,5,1);
 
     private final int minAge;
     private final int maxAge;

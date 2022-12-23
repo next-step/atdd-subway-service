@@ -1,9 +1,11 @@
 package nextstep.subway.member.application;
 
+import nextstep.subway.exception.SubwayException;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.member.domain.MemberRepository;
 import nextstep.subway.member.dto.MemberRequest;
 import nextstep.subway.member.dto.MemberResponse;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -28,7 +30,7 @@ public class MemberService {
     }
 
     public Member findMemberById(Long id) {
-        return  memberRepository.findById(id).orElseThrow(RuntimeException::new);
+        return  memberRepository.findById(id).orElseThrow(() -> new SubwayException(HttpStatus.NOT_FOUND, "해당 ID의 멤버를 찾을 수 없습니다."));
     }
 
     public void updateMember(Long id, MemberRequest param) {

@@ -4,9 +4,10 @@ import static org.assertj.core.api.AssertionsForClassTypes.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 
 import java.util.Arrays;
+import java.util.List;
 import nextstep.subway.fare.domain.Fare;
+import nextstep.subway.fare.domain.FareCalculator;
 import nextstep.subway.line.domain.Line;
-import nextstep.subway.line.domain.Lines;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.station.domain.Station;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +24,7 @@ public class PathFinderTest {
     private Line 이호선;
     private Line 삼호선;
     private Section 추가구간;
-    private Lines 전체노선;
+    private List<Line> 전체노선;
 
 
     /**
@@ -49,7 +50,7 @@ public class PathFinderTest {
         추가구간 = new Section(삼호선, 남부터미널역, 양재역, 2);
         삼호선.addSection(추가구간);
 
-        전체노선 = new Lines(Arrays.asList(삼호선, 이호선, 신분당선));
+        전체노선 = Arrays.asList(삼호선, 이호선, 신분당선);
     }
 
     @Test
@@ -80,7 +81,8 @@ public class PathFinderTest {
     @Test
     void 경로의_요금을_계산한다() {
         Path path = PathFinder.of(전체노선).findShortestPath(교대역, 양재역);
-        Fare fare = path.calculate(null);
+        FareCalculator fareCalculator = new FareCalculator(path);
+        Fare fare = fareCalculator.calculate(null);
 
         // 1250 + 500 (거리 추가 요금)
         assertThat(fare.value()).isEqualTo(1750);
@@ -90,7 +92,8 @@ public class PathFinderTest {
     @Test
     void 어린이_요금을_계산한다() {
         Path path = PathFinder.of(전체노선).findShortestPath(교대역, 양재역);
-        Fare fare = path.calculate(12);
+        FareCalculator fareCalculator = new FareCalculator(path);
+        Fare fare = fareCalculator.calculate(12);
 
         // 1250 - ((1250 - 350) * 0.5) + 500 (거리 추가 요금)
         assertThat(fare.value()).isEqualTo(1300);

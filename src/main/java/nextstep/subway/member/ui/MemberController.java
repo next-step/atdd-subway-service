@@ -60,9 +60,4 @@ public class MemberController {
         memberService.deleteMember(loginMember.getId());
         return ResponseEntity.noContent().build();
     }
-
-    @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity handleIllegalArgsException(RuntimeException e) {
-        return ResponseEntity.badRequest().build();
-    }
 }
