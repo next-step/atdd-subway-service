@@ -1,6 +1,7 @@
 package nextstep.subway.favorite.application;
 
 import java.util.List;
+import javax.persistence.EntityNotFoundException;
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
@@ -42,11 +43,16 @@ public class FavoriteService {
     }
 
     public List<FavoriteResponse> findFavoritesByMemberId(Long memberId) {
-        return FavoriteResponse.toList(favoriteRepository.findByMemberId(memberId));
+
+        return FavoriteResponse.favoriteResponseList(favoriteRepository.findByMemberId(memberId));
     }
 
     @Transactional
-    public void deleteById(Long favoriteId) {
-        favoriteRepository.deleteById(favoriteId);
+    public void deleteById(LoginMember loginMember, Long favoriteId) {
+        Favorite favorite = favoriteRepository.findByIdAndMemberId(favoriteId, loginMember.getId()).orElseThrow(
+            () -> new EntityNotFoundException("해당 즐겨찾기를 찾을 수 없습니다.")
+        );
+        favoriteRepository.delete(favorite);
     }
+
 }

@@ -1,4 +1,4 @@
-package nextstep.subway.member;
+package nextstep.subway.member.acceptance;
 
 import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
@@ -125,6 +125,6 @@ public class MemberAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 내_회원_정보_조회_응답_실패(ExtractableResponse<Response> 내_회원_정보_조회_응답) {
-        assertThat(내_회원_정보_조회_응답.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
+        assertThat(내_회원_정보_조회_응답.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 }

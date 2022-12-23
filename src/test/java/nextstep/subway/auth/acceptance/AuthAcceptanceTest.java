@@ -1,8 +1,8 @@
 package nextstep.subway.auth.acceptance;
 
-import static nextstep.subway.member.MemberAcceptanceTest.내_회원_정보_조회_요청;
-import static nextstep.subway.member.MemberAcceptanceTest.내_회원_정보_조회_응답_실패;
-import static nextstep.subway.member.MemberAcceptanceTest.회원_생성을_요청;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.내_회원_정보_조회_요청;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.내_회원_정보_조회_응답_실패;
+import static nextstep.subway.member.acceptance.MemberAcceptanceTest.회원_생성을_요청;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertAll;
 
