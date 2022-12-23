@@ -2,7 +2,6 @@ package nextstep.subway.favorite.application;
 
 import nextstep.subway.favorite.domain.Favorite;
 import nextstep.subway.favorite.domain.FavoriteRepository;
-import nextstep.subway.favorite.domain.Favorites;
 import nextstep.subway.favorite.dto.FavoriteCreatedRequest;
 import nextstep.subway.favorite.dto.FavoriteResponse;
 import nextstep.subway.member.domain.Member;
@@ -19,6 +18,9 @@ import java.util.stream.Collectors;
 @Service
 @Transactional(readOnly = true)
 public class FavoriteService {
+
+    public static final String FAVORITE_DUPLICATE_EXCEPTION_MESSAGE = "출발역과 도착역이 같은 즐겨찾기를 생성할 수 없다.";
+
     private MemberRepository memberRepository;
     private StationRepository stationRepository;
     private FavoriteRepository favoriteRepository;
@@ -33,28 +35,20 @@ public class FavoriteService {
         Member member = memberRepository.findById(loginMemberId).orElseThrow(EntityNotFoundException::new);
         Station source = stationRepository.findById(request.getSourceId()).orElseThrow(EntityNotFoundException::new);
         Station target = stationRepository.findById(request.getTargetId()).orElseThrow(EntityNotFoundException::new);
-        Favorite favorite = new Favorite(member, source, target);
-        Favorites favorites = initFavorites(loginMemberId);
-        favorites.add(favorite);
-        return new FavoriteResponse(favoriteRepository.save(favorite));
+        if (favoriteRepository.existsBySourceIdAndTargetId(source.getId(), target.getId())) {
+            throw new IllegalArgumentException(FAVORITE_DUPLICATE_EXCEPTION_MESSAGE);
+        }
+        return new FavoriteResponse(favoriteRepository.save(new Favorite(member, source, target)));
     }
 
     public List<FavoriteResponse> findAll(Long loginMemberId) {
-        return favoriteRepository.findAllByMember_Id(loginMemberId).stream()
+        return favoriteRepository.findAllByMemberId(loginMemberId).stream()
                 .map(FavoriteResponse::new)
                 .collect(Collectors.toList());
     }
 
     public void delete(Long loginMemberId, Long favoriteId) {
-        Favorites favorites = initFavorites(loginMemberId);
-        Favorite deleteFavorite = favoriteRepository.findById(favoriteId).orElseThrow(EntityNotFoundException::new);
-        favorites.validateDeleteFavorite(deleteFavorite);
+        favoriteRepository.findByIdAndMemberId(favoriteId, loginMemberId).orElseThrow(EntityNotFoundException::new);
         favoriteRepository.deleteById(favoriteId);
-    }
-
-    private Favorites initFavorites(Long loginMemberId) {
-        Favorites favorites = new Favorites();
-        favorites.addAll(favoriteRepository.findAllByMember_Id(loginMemberId));
-        return favorites;
     }
 }

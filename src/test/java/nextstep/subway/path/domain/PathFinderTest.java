@@ -33,12 +33,12 @@ class PathFinderTest {
     private Station stationF;
 
     /**
-     * stationA  --- lineD    --- stationD                      stationF
-     * /             거리 1        /                              /
-     * *lineA* 거리 5                lineC 거리 1               *lineE* 거리 2
-     * /                             /                            /
-     * stationB  ---   lineB ---  stationC                      stationE
-     * 거리 3
+     * stationA  --- lineD (거리 1 요금 900원) ---        stationD                               stationF
+     * /                                                   /                                      /
+     * lineA (거리 5 요금 0원)                   lineC (거리 1, 요금 500원)                    *lineE* 거리 2 요금 0원
+     * /                                                 /                                      /
+     * stationB  ---   lineB (거리 3 요금 0원)---     stationC                                 stationE
+     *
      */
     @BeforeEach
     void setUp() {
@@ -49,11 +49,11 @@ class PathFinderTest {
         stationE = new Station("E");
         stationF = new Station("F");
 
-        lineA = Line.of("A", "RED");
-        lineB = Line.of("B", "BLUE");
-        lineC = Line.of("C", "GREEN");
-        lineD = Line.of("D", "YELLOW");
-        lineE = Line.of("E", "ORANGE");
+        lineA = Line.of("A", "RED", 0);
+        lineB = Line.of("B", "BLUE", 0);
+        lineC = Line.of("C", "GREEN", 500);
+        lineD = Line.of("D", "YELLOW", 900);
+        lineE = Line.of("E", "ORANGE", 0);
 
         lineA.addSection(new Section(lineA, stationA, stationB, new Distance(5)));
         lineB.addSection(new Section(lineB, stationB, stationC, new Distance(3)));
@@ -66,9 +66,10 @@ class PathFinderTest {
     @Test
     void findPath_fail_sameStation() {
 
-        PathFinder pathFinder = new PathFinder(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
+        Station source = stationA;
+        Station target = stationA;
 
-        assertThatThrownBy(() -> pathFinder.findStations(stationA, stationA))
+        assertThatThrownBy(() -> new PathFinder(source, target, Arrays.asList(lineA, lineB, lineC, lineD, lineE)))
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessageContaining(SOURCE_TARGET_NOT_SAME_EXCEPTION_MESSAGE);
     }
@@ -77,9 +78,12 @@ class PathFinderTest {
     @Test
     void findPath_fail_notConnect() {
 
-        PathFinder pathFinder = new PathFinder(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
+        Station source = stationA;
+        Station target = stationE;
 
-        assertThatThrownBy(() -> pathFinder.findStations(stationA, stationE))
+        PathFinder pathFinder = new PathFinder(source, target, Arrays.asList(lineA, lineB, lineC, lineD, lineE));
+
+        assertThatThrownBy(pathFinder::findStations)
                 .isInstanceOf(IllegalArgumentException.class);
     }
 
@@ -87,11 +91,15 @@ class PathFinderTest {
     @Test
     void findPath_success() {
 
-        PathFinder pathFinder = new PathFinder(Arrays.asList(lineA, lineB, lineC, lineD, lineE));
+        Station source = stationA;
+        Station target = stationC;
+
+        PathFinder pathFinder = new PathFinder(source, target, Arrays.asList(lineA, lineB, lineC, lineD, lineE));
 
         assertAll(
-                () -> assertThat(pathFinder.findStations(stationA, stationC)).containsExactly(stationA, stationD, stationC),
-                () -> assertThat(pathFinder.findDistance(stationA, stationC)).isEqualTo(2)
+                () -> assertThat(pathFinder.findStations()).containsExactly(stationA, stationD, stationC),
+                () -> assertThat(pathFinder.findDistance()).isEqualTo(2),
+                () -> assertThat(pathFinder.findLineFare()).isEqualTo(900)
         );
     }
 }

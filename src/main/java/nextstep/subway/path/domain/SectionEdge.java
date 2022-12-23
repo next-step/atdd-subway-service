@@ -7,15 +7,15 @@ public class SectionEdge extends DefaultWeightedEdge {
 
     private final Section section;
 
-    public static SectionEdge of(Section section) {
-        return new SectionEdge(section);
-    }
-
     public SectionEdge(Section section) {
         this.section = section;
     }
 
-    public Section getSection() {
-        return this.section;
+    public static SectionEdge of(Section section) {
+        return new SectionEdge(section);
+    }
+
+    public int getFare() {
+        return this.section.getLine().getFare();
     }
 }

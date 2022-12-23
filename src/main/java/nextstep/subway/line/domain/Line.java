@@ -14,31 +14,38 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-
+    private int fare;
     @Embedded
     private final Sections sections = new Sections();
 
     protected Line() {
     }
 
-    public static Line of(String name, String color) {
-        return new Line(name, color);
-    }
-
-    private Line(String name, String color) {
+    private Line(String name, String color, int fare) {
         this.name = name;
         this.color = color;
+        this.fare = fare;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int fare) {
         this.name = name;
         this.color = color;
+        this.fare = fare;
         sections.add(new Section(this, upStation, downStation, new Distance(distance)));
+    }
+
+    public static Line of(String name, String color, int fare) {
+        return new Line(name, color, fare);
     }
 
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+        this.fare = line.getFare();
+    }
+
+    public int getFare() {
+        return this.fare;
     }
 
     public Long getId() {

@@ -9,14 +9,21 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 
 import static nextstep.subway.auth.acceptance.AuthSteps.*;
-import static nextstep.subway.member.MemberSteps.*;
+import static nextstep.subway.member.MemberSteps.로그인_요청;
+import static nextstep.subway.member.MemberSteps.회원_정보_조회됨;
 import static org.assertj.core.api.Assertions.assertThat;
 
 public class AuthAcceptanceTest extends AcceptanceTest {
 
     public static final String EMAIL = "email";
+    public static final String CHILDREN_EMAIL = "children_email";
+    public static final String TEENAGER_EMAIL = "teenager_email";
     public static final String PASSWORD = "password";
+    public static final String CHILDREN_PASSWORD = "children_password";
+    public static final String TEENAGER_PASSWORD = "teenager_password";
     public static final int AGE = 20;
+    public static final int TEENAGER_AGE = 15;
+    public static final int CHILDREN_AGE = 11;
     public static final String INVALID_TOKEN = "invalid_token";
     public static final String INVALID_EMAIL = "em";
     public static final String INVALID_PASSWORD = "pw";
