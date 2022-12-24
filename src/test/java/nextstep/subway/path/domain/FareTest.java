@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -32,6 +33,17 @@ class FareTest {
     void createFareApplyToAddFare(long addFare) {
         Fare fare = Fare.fromBaseFare(addFare);
         assertThat(fare.currentFare()).isEqualTo(1250L + addFare);
+    }
+
+    @DisplayName("사용자 연령별에 따라 요금에 할인을 적용한다.")
+    @ParameterizedTest
+    @CsvSource(value = {"15:720", "6:450"}, delimiter = ':')
+    void calculateDiscount(int age, long expectFare) {
+        Fare fare = Fare.fromBaseFare();
+        Member member = new Member("a@gmail.com", "1234", age);
+
+        fare.calculateDiscount(member);
+        assertThat(fare.currentFare()).isEqualTo(expectFare);
     }
 
 }

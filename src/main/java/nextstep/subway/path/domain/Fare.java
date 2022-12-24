@@ -1,5 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.member.domain.Member;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
@@ -8,9 +10,12 @@ public class Fare {
 
     private static final long ZERO_FARE = 0L;
     private static final long BASE_FARE = 1_250L;
+    private static final long ADD_FARE = 100L;
+    private static final long DISCOUNT_FARE = 350L;
+    private static final float DISCOUNT_RATE_CHILDREN = 0.5F;
+    private static final float DISCOUNT_RATE_ADOLESCENT = 0.2F;
     private static final int FIRST_FARE_SECTION_DELIMITER = 10;
     private static final int SECOND_FARE_SECTION_DELIMITER = 50;
-    private static final int ADD_FARE = 100;
     private static final int FIRST_FARE_SECTION_PER_DISTANCE = 5;
     private static final int SECOND_FARE_SECTION_PER_DISTANCE = 8;
 
@@ -58,6 +63,19 @@ public class Fare {
         return this.fare;
     }
 
+    public void calculateDiscount(Member member) {
+        if (isAdolescent(member)) {
+            this.fare -= DISCOUNT_FARE;
+            this.fare -= this.fare * DISCOUNT_RATE_ADOLESCENT;
+            return;
+        }
+        if (isChildren(member)) {
+            this.fare -= DISCOUNT_FARE;
+            this.fare -= this.fare * DISCOUNT_RATE_CHILDREN;
+            return;
+        }
+    }
+
     private boolean isBelongToSecondFareSection(int distance) {
         return distance > SECOND_FARE_SECTION_DELIMITER;
     }
@@ -75,5 +93,13 @@ public class Fare {
 
     private long calculateOverFareWhenSecondFareSection(int distance) {
         return (int) ((Math.ceil((distance - 1) / SECOND_FARE_SECTION_PER_DISTANCE) + 1) * ADD_FARE);
+    }
+
+    private boolean isChildren(Member member) {
+        return member.getAge() < 13 && member.getAge() >= 6;
+    }
+
+    private boolean isAdolescent(Member member) {
+        return member.getAge() < 19 && member.getAge() >= 13;
     }
 }
