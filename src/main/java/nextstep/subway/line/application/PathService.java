@@ -2,6 +2,8 @@ package nextstep.subway.line.application;
 
 import nextstep.subway.fee.domain.StationFee;
 import nextstep.subway.fee.domain.StationFeeRepository;
+import nextstep.subway.line.domain.Line;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.line.dto.PathResponse;
@@ -27,11 +29,14 @@ public class PathService {
     private StationRepository stationRepository;
     private SectionRepository sectionRepository;
     private StationFeeRepository stationFeeRepository;
+    private LineRepository lineRepository;
 
-    public PathService(StationRepository stationRepository, SectionRepository sectionRepository, StationFeeRepository stationFeeRepository) {
+    public PathService(StationRepository stationRepository, SectionRepository sectionRepository
+            , StationFeeRepository stationFeeRepository, LineRepository lineRepository) {
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
         this.stationFeeRepository = stationFeeRepository;
+        this.lineRepository = lineRepository;
     }
 
     @Transactional(readOnly = true)
@@ -39,15 +44,41 @@ public class PathService {
         int totalDistance = 0;
         int totalFee = STANDARD_FEE;
         List<StationResponse> shortestPath = getShortestPath(sourceStationId, targetStationid);
+        totalDistance = findTotalDistance(shortestPath);
 
-        for (int i = 0; i < shortestPath.size() - 1; i++) {
-            totalDistance += findDistance(shortestPath.get(i).getId(), shortestPath.get(i+1).getId());
-        }
         Optional<StationFee> stationFee = stationFeeRepository.findStationFee(totalDistance);
         if (stationFee.isPresent()) {
             totalFee += stationFee.get().getAdditionalFee(totalDistance);
         }
-        return PathResponse.of(totalFee, totalDistance, shortestPath);
+
+        return PathResponse.of(totalFee + findLineMaxAdditionalFee(shortestPath), totalDistance, shortestPath);
+    }
+
+    private int findLineMaxAdditionalFee(List<StationResponse> stationResponses) {
+        int maxAdditionFee = 0;
+        for (int i = 0; i < stationResponses.size() - 1; i++) {
+            maxAdditionFee = Math.max(maxAdditionFee, findLineAdditionalFee(stationResponses.get(i).getId(), stationResponses.get(i+1).getId()));
+        }
+        return maxAdditionFee;
+    }
+
+    private int findLineAdditionalFee(Long sourceStationId, Long targetStationId) {
+        Station sourceStation = stationRepository.findById(sourceStationId)
+                .orElseThrow(RuntimeException::new);
+        Station targetStation = stationRepository.findById(targetStationId)
+                .orElseThrow(RuntimeException::new);
+        Section section = sectionRepository.findByUpStationAndDownStation(sourceStation, targetStation)
+                .orElseThrow(RuntimeException::new);
+
+        return section.getLine().getAdditionalFee();
+    }
+
+    private int findTotalDistance(List<StationResponse> stationResponses) {
+        int totalDistance = 0;
+        for (int i = 0; i < stationResponses.size() - 1; i++) {
+            totalDistance += findDistance(stationResponses.get(i).getId(), stationResponses.get(i+1).getId());
+        }
+        return totalDistance;
     }
 
     private int findDistance(Long sourceStationId, Long targetStationId) {

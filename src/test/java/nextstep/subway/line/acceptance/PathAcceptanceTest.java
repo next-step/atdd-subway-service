@@ -54,9 +54,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         남부터미널역 = StationAcceptanceTest.지하철역_등록되어_있음("남부터미널역").as(StationResponse.class);
         노량진역 = StationAcceptanceTest.지하철역_등록되어_있음("노량진역").as(StationResponse.class);
 
-        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10);
-        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-600", 교대역, 강남역, 10);
-        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-600", 교대역, 양재역, 15);
+        신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 300);
+        이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-500", 교대역, 강남역, 10, 200);
+        삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-300", 남부터미널역, 양재역, 15, 400);
+        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 1000);
 
         지하철_기본요금_등록되어_있음(11, 50, 5, 100);
         지하철_기본요금_등록되어_있음(51, 999999, 8, 100);
@@ -64,8 +65,9 @@ public class PathAcceptanceTest extends AcceptanceTest {
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
 
-    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation, StationResponse downStation, int distance) {
-        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance);
+    private LineResponse 지하철_노선_등록되어_있음(String name, String color, StationResponse upStation
+                                            , StationResponse downStation, int distance, int additionalFee) {
+        LineRequest params = new LineRequest(name, color, upStation.getId(), downStation.getId(), distance, additionalFee);
         return 지하철_노선_생성_요청(params).body()
                 .jsonPath()
                 .getObject(".", LineResponse.class);
@@ -148,13 +150,13 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @Test
     @DisplayName("지하철역 조회 - 거리, 금액 포함하도록 조회 - 기본 요금")
     void getStationPathInfo() {
-        Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨(3L, 2L);
-        int totalDistance = 15;
-        int totalFee = 1350;
+        Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨(교대역.getId(), 양재역.getId());
+        int totalDistance = 20;
+        int stadardFee = 1250; int distanceAdditionalFee = 200; int lineAdditionalFee = 300;
 
         ExtractableResponse<Response> extract = 지하철역_경로정보_조회(params);
 
-        지하철노선_경로정보_응답됨(extract, totalDistance, totalFee);
+        지하철노선_경로정보_응답됨(extract, totalDistance, stadardFee + distanceAdditionalFee + lineAdditionalFee);
     }
 
     private Map 지하철노선_최적경로_조회_세팅됨(Long source, Long target) {
