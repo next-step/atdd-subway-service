@@ -45,8 +45,7 @@ public class FavoriteService {
         Member member = memberRepository.findById(loginMember.getId())
                 .orElseThrow(RuntimeException::new);
 
-        List<Favorite> favorite = favoriteRepository.findByMember(member)
-                .orElseGet(ArrayList::new);
+        List<Favorite> favorite = favoriteRepository.findByMember(member);
         return favorite.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
