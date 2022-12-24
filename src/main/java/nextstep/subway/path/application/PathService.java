@@ -27,6 +27,10 @@ public class PathService {
 
     public PathResponse path(Long sourceId, Long targetId, LoginMember loginMember) {
         PathResult pathResult= pathFinder.findPath(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
+        return getResponseWithCharge(pathResult, loginMember);
+    }
+
+    private PathResponse getResponseWithCharge(PathResult pathResult, LoginMember loginMember){
         if(isLoggedIn(loginMember)){
             return convert(pathResult, loginMember);
         }
@@ -44,4 +48,3 @@ public class PathService {
             );
     }
 }
-

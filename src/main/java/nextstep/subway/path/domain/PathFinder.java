@@ -4,6 +4,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionEdge;
 import nextstep.subway.station.domain.Station;
@@ -14,7 +15,7 @@ import org.jgrapht.graph.WeightedMultigraph;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PathGraph {
+public class PathFinder {
 
     public PathResult findPath(Station source, Station target, List<Section> sections){
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
