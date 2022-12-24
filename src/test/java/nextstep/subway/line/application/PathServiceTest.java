@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.fee.domain.StationFeeRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.station.domain.Station;
@@ -35,10 +36,13 @@ class PathServiceTest {
     @Mock
     private SectionRepository sectionRepository;
 
+    @Mock
+    private StationFeeRepository stationFeeRepository;
+
     @Test
     @DisplayName("최적경로 조회 - mock")
     void getShortestPathTest() {
-        PathService pathService = new PathService(stationRepository, sectionRepository);
+        PathService pathService = new PathService(stationRepository, sectionRepository, stationFeeRepository);
 
         List<Station> stations = Mock_지하철역_등록됨();
         List<Section> sections = Mock_구간역_등록됨();
@@ -88,7 +92,7 @@ class PathServiceTest {
     @Test
     @DisplayName("최적경로 조회 - 실제 객체")
     void getShortestPathTest2() {
-        PathService pathService = new PathService(stationRepository, sectionRepository);
+        PathService pathService = new PathService(stationRepository, sectionRepository, stationFeeRepository);
 
         List<Station> stations = Mock_지하철역_등록됨();
         List<Section> sections = Mock_구간역_등록됨();

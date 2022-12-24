@@ -1,7 +1,10 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.fee.domain.StationFee;
+import nextstep.subway.fee.domain.StationFeeRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
 import nextstep.subway.station.dto.StationResponse;
@@ -15,15 +18,47 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static nextstep.subway.fee.domain.StationFeeStrategy.STANDARD_FEE;
+
 @Service
 @Transactional
 public class PathService {
+
     private StationRepository stationRepository;
     private SectionRepository sectionRepository;
+    private StationFeeRepository stationFeeRepository;
 
-    public PathService(StationRepository stationRepository, SectionRepository sectionRepository) {
+    public PathService(StationRepository stationRepository, SectionRepository sectionRepository, StationFeeRepository stationFeeRepository) {
         this.stationRepository = stationRepository;
         this.sectionRepository = sectionRepository;
+        this.stationFeeRepository = stationFeeRepository;
+    }
+
+    @Transactional(readOnly = true)
+    public PathResponse getStationPathInfo(final String sourceStationId, final String targetStationid) {
+        int totalDistance = 0;
+        int totalFee = STANDARD_FEE;
+        List<StationResponse> shortestPath = getShortestPath(sourceStationId, targetStationid);
+
+        for (int i = 0; i < shortestPath.size() - 1; i++) {
+            totalDistance += findDistance(shortestPath.get(i).getId(), shortestPath.get(i+1).getId());
+        }
+        Optional<StationFee> stationFee = stationFeeRepository.findStationFee(totalDistance);
+        if (stationFee.isPresent()) {
+            totalFee += stationFee.get().getAdditionalFee(totalDistance);
+        }
+        return PathResponse.of(totalFee, totalDistance, shortestPath);
+    }
+
+    private int findDistance(Long sourceStationId, Long targetStationId) {
+        Station sourceStation = stationRepository.findById(sourceStationId)
+                .orElseThrow(RuntimeException::new);
+        Station targetStation = stationRepository.findById(targetStationId)
+                .orElseThrow(RuntimeException::new);
+
+        Optional<Section> section = sectionRepository.findByUpStationAndDownStation(sourceStation, targetStation);
+
+        return section.isPresent() ? section.get().getDistance() : 0;
     }
 
     public List<StationResponse> getShortestPath(final String sourceStationId, final String targetStationid) {

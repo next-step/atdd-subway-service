@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.fee.dto.FeeRequest;
 import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.line.dto.LineResponse;
 import nextstep.subway.station.StationAcceptanceTest;
@@ -129,6 +130,16 @@ public class LineAcceptanceTest extends AcceptanceTest {
                 .when().post("/lines")
                 .then().log().all().
                         extract();
+    }
+
+    public static ExtractableResponse<Response> 지하철_요금_생성_요청(FeeRequest params) {
+        return RestAssured
+                .given().log().all()
+                .contentType(MediaType.APPLICATION_JSON_VALUE)
+                .body(params)
+                .when().post("/fees")
+                .then().log().all().
+                extract();
     }
 
     public static ExtractableResponse<Response> 지하철_노선_목록_조회_요청() {
