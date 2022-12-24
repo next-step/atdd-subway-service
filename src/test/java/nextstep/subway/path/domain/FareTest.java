@@ -2,7 +2,8 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.ErrorCode;
-import nextstep.subway.member.domain.Member;
+import nextstep.subway.fare.Fare;
+import nextstep.subway.fare.WooTechSubwayFareCalculator;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -13,6 +14,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FareTest {
+
+    private WooTechSubwayFareCalculator fareCalculator = new WooTechSubwayFareCalculator(1250);
 
     @DisplayName("요금 객체의 Default_운임(기본요금)은 1250원이다.")
     @Test
@@ -26,7 +29,7 @@ class FareTest {
     @CsvSource(value = {"11:1350", "59:2250"}, delimiter = ':')
     void calculateFareByDistanceProportional(int distance, long expectFare) {
         Fare fare = Fare.fromBaseFare();
-        fare.calculateFareByDistanceProportional(distance);
+        fareCalculator.calculateFareByDistanceProportional(distance);
         assertThat(fare.currentFare()).isEqualTo(expectFare);
     }
 
@@ -45,7 +48,7 @@ class FareTest {
         Fare fare = Fare.fromBaseFare();
         LoginMember member = new LoginMember(1L, "a@gmail.com", age);
 
-        fare.calculateDiscount(member);
+        fareCalculator.calculateDiscount(member);
         assertThat(fare.currentFare()).isEqualTo(expectFare);
     }
 

@@ -52,6 +52,8 @@ public class LineRequest {
         return distance;
     }
 
+    public long getAddFare() {return addFare;}
+
     public Line toLine() {
         return new Line(name, color);
     }

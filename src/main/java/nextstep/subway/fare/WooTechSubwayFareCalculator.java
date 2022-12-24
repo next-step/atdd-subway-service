@@ -1,63 +1,31 @@
-package nextstep.subway.path.domain;
+package nextstep.subway.fare;
 
 import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.ErrorCode;
 
-import javax.persistence.Column;
-import javax.persistence.Embeddable;
+import static nextstep.subway.fare.FareConstants.ADD_FARE;
+import static nextstep.subway.fare.FareConstants.DISCOUNT_FARE;
+import static nextstep.subway.fare.FareConstants.DISCOUNT_RATE_ADOLESCENT;
+import static nextstep.subway.fare.FareConstants.DISCOUNT_RATE_CHILDREN;
+import static nextstep.subway.fare.FareConstants.FIRST_FARE_SECTION_DELIMITER;
+import static nextstep.subway.fare.FareConstants.FIRST_FARE_SECTION_PER_DISTANCE;
+import static nextstep.subway.fare.FareConstants.SECOND_FARE_SECTION_DELIMITER;
+import static nextstep.subway.fare.FareConstants.SECOND_FARE_SECTION_PER_DISTANCE;
 
-@Embeddable
-public class Fare {
+public class WooTechSubwayFareCalculator implements FareCalculator{
 
-    private static final long ZERO_FARE = 0L;
-    private static final long BASE_FARE = 1_250L;
-    private static final long ADD_FARE = 100L;
-    private static final long DISCOUNT_FARE = 350L;
-    private static final float DISCOUNT_RATE_CHILDREN = 0.5F;
-    private static final float DISCOUNT_RATE_ADOLESCENT = 0.2F;
-    private static final int FIRST_FARE_SECTION_DELIMITER = 10;
-    private static final int SECOND_FARE_SECTION_DELIMITER = 50;
-    private static final int FIRST_FARE_SECTION_PER_DISTANCE = 5;
-    private static final int SECOND_FARE_SECTION_PER_DISTANCE = 8;
-
-    @Column(nullable = false)
     private long fare;
 
-    public Fare() {
-        this.fare = ZERO_FARE;
-    }
-
-    private Fare(long fare) {
-        if (isNegative(fare)) {
-            throw new IllegalArgumentException(ErrorCode.INVALID_FARE_FORMAT.getErrorMessage());
-        }
+    public WooTechSubwayFareCalculator(long fare) {
         this.fare = fare;
     }
 
-    public static Fare from() {
-        return new Fare();
-    }
-
-    public static Fare from(long fare) {
-        return new Fare(fare);
-    }
-
-    public static Fare fromBaseFare() {
-        return new Fare(BASE_FARE);
-    }
-
-    public static Fare fromBaseFare(long addFare) {
-        return new Fare(BASE_FARE + addFare);
-    }
-
-    public long currentFare() {
-        return this.fare;
-    }
-
-    public long currentFare(int distance, LoginMember member) {
+    @Override
+    public long fareCalculate(int distance, LoginMember member) {
         calculateFareByDistanceProportional(distance);
+        calculateDiscount(member);
 
-        return this.fare;
+        return 0;
     }
 
     public void calculateFareByDistanceProportional(int distance) {
@@ -69,19 +37,17 @@ public class Fare {
         }
     }
 
-    public long findFare() {
-        return this.fare;
-    }
-
     public void calculateDiscount(LoginMember member) {
         if (isAdolescent(member)) {
             this.fare -= DISCOUNT_FARE;
             this.fare -= this.fare * DISCOUNT_RATE_ADOLESCENT;
+            checkValidation(fare);
             return;
         }
         if (isChildren(member)) {
             this.fare -= DISCOUNT_FARE;
             this.fare -= this.fare * DISCOUNT_RATE_CHILDREN;
+            checkValidation(fare);
             return;
         }
     }
@@ -113,8 +79,13 @@ public class Fare {
         return member.getAge() < 19 && member.getAge() >= 13;
     }
 
+    private void checkValidation(long fare) {
+        if (isNegative(fare)) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_FARE_FORMAT.getErrorMessage());
+        }
+    }
+
     private boolean isNegative(long fare) {
         return fare < 0;
     }
-
 }

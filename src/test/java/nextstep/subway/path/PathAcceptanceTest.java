@@ -94,7 +94,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
         사당역 = StationAcceptanceTest.지하철역_등록되어_있음("사당역").as(StationResponse.class);
         이수역 = StationAcceptanceTest.지하철역_등록되어_있음("이수역").as(StationResponse.class);
 
-        신분당선 = LineRestAssured.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 100)).as(LineResponse.class);
+        신분당선 = LineRestAssured.지하철_노선_등록되어_있음(new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 400)).as(LineResponse.class);
         이호선 = LineRestAssured.지하철_노선_등록되어_있음(new LineRequest("이호선", "bg-red-600", 교대역.getId(), 강남역.getId(), 10, 200)).as(LineResponse.class);
         삼호선 = LineRestAssured.지하철_노선_등록되어_있음(new LineRequest("삼호선", "bg-red-600", 교대역.getId(), 양재역.getId(), 5, 100)).as(LineResponse.class);
         사호선 = LineRestAssured.지하철_노선_등록되어_있음(new LineRequest("사호선", "bg-blue-600", 사당역.getId(), 이수역.getId(), 5, 150)).as(LineResponse.class);
@@ -148,41 +148,41 @@ public class PathAcceptanceTest extends AcceptanceTest {
     @TestFactory
     Stream<DynamicTest> findShortestPath() {
         return Stream.of(
-                dynamicTest("성인회원 경로 조회", () -> {
+                dynamicTest("성인회원 경로 조회, 추가요금 200", () -> {
                     ExtractableResponse<Response> 성인_회원_경로조회_결과 = 지하철_경로_조회_요청(성인회원, 교대역.getId(), 강남역.getId());
                     지하철_최단_경로_조회됨(성인_회원_경로조회_결과);
                     지하철_최단_경로_총_거리_조회됨(성인_회원_경로조회_결과, 10);
                     지하철_이용_요금_조회됨(성인_회원_경로조회_결과, 1450);
                 }),
-                dynamicTest("성인회원 경로 조회 거리 초과", () -> {
-                    ExtractableResponse<Response> 성인_회원_경로조회_결과 = 지하철_경로_조회_요청(성인회원, 교대역.getId(), 강남역.getId());
+                dynamicTest("성인회원 경로 조회, 노선 최대 추가요금 400, 거리비례 적용 100", () -> {
+                    ExtractableResponse<Response> 성인_회원_경로조회_결과 = 지하철_경로_조회_요청(성인회원, 남부터미널역.getId(), 강남역.getId());
                     지하철_최단_경로_조회됨(성인_회원_경로조회_결과);
-                    지하철_최단_경로_총_거리_조회됨(성인_회원_경로조회_결과, 11);
-                    지하철_이용_요금_조회됨(성인_회원_경로조회_결과, 1550);
+                    지하철_최단_경로_총_거리_조회됨(성인_회원_경로조회_결과, 12);
+                    지하철_이용_요금_조회됨(성인_회원_경로조회_결과, 1750);
                 }),
-                dynamicTest("청소년회원 경로 조회", () -> {
+                dynamicTest("청소년회원 경로 조회, 추가요금 200", () -> {
                     ExtractableResponse<Response> 청소년_회원_경로조회_결과 = 지하철_경로_조회_요청(청소년회원, 교대역.getId(), 강남역.getId());
                     지하철_최단_경로_조회됨(청소년_회원_경로조회_결과);
                     지하철_최단_경로_총_거리_조회됨(청소년_회원_경로조회_결과, 10);
                     지하철_이용_요금_조회됨(청소년_회원_경로조회_결과, 880);
                 }),
-                dynamicTest("청소년회원 경로 조회", () -> {
-                    ExtractableResponse<Response> 청소년_회원_경로조회_결과 = 지하철_경로_조회_요청(청소년회원, 교대역.getId(), 강남역.getId());
+                dynamicTest("청소년회원 경로 조회, 노선 최대 추가요금 400, 거리비례 적용 100", () -> {
+                    ExtractableResponse<Response> 청소년_회원_경로조회_결과 = 지하철_경로_조회_요청(청소년회원, 남부터미널역.getId(), 강남역.getId());
                     지하철_최단_경로_조회됨(청소년_회원_경로조회_결과);
-                    지하철_최단_경로_총_거리_조회됨(청소년_회원_경로조회_결과, 11);
-                    지하철_이용_요금_조회됨(청소년_회원_경로조회_결과, 960);
+                    지하철_최단_경로_총_거리_조회됨(청소년_회원_경로조회_결과, 12);
+                    지하철_이용_요금_조회됨(청소년_회원_경로조회_결과, 1120);
                 }),
-                dynamicTest("어린이회원 경로 조회", () -> {
+                dynamicTest("어린이회원 경로 조회, 추가요금 200", () -> {
                     ExtractableResponse<Response> 어린이_회원_경로조회_결과 = 지하철_경로_조회_요청(어린이회원, 교대역.getId(), 강남역.getId());
                     지하철_최단_경로_조회됨(어린이_회원_경로조회_결과);
                     지하철_최단_경로_총_거리_조회됨(어린이_회원_경로조회_결과, 10);
                     지하철_이용_요금_조회됨(어린이_회원_경로조회_결과, 550);
                 }),
-                dynamicTest("어린이회원 경로 조회", () -> {
-                    ExtractableResponse<Response> 어린이_회원_경로조회_결과 = 지하철_경로_조회_요청(어린이회원, 교대역.getId(), 강남역.getId());
+                dynamicTest("어린이회원 경로 조회, 노선 최대 추가요금 400, 거리비례 적용 100", () -> {
+                    ExtractableResponse<Response> 어린이_회원_경로조회_결과 = 지하철_경로_조회_요청(어린이회원, 남부터미널역.getId(), 강남역.getId());
                     지하철_최단_경로_조회됨(어린이_회원_경로조회_결과);
-                    지하철_최단_경로_총_거리_조회됨(어린이_회원_경로조회_결과, 11);
-                    지하철_이용_요금_조회됨(어린이_회원_경로조회_결과, 600);
+                    지하철_최단_경로_총_거리_조회됨(어린이_회원_경로조회_결과, 12);
+                    지하철_이용_요금_조회됨(어린이_회원_경로조회_결과, 700);
                 })
         );
     }
