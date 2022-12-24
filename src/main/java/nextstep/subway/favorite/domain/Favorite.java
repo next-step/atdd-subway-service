@@ -1,5 +1,7 @@
 package nextstep.subway.favorite.domain;
 
+import java.util.ArrayList;
+import java.util.List;
 import nextstep.subway.BaseEntity;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
@@ -7,46 +9,48 @@ import nextstep.subway.station.domain.Station;
 import javax.persistence.*;
 
 @Entity
-public class Favorite extends BaseEntity {
+public class Favorite {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "member_id", foreignKey = @ForeignKey(name = "fk_favorite_member"), nullable = false)
-    private Member member;
-
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "source_station_id", foreignKey = @ForeignKey(name = "fk_favorite_source_station"), nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "source_station_id")
     private Station sourceStation;
 
-    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.PERSIST)
-    @JoinColumn(name = "target_station_id", foreignKey = @ForeignKey(name = "fk_favorite_to_target_station"), nullable = false)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "target_station_id")
     private Station targetStation;
 
-    protected Favorite() {
+    protected Favorite(){
+
     }
 
-    public Favorite(Member member, Station sourceStation, Station targetStation) {
-        validateFavorite(sourceStation, targetStation);
-        this.member = member;
+    public Favorite(Station source, Station target, Member member) {
+        this(null, source, target, member);
+    }
+
+    public Favorite(Long id, Station sourceStation, Station targetStation, Member member) {
+        this.id = id;
         this.sourceStation = sourceStation;
         this.targetStation = targetStation;
+
+        if(member != null){
+            addBy(member);
+        }
     }
 
-    private void validateFavorite(Station sourceStation, Station targetStation) {
-        if (sourceStation.equals(targetStation)) {
-            throw new IllegalArgumentException("출발역과 도착역이 같을 수 없습니다.");
-        }
+    public void addBy(Member member){
+        member.addFavorite(this);
+    }
+
+    public void deleteBy(Member member){
+        member.deleteFavorite(this);
     }
 
     public Long getId() {
         return id;
-    }
-
-    public Member getMember() {
-        return member;
     }
 
     public Station getSourceStation() {
