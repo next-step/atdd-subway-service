@@ -11,6 +11,9 @@ public class FareConstants {
     protected static final int SECOND_FARE_SECTION_DELIMITER = 50;
     protected static final int FIRST_FARE_SECTION_PER_DISTANCE = 5;
     protected static final int SECOND_FARE_SECTION_PER_DISTANCE = 8;
+    protected static final int CHILD_AGE_START_SEPARATOR = 6;
+    protected static final int CHILD_ADOLESCENT_AGE_BOUNDARY = 13;
+    protected static final int ADOLESCENT_AGE_END_SEPARATOR = 19;
 
     private FareConstants() {}
 }

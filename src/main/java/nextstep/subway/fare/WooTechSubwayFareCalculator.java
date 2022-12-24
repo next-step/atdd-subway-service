@@ -4,6 +4,9 @@ import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.ErrorCode;
 
 import static nextstep.subway.fare.FareConstants.ADD_FARE;
+import static nextstep.subway.fare.FareConstants.ADOLESCENT_AGE_END_SEPARATOR;
+import static nextstep.subway.fare.FareConstants.CHILD_ADOLESCENT_AGE_BOUNDARY;
+import static nextstep.subway.fare.FareConstants.CHILD_AGE_START_SEPARATOR;
 import static nextstep.subway.fare.FareConstants.DISCOUNT_FARE;
 import static nextstep.subway.fare.FareConstants.DISCOUNT_RATE_ADOLESCENT;
 import static nextstep.subway.fare.FareConstants.DISCOUNT_RATE_CHILDREN;
@@ -72,11 +75,11 @@ public class WooTechSubwayFareCalculator implements FareCalculator{
     }
 
     private boolean isChildren(LoginMember member) {
-        return member.getAge() < 13 && member.getAge() >= 6;
+        return member.getAge() < CHILD_ADOLESCENT_AGE_BOUNDARY && member.getAge() >= CHILD_AGE_START_SEPARATOR;
     }
 
     private boolean isAdolescent(LoginMember member) {
-        return member.getAge() < 19 && member.getAge() >= 13;
+        return member.getAge() < ADOLESCENT_AGE_END_SEPARATOR && member.getAge() >= CHILD_ADOLESCENT_AGE_BOUNDARY;
     }
 
     private void checkValidation(long fare) {
