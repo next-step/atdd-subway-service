@@ -16,8 +16,16 @@ public class Fare {
         this.fare = INIT_FARE;
     }
 
+    private Fare(long addFare) {
+        this.fare = INIT_FARE + addFare;
+    }
+
     public static Fare from() {
         return new Fare();
+    }
+
+    public static Fare from(long addFare) {
+        return new Fare(addFare);
     }
 
     public long currentFare() {

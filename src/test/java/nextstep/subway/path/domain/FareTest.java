@@ -4,6 +4,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -25,5 +26,12 @@ class FareTest {
         assertThat(fare.currentFare()).isEqualTo(expectFare);
     }
 
+    @DisplayName("노선별 추가 요금을 적용하여 요금을 계산한다.")
+    @ParameterizedTest
+    @ValueSource(longs = {100L, 500L, 900L, 2000L})
+    void createFareApplyToAddFare(long addFare) {
+        Fare fare = Fare.from(addFare);
+        assertThat(fare.currentFare()).isEqualTo(1250L + addFare);
+    }
 
 }

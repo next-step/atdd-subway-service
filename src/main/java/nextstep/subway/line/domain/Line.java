@@ -18,6 +18,8 @@ public class Line extends BaseEntity {
     private String name;
     @Column(nullable = false)
     private String color;
+    @Column(nullable = false, columnDefinition = "bigint default 0")
+    private long addFare;
 
     @Embedded
     private final Sections sections = new Sections();
@@ -29,9 +31,22 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, long addFare) {
+        this.name = name;
+        this.color = color;
+        this.addFare = addFare;
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, long addFare) {
+        this.name = name;
+        this.color = color;
+        this.addFare = addFare;
         addSection(new Section(this, upStation, downStation, distance));
     }
 
@@ -43,6 +58,14 @@ public class Line extends BaseEntity {
     public void addSection(Section section) {
         section.belongLine(this);
         this.sections.add(section);
+    }
+
+    public List<Station> findSortedStations() {
+        return this.sections.getSortedStations();
+    }
+
+    public void removeStation(Station station) {
+        this.sections.removeStation(station);
     }
 
     public Long getId() {
@@ -61,11 +84,5 @@ public class Line extends BaseEntity {
         return sections.asList();
     }
 
-    public List<Station> findSortedStations() {
-        return this.sections.getSortedStations();
-    }
-
-    public void removeStation(Station station) {
-        this.sections.removeStation(station);
-    }
+    public long getAddFare() { return addFare; }
 }
