@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
@@ -42,7 +43,7 @@ class FareTest {
     @CsvSource(value = {"15:720", "6:450"}, delimiter = ':')
     void calculateDiscount(int age, long expectFare) {
         Fare fare = Fare.fromBaseFare();
-        Member member = new Member("a@gmail.com", "1234", age);
+        LoginMember member = new LoginMember(1L, "a@gmail.com", age);
 
         fare.calculateDiscount(member);
         assertThat(fare.currentFare()).isEqualTo(expectFare);

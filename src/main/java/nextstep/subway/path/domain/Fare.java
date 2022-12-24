@@ -1,7 +1,7 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.common.ErrorCode;
-import nextstep.subway.member.domain.Member;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
@@ -54,6 +54,12 @@ public class Fare {
         return this.fare;
     }
 
+    public long currentFare(int distance, LoginMember member) {
+        calculateFareByDistanceProportional(distance);
+
+        return this.fare;
+    }
+
     public void calculateFareByDistanceProportional(int distance) {
         if (isBelongToFirstFareSection(distance)) {
             fare += calculateOverFareWhenFirstFareSection(distance - FIRST_FARE_SECTION_DELIMITER);
@@ -67,7 +73,7 @@ public class Fare {
         return this.fare;
     }
 
-    public void calculateDiscount(Member member) {
+    public void calculateDiscount(LoginMember member) {
         if (isAdolescent(member)) {
             this.fare -= DISCOUNT_FARE;
             this.fare -= this.fare * DISCOUNT_RATE_ADOLESCENT;
@@ -99,15 +105,16 @@ public class Fare {
         return (int) ((Math.ceil((distance - 1) / SECOND_FARE_SECTION_PER_DISTANCE) + 1) * ADD_FARE);
     }
 
-    private boolean isChildren(Member member) {
+    private boolean isChildren(LoginMember member) {
         return member.getAge() < 13 && member.getAge() >= 6;
     }
 
-    private boolean isAdolescent(Member member) {
+    private boolean isAdolescent(LoginMember member) {
         return member.getAge() < 19 && member.getAge() >= 13;
     }
 
     private boolean isNegative(long fare) {
         return fare < 0;
     }
+
 }

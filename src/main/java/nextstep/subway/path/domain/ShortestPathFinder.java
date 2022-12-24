@@ -2,6 +2,7 @@ package nextstep.subway.path.domain;
 
 import nextstep.subway.common.ErrorCode;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.station.domain.Station;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
@@ -14,12 +15,12 @@ public class ShortestPathFinder implements PathFinder{
     private final WeightedMultigraph<Station, DefaultWeightedEdge> graph = new WeightedMultigraph<>(DefaultWeightedEdge.class);
     private final DijkstraShortestPath<Station, DefaultWeightedEdge> shortestPath = new DijkstraShortestPath<>(graph);
 
-    public static ShortestPathFinder from(List<Section> sections) {
+    public static ShortestPathFinder from(Sections sections) {
         return new ShortestPathFinder(sections);
     }
 
-    private ShortestPathFinder(List<Section> sections) {
-        sections.forEach(eachSection -> {
+    private ShortestPathFinder(Sections sections) {
+        sections.asList().forEach(eachSection -> {
             addVertex(eachSection.getUpStation());
             addVertex(eachSection.getDownStation());
             graph.setEdgeWeight(graph.addEdge(eachSection.getUpStation(), eachSection.getDownStation()), eachSection.getDistance());
