@@ -28,9 +28,8 @@ class FareTest {
     @ParameterizedTest
     @CsvSource(value = {"11:1350", "59:2250"}, delimiter = ':')
     void calculateFareByDistanceProportional(int distance, long expectFare) {
-        Fare fare = Fare.fromBaseFare();
         fareCalculator.calculateFareByDistanceProportional(distance);
-        assertThat(fare.currentFare()).isEqualTo(expectFare);
+        assertThat(fareCalculator.currentFare()).isEqualTo(expectFare);
     }
 
     @DisplayName("노선별 추가 요금을 적용하여 요금을 계산한다.")
@@ -45,11 +44,10 @@ class FareTest {
     @ParameterizedTest
     @CsvSource(value = {"15:720", "6:450"}, delimiter = ':')
     void calculateDiscount(int age, long expectFare) {
-        Fare fare = Fare.fromBaseFare();
         LoginMember member = new LoginMember(1L, "a@gmail.com", age);
 
         fareCalculator.calculateDiscount(member);
-        assertThat(fare.currentFare()).isEqualTo(expectFare);
+        assertThat(fareCalculator.currentFare()).isEqualTo(expectFare);
     }
 
     @DisplayName("요금이 음수이면 예외가 발생한다.")

@@ -27,8 +27,7 @@ public class WooTechSubwayFareCalculator implements FareCalculator{
     public long fareCalculate(int distance, LoginMember member) {
         calculateFareByDistanceProportional(distance);
         calculateDiscount(member);
-
-        return 0;
+        return fare;
     }
 
     public void calculateFareByDistanceProportional(int distance) {
@@ -53,6 +52,10 @@ public class WooTechSubwayFareCalculator implements FareCalculator{
             checkValidation(fare);
             return;
         }
+    }
+
+    public long currentFare() {
+        return this.fare;
     }
 
     private boolean isBelongToSecondFareSection(int distance) {
