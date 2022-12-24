@@ -2,6 +2,7 @@ package nextstep.subway.path.application;
 
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
+import nextstep.subway.line.domain.Sections;
 import nextstep.subway.path.domain.PathFinder;
 import nextstep.subway.path.domain.ShortestPathFinder;
 import nextstep.subway.station.domain.Station;
@@ -75,7 +76,7 @@ class PathServiceTest {
     @DisplayName("최단 경로 찾기 - 구간: 서울역- 신당역")
     @Test
     void findTheShortestPath() {
-        PathFinder pathFinder = ShortestPathFinder.from(sections);
+        PathFinder pathFinder = ShortestPathFinder.from(new Sections(sections));
 
         List<Station> stations = pathFinder.findAllStationsInTheShortestPath(서울역, 신당역);
         int distance = pathFinder.findTheShortestPathDistance(서울역, 신당역);
@@ -89,7 +90,7 @@ class PathServiceTest {
     @DisplayName("예외발생 - 출발역과 도착역이 같은 경우")
     @Test
     void makeExceptionWhenSourceStationEqualsTargetStation() {
-        PathFinder pathFinder = ShortestPathFinder.from(sections);
+        PathFinder pathFinder = ShortestPathFinder.from(new Sections(sections));
 
         assertThatThrownBy(() -> pathFinder.findAllStationsInTheShortestPath(서울역, 서울역))
                 .isInstanceOf(IllegalArgumentException.class);
@@ -98,7 +99,7 @@ class PathServiceTest {
     @DisplayName("예외발생 - 출발역과 도착역이 연결되지 않은 경우")
     @Test
     void makeExceptionWhenSourceStationIsNotConnectToTargetStation() {
-        PathFinder pathFinder = ShortestPathFinder.from(sections);
+        PathFinder pathFinder = ShortestPathFinder.from(new Sections(sections));
 
         assertThatThrownBy(() -> pathFinder.findAllStationsInTheShortestPath(서울역, 교대역))
                 .isInstanceOf(IllegalArgumentException.class);

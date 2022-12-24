@@ -36,4 +36,6 @@ public class PathResponse {
     public int getDistance() {
         return distance;
     }
+
+    public long getFare() {return fare; }
 }
