@@ -1,53 +1,25 @@
 package nextstep.subway.path.domain;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
-import nextstep.subway.line.domain.Charge;
-import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionEdge;
-import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.dto.StationResponse;
 import org.jgrapht.GraphPath;
 import org.jgrapht.alg.shortestpath.DijkstraShortestPath;
 import org.jgrapht.graph.WeightedMultigraph;
-
-import java.util.List;
 import org.springframework.stereotype.Component;
 
 @Component
-public class PathFinder {
+public class PathGraph {
 
-    public PathResponse findPath(Station source, Station target, List<Section> sections){
+    public PathResult findPath(Station source, Station target, List<Section> sections){
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
         DijkstraShortestPath stationGraph = getStationGraph(graph, sections);
         GraphPath path = stationGraph.getPath(source, target);
-
-        int distance = (int)path.getWeight();
-        List<SectionEdge> edgeList = path.getEdgeList();
-        Set<Line> lines = new HashSet<>();
-        for (SectionEdge edge : edgeList) {
-            lines.add(edge.getLine());
-        }
-        Charge charge = new Charge(distance, lines);
-
-        return new PathResponse(createStations(path), (int)path.getWeight(), charge.value());
-    }
-
-    public PathResult findPath2(Station source, Station target, List<Section> sections){
-        WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
-        DijkstraShortestPath stationGraph = getStationGraph(graph, sections);
-        GraphPath path = stationGraph.getPath(source, target);
-
-        int distance = (int)path.getWeight();
-        List<SectionEdge> edgeList = path.getEdgeList();
-        Set<Line> lines = new HashSet<>();
-        for (SectionEdge edge : edgeList) {
-            lines.add(edge.getLine());
-        }
-        Charge charge = new Charge(distance, lines);
 
         return new PathResult(path.getVertexList(), (int)path.getWeight(), getContainLines(path));
     }

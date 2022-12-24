@@ -10,24 +10,20 @@ import nextstep.subway.station.dto.StationResponse;
 
 public class PathResultConvertor {
     public static PathResponse convert(PathResult pathResult) {
-
-        List<StationResponse> stations = pathResult.getStations().stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
-
         Charge charge = new Charge(pathResult.getDistance(), pathResult.getLines());
 
-        return new PathResponse(stations, pathResult.getDistance(), charge.value());
+        return new PathResponse(getStationResponses(pathResult), pathResult.getDistance(), charge.value());
     }
 
     public static PathResponse convert(PathResult pathResult, LoginMember loginMember) {
-
-        List<StationResponse> stations = pathResult.getStations().stream()
-            .map(StationResponse::of)
-            .collect(Collectors.toList());
-
         Charge charge = new Charge(pathResult.getDistance(), pathResult.getLines(), loginMember.getAge());
 
-        return new PathResponse(stations, pathResult.getDistance(), charge.value());
+        return new PathResponse(getStationResponses(pathResult), pathResult.getDistance(), charge.value());
+    }
+
+    private static List<StationResponse> getStationResponses(PathResult pathResult) {
+        return pathResult.getStations().stream()
+            .map(StationResponse::of)
+            .collect(Collectors.toList());
     }
 }
