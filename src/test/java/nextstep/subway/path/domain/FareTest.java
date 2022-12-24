@@ -13,7 +13,7 @@ class FareTest {
     @DisplayName("요금 객체의 Default_운임(기본요금)은 1250원이다.")
     @Test
     void createFare() {
-        Fare fare = Fare.from();
+        Fare fare = Fare.fromBaseFare();
         assertThat(fare.currentFare()).isEqualTo(1250);
     }
 
@@ -21,7 +21,7 @@ class FareTest {
     @ParameterizedTest
     @CsvSource(value = {"11:1350", "59:2250"}, delimiter = ':')
     void calculateFareByDistanceProportional(int distance, long expectFare) {
-        Fare fare = Fare.from();
+        Fare fare = Fare.fromBaseFare();
         fare.calculateFareByDistanceProportional(distance);
         assertThat(fare.currentFare()).isEqualTo(expectFare);
     }
@@ -30,7 +30,7 @@ class FareTest {
     @ParameterizedTest
     @ValueSource(longs = {100L, 500L, 900L, 2000L})
     void createFareApplyToAddFare(long addFare) {
-        Fare fare = Fare.from(addFare);
+        Fare fare = Fare.fromBaseFare(addFare);
         assertThat(fare.currentFare()).isEqualTo(1250L + addFare);
     }
 

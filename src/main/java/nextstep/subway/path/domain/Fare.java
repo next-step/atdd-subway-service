@@ -1,31 +1,44 @@
 package nextstep.subway.path.domain;
 
+import javax.persistence.Column;
+import javax.persistence.Embeddable;
+
+@Embeddable
 public class Fare {
 
     private static final long ZERO_FARE = 0L;
-    private static final long INIT_FARE = 1_250L;
+    private static final long BASE_FARE = 1_250L;
     private static final int FIRST_FARE_SECTION_DELIMITER = 10;
     private static final int SECOND_FARE_SECTION_DELIMITER = 50;
     private static final int ADD_FARE = 100;
     private static final int FIRST_FARE_SECTION_PER_DISTANCE = 5;
     private static final int SECOND_FARE_SECTION_PER_DISTANCE = 8;
 
+    @Column(nullable = false)
     private long fare;
 
-    private Fare() {
-        this.fare = INIT_FARE;
+    public Fare() {
+        this.fare = ZERO_FARE;
     }
 
-    private Fare(long addFare) {
-        this.fare = INIT_FARE + addFare;
+    private Fare(long fare) {
+        this.fare = fare;
     }
 
     public static Fare from() {
         return new Fare();
     }
 
-    public static Fare from(long addFare) {
-        return new Fare(addFare);
+    public static Fare from(long fare) {
+        return new Fare(fare);
+    }
+
+    public static Fare fromBaseFare() {
+        return new Fare(BASE_FARE);
+    }
+
+    public static Fare fromBaseFare(long addFare) {
+        return new Fare(BASE_FARE + addFare);
     }
 
     public long currentFare() {
@@ -33,14 +46,16 @@ public class Fare {
     }
 
     public void calculateFareByDistanceProportional(int distance) {
-        long tempFare = ZERO_FARE;
         if (isBelongToFirstFareSection(distance)) {
-            tempFare += calculateOverFareWhenFirstFareSection(distance - FIRST_FARE_SECTION_DELIMITER);
+            fare += calculateOverFareWhenFirstFareSection(distance - FIRST_FARE_SECTION_DELIMITER);
         }
         if (isBelongToSecondFareSection(distance)) {
-            tempFare += calculateOverFareWhenSecondFareSection(distance - SECOND_FARE_SECTION_DELIMITER);
+            fare += calculateOverFareWhenSecondFareSection(distance - SECOND_FARE_SECTION_DELIMITER);
         }
-        this.fare += tempFare;
+    }
+
+    public long findFare() {
+        return this.fare;
     }
 
     private boolean isBelongToSecondFareSection(int distance) {
