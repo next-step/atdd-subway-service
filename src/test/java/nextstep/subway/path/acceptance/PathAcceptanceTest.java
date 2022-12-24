@@ -64,6 +64,8 @@ public class PathAcceptanceTest extends AcceptanceTest {
      *  Scenario 출발역과 도착역 사이의 최단 경로 조회
      *      When 지하철 최단 경로 조회 요청
      *      Then 출발역과 도착역 사이의 최단 경로 조회됨
+     *      And 총 거리도 함께 응답함
+     *      And ** 지하철 이용 요금도 함께 응답함 **
      * <p>
      *  Scenario 출발역과 도착역이 같을 때 최단 경로 조회
      *      When 지하철 최단 경로 조회 요청
@@ -81,6 +83,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
 
         // then
         assertThat(response.as(PathResponse.class).getDistance()).isEqualTo(5);
+        assertThat(response.as(PathResponse.class).getFare()).isEqualTo(1250);
     }
 
     @DisplayName("출발역과 도착역이 같을 때 최단 경로 조회하면 실패한다")

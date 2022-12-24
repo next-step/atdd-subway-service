@@ -4,6 +4,7 @@ import static nextstep.subway.auth.application.AuthServiceTest.*;
 import static org.assertj.core.api.AssertionsForInterfaceTypes.assertThat;
 import static org.mockito.Mockito.when;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import nextstep.subway.favorite.domain.Favorite;
@@ -67,10 +68,12 @@ public class FavoriteServiceTest {
     void 즐겨찾기를_조회한다() {
         // given
         Member 사용자 = new Member(EMAIL, PASSWORD, AGE);
+        Favorite 즐겨찾기 = new Favorite(사용자, 강남역, 양재역);
+        
         사용자.addFavorite(강남역, 양재역);
 
         when(memberService.findMemberById(1L)).thenReturn(사용자);
-
+        when(favoriteRepository.findAllByMember(사용자)).thenReturn(Arrays.asList(즐겨찾기));
         // when
         List<FavoriteResponse> favorites = favoriteService.findFavorites(1L);
 
@@ -92,6 +95,6 @@ public class FavoriteServiceTest {
         favoriteService.deleteFavorite(1L, 1L);
 
         // then
-        assertThat(사용자.getFavorites().toResponses()).hasSize(0);
+        assertThat(favoriteService.findFavorites(1L)).hasSize(0);
     }
 }

@@ -6,6 +6,7 @@ import static org.mockito.Mockito.when;
 
 import java.util.Arrays;
 import java.util.List;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.Line;
 import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.path.dto.PathRequest;
@@ -45,7 +46,7 @@ public class PathServiceTest {
 
         양재역 = new Station(1L, "양재역");
         교대역 = new Station(2L, "교대역");
-        삼호선 = new Line("3호선", "bg-orange-600", 양재역, 교대역, 10);
+        삼호선 = new Line("3호선", "bg-orange-600", 양재역, 교대역, 11);
 
         전체노션 = Arrays.asList(삼호선);
     }
@@ -59,7 +60,10 @@ public class PathServiceTest {
         when(stationRepository.findAllById(any())) .thenReturn(Arrays.asList(양재역,교대역));
         when(lineRepository.findAll()).thenReturn(전체노션);
 
-        PathResponse pathResponse = pathService.findPath(pathRequest);
-        assertThat(pathResponse.getDistance()).isEqualTo(10);
+        LoginMember loginMember = new LoginMember(1L,"test@email.com", 19);
+
+        PathResponse pathResponse = pathService.findPath(pathRequest, loginMember);
+        assertThat(pathResponse.getDistance()).isEqualTo(11);
+        assertThat(pathResponse.getFare()).isEqualTo(1350);
     }
 }

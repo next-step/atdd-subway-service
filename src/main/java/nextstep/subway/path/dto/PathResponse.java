@@ -7,16 +7,18 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public class PathResponse {
-    private List<StationResponse> stations;
-    private int distance;
+    private final List<StationResponse> stations;
+    private final int distance;
+    private final int fare;
 
-    private PathResponse(List<StationResponse> stations, int distance) {
+    private PathResponse(List<StationResponse> stations, int distance, int fare) {
         this.stations = stations;
         this.distance = distance;
+        this.fare = fare;
     }
 
-    public static PathResponse from(List<Station> stations, int distance) {
-        return new PathResponse(stationsResponse(stations), distance);
+    public static PathResponse from(List<Station> stations, int distance, int fare ) {
+        return new PathResponse(stationsResponse(stations), distance, fare);
     }
 
     private static List<StationResponse> stationsResponse(List<Station> stations) {
@@ -27,5 +29,9 @@ public class PathResponse {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getFare() {
+        return fare;
     }
 }

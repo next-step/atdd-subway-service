@@ -7,7 +7,9 @@ import java.util.Optional;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
+import nextstep.subway.exception.SubwayException;
 import nextstep.subway.station.domain.Station;
+import org.springframework.http.HttpStatus;
 
 @Embeddable
 public class Sections {
@@ -29,11 +31,11 @@ public class Sections {
 
     private void validation(Section section) {
         if (section.isExistsSections(getStations())) {
-            throw new RuntimeException("이미 등록된 구간 입니다.");
+            throw new SubwayException(HttpStatus.BAD_REQUEST, "이미 등록된 구간 입니다.");
         }
 
         if (!section.checkAnyIncludeStation(getStations())) {
-            throw new RuntimeException("등록할 수 없는 구간 입니다.");
+            throw new SubwayException(HttpStatus.BAD_REQUEST, "등록할 수 없는 구간 입니다.");
         }
     }
 
@@ -117,7 +119,7 @@ public class Sections {
 
     public void validateSections() {
         if (sections.size() <= 1) {
-            throw new RuntimeException();
+            throw new SubwayException(HttpStatus.BAD_REQUEST, "구간이 1개밖에 없으면 삭제 할 수 없습니다");
         }
     }
 }

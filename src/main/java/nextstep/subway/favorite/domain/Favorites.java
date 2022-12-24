@@ -2,11 +2,9 @@ package nextstep.subway.favorite.domain;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 import javax.persistence.CascadeType;
 import javax.persistence.Embeddable;
 import javax.persistence.OneToMany;
-import nextstep.subway.favorite.dto.FavoriteResponse;
 
 @Embeddable
 public class Favorites {
@@ -21,12 +19,6 @@ public class Favorites {
         if (favorites.contains(favorite)) {
             throw new IllegalArgumentException("이미 즐겨찾기에 등록한 구간입니다");
         }
-    }
-
-    public List<FavoriteResponse> toResponses() {
-        return favorites.stream()
-                .map(FavoriteResponse::from)
-                .collect(Collectors.toList());
     }
 
     public void remove(Favorite favorite) {

@@ -83,7 +83,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when: 자신의 것이 아닌 즐겨찾기 삭제 요청
         ExtractableResponse<Response> noAuthDeleteResponse = 즐겨찾기_삭제_요청("fakeToken", 1L);
         // then: 즐겨찾기 삭제 실패
-        즐겨찾기_삭제_실패(noAuthDeleteResponse);
+        권한없는_즐겨찾기_삭제_실패(noAuthDeleteResponse);
 
         // when: 즐겨찾기 삭제 요청
         List<StationResponse> stationResponses = getResponse.jsonPath().get();
@@ -93,7 +93,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         // when: 존재하지 않는 즐겨찾기 삭제 요청
         ExtractableResponse<Response> reDeleteResponse = 즐겨찾기_삭제_요청(accessToken, 1L);
         // then: 즐겨찾기 삭제 실패
-        즐겨찾기_삭제_실패(reDeleteResponse);
+        존재하지않는_즐겨찾기_삭제_실패(reDeleteResponse);
     }
 
     public static ExtractableResponse<Response> 즐겨찾기_추가_요청(String accessToken, FavoriteRequest params) {
@@ -130,7 +130,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
     }
 
     public static void 즐겨찾기_추가_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     public static void 즐겨찾기_조회_성공(ExtractableResponse<Response> response) {
@@ -143,8 +143,12 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         assertThat(response.statusCode()).isEqualTo(HttpStatus.NO_CONTENT.value());
     }
 
-    public static void 즐겨찾기_삭제_실패(ExtractableResponse<Response> response) {
-        assertThat(response.statusCode()).isEqualTo(HttpStatus.BAD_REQUEST.value());
+    public static void 존재하지않는_즐겨찾기_삭제_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.NOT_FOUND.value());
+    }
+
+    public static void 권한없는_즐겨찾기_삭제_실패(ExtractableResponse<Response> response) {
+        assertThat(response.statusCode()).isEqualTo(HttpStatus.UNAUTHORIZED.value());
     }
 
 }
