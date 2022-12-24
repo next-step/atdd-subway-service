@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.common.ErrorCode;
 import nextstep.subway.member.domain.Member;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -8,6 +9,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class FareTest {
 
@@ -46,4 +48,10 @@ class FareTest {
         assertThat(fare.currentFare()).isEqualTo(expectFare);
     }
 
+    @DisplayName("요금이 음수이면 예외가 발생한다.")
+    @Test
+    void makeExceptionWhenFareIsNegative() {
+        assertThatThrownBy(() -> Fare.from(-1L)).isInstanceOf(IllegalArgumentException.class)
+                .hasMessage(ErrorCode.INVALID_FARE_FORMAT.getErrorMessage());
+    }
 }

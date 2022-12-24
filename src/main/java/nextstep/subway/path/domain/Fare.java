@@ -1,5 +1,6 @@
 package nextstep.subway.path.domain;
 
+import nextstep.subway.common.ErrorCode;
 import nextstep.subway.member.domain.Member;
 
 import javax.persistence.Column;
@@ -27,6 +28,9 @@ public class Fare {
     }
 
     private Fare(long fare) {
+        if (isNegative(fare)) {
+            throw new IllegalArgumentException(ErrorCode.INVALID_FARE_FORMAT.getErrorMessage());
+        }
         this.fare = fare;
     }
 
@@ -101,5 +105,9 @@ public class Fare {
 
     private boolean isAdolescent(Member member) {
         return member.getAge() < 19 && member.getAge() >= 13;
+    }
+
+    private boolean isNegative(long fare) {
+        return fare < 0;
     }
 }
