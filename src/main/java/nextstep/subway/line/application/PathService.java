@@ -1,5 +1,6 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.fee.domain.StationFee;
 import nextstep.subway.fee.domain.StationFeeRepository;
 import nextstep.subway.line.domain.Line;
@@ -20,6 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import static nextstep.subway.fee.domain.AgePriceStrategy.calculatePrice;
 import static nextstep.subway.fee.domain.StationFeeStrategy.STANDARD_FEE;
 
 @Service
@@ -40,7 +42,7 @@ public class PathService {
     }
 
     @Transactional(readOnly = true)
-    public PathResponse getStationPathInfo(final String sourceStationId, final String targetStationid) {
+    public PathResponse getStationPathInfo(final String sourceStationId, final String targetStationid, LoginMember loginMember) {
         int totalDistance = 0;
         int totalFee = STANDARD_FEE;
         List<StationResponse> shortestPath = getShortestPath(sourceStationId, targetStationid);
@@ -51,7 +53,7 @@ public class PathService {
             totalFee += stationFee.get().getAdditionalFee(totalDistance);
         }
 
-        return PathResponse.of(totalFee + findLineMaxAdditionalFee(shortestPath), totalDistance, shortestPath);
+        return PathResponse.of(totalFee + findLineMaxAdditionalFee(shortestPath) - calculatePrice(loginMember.getAge()), totalDistance, shortestPath);
     }
 
     private int findLineMaxAdditionalFee(List<StationResponse> stationResponses) {

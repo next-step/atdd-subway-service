@@ -15,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
@@ -87,8 +88,8 @@ class PathServiceTest {
     }
 
     private void Mock_최소거리_조건_등록됨(List stations, List sections) {
-        when(stationRepository.getById(Long.valueOf(3))).thenReturn(교대역);
-        when(stationRepository.getById(Long.valueOf(2))).thenReturn(양재역);
+        when(stationRepository.findById(Long.valueOf(3))).thenReturn(Optional.ofNullable(교대역));
+        when(stationRepository.findById(Long.valueOf(2))).thenReturn(Optional.ofNullable(양재역));
         when(stationRepository.findAll()).thenReturn(stations);
         when(sectionRepository.findAll()).thenReturn(sections);
     }

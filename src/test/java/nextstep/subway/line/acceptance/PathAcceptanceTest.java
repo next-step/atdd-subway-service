@@ -4,6 +4,7 @@ import io.restassured.RestAssured;
 import io.restassured.response.ExtractableResponse;
 import io.restassured.response.Response;
 import nextstep.subway.AcceptanceTest;
+import nextstep.subway.auth.dto.TokenResponse;
 import nextstep.subway.fee.dto.FeeRequest;
 import nextstep.subway.fee.dto.FeeResponse;
 import nextstep.subway.line.dto.LineRequest;
@@ -21,9 +22,12 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
+import static nextstep.subway.auth.acceptance.AuthAcceptanceTest.로그인_요청됨;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_노선_생성_요청;
 import static nextstep.subway.line.acceptance.LineAcceptanceTest.지하철_요금_생성_요청;
 import static nextstep.subway.line.acceptance.LineSectionAcceptanceTest.지하철_노선에_지하철역_등록_요청;
+import static nextstep.subway.member.MemberAcceptanceTest.*;
+import static nextstep.subway.member.MemberAcceptanceTest.AGE;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 @DisplayName("지하철 구간 경로 관련 기능")
@@ -36,6 +40,7 @@ public class PathAcceptanceTest extends AcceptanceTest {
     private StationResponse 교대역;
     private StationResponse 남부터미널역;
     private StationResponse 노량진역;
+    private TokenResponse tokenResponse;
 
     /**
      * 교대역    --- *2호선* ---   강남역
@@ -57,10 +62,12 @@ public class PathAcceptanceTest extends AcceptanceTest {
         신분당선 = 지하철_노선_등록되어_있음("신분당선", "bg-red-600", 강남역, 양재역, 10, 300);
         이호선 = 지하철_노선_등록되어_있음("이호선", "bg-red-500", 교대역, 강남역, 10, 200);
         삼호선 = 지하철_노선_등록되어_있음("삼호선", "bg-red-300", 남부터미널역, 양재역, 15, 400);
-        지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 1000);
 
         지하철_기본요금_등록되어_있음(11, 50, 5, 100);
         지하철_기본요금_등록되어_있음(51, 999999, 8, 100);
+
+        회원_생성을_요청(EMAIL, PASSWORD, AGE);
+        tokenResponse = 로그인_요청됨(EMAIL, PASSWORD);
 
         지하철_노선에_지하철역_등록_요청(삼호선, 교대역, 남부터미널역, 3);
     }
@@ -148,15 +155,16 @@ public class PathAcceptanceTest extends AcceptanceTest {
      * Then 지하철 경로 정보를 돌려준다.
      */
     @Test
-    @DisplayName("지하철역 조회 - 거리, 금액 포함하도록 조회 - 기본 요금")
+    @DisplayName("지하철역 조회 - 거리, 금액 포함하도록 조회")
     void getStationPathInfo() {
         Map<String, Integer> params = 지하철노선_최적경로_조회_세팅됨(교대역.getId(), 양재역.getId());
         int totalDistance = 20;
         int stadardFee = 1250; int distanceAdditionalFee = 200; int lineAdditionalFee = 300;
+        int ageDiscountFee = 450; //  ( 1250 - 350 ) / 2 = 450
 
         ExtractableResponse<Response> extract = 지하철역_경로정보_조회(params);
 
-        지하철노선_경로정보_응답됨(extract, totalDistance, stadardFee + distanceAdditionalFee + lineAdditionalFee);
+        지하철노선_경로정보_응답됨(extract, totalDistance, stadardFee + distanceAdditionalFee + lineAdditionalFee - ageDiscountFee);
     }
 
     private Map 지하철노선_최적경로_조회_세팅됨(Long source, Long target) {
@@ -189,9 +197,10 @@ public class PathAcceptanceTest extends AcceptanceTest {
         return extract;
     }
 
-    private static ExtractableResponse<Response> 지하철역_경로정보_조회(Map<String, Integer> params) {
+    private ExtractableResponse<Response> 지하철역_경로정보_조회(Map<String, Integer> params) {
         ExtractableResponse<Response> extract = RestAssured
                 .given().log().all()
+                .auth().oauth2(tokenResponse.getAccessToken())
                 .contentType(MediaType.APPLICATION_JSON_VALUE)
                 .params(params).when().get("/paths")
                 .then().log().all()

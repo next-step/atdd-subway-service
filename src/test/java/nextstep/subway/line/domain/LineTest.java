@@ -72,7 +72,7 @@ class LineTest {
         Station 강남 = new Station("강남");
         Station 양재 = new Station("양재");
 
-        assertThatThrownBy(() -> line.addSection(new Section(강남, 양재, 10)))
+        assertThatThrownBy(() -> line.addSection(new Section(line, 강남, 양재, 10)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -84,7 +84,7 @@ class LineTest {
         Station 판교 = new Station("판교");
         Station 신논현 = new Station("신논현");
 
-        assertThatThrownBy(() -> line.addSection(new Section(판교, 신논현, 10)))
+        assertThatThrownBy(() -> line.addSection(new Section(line, 판교, 신논현, 10)))
                 .isInstanceOf(RuntimeException.class);
     }
 
@@ -96,7 +96,7 @@ class LineTest {
         Station 망원 = new Station("망원");
         Station 마포구청 = new Station("마포구청");
 
-        line.addSection(new Section(망원, 마포구청, 10));
+        line.addSection(new Section(line, 망원, 마포구청, 10));
 
         assertThat( line.getStations().stream().map(it -> it.getName()).collect(Collectors.toList()) ).containsExactly("망원", "마포구청");
     }
@@ -109,7 +109,7 @@ class LineTest {
         Station 강남 = stationRepository.findByName("강남");
         Station 판교 = stationRepository.findByName("판교");
 
-        line.addSection(new Section(강남, 판교, 5));
+        line.addSection(new Section(line, 강남, 판교, 5));
 
         assertThat( line.getStations().stream().map(it -> it.getName()).collect(Collectors.toList()) ).containsExactly("강남", "판교", "양재", "양재시민의숲");
     }

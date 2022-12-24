@@ -14,7 +14,7 @@ public class Line extends BaseEntity {
     @Column(unique = true)
     private String name;
     private String color;
-    @Column(nullable = false)
+    @Column(nullable = true)
     private int additionalFee;
 
     @Embedded
@@ -42,6 +42,10 @@ public class Line extends BaseEntity {
     public void update(Line line) {
         this.name = line.getName();
         this.color = line.getColor();
+    }
+
+    public Sections getSections() {
+        return sections;
     }
 
     public Long getId() {
