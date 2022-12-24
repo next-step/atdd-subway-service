@@ -1,7 +1,6 @@
 package nextstep.subway.path.dto;
 
 import nextstep.subway.path.domain.Path;
-import nextstep.subway.path.enums.DistanceFare;
 import nextstep.subway.station.domain.Station;
 
 import java.util.List;
@@ -29,7 +28,7 @@ public class PathResponse {
         return new PathResponse(
             toList(path.getStations()),
             path.getDistance(),
-            DistanceFare.calculateDistanceFare(path.getDistance())
+            path.getExtraFare()
         );
     }
 
