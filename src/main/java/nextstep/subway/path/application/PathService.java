@@ -1,7 +1,9 @@
 package nextstep.subway.path.application;
 
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.path.domain.PathFinder;
+import nextstep.subway.path.domain.PathResult;
 import nextstep.subway.path.dto.PathResponse;
 import nextstep.subway.station.domain.Station;
 import nextstep.subway.station.domain.StationRepository;
@@ -21,8 +23,12 @@ public class PathService {
         this.pathFinder = pathFinder;
     }
 
-    public PathResponse path(Long sourceId, Long targetId) {
-        return pathFinder.findPath(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
+    public PathResponse path(Long sourceId, Long targetId, LoginMember loginMember) {
+        PathResult pathResult= pathFinder.findPath2(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
+        if(loginMember != null){
+            return PathResultConvertor.convert(pathResult, loginMember);
+        }
+        return PathResultConvertor.convert(pathResult);
     }
 
     private Station getStation(Long sourceId) {

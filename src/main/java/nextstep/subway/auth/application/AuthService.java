@@ -30,12 +30,11 @@ public class AuthService {
 
     public LoginMember findMemberByToken(String credentials) {
         if (!jwtTokenProvider.validateToken(credentials)) {
-            throw new AuthorizationException("올바른 토큰 번호가 아닙니다.");
+            return null;
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email)
-            .orElseThrow(() -> new AuthorizationException("올바른 토큰 번호가 아닙니다."));
+        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }
