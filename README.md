@@ -128,3 +128,11 @@ This project is [MIT](https://github.com/next-step/atdd-subway-service/blob/mast
 - [x] 즐겨찾기 목록 조회 기능 추가하기
 - [x] 즐겨찾기 삭제 기능 추가하기
 
+## Step4 - 요금 조회
+#### Step3 - 리뷰어 리뷰사항
+- [ ] 자신만의 좋아요 삭제하기 
+- [ ] 반복되는 코드 메소드로 분리하기
+- [ ] repository - 배열을 return 할 경우, 어차피 빈배열을 리턴하므로 Optional 삭제하기
+
+
+
