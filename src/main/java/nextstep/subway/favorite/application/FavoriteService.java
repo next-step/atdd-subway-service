@@ -55,7 +55,9 @@ public class FavoriteService {
     public void deleteFavorite(Long id, LoginMember loginMember) {
         Member member = memberRepository.findById(loginMember.getId())
                 .orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findByMemberAndId(member, id)
+                .orElseThrow(RuntimeException::new);
 
-        favoriteRepository.deleteById(id);
+        favoriteRepository.delete(favorite);
     }
 }
