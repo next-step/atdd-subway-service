@@ -58,7 +58,7 @@ class PathFinderTest {
         이호선 = new Line("이호선", "bg-yellow-420", 교대역, 강남역, 10, 200);
         삼호선 = new Line("삼호선", "bg-green-500", 교대역, 양재역, 5, 300);
         일호선 = new Line("일호선", "bg-green-500", 왕십리역, 신도림역, 5, 300);
-        삼호선.addSection(new Section(삼호선, 교대역, 남부터미널역, 3));
+        삼호선.addSection(교대역, 남부터미널역, 3);
 
         pathFinder = new PathFinder();
         sections = getSections(Arrays.asList(신분당선, 이호선, 삼호선, 일호선));
@@ -68,7 +68,7 @@ class PathFinderTest {
     @Test
     void shortest_path() {
         // when
-        Path shortestPath = pathFinder.findPath(sections,양재역, 교대역);
+        PathResult shortestPath = pathFinder.findPath(sections,양재역, 교대역);
 
         // then
         assertAll(

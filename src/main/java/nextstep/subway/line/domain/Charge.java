@@ -34,4 +34,8 @@ public class Charge {
     public int value() {
         return this.charge;
     }
+
+    public void discount(int age) {
+        this.charge = discountAge(this.charge, age);
+    }
 }

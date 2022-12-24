@@ -26,14 +26,15 @@ public class PathService {
     }
 
     public PathResponse path(Long sourceId, Long targetId, LoginMember loginMember) {
-        PathResult pathResult= pathFinder.findPath(getStation(sourceId), getStation(targetId), sectionRepository.findAll());
+        PathResult pathResult = pathFinder.findPath(sectionRepository.findAll(), getStation(sourceId), getStation(targetId));
         return getResponseWithCharge(pathResult, loginMember);
     }
 
     private PathResponse getResponseWithCharge(PathResult pathResult, LoginMember loginMember){
         if(isLoggedIn(loginMember)){
-            return convert(pathResult, loginMember);
+            pathResult.discountCharge(loginMember.getAge());
         }
+
         return convert(pathResult);
     }
 

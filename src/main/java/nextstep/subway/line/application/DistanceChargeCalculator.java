@@ -9,14 +9,13 @@ public class DistanceChargeCalculator {
     public static final int OVER_PER_EIGHT = 8;
 
     public static int calculate(int charge, int distance) {
-        if(distance > TEN && distance <= FIFTY){
-            int overCharge = calculateOverCharge(OVER_PER_FIVE, distance - TEN);
-            return charge + overCharge;
+        if(distance > FIFTY){
+            charge += calculateOverCharge(OVER_PER_EIGHT, distance - FIFTY);
+            distance = FIFTY;
         }
 
-        if(distance > FIFTY){
-            int overCharge = calculateOverCharge(OVER_PER_EIGHT, distance - FIFTY);
-            return calculate(charge+overCharge, FIFTY);
+        if(distance > TEN && distance <= FIFTY){
+            charge += calculateOverCharge(OVER_PER_FIVE, distance - TEN);
         }
 
         return charge;

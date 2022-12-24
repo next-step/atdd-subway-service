@@ -1,27 +1,30 @@
 package nextstep.subway.favorite.domain;
 
-import java.util.ArrayList;
-import java.util.List;
-import nextstep.subway.BaseEntity;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import nextstep.subway.member.domain.Member;
 import nextstep.subway.station.domain.Station;
 
-import javax.persistence.*;
-
 @Entity
 public class Favorite {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "source_station_id")
-    private Station sourceStation;
-
+    private Station source;
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "target_station_id")
-    private Station targetStation;
+    private Station target;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 
     protected Favorite(){
 
@@ -31,11 +34,11 @@ public class Favorite {
         this(null, source, target, member);
     }
 
-    public Favorite(Long id, Station sourceStation, Station targetStation, Member member) {
+    public Favorite(Long id, Station source, Station target, Member member) {
         this.id = id;
-        this.sourceStation = sourceStation;
-        this.targetStation = targetStation;
-
+        this.source = source;
+        this.target = target;
+        this.member = member;
         if(member != null){
             addBy(member);
         }
@@ -53,11 +56,11 @@ public class Favorite {
         return id;
     }
 
-    public Station getSourceStation() {
-        return sourceStation;
+    public Station getSource() {
+        return source;
     }
 
-    public Station getTargetStation() {
-        return targetStation;
+    public Station getTarget() {
+        return target;
     }
 }

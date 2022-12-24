@@ -2,6 +2,8 @@ package nextstep.subway.member.domain;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
+import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import nextstep.subway.BaseEntity;
@@ -23,8 +25,7 @@ public class Member extends BaseEntity {
     private String password;
     private Integer age;
 
-    @OneToMany
-    @JoinColumn(name = "member_id")
+    @OneToMany(mappedBy = "member", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Favorite> favorites = new ArrayList<>();
 
     public Member() {

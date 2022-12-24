@@ -15,10 +15,10 @@ public class FavoriteTest {
         Member member = new Member("test@email.com", "1234", 1);
         Station source = new Station("강남역");
         Station target = new Station("삼성역");
-        Favorite favorite = new Favorite(member, source, target);
+        Favorite favorite = new Favorite(source, target, member);
 
-        assertThat(favorite.getSourceStation()).isEqualTo(source);
-        assertThat(favorite.getTargetStation()).isEqualTo(target);
-        assertThat(favorite.getMember()).isEqualTo(member);
+        assertThat(favorite.getSource()).isEqualTo(source);
+        assertThat(favorite.getTarget()).isEqualTo(target);
+
     }
 }

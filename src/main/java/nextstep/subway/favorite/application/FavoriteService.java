@@ -25,10 +25,10 @@ public class FavoriteService {
         this.stationRepository = stationRepository;
         this.memberRepository = memberRepository;
     }
-    @Transactional
-    public FavoriteResponse createFavorite(Long id, FavoriteRequest favoriteRequest) {
+
+    public FavoriteResponse saveFavorite(Long id, FavoriteRequest favoriteRequest) {
         Favorite favorite = favoriteRepository.save(new Favorite(getStation(favoriteRequest.getSource()), getStation(favoriteRequest.getTarget()), getMember(id)));
-        return FavoriteResponse.of(favorite);
+        return FavoriteResponse.from(favorite);
     }
 
     private Member getMember(Long id) {
@@ -47,7 +47,7 @@ public class FavoriteService {
 
     public List<FavoriteResponse> findFavoriteAll(Long memberId) {
         return getMember(memberId).getFavorites().stream()
-            .map(FavoriteResponse::of)
+            .map(FavoriteResponse::from)
             .collect(Collectors.toList());
     }
 
@@ -63,3 +63,4 @@ public class FavoriteService {
         );
     }
 }
+

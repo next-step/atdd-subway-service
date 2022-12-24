@@ -1,48 +1,36 @@
 package nextstep.subway.path.dto;
 
-import nextstep.subway.path.domain.Path;
-import nextstep.subway.station.domain.Station;
-
 import java.util.List;
-import java.util.stream.Collectors;
+import nextstep.subway.station.dto.StationResponse;
 
 public class PathResponse {
-
-    private List<PathStationResponse> stations;
-
+    private List<StationResponse> stations;
     private int distance;
+    private int charge;
 
-    private int fare;
-
-    private PathResponse() {
-
+    public PathResponse() {
     }
 
-    public PathResponse(List<PathStationResponse> stations, int distance, int fare) {
+    public PathResponse(List<StationResponse> stations, int distance) {
+        this(stations, distance, 0);
+    }
+
+    public PathResponse(List<StationResponse> stations, int distance, int charge) {
         this.stations = stations;
         this.distance = distance;
-        this.fare = fare;
+        this.charge = charge;
     }
 
-    public static PathResponse of(Path path) {
-        return new PathResponse(
-            toList(path.getStations()),
-            path.getDistance(),
-            path.getExtraFare()
-        );
-    }
-
-    private static List<PathStationResponse> toList(List<Station> stations) {
-        return stations.stream()
-            .map(PathStationResponse::of)
-            .collect(Collectors.toList());
-    }
-
-    public List<PathStationResponse> getStations() {
+    public List<StationResponse> getStations() {
         return stations;
     }
 
     public int getDistance() {
         return distance;
     }
+
+    public int getCharge() {
+        return charge;
+    }
 }
+

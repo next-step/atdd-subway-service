@@ -17,11 +17,12 @@ import org.springframework.stereotype.Component;
 @Component
 public class PathFinder {
 
-    public PathResult findPath(Station source, Station target, List<Section> sections){
+    public PathResult findPath(List<Section> sections, Station source, Station target){
+        validCheckStation(source, target);
         WeightedMultigraph<Station, SectionEdge> graph = new WeightedMultigraph(SectionEdge.class);
         DijkstraShortestPath stationGraph = getStationGraph(graph, sections);
         GraphPath path = stationGraph.getPath(source, target);
-
+        validCheckPath(path);
         return new PathResult(path.getVertexList(), (int)path.getWeight(), getContainLines(path));
     }
 
@@ -68,5 +69,17 @@ public class PathFinder {
         return vertexList.stream()
             .map(StationResponse::of)
             .collect(Collectors.toList());
+    }
+
+    private void validCheckStation(Station sourceStation, Station targetStation) {
+        if (sourceStation.equals(targetStation)) {
+            throw new IllegalArgumentException("출발역과 도착역이 같은 경우 최단 경로를 조회할 수 없습니다.");
+        }
+    }
+
+    private void validCheckPath(GraphPath<Station, SectionEdge> resultPath) {
+        if (resultPath == null) {
+            throw new IllegalArgumentException("출발역에서 도착역까지의 경로를 찾을 수 없습니다.");
+        }
     }
 }
