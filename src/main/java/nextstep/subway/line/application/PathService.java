@@ -27,19 +27,19 @@ public class PathService {
     }
 
     public List<StationResponse> getShortestPath(final String sourceStationId, final String targetStationid) {
-        Optional<Station> sourceStation = stationRepository.findById(Long.valueOf(sourceStationId));
-        Optional<Station> targetStation = stationRepository.findById(Long.valueOf(targetStationid));
+        Station sourceStation = stationFind(sourceStationId);
+        Station targetStation = stationFind(targetStationid);
 
         validCheckForSameStation(sourceStationId, targetStationid);
-        validCheckForExitStation(sourceStation, targetStation);
 
         List<Station> stations = stationRepository.findAll();
-        List<Station> shortestPath = getShortestPath(sourceStation.get(), targetStation.get(), stations);
+        List<Station> shortestPath = getShortestPath(sourceStation, targetStation, stations);
         return getShortestPathResponse(stations, shortestPath);
     }
 
-    private void validCheckForExitStation(final Optional sourceStation, final Optional targetStation) {
-        if (!sourceStation.isPresent() || !targetStation.isPresent()) throw new RuntimeException();
+    private Station stationFind(String stationId) {
+        return stationRepository.findById(Long.valueOf(stationId))
+                .orElseThrow(RuntimeException::new);
     }
 
     private void validCheckForSameStation(final String sourceStationId, final String targetStationId) {
