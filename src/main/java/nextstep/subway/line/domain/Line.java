@@ -1,13 +1,11 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.fare.Fare;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 
 @Entity
 public class Line extends BaseEntity {
@@ -18,6 +16,8 @@ public class Line extends BaseEntity {
     private String name;
     @Column(nullable = false)
     private String color;
+    @Embedded
+    private Fare addFare = Fare.from();
 
     @Embedded
     private final Sections sections = new Sections();
@@ -29,9 +29,22 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
+    public Line(String name, String color, long addFare) {
+        this.name = name;
+        this.color = color;
+        this.addFare = Fare.from(addFare);
+    }
+
     public Line(String name, String color, Station upStation, Station downStation, int distance) {
         this.name = name;
         this.color = color;
+        addSection(new Section(this, upStation, downStation, distance));
+    }
+
+    public Line(String name, String color, Station upStation, Station downStation, int distance, long addFare) {
+        this.name = name;
+        this.color = color;
+        this.addFare = Fare.from(addFare);
         addSection(new Section(this, upStation, downStation, distance));
     }
 
@@ -43,6 +56,14 @@ public class Line extends BaseEntity {
     public void addSection(Section section) {
         section.belongLine(this);
         this.sections.add(section);
+    }
+
+    public List<Station> findSortedStations() {
+        return this.sections.getSortedStations();
+    }
+
+    public void removeStation(Station station) {
+        this.sections.removeStation(station);
     }
 
     public Long getId() {
@@ -61,11 +82,5 @@ public class Line extends BaseEntity {
         return sections.asList();
     }
 
-    public List<Station> findSortedStations() {
-        return this.sections.getSortedStations();
-    }
-
-    public void removeStation(Station station) {
-        this.sections.removeStation(station);
-    }
+    public long getAddFare() { return addFare.findFare(); }
 }

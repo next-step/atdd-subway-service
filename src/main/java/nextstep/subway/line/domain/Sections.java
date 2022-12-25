@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Embeddable
 public class Sections {
@@ -67,6 +68,14 @@ public class Sections {
                 , sectionOfMatchedUpStation.getDistance() + sectionOfMatchedDownStation.getDistance()));
         this.sections.remove(sectionOfMatchedUpStation);
         this.sections.remove(sectionOfMatchedDownStation);
+    }
+
+    public List<Line> findLines(List<Station> stations) {
+        return sections.stream()
+                .filter(section -> stations.contains(section.getUpStation()) && stations.contains(section.getDownStation()))
+                .map(Section::getLine)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private void checkValidation(Section section) {
