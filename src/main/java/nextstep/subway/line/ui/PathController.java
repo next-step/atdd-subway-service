@@ -1,8 +1,10 @@
 package nextstep.subway.line.ui;
 
+import nextstep.subway.auth.domain.AuthenticationPrincipal;
+import nextstep.subway.auth.domain.LoginMember;
 import nextstep.subway.line.application.PathService;
+import nextstep.subway.line.dto.PathResponse;
 import nextstep.subway.station.dto.StationResponse;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,8 +22,16 @@ public class PathController {
     }
 
     @GetMapping("/paths")
-    public ResponseEntity<List<StationResponse>> getShortestPath(@RequestParam("source") String sourceStationId
+    public ResponseEntity<PathResponse> getStationPathInfo(@AuthenticationPrincipal LoginMember loginMember
+                                                            ,@RequestParam("source") String sourceStationId
                                                                 ,@RequestParam("target") String targetStationId) {
+        PathResponse pathResponse = pathService.getStationPathInfo(sourceStationId, targetStationId, loginMember);
+        return ResponseEntity.ok(pathResponse);
+    }
+
+    @GetMapping("/shortestPath")
+    public ResponseEntity<List<StationResponse>> getShortestPath(@RequestParam("source") String sourceStationId
+            ,@RequestParam("target") String targetStationId) {
         List<StationResponse> stations = pathService.getShortestPath(sourceStationId, targetStationId);
         return ResponseEntity.ok(stations);
     }

@@ -1,5 +1,7 @@
 package nextstep.subway.line.application;
 
+import nextstep.subway.fee.domain.StationFeeRepository;
+import nextstep.subway.line.domain.LineRepository;
 import nextstep.subway.line.domain.Section;
 import nextstep.subway.line.domain.SectionRepository;
 import nextstep.subway.station.domain.Station;
@@ -13,6 +15,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.mockito.Mockito.when;
@@ -35,10 +38,16 @@ class PathServiceTest {
     @Mock
     private SectionRepository sectionRepository;
 
+    @Mock
+    private StationFeeRepository stationFeeRepository;
+
+    @Mock
+    private LineRepository lineRepository;
+
     @Test
     @DisplayName("최적경로 조회 - mock")
     void getShortestPathTest() {
-        PathService pathService = new PathService(stationRepository, sectionRepository);
+        PathService pathService = new PathService(stationRepository, sectionRepository, stationFeeRepository, lineRepository);
 
         List<Station> stations = Mock_지하철역_등록됨();
         List<Section> sections = Mock_구간역_등록됨();
@@ -79,8 +88,8 @@ class PathServiceTest {
     }
 
     private void Mock_최소거리_조건_등록됨(List stations, List sections) {
-        when(stationRepository.getById(Long.valueOf(3))).thenReturn(교대역);
-        when(stationRepository.getById(Long.valueOf(2))).thenReturn(양재역);
+        when(stationRepository.findById(Long.valueOf(3))).thenReturn(Optional.ofNullable(교대역));
+        when(stationRepository.findById(Long.valueOf(2))).thenReturn(Optional.ofNullable(양재역));
         when(stationRepository.findAll()).thenReturn(stations);
         when(sectionRepository.findAll()).thenReturn(sections);
     }
@@ -88,7 +97,7 @@ class PathServiceTest {
     @Test
     @DisplayName("최적경로 조회 - 실제 객체")
     void getShortestPathTest2() {
-        PathService pathService = new PathService(stationRepository, sectionRepository);
+        PathService pathService = new PathService(stationRepository, sectionRepository, stationFeeRepository, lineRepository);
 
         List<Station> stations = Mock_지하철역_등록됨();
         List<Section> sections = Mock_구간역_등록됨();

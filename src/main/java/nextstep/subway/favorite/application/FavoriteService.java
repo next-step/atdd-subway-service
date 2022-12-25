@@ -45,8 +45,7 @@ public class FavoriteService {
         Member member = memberRepository.findById(loginMember.getId())
                 .orElseThrow(RuntimeException::new);
 
-        List<Favorite> favorite = favoriteRepository.findByMember(member)
-                .orElseGet(ArrayList::new);
+        List<Favorite> favorite = favoriteRepository.findByMember(member);
         return favorite.stream()
                 .map(FavoriteResponse::of)
                 .collect(Collectors.toList());
@@ -55,7 +54,9 @@ public class FavoriteService {
     public void deleteFavorite(Long id, LoginMember loginMember) {
         Member member = memberRepository.findById(loginMember.getId())
                 .orElseThrow(RuntimeException::new);
+        Favorite favorite = favoriteRepository.findByMemberAndId(member, id)
+                .orElseThrow(RuntimeException::new);
 
-        favoriteRepository.deleteById(id);
+        favoriteRepository.delete(favorite);
     }
 }

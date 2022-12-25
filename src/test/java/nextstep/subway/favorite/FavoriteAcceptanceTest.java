@@ -48,7 +48,7 @@ public class FavoriteAcceptanceTest extends AcceptanceTest {
         양재역 = StationAcceptanceTest.지하철역_등록되어_있음("양재역").as(StationResponse.class);
         양재시민의역 = StationAcceptanceTest.지하철역_등록되어_있음("양재시민의역").as(StationResponse.class);
 
-        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10);
+        LineRequest lineRequest = new LineRequest("신분당선", "bg-red-600", 강남역.getId(), 양재역.getId(), 10, 700);
         신분당선 = LineAcceptanceTest.지하철_노선_등록되어_있음(lineRequest).as(LineResponse.class);
         지하철_노선에_지하철역_등록_요청(신분당선, 양재역, 양재시민의역, 3);
 

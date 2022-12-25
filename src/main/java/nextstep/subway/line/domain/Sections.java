@@ -24,6 +24,10 @@ public class Sections {
         }
     }
 
+    public List<Section> getValues() {
+        return this.sections;
+    }
+
     public Optional<Section> getSectionUpLineStation(Station station) {
         return this.sections.stream()
                 .filter(it -> it.isSameDownStation(station))
