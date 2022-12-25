@@ -34,7 +34,8 @@ public class AuthService {
         }
 
         String email = jwtTokenProvider.getPayload(credentials);
-        Member member = memberRepository.findByEmail(email).orElseThrow(RuntimeException::new);
+        Member member = memberRepository.findByEmail(email)
+            .orElseThrow(() -> new AuthorizationException("올바른 토큰 번호가 아닙니다."));
         return new LoginMember(member.getId(), member.getEmail(), member.getAge());
     }
 }

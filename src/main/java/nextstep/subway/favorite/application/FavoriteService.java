@@ -14,27 +14,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 @Service
+@Transactional(readOnly = true)
 public class FavoriteService {
 
     private final FavoriteRepository favoriteRepository;
     private final StationRepository stationRepository;
     private final MemberRepository memberRepository;
 
-    public FavoriteService(FavoriteRepository favoriteRepository, StationRepository stationRepository, MemberRepository memberRepository) {
+    public FavoriteService(FavoriteRepository favoriteRepository,
+        StationRepository stationRepository, MemberRepository memberRepository) {
         this.favoriteRepository = favoriteRepository;
         this.stationRepository = stationRepository;
         this.memberRepository = memberRepository;
     }
 
     public FavoriteResponse saveFavorite(Long id, FavoriteRequest favoriteRequest) {
-        Favorite favorite = favoriteRepository.save(new Favorite(getStation(favoriteRequest.getSource()), getStation(favoriteRequest.getTarget()), getMember(id)));
+        Favorite favorite = favoriteRepository.save(
+            new Favorite(getStation(favoriteRequest.getSource()),
+                getStation(favoriteRequest.getTarget()), getMember(id)));
         return FavoriteResponse.from(favorite);
     }
 
     private Member getMember(Long id) {
         return memberRepository.findById(id)
             .orElseThrow(
-                () -> new IllegalArgumentException("사용자 조회 실패")
+                () -> new IllegalArgumentException("사용자 조회 실패" + id)
             );
     }
 

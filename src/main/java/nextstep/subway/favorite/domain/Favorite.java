@@ -12,6 +12,7 @@ import nextstep.subway.station.domain.Station;
 
 @Entity
 public class Favorite {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -26,7 +27,7 @@ public class Favorite {
     @JoinColumn(name = "member_id")
     private Member member;
 
-    protected Favorite(){
+    protected Favorite() {
 
     }
 
@@ -39,16 +40,13 @@ public class Favorite {
         this.source = source;
         this.target = target;
         this.member = member;
-        if(member != null){
-            addBy(member);
-        }
     }
 
-    public void addBy(Member member){
+    public void addBy(Member member) {
         member.addFavorite(this);
     }
 
-    public void deleteBy(Member member){
+    public void deleteBy(Member member) {
         member.deleteFavorite(this);
     }
 
