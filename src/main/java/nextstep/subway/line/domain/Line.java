@@ -1,6 +1,7 @@
 package nextstep.subway.line.domain;
 
 import nextstep.subway.BaseEntity;
+import nextstep.subway.line.dto.LineRequest;
 import nextstep.subway.station.domain.Station;
 
 import javax.persistence.*;
@@ -16,14 +17,12 @@ public class Line extends BaseEntity {
     private String name;
     private String color;
 
+    private int cost;
+
     @Embedded
     private Sections sections = new Sections();
 
-    protected Line() {
-    }
-
-    public static Line of() {
-        return new Line();
+    public Line() {
     }
 
     public Line(String name, String color) {
@@ -31,15 +30,25 @@ public class Line extends BaseEntity {
         this.color = color;
     }
 
-    public Line(String name, String color, Station upStation, Station downStation, int distance) {
+    public Line(String name, String color, Station upStation, Station downStation, int distance, int cost) {
         this.name = name;
         this.color = color;
-        this.addSection(new Section(upStation, downStation, distance));
+        this.cost = cost;
+        sections.add(new Section(this, upStation, downStation, distance));
     }
 
-    public void update(Line line) {
-        this.name = line.getName();
-        this.color = line.getColor();
+    public void update(LineRequest request){
+        this.name = request.getName();
+        this.color = request.getColor();
+    }
+
+    public void addSection(Station upStation, Station downStation, int distance){
+        sections.updateSection(upStation, downStation, distance);
+        sections.add(new Section(this, upStation, downStation, distance));
+    }
+
+    public void removeSection(Station station){
+        sections.removeSection(this, station);
     }
 
     public Long getId() {
@@ -54,20 +63,15 @@ public class Line extends BaseEntity {
         return color;
     }
 
+    public int getCost() {
+        return cost;
+    }
+
+    public List<Station> getStations() {
+        return sections.getStations();
+    }
+
     public List<Section> getSections() {
         return sections.getSections();
-    }
-
-    public void addSection(Section section) {
-        sections.addSection(section);
-        section.changeLine(this);
-    }
-
-    public void deleteSection(Station station) {
-        sections.deleteSection(station);
-    }
-
-    public List<Station> stations() {
-        return sections.stationsBySorted();
     }
 }

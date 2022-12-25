@@ -9,14 +9,16 @@ public class Path {
     private List<Station> stations;
 
     private int distance;
+    private int extraFare;
 
-    public Path(List<Station> stations, int distance) {
+    public Path(List<Station> stations, int distance, int extraFare) {
         this.stations = stations;
         this.distance = distance;
+        this.extraFare = extraFare;
     }
 
-    public static Path of(List<Station> stations, int distance) {
-        return new Path(stations, distance);
+    public static Path of(List<Station> stations, int distance, int extraFare) {
+        return new Path(stations, distance,extraFare);
     }
 
     public List<Station> getStations() {
@@ -25,5 +27,9 @@ public class Path {
 
     public int getDistance() {
         return distance;
+    }
+
+    public int getExtraFare() {
+        return extraFare;
     }
 }
